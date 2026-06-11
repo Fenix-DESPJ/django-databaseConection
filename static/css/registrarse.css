@@ -1,0 +1,179 @@
+:root{
+    --dorado:#FFC600;
+    --dorado-oscuro:#BF930D;
+    --gris:#565654;
+    --gris-oscuro:#30302E;
+    --negro:#111111;
+    --blanco:#FFFFFF;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,0.75),
+        rgba(0,0,0,0.75)
+    ),
+    url("../img/fondoRegistro.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+
+
+    font-family:Arial, sans-serif;
+}
+
+.registro-container{
+    width:100%;
+    padding:30px 20px;
+}
+
+.registro-card{
+    max-width:600px;
+    margin:auto;
+
+    background:rgba(17,17,17,.95);
+
+    border:1px solid rgba(255,198,0,.25);
+
+    border-radius:30px;
+
+    padding:40px;
+
+    text-align:center;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.5);
+}
+
+.logo-registro{
+    width:95px;
+    height:95px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:3px solid var(--dorado);
+
+    margin-bottom:20px;
+}
+
+.registro-card h1{
+    color:var(--dorado);
+
+    font-family:"Times New Roman", serif;
+
+    margin-bottom:10px;
+}
+
+.subtitulo{
+    color:#d8d8d8;
+    margin-bottom:30px;
+}
+
+.form-label{
+    color:var(--blanco);
+    display:block;
+    text-align:left;
+    margin-bottom:8px;
+}
+
+.form-control{
+    background:#1a1a1a;
+    border:1px solid rgba(255,198,0,.25);
+    color:#FFFFFF;
+    border-radius:15px;
+    padding:12px;
+}
+
+.form-control::placeholder{
+    color:rgba(255,255,255,.75);
+    opacity:1;
+}
+
+.form-control:focus{
+    background:#1a1a1a;
+    color:#FFFFFF;
+
+    border-color:var(--dorado);
+
+    box-shadow:
+    0 0 0 .2rem rgba(255,198,0,.25);
+}
+
+input[type="date"]{
+    color:#FFFFFF;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator{
+    filter:invert(1);
+    cursor:pointer;
+}
+
+.btn-registro{
+    width:100%;
+
+    background:var(--dorado);
+
+    color:var(--negro);
+
+    border:none;
+
+    border-radius:30px;
+
+    padding:14px;
+
+    font-weight:bold;
+
+    transition:.3s;
+}
+
+.btn-registro:hover{
+    background:var(--dorado-oscuro);
+    color:#FFFFFF;
+}
+
+.volver{
+    display:inline-block;
+
+    margin-top:25px;
+
+    color:var(--dorado);
+
+    text-decoration:none;
+
+    font-size:.95rem;
+}
+
+.volver:hover{
+    color:#FFFFFF;
+}
+
+@media(max-width:576px){
+
+    .registro-card{
+        padding:30px 25px;
+    }
+
+    .logo-registro{
+        width:80px;
+        height:80px;
+    }
+
+    .registro-card h1{
+        font-size:2rem;
+    }
+}

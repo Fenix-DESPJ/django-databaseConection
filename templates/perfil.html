@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100 py-5">
+    <div class="edit-profile-card text-center">
+        <h1 class="card-title mb-3">¡Edita tu perfil!</h1>
+        
+        <form id="formEditarPerfil" method="POST" action="{% url 'guardar_perfil' %}">
+            {% csrf_token %}
+
+            <div class="form-group-custom mb-4 w-100">
+                <label for="inputNombre" class="form-label-custom d-block mb-2">Nombre</label>
+                <input type="text" id="inputNombre" name="nombre" class="form-control-custom text-center w-100" value="{{ user.first_name }}">
+            </div>
+
+            <div class="form-group-custom mb-4">
+                <label for="selectGenero" class="form-label-custom">Género</label>
+                <select id="selectGenero" name="genero" class="form-select form-control-custom text-center">
+                    <option value="Masculino" {% if user.profile.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                    <option value="Femenino" {% if user.profile.genero == 'Femenino' %}selected{% endif %}>Femenino</option>
+                    <option value="Otro" {% if user.profile.genero == 'Otro' %}selected{% endif %}>Otro / Prefiero no decirlo</option>
+                </select>
+            </div>
+
+            <div class="form-group-custom mb-4">
+                <label class="form-label-custom">Número de celular</label>
+                <input type="tel" id="inputTelefono" name="telefono" class="form-control-custom phone-input" value="{{ user.profile.telefono }}" placeholder="Número">
+            </div>
+
+            <div class="form-group-custom mb-4">
+                <label class="form-label-custom">Contraseña actual</label>
+                <input type="password" id="inputPasswordActual" name="password_actual" class="form-control-custom text-center w-100" placeholder="Contraseña actual">
+            </div>
+
+            <div class="form-group-custom mb-4">
+                <label class="form-label-custom">Nueva contraseña</label>
+                <input type="password" id="inputPasswordNueva" name="password_nueva" class="form-control-custom text-center w-100" placeholder="Nueva contraseña">
+            </div>
+
+            <div class="checkbox-container-custom text-start mx-auto mb-4">
+                <div class="form-check mb-3">
+                    <input class="form-check-input custom-checkbox" type="checkbox" id="checkPromociones" name="promociones" {% if user.profile.promociones %}checked{% endif %}>
+                    <label class="form-check-label checkbox-text" for="checkPromociones">Promociones por WhatsApp</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input custom-checkbox" type="checkbox" id="checkCitas" name="notificaciones_citas" {% if user.profile.notificaciones %}checked{% endif %}>
+                    <label class="form-check-label checkbox-text" for="checkCitas">Cambios de cita por WhatsApp</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-guardar-custom px-5 py-2 fw-bold">Guardar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

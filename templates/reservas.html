@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="reservation-header">
+    <div class="container text-center">
+        <h1 class="page-title">
+            Reserva tu <span class="text-gold">Cita</span>
+        </h1>
+        <div class="sub-bar"></div>
+        <p class="header-description">
+            Selecciona tu fecha, horario y método de pago para vivir la experiencia premium de Barbería M&A.
+        </p>
+    </div>
+</section>
+
+<section class="reservation-section" id="reservation-module-wrapper">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="reservation-card">
+                    <h3 class="section-title">Información de la Reserva</h3>
+
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <button class="month-btn" id="prevMonth"><i class="bi bi-chevron-left"></i></button>
+                            <h5 id="currentMonthYear">Septiembre 2026</h5>
+                            <button class="month-btn" id="nextMonth"><i class="bi bi-chevron-right"></i></button>
+                        </div>
+                        <div class="weekdays">
+                            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                        </div>
+                        <div class="calendar-days" id="calendarDays"></div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="form-label custom-label">Servicio</label>
+                        <select class="form-select custom-select" id="servicio">
+                            <option value="Corte Clásico" selected>Corte Clásico</option>
+                            <option value="Corte + Barba">Corte + Barba</option>
+                            <option value="Perfilado de Barba">Perfilado de Barba</option>
+                            <option value="Corte + cejas">Corte + cejas</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="form-label custom-label">Barbero</label>
+                        <select class="form-select custom-select" id="barbero">
+                            <option value="Juan Pablo" selected>Juan Pablo</option>
+                            <option value="Andrés Martínez">Andrés Martínez</option>
+                            <option value="Maicol Díaz">Maicol Díaz</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="form-label custom-label">Método de Pago</label>
+                        <div class="dropdown w-100">
+                            <button class="btn payment-dropdown dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">Seleccionar método</button>
+                            <ul class="dropdown-menu payment-menu">
+                                <li><a class="dropdown-item payment-option" href="#" data-method="Tarjeta de Crédito">Tarjeta de Crédito</a></li>
+                                <li><a class="dropdown-item payment-option" href="#" data-method="PSE">PSE</a></li>
+                                <li><a class="dropdown-item payment-option" href="#" data-method="Efectivo">Efectivo</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="selected-method-card mt-4">
+                        <span class="method-title">Método seleccionado</span>
+                        <h5 id="selectedMethodDisplay">Ninguno</h5>
+                    </div>
+
+                    <div class="buttons-container">
+                        <a href="javascript:history.back()" class="btn btn-back"><i class="bi bi-arrow-left"></i> Regresar</a>
+                        <button class="btn btn-reserve" id="btnReservar">Reservar Cita</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="reservation-card">
+                    <h3 class="section-title">Horarios Disponibles</h3>
+                    <div class="hours-grid" id="hoursGrid"></div>
+
+                    <div class="summary-card mt-4">
+                        <h4>Resumen de Reserva</h4>
+                        <div class="summary-item"><span>Servicio:</span><span id="summaryService">Corte Clásico</span></div>
+                        <div class="summary-item"><span>Barbero:</span><span id="summaryBarber">Juan Pablo</span></div>
+                        <div class="summary-item"><span>Fecha:</span><span id="summaryDate">Selecciona una fecha</span></div>
+                        <div class="summary-item"><span>Hora:</span><span id="summaryHour">No seleccionada</span></div>
+                        <div class="summary-item"><span>Pago:</span><span id="summaryPayment">No seleccionado</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'modals/pagos.html' %} 
+{% endblock %}

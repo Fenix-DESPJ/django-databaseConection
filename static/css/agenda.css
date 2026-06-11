@@ -1,0 +1,127 @@
+:root {
+  --dorado: #FFC600;
+  --dorado-oscuro: #BF930D;
+  --gris: #565654;
+  --gris-oscuro: #30302E;
+  --negro: #111111;
+  --blanco: #FFFFFF;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--negro);
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Times New Roman", serif;
+}
+
+.agenda-page {
+  background: linear-gradient(135deg, #111111, #30302E, #565654);
+  color: var(--blanco);
+  min-height: 100vh;
+  padding: 40px 0;
+}
+
+.volver {
+  color: var(--dorado);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.volver:hover {
+  color: var(--blanco);
+}
+
+.etiqueta {
+  color: var(--dorado);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 3.5rem;
+  color: var(--blanco);
+}
+
+.info-box {
+  background-color: rgba(255,255,255,0.08);
+  border-left: 5px solid var(--dorado);
+  padding: 18px;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+.info-box h5 {
+  color: var(--dorado);
+}
+
+.info-box p {
+  margin: 0;
+}
+
+.form-card {
+  background-color: var(--blanco);
+  color: var(--gris-oscuro);
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.45);
+}
+
+.logo-form {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.form-card h2 {
+  color: var(--gris-oscuro);
+  font-size: 2.6rem;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.form-control,
+.form-select {
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--dorado);
+  box-shadow: 0 0 0 0.25rem rgba(255, 198, 0, 0.25);
+}
+
+.btn-dorado {
+  background-color: var(--dorado);
+  color: var(--negro);
+  border: none;
+  border-radius: 30px;
+  padding: 12px 35px;
+  font-weight: bold;
+}
+
+.btn-dorado:hover {
+  background-color: var(--dorado-oscuro);
+  color: var(--blanco);
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.6rem;
+  }
+
+  .form-card {
+    padding: 25px;
+  }
+}

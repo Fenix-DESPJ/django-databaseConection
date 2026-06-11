@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="container-fluid py-5" style="max-width: 1200px;">
+    <h2 class="text-center text-white mb-5 fw-bold">Más servicios — Próximamente</h2>
+
+    <div class="row g-4">
+        <div class="col-12 text-center">
+            <p class="text-white-50">Estamos ampliando nuestro catálogo. <strong>Más servicios disponibles muy pronto.</strong></p>
+            <img src="{% static 'img/servicios-paq.jpeg' %}" alt="Más servicios" class="img-fluid rounded shadow-lg mt-4" style="max-width:420px;">
+        </div>
+    </div>
+
+    <div class="text-end mt-5">
+        <a href="{% url 'servicios_paq_1' %}" class="btn btn-outline-warning">Regresar</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="servicios-container py-5"> 
+    <div class="container">
+        <h2 class="text-center text-white mb-5 display-5 fw-bold">Nuestros Servicios</h2>
+        
+        <div class="servicios-grid">
+            <div class="servicio-card p-3 shadow-lg">
+                <img src="{% static 'img/servicios-ind.jpeg' %}" alt="Individuales" class="servicio-img mb-3">
+
+                <h4 class="titulo-card-servicio">
+                    Servicios Individuales
+                </h4>
+
+                <p class="descripcion-card-servicio">
+                    Cortes, cejas, barba, limpieza facial y más servicios para tu cuidado personal.
+                </p>
+
+                <button onclick="window.location.href='/servicios-ind/'" class="btn btn-warning w-100">
+                    Ver servicios
+                </button>
+            </div>
+            
+            <div class="servicio-card p-3 shadow-lg">
+                <img src="{% static 'img/servicios-paq.jpeg' %}" alt="Paquetes" class="servicio-img mb-3">
+                
+                <h4 class="titulo-card-servicio">
+                    Paquetes de Servicios
+                </h4>
+
+                <p class="descripcion-card-servicio">
+                    Combina varios servicios en una sola experiencia y obtén una atención más completa.
+                </p>
+
+                <a href="{% url 'servicios_paq_1' %}" class="btn btn-warning w-100">
+                    Ver paquetes
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
