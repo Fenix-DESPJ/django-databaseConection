@@ -14,9 +14,11 @@ class Servicio(models.Model):
     duracion = models.IntegerField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     tiposervicio = models.CharField(db_column='tipoServicio', max_length=60)
+    # Agrega esta línea:
+    imagen = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
-        managed = False  # Django no creará la tabla, ya existe en MySQL
+        managed = False
         db_table = 'servicio'
 
 class Pago(models.Model):

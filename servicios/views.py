@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator
+from .models import Servicio
 
 def index(request):
     return render(request, 'index.html')
@@ -29,3 +31,16 @@ def iniciar_sesion(request):
 
 def registrarse(request):
     return render(request, 'registrarse.html')
+
+def servicios_ind(request):
+    # 1. Obtener todos los servicios de la base de datos
+    servicios_list = Servicio.objects.all().order_by('nombreservicio')
+    
+    # 2. Configurar la paginación: 9 servicios por página
+    paginator = Paginator(servicios_list, 9)
+    
+    # 3. Obtener el número de página de la URL (ej: ?page=2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'servicios-ind.html', {'servicios': page_obj})
