@@ -1,0 +1,3 @@
+Backup of original user handling in case needed.
+
+Search 'usuarioRegistrado' occurrences for reference.

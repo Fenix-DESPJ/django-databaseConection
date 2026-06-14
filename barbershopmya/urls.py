@@ -22,7 +22,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('servicios/', include('servicios.urls')),
+    path('reservas/', include('reservas.urls')),
     path('', include('usuarios.urls')), # <--- El espacio vacío hace que no requiera el prefijo 'usuarios/'
+    
 ]
 
 if settings.DEBUG:
