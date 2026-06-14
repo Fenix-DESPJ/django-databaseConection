@@ -10,131 +10,24 @@
         <div class="col-12">
             <div class="servicios-grid-precios">
                 
+                {% for p in paquetes %}
                 <div class="card-precio">
-                    <img src="{% static 'img/paquete1.jpg' %}" alt="Corte Clásico" class="card-precio-img">
+                    <img src="{% static 'img/' %}{{ p.imagen }}" alt="{{ p.nombreservicio }}" class="card-precio-img">
+                    
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="mb-0 fw-bold">Corte Clásico + Cejas</h6>
-                            <small class="text-white-50">45 min</small>
+                            <h6 class="mb-0 fw-bold">{{ p.nombreservicio }}</h6>
+                            <small class="text-white-50">{{ p.duracion }} min</small>
                         </div>
                         <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 20.000</span>
+                            <span class="d-block fw-bold mb-1">$ {{ p.precio|floatformat:0 }}</span>
                             <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
                         </div>
                     </div>
                 </div>
-
-                <div class="card-precio">
-                    <img src="{% static 'img/paquete2.jpg' %}" alt="Perfil Perfecto" class="card-precio-img">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">Perfil Perfecto</h6>
-                            <small class="text-white-50">50 min</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 22.000</span>
-                            <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-precio">
-                    <img src="{% static 'img/paquete3.jpg' %}" alt="Barba Impecable y cejas" class="card-precio-img">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">Barba + Cejas</h6>
-                            <small class="text-white-50">40 min</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 18.000</span>
-                            <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-precio">
-                    <img src="{% static 'img/paquete4.jpeg' %}" alt="Estilo Definido" class="card-precio-img">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">Corte personalizado</h6>
-                            <small class="text-white-50">60 min</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 26.000</span>
-                            <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-precio">
-                    <img src="{% static 'img/paquete5.jpg' %}" alt="Look Completo" class="card-precio-img">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">Look Completo</h6>
-                            <small class="text-white-50">1h 10 min</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 28.000</span>
-                            <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-precio">
-                    <img src="{% static 'img/paquete6.jpg' %}" alt="Renovación Facial" class="card-precio-img">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">Combo de limpieza facial</h6>
-                            <small class="text-white-50">1h 20 min</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 30.000</span>
-                            <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-precio">
-                    <img src="{% static 'img/paquete7.jpeg' %}" alt="Imagen Ejecutiva" class="card-precio-img">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">Imagen Ejecutiva</h6>
-                            <small class="text-white-50">1h 30 min</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 32.000</span>
-                            <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-precio">
-                    <img src="{% static 'img/paquete8.jpg' %}" alt="Cambio de Imagen" class="card-precio-img">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">Cambio de Imagen</h6>
-                            <small class="text-white-50">1h 30 min</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 35.000</span>
-                            <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-precio">
-                    <img src="{% static 'img/paquete9.jpeg' %}" alt="Experiencia Premium" class="card-precio-img">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">Experiencia Premium</h6>
-                            <small class="text-white-50">2h 20 min</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ 60.000</span>
-                            <a href="{% url 'reservas' %}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
-                        </div>
-                    </div>
-                </div>
+                {% empty %}
+                    <p class="text-white">Aún no hay paquetes cargados en el sistema.</p>
+                {% endfor %}
 
             </div>
         </div>
@@ -142,7 +35,6 @@
 
     <div class="d-flex justify-content-between mt-5">
         <a href="{% url 'servicios' %}" class="btn-regresar-elegante"> ← Regresar</a>
-        <a href="{% url 'servicios_paq_2' %}" class="btn btn-outline-light"> Página 2 →</a>
-    </div>
+        </div>
 </section>
 {% endblock %}

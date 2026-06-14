@@ -44,3 +44,13 @@ def servicios_ind(request):
     page_obj = paginator.get_page(page_number)
     
     return render(request, 'servicios-ind.html', {'servicios': page_obj})
+
+def servicios_ind(request):
+    # Cambia 'tipoServicio' por 'tiposervicio'
+    servicios = Servicio.objects.filter(tiposervicio='Individual').order_by('nombreservicio')
+    return render(request, 'servicios-ind.html', {'servicios': servicios})
+
+def servicios_paq(request):
+    # Cambia 'tipoServicio' por 'tiposervicio'
+    paquetes = Servicio.objects.filter(tiposervicio='Paquete').order_by('nombreservicio')
+    return render(request, 'servicios-paq-1.html', {'paquetes': paquetes})
