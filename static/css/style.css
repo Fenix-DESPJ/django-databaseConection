@@ -2023,7 +2023,6 @@ select.form-control-custom {
     z-index: 2;
 }
 
-<<<<<<< HEAD
 /* Estilos para los modales estáticos */
 .modal-content .form-control {
     background-color: #1a1a1a;
@@ -2043,20 +2042,205 @@ select.form-control-custom {
     text-decoration: none;
     font-weight: bold;
 }
-=======
-/* ================================
-   🔶 SECCIÓN BADGE (TÍTULOS LATERALES)
-================================ */
-.section-badge {
-    background: linear-gradient(135deg, #FFC600, #FFD43E);
-    color: #111;
-    font-weight: bold;
-    padding: 12px 18px;
-    border-radius: 12px;
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 0.95rem;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+
+/*Seccion Barberos*/
+:root {
+    --dorado: #FFC600;
+    --dorado-oscuro: #BF930D;
+    --gris: #565654;
+    --gris-oscuro: #30302E;
+    --negro: #111111;
+    --negro-tarjeta: #1d1d1d;
+    --blanco: #FFFFFF;
 }
 
->>>>>>> 3fdd68210df48f544dd0aa17d007b189053c4186
+body {
+    background-color: var(--negro);
+    color: var(--blanco);
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.text-gold {
+    color: var(--dorado);
+}
+
+/* --- NAVBAR STYLES --- */
+.navbar-barber {
+    background-color: #0b0b0b;
+    border-bottom: 1px solid rgba(255, 198, 0, 0.15);
+    padding: 15px 20px;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: bold;
+}
+
+.logo-nav {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--dorado);
+    object-fit: cover;
+}
+
+.btn-logout {
+    color: #d8d8d8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: #d9534f;
+    color: white;
+    border-color: #d9534f;
+}
+
+/* --- STATS CARDS (PRODUCIDO) --- */
+.stats-card {
+    background-color: var(--negro-tarjeta);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.highlight-card {
+    border: 1px solid rgba(255, 198, 0, 0.25);
+    background: linear-gradient(145deg, #1d1d1d, #151515);
+}
+
+.stats-label {
+    color: #a0a0a0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.stats-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.stats-sub {
+    font-size: 0.85rem;
+}
+
+/* --- SECTION & TABLE --- */
+.section-title {
+    font-family: "Times New Roman", serif;
+    color: var(--dorado);
+    border-left: 4px solid var(--dorado);
+    padding-left: 12px;
+}
+
+.custom-table-container {
+    background-color: var(--negro-tarjeta);
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-table {
+    --bs-table-bg: transparent !important; /* Quita el fondo blanco nativo de Bootstrap */
+    --bs-table-color: var(--blanco) !important;
+    color: var(--blanco);
+    margin-bottom: 0;
+}
+
+.custom-table thead th {
+    color: var(--dorado);
+    border-bottom: 2px solid #333;
+    padding: 15px 10px;
+    font-weight: 600;
+}
+
+.custom-table tbody td {
+    padding: 18px 10px;
+    border-bottom: 1px solid #2a2a2a;
+    background-color: transparent !important;
+    color: #e0e0e0;
+}
+
+.time-col {
+    font-weight: bold;
+    color: var(--dorado);
+}
+
+/* --- BADGES DE ESTADO --- */
+.badge {
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+.status-done {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status-pending {
+    background-color: rgba(255, 198, 0, 0.12);
+    color: var(--dorado);
+    border: 1px solid rgba(255, 198, 0, 0.3);
+}
+
+.status-cancelled {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* --- ACCIONES BUTTONS --- */
+.btn-action {
+    padding: 6px 15px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-complete {
+    background-color: var(--dorado);
+    color: var(--negro);
+}
+
+.btn-complete:hover {
+    background-color: var(--dorado-oscuro);
+    color: white;
+}
+
+.btn-view {
+    background-color: #333;
+    color: #888;
+}
+
+/* Adaptabilidad para móviles */
+@media(max-width: 768px) {
+    .stats-value {
+        font-size: 1.8rem;
+    }
+    .custom-table {
+        font-size: 0.9rem;
+    }
+}

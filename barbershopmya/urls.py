@@ -29,7 +29,7 @@ urlpatterns = [
     # 2. Rutas de tus aplicaciones (usando include)
     path('servicios/', include('servicios.urls')),
     path('reservas/', include('reservas.urls')),
-    
+    path('barbero/', include('usuarios.urls')),
     # 3. Rutas específicas (Solo si son excepciones o páginas sueltas)
     path('servicios-ind/', views.servicios_ind, name='servicios_ind'),
     
