@@ -101,6 +101,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         new bootstrap.Tab(loginTabButton).show(),
       );
     }
+
+    console.log("¿Existe formReservas?", document.getElementById("formReservas"));
+
+    if (document.getElementById("formReservas")) {
+    inicializarLogicaReserva();
+    }
   }
 
   function mostrarAuthModal() {
@@ -155,6 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- 3. LÓGICA DE RESERVA ---
   function inicializarLogicaReserva() {
+    console.log("ENTRÓ A inicializarLogicaReserva");
     const servicio = document.getElementById("servicio");
     if (!servicio) return;
 
@@ -1088,44 +1095,34 @@ function inicializarModuloReservas() {
       } else if (estado.metodo === "Tarjeta de Crédito") {
         cardModal.show();
       } else {
-        guardarReserva({
-          servicio: summaryService.textContent,
-          barbero: summaryBarber.textContent,
-          fecha: estado.fecha,
-          hora: estado.hora,
-          metodo: estado.metodo,
-        });
+        document.getElementById("input_fecha_seleccionada").value = estado.fecha;
+        document.getElementById("input_hora_seleccionada").value = estado.hora;
+        document.getElementById("input_metodo_pago").value = estado.metodo;
 
-        successModal.show();
+        document.getElementById("formReservas").submit();
       }
     }
   });
 
   // Eventos de botones dentro de los modales
   document.getElementById("btnPagarPSE")?.addEventListener("click", () => {
-    guardarReserva({
-      servicio: summaryService.textContent,
-      barbero: summaryBarber.textContent,
-      fecha: estado.fecha,
-      hora: estado.hora,
-      metodo: estado.metodo,
-    });
+    document.getElementById("input_fecha_seleccionada").value = estado.fecha;
+    document.getElementById("input_hora_seleccionada").value = estado.hora;
+    document.getElementById("input_metodo_pago").value = estado.metodo;
 
     pseModal.hide();
-    successModal.show();
+
+    document.getElementById("formReservas").submit();
   });
 
   document.getElementById("btnPagarCard")?.addEventListener("click", () => {
-    guardarReserva({
-      servicio: summaryService.textContent,
-      barbero: summaryBarber.textContent,
-      fecha: estado.fecha,
-      hora: estado.hora,
-      metodo: estado.metodo,
-    });
+    document.getElementById("input_fecha_seleccionada").value = estado.fecha;
+    document.getElementById("input_hora_seleccionada").value = estado.hora;
+    document.getElementById("input_metodo_pago").value = estado.metodo;
 
     cardModal.hide();
-    successModal.show();
+
+    document.getElementById("formReservas").submit();
   });
 
   renderizarCalendario();
