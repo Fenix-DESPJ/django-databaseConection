@@ -1,189 +1,58 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicia Sesión | M&A Barber Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/iniciarsesion.css' %}">
+    <link rel="icon" type="image/jpeg" href="{% static 'img/logo.jpeg' %}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <img src="{% static 'img/logo.jpeg' %}" alt="Logo M&A Barber Shop" class="logo-login">
 
-{% block content %}
-<section class="reservation-header">
-    <div class="container text-center">
-        <h1 class="page-title">
-            Reserva tu <span class="text-gold">Cita</span>
-        </h1>
-        <div class="sub-bar"></div>
-        <p class="header-description">
-            Selecciona tu fecha, horario y método de pago para vivir la experiencia premium de Barbería M&A.
-        </p>
-    </div>
-</section>
+            <h1>Iniciar Sesión</h1>
 
-<form method="POST" action="" id="formReservas">
-    {% csrf_token %}
-    <input type="hidden" name="fecha" id="input_fecha_seleccionada">
-    <input type="hidden" name="hora" id="input_hora_seleccionada">
-    <input type="hidden" name="metodo_pago" id="input_metodo_pago">
+            <p class="subtitulo">
+                Accede a tu cuenta para gestionar tus citas.
+            </p>
 
-    <section class="reservation-section" id="reservation-module-wrapper">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-5">
-                    <div class="reservation-card">
-                        <h3 class="section-title">Información de la Reserva</h3>
-
-                        <div class="calendar-container">
-                            <div class="calendar-header">
-                                <button type="button" class="month-btn" id="prevMonth"><i class="bi bi-chevron-left"></i></button>
-                                <h5 id="currentMonthYear">Septiembre 2026</h5>
-                                <button type="button" class="month-btn" id="nextMonth"><i class="bi bi-chevron-right"></i></button>
-                            </div>
-                            <div class="weekdays">
-                                <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
-                            </div>
-                            <div class="calendar-days" id="calendarDays"></div>
+            {% if messages %}
+                <div class="messages mb-3">
+                    {% for message in messages %}
+                        <div class="alert alert-danger p-2 small text-center" role="alert">
+                            {{ message }}
                         </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-                        <div class="mt-4">
-                            <label class="form-label custom-label">Servicio</label>
-                            <select class="form-select custom-select" id="servicio" name="servicio">
-                                <option value="" disabled selected>Selecciona un servicio</option>
-                                {% for s in servicios %}
-                                    <option value="{{ s.idservicio }}">{{ s.nombreservicio }} - {{ s.precio }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mt-4">
-                            <label class="form-label custom-label">Barbero</label>
-                            <select class="form-select custom-select" id="barbero" name="barbero">
-                                <option value="" disabled selected>Selecciona tu barbero de preferencia</option>
-                                {% for b in barberos %}
-                                    <option value="{{ b.idusuario }}">{{ b.nombre }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mt-4">
-                            <label class="form-label custom-label">Método de Pago</label>
-                            <div class="dropdown w-100">
-                                <button class="btn payment-dropdown dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">Seleccionar método</button>
-                                <ul class="dropdown-menu payment-menu">
-                                    <li><a class="dropdown-item payment-option" href="#" data-method="Tarjeta de Crédito" data-bs-toggle="modal" data-bs-target="#cardModal">Tarjeta de Crédito</a></li>
-                                    <li><a class="dropdown-item payment-option" href="#" data-method="PSE" data-bs-toggle="modal" data-bs-target="#pseModal">PSE</a></li>
-                                    <li><a class="dropdown-item payment-option" href="#" data-method="Efectivo">Efectivo</a></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="selected-method-card mt-4">
-                            <span class="method-title">Método seleccionado</span>
-                            <h5 id="selectedMethodDisplay">Ninguno</h5>
-                        </div>
-
-                        <div class="buttons-container">
-                            <a href="javascript:history.back()" class="btn btn-back"><i class="bi bi-arrow-left"></i> Regresar</a>
-                            <button type="button" class="btn btn-reserve" id="btnReservar">Reservar Cita</button>
-                        </div>
-                    </div>
+            <form id="form-login" method="POST" action="{% url 'iniciar_sesion' %}">
+                {% csrf_token %} <div class="mb-3">
+                    <label for="usuario" class="form-label">Correo o Número de Teléfono</label>
+                    <input type="text" class="form-control" id="usuario" name="identificador" placeholder="ejemplo@gmail.com o cel" required>
                 </div>
 
-                <div class="col-lg-7">
-                    <div class="reservation-card">
-                        <h3 class="section-title">Horarios Disponibles</h3>
-                        <div class="hours-grid" id="hoursGrid"></div>
-
-                        <div class="summary-card mt-4">
-                            <h4>Resumen de Reserva</h4>
-                            <div class="summary-item"><span>Servicio:</span><span id="summaryService">Corte Clásico</span></div>
-                            <div class="summary-item"><span>Barbero:</span><span id="summaryBarber">Juan Pablo</span></div>
-                            <div class="summary-item"><span>Fecha:</span><span id="summaryDate">Selecciona una fecha</span></div>
-                            <div class="summary-item"><span>Hora:</span><span id="summaryHour">No seleccionada</span></div>
-                            <div class="summary-item"><span>Pago:</span><span id="summaryPayment">No seleccionado</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</form>
-
-<div class="modal fade" id="pseModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content custom-modal">
-            <div class="modal-body">
-                <h3 class="text-gold text-center mb-4">Pago por PSE</h3>
-                <div class="mb-3">
-                    <label class="custom-label">Nombre completo</label>
-                    <input type="text" class="form-control custom-input" placeholder="Ingresa tu nombre">
-                </div>
-                <div class="mb-3">
-                    <label class="custom-label">Correo electrónico</label>
-                    <input type="email" class="form-control custom-input" placeholder="correo@ejemplo.com">
-                </div>
-                <div class="mb-3">
-                    <label class="custom-label">Banco</label>
-                    <select class="form-select custom-select">
-                        <option>Bancolombia</option>
-                        <option>Davivienda</option>
-                        <option>Banco de Bogotá</option>
-                        <option>BBVA</option>
-                        <option>Banco Popular</option>
-                    </select>
-                </div>
                 <div class="mb-4">
-                    <label class="custom-label">Tipo de cuenta</label>
-                    <select class="form-select custom-select">
-                        <option>Ahorros</option>
-                        <option>Corriente</option>
-                    </select>
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="password" name="contrasena" placeholder="Ingresa tu contraseña" required>
                 </div>
-                <button type="button" class="btn btn-reserve w-100" id="btnPagarPSE" data-bs-dismiss="modal">Pagar con PSE</button>
-            </div>
+
+                <button type="submit" class="btn-login">
+                    Iniciar
+                </button>
+            </form>
+
+            <a href="{% url 'index' %}" class="volver">
+                &larr; Volver a inicio
+            </a>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="cardModal">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content custom-modal">
-            <div class="modal-body">
-                <h3 class="text-gold mb-4">Pago con Tarjeta</h3>
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <input type="text" class="form-control custom-input" placeholder="Número de tarjeta">
-                    </div>
-                    <div class="col-md-12">
-                        <input type="text" class="form-control custom-input" placeholder="Nombre del titular">
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control custom-input" placeholder="MM/AA">
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control custom-input" placeholder="CVV">
-                    </div>
-                    <div class="col-md-12">
-                        <button type="button" class="btn btn-reserve mt-4 w-100" id="btnPagarCard" data-bs-dismiss="modal">Pagar Ahora</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="successModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content custom-modal">
-            <div class="modal-body text-center">
-                <i class="bi bi-check-circle-fill success-icon"></i>
-                <h3>Reserva realizada exitosamente</h3>
-                <button type="button" class="btn btn-reserve mt-3" id="btnVerMisReservas">Ver mis reservas</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="reservationToast" class="toast">
-        <div class="toast-body">
-            Reserva registrada exitosamente.
-        </div>
-    </div>
-</div>
-
-{% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
