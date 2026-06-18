@@ -43,7 +43,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (url.includes("reservas.html")) {
           activarNav("nav-agendar");
 
-          inicializarLogicaReserva();
+          setTimeout(() => {
+            if (document.getElementById("calendarDays")) {
+              inicializarLogicaReserva();
+            }
+          }, 150);
         }
 
         if (document.querySelector(".barbers-track")) {
@@ -67,17 +71,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     cargarComponente("footer-container", `${rutaBase}/componentes/footer.html`);
   }
 
-  if (document.getElementById("main-content")) {
+  if (false && document.getElementById("main-content")) {
     cargarComponente("main-content", `${rutaBase}/secciones/info.html`);
+  }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    if (
-      urlParams.get("reserva") === "true" &&
-      JSON.parse(localStorage.getItem("sesionActiva"))
-    ) {
-      activarNav("nav-agendar");
-      cargarComponente("main-content", `${rutaBase}/secciones/reservas.html`);
-    }
+  const urlParams = new URLSearchParams(window.location.search);
+  if (
+    urlParams.get("reserva") === "true" &&
+    JSON.parse(localStorage.getItem("sesionActiva"))
+  ) {
+    activarNav("nav-agendar");
+    cargarComponente("main-content", `${rutaBase}/secciones/reservas.html`);
+  }
+
+  console.log("Existe formReservas:", document.getElementById("formReservas"));
+
+  if (document.getElementById("formReservas")) {
+    console.log("Voy a inicializar reservas");
+    inicializarLogicaReserva();
   }
 
   if (document.getElementById("loginRegisterModal")) {
@@ -162,8 +173,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --- 3. LÓGICA DE RESERVA ---
   function inicializarLogicaReserva() {
     console.log("ENTRÓ A inicializarLogicaReserva");
-    const servicio = document.getElementById("servicio");
-    if (!servicio) return;
+    const required = [
+      "servicio",
+      "barbero",
+      "calendarDays",
+      "hoursGrid",
+      "btnReservar"
+    ];
+
+    if (required.some(id => !document.getElementById(id))) {
+      console.warn("Reserva module: DOM incompleto, reintentando...");
+      setTimeout(inicializarLogicaReserva, 200);
+      return;
+    }
 
     if (!pseModal) {
       pseModal = new bootstrap.Modal(document.getElementById("pseModal"));
@@ -1079,7 +1101,11 @@ function inicializarModuloReservas() {
   document.querySelectorAll(".payment-option").forEach((opcion) => {
     opcion.addEventListener("click", (e) => {
       e.preventDefault();
+
+      console.log("CLICK EN:", opcion.dataset.method);
+
       estado.metodo = opcion.dataset.method;
+
       selectedMethodDisplay.textContent = estado.metodo;
       summaryPayment.textContent = estado.metodo;
     });
@@ -1106,6 +1132,12 @@ function inicializarModuloReservas() {
 
   // Eventos de botones dentro de los modales
   document.getElementById("btnPagarPSE")?.addEventListener("click", () => {
+
+    if (!estado.fecha || !estado.hora || !estado.metodo) {
+      alert("Faltan datos de reserva");
+      return;
+    }
+
     document.getElementById("input_fecha_seleccionada").value = estado.fecha;
     document.getElementById("input_hora_seleccionada").value = estado.hora;
     document.getElementById("input_metodo_pago").value = estado.metodo;
@@ -1116,6 +1148,12 @@ function inicializarModuloReservas() {
   });
 
   document.getElementById("btnPagarCard")?.addEventListener("click", () => {
+
+    if (!estado.fecha || !estado.hora || !estado.metodo) {
+      alert("Faltan datos de reserva");
+      return;
+    }
+
     document.getElementById("input_fecha_seleccionada").value = estado.fecha;
     document.getElementById("input_hora_seleccionada").value = estado.hora;
     document.getElementById("input_metodo_pago").value = estado.metodo;
