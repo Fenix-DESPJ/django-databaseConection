@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="dashboard-container container my-5">
+    
+    <div class="welcome-section mb-4">
+        <h2>Bienvenido de nuevo, <span class="text-gold">{{ request.user.first_name }}</span></h2>
+        <p class="text-muted">Gestiona tu agenda de hoy y revisa tus ganancias en tiempo real.</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="stats-card">
+                <p class="stats-label">Citas de Hoy</p>
+                <p class="stats-value">{{ total_citas }}</p>
+                <span class="stats-sub text-success">{{ completadas }} Completadas</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card highlight-card">
+                <p class="stats-label">Producido Total (Hoy)</p>
+                <p class="stats-value">${{ producido_total }}</p>
+                <span class="stats-sub text-light">Valor total de servicios</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <p class="stats-label">Tu Comisión (Est.)</p>
+                <p class="stats-value text-gold">${{ comision_estimada }}</p>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -30,3 +30,39 @@ class Usuario(models.Model):
     class Meta:
         managed = False 
         db_table = 'usuario'
+
+from django.db import models
+from django.contrib.auth.models import User
+
+# Extensión del usuario nativo para manejar roles
+class PerfilUsuario(models.Model):
+    ROLES = (
+        ('administrador', 'Administrador'),
+        ('barbero', 'Barbero'),
+        ('cliente', 'Cliente'),
+    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    rol = models.CharField(max_length=20, choices=ROLES, default='cliente')
+    telefono = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.get_rol_display()}"
+
+# Modelo para las Citas de la Barbería
+class Cita(models.Model):
+    ESTADOS = (
+        ('pendiente', 'En espera'),
+        ('completado', 'Completado'),
+        ('cancelado', 'Cancelado'),
+    )
+    
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='citas_solicitadas')
+    barbero = models.ForeignKey(User, on_delete=models.CASCADE, related_name='citas_asignadas')
+    servicio = models.CharField(max_length=100)
+    precio = models.IntegerField()
+    fecha = models.DateField()
+    hora = models.TimeField()
+    estado = models.CharField(max_length=15, choices=ESTADOS, default='pendiente')
+
+    def __str__(self):
+        return f"{self.hora} - {self.cliente.first_name} con {self.barbero.first_name}"
