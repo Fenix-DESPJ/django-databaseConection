@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 17-06-2026 a las 08:53:47
+-- Tiempo de generación: 18-06-2026 a las 17:36:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -208,6 +208,16 @@ CREATE TABLE `auth_user` (
   `date_joined` datetime(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `auth_user`
+--
+
+INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
+(1, 'pbkdf2_sha256$600000$nPIoL97ZaGfrpLKKKn3GZL$7luiGVpO7Eyar3il5EumDiA+Rj1gbKCQJ8qJgF+FeMs=', NULL, 0, 'ivancito@gmail.com', 'Ivan ', 'Cepeda', 'ivancito@gmail.com', 0, 1, '2026-06-18 12:54:47.350764'),
+(2, 'pbkdf2_sha256$600000$cOmiRYMYpYxwbGXzoqxcHg$BxVF3vH9nwY4PJxNTWbMhNODYw/kxa2C+UgD1uAMsWw=', '2026-06-18 14:09:14.566411', 0, 'ivan@gmail.com', 'Ivancito', 'Cepeda', 'ivan@gmail.com', 0, 1, '2026-06-18 13:04:14.605021'),
+(3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
+(4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-06-18 15:06:02.585858', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567');
+
 -- --------------------------------------------------------
 
 --
@@ -292,7 +302,8 @@ INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idA
 (7, 1, 7, 6, 7, '2026-03-23', '11:30:00', NULL, NULL),
 (8, 2, 8, 7, 8, '2026-03-23', '12:00:00', NULL, NULL),
 (9, 1, 9, 8, 9, '2026-03-24', '09:00:00', NULL, NULL),
-(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL);
+(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL),
+(14, 1, 11, 15, NULL, '2026-06-19', '08:00:00', 'Reserva realizada desde la web', 15);
 
 -- --------------------------------------------------------
 
@@ -322,7 +333,8 @@ INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`,
 (7, 4, 'Av. Amazonas', '2026-02-01', 'Elena-093'),
 (8, 6, 'Calle Larga', '2026-02-05', 'Maria-099'),
 (9, 7, 'Condado', '2026-02-10', 'Jose-098'),
-(10, 8, 'La Floresta', '2026-02-15', 'Ana-097');
+(10, 8, 'La Floresta', '2026-02-15', 'Ana-097'),
+(11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado');
 
 -- --------------------------------------------------------
 
@@ -426,6 +438,14 @@ CREATE TABLE `django_session` (
   `expire_date` datetime(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `django_session`
+--
+
+INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
+('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562');
+
 -- --------------------------------------------------------
 
 --
@@ -455,7 +475,12 @@ INSERT INTO `pago` (`idPago`, `metodoPago`, `montoTotal`, `fechaPago`, `estadoPa
 (7, 'Transferencia', 25.00, '2026-04-07 07:20:00', 'PENDIENTE', 'FAC-007'),
 (8, 'Visa', 10.00, '2026-04-07 07:20:00', 'PAGADO', 'FAC-008'),
 (9, 'Efectivo', 5.00, '2026-04-07 07:20:00', 'PAGADO', 'FAC-009'),
-(10, 'Visa', 14.00, '2026-04-07 07:20:00', 'PAGADO', 'FAC-010');
+(10, 'Visa', 14.00, '2026-04-07 07:20:00', 'PAGADO', 'FAC-010'),
+(11, 'Efectivo', 18.00, '2026-06-18 14:33:22', 'PENDIENTE', 'FAC64796'),
+(12, 'PSE', 20.00, '2026-06-18 14:40:54', 'PAGADO', 'FAC51120'),
+(13, 'Efectivo', 20.00, '2026-06-18 14:47:54', 'PENDIENTE', 'FAC80466'),
+(14, 'Efectivo', 26.00, '2026-06-18 15:33:06', 'PENDIENTE', 'FAC10719'),
+(15, 'Efectivo', 28.00, '2026-06-18 15:35:41', 'PENDIENTE', 'FAC46469');
 
 -- --------------------------------------------------------
 
@@ -549,7 +574,9 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (8, '1788990011', 'ROBERTO GÓMEZ', 'roberto@gmail.com', '0933557799', NULL, NULL, 3),
 (9, '1744556611', 'LUCÍA TORRES', 'lucia@gmail.com', '0944668800', NULL, NULL, 3),
 (10, '1722334455', 'PEDRO SALAS', 'pedro@gmail.com', '0955779911', NULL, NULL, 3),
-(13, '1111111111', 'SAMUEL LINARES', 'samueluwu@gmail.com', '3333333333', 'samuel', '2026-06-24', 3);
+(13, '1111111111', 'SAMUEL LINARES', 'samueluwu@gmail.com', '3333333333', 'samuel', '2026-06-24', 3),
+(14, '2222222', 'JIMENA  HERNÁNDEZ', 'jimena@gmail.com', '3239343409', 'jimena123', '2008-03-24', 3),
+(16, '1122334455', 'JAMES ABELARDO DIAZ URIBE', 'derecha@gmail.com', '3216579435', 'pbkdf2_sha256$600000$mm9X4dXuc8FX83wY4CvHAu$S3tiZPZarh+2ysTwOTmcLIW8ibjLCUfdKjQ9LMU0Owg=', '1988-04-20', 3);
 
 --
 -- Disparadores `usuario`
@@ -558,6 +585,16 @@ DELIMITER $$
 CREATE TRIGGER `AntesEliminarUsuario` BEFORE DELETE ON `usuario` FOR EACH ROW BEGIN
     IF OLD.idRolFk = 1 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede eliminar al Administrador principal';
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `DespuesInsertarUsuarioCliente` AFTER INSERT ON `usuario` FOR EACH ROW BEGIN
+    -- Verificar si el usuario que se acaba de registrar tiene el Rol de Cliente (idRolFk = 3)
+    IF NEW.idRolFk = 3 THEN
+        INSERT INTO cliente (idUsuarioFk, direccion, fechaRegistro, contactoEmergencia) 
+        VALUES (NEW.idUsuario, 'Registrado desde la Web', CURDATE(), 'No asignado');
     END IF;
 END
 $$
@@ -800,7 +837,7 @@ ALTER TABLE `auth_permission`
 -- AUTO_INCREMENT de la tabla `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user_groups`
@@ -824,13 +861,13 @@ ALTER TABLE `barbero`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `django_admin_log`
@@ -854,7 +891,7 @@ ALTER TABLE `django_migrations`
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -872,7 +909,7 @@ ALTER TABLE `servicio`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Restricciones para tablas volcadas

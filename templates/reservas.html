@@ -14,6 +14,17 @@
     </div>
 </section>
 
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <form method="POST" action="" id="formReservas">
     {% csrf_token %}
     <input type="hidden" name="fecha" id="input_fecha_seleccionada">
@@ -44,7 +55,7 @@
                             <select class="form-select custom-select" id="servicio" name="servicio">
                                 <option value="" disabled selected>Selecciona un servicio</option>
                                 {% for s in servicios %}
-                                    <option value="{{ s.idservicio }}">{{ s.nombreservicio }} - {{ s.precio }}</option>
+                                    <option value="{{ s.idServicio }}">{{ s.nombreServicio }} - {{ s.precio }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -54,7 +65,7 @@
                             <select class="form-select custom-select" id="barbero" name="barbero">
                                 <option value="" disabled selected>Selecciona tu barbero de preferencia</option>
                                 {% for b in barberos %}
-                                    <option value="{{ b.idusuario }}">{{ b.nombre }}</option>
+                                    <option value="{{ b.idUsuario }}">{{ b.nombre }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -62,7 +73,7 @@
                         <div class="mt-4">
                             <label class="form-label custom-label">Método de Pago</label>
                             <div class="dropdown w-100">
-                                <button class="btn payment-dropdown dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">Seleccionar método</button>
+                                <button class="btn payment-dropdown dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" id="dropdownMetodoBoton">Seleccionar método</button>
                                 <ul class="dropdown-menu payment-menu">
                                     <li><a class="dropdown-item payment-option" href="#" data-method="Tarjeta de Crédito" data-bs-toggle="modal" data-bs-target="#cardModal">Tarjeta de Crédito</a></li>
                                     <li><a class="dropdown-item payment-option" href="#" data-method="PSE" data-bs-toggle="modal" data-bs-target="#pseModal">PSE</a></li>
@@ -90,8 +101,8 @@
 
                         <div class="summary-card mt-4">
                             <h4>Resumen de Reserva</h4>
-                            <div class="summary-item"><span>Servicio:</span><span id="summaryService">Corte Clásico</span></div>
-                            <div class="summary-item"><span>Barbero:</span><span id="summaryBarber">Juan Pablo</span></div>
+                            <div class="summary-item"><span>Servicio:</span><span id="summaryService">No seleccionado</span></div>
+                            <div class="summary-item"><span>Barbero:</span><span id="summaryBarber">No seleccionado</span></div>
                             <div class="summary-item"><span>Fecha:</span><span id="summaryDate">Selecciona una fecha</span></div>
                             <div class="summary-item"><span>Hora:</span><span id="summaryHour">No seleccionada</span></div>
                             <div class="summary-item"><span>Pago:</span><span id="summaryPayment">No seleccionado</span></div>
@@ -123,7 +134,6 @@
                         <option>Davivienda</option>
                         <option>Banco de Bogotá</option>
                         <option>BBVA</option>
-                        <option>Banco Popular</option>
                     </select>
                 </div>
                 <div class="mb-4">
@@ -133,7 +143,7 @@
                         <option>Corriente</option>
                     </select>
                 </div>
-                <button type="button" class="btn btn-reserve w-100" id="btnPagarPSE" data-bs-dismiss="modal">Pagar con PSE</button>
+                <button type="button" class="btn btn-reserve w-100" id="btnPagarPSE" data-bs-dismiss="modal">Confirmar PSE</button>
             </div>
         </div>
     </div>
@@ -158,7 +168,7 @@
                         <input type="text" class="form-control custom-input" placeholder="CVV">
                     </div>
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-reserve mt-4 w-100" id="btnPagarCard" data-bs-dismiss="modal">Pagar Ahora</button>
+                        <button type="button" class="btn btn-reserve mt-4 w-100" id="btnPagarCard" data-bs-dismiss="modal">Confirmar Tarjeta</button>
                     </div>
                 </div>
             </div>
@@ -166,24 +176,76 @@
     </div>
 </div>
 
-<div class="modal fade" id="successModal">
+<div class="modal fade" id="successModal" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content custom-modal">
             <div class="modal-body text-center">
-                <i class="bi bi-check-circle-fill success-icon"></i>
-                <h3>Reserva realizada exitosamente</h3>
-                <button type="button" class="btn btn-reserve mt-3" id="btnVerMisReservas">Ver mis reservas</button>
+                <i class="bi bi-check-circle-fill success-icon" style="font-size: 3rem; color: #d4af37;"></i>
+                <h3 class="mt-3">Datos procesados correctamente</h3>
+                <p>Presiona el botón para confirmar y guardar tu reserva en el sistema.</p>
+                <button type="button" class="btn btn-reserve mt-3" id="btnVerMisReservas">Confirmar y Guardar Reserva</button>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="reservationToast" class="toast">
-        <div class="toast-body">
-            Reserva registrada exitosamente.
-        </div>
-    </div>
-</div>
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Escuchar la selección del método de pago en el dropdown
+    const paymentOptions = document.querySelectorAll(".payment-option");
+    const selectedMethodDisplay = document.getElementById("selectedMethodDisplay");
+    const inputMetodoPago = document.getElementById("input_metodo_pago");
+    const summaryPayment = document.getElementById("summaryPayment");
 
+    paymentOptions.forEach(option => {
+        option.addEventListener("click", function(e) {
+            const metodo = this.getAttribute("data-method");
+            inputMetodoPago.value = metodo;
+            selectedMethodDisplay.textContent = metodo;
+            if(summaryPayment) summaryPayment.textContent = metodo;
+        });
+    });
+
+    // Confirmación desde los modales de pago
+    document.getElementById("btnPagarPSE").addEventListener("click", function() {
+        inputMetodoPago.value = "PSE";
+        selectedMethodDisplay.textContent = "PSE";
+        if(summaryPayment) summaryPayment.textContent = "PSE";
+    });
+
+    document.getElementById("btnPagarCard").addEventListener("click", function() {
+        inputMetodoPago.value = "Tarjeta de Crédito";
+        selectedMethodDisplay.textContent = "Tarjeta de Crédito";
+        if(summaryPayment) summaryPayment.textContent = "Tarjeta de Crédito";
+    });
+
+    // Lógica al presionar "Reservar Cita"
+    const btnReservar = document.getElementById("btnReservar");
+    btnReservar.addEventListener("click", function() {
+        // Obtenemos los valores desde tu script de calendario actual
+        // (Asegúrate de que tu script.js asigne estos valores a los inputs al hacer click en los días/horas)
+        const fecha = document.getElementById("input_fecha_seleccionada").value;
+        const hora = document.getElementById("input_hora_seleccionada").value;
+        const servicio = document.getElementById("servicio").value;
+        const barbero = document.getElementById("barbero").value;
+        const metodoPago = inputMetodoPago.value;
+
+        if (!fecha || !hora || !servicio || !barbero || !metodoPago) {
+            alert("Por favor, asegúrate de seleccionar Fecha, Hora, Servicio, Barbero y un Método de pago.");
+            return;
+        }
+
+        // Si todo está correcto, abrimos el modal de éxito para hacer el submit final
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    });
+
+    // Cuando el usuario confirma en el modal de éxito, se hace el envío POST a Django
+    document.getElementById("btnVerMisReservas").addEventListener("click", function() {
+        document.getElementById("formReservas").submit();
+    });
+});
+</script>
 {% endblock %}
