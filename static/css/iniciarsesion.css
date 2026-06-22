@@ -168,3 +168,60 @@ body{
         font-size:2rem;
     }
 }
+
+/* ==========================================
+   NUEVO SELECTOR DE ROLES: BORDES MINIMALISTAS
+   ========================================== */
+.role-selector-container {
+    display: flex;
+    gap: 10px; /* Separa los botones para que no estén pegados */
+    background: transparent; /* Quitamos el fondo gris grueso */
+    border: none;
+    padding: 0;
+    overflow: visible;
+}
+
+/* Ocultar los radio buttons nativos */
+.role-selector-container input[type="radio"] {
+    display: none;
+}
+
+/* Estilo individual de cada pestaña como botón independiente */
+.role-tab {
+    flex: 1;
+    padding: 12px 0;
+    font-size: 0.9rem;
+    color: #a0a0a0; /* Gris un poco más tenue para los no seleccionados */
+    background: #1d1d1d; /* Fondo idéntico a tus inputs */
+    border: 1px solid #444; /* Borde idéntico a tus inputs */
+    text-align: center;
+    cursor: pointer;
+    border-radius: 15px; /* Bordes redondeados en armonía con tu login */
+    transition: all 0.3s ease;
+    user-select: none;
+    margin-bottom: 0;
+}
+
+/* Efecto Hover (cuando pasas el mouse por encima) */
+.role-tab:hover {
+    border-color: rgba(255, 198, 0, 0.4);
+    color: var(--blanco);
+}
+
+/* Eliminamos por completo la pastilla deslizante vieja ya que no se usará */
+.role-glider {
+    display: none;
+}
+
+/* ==========================================
+   CAMBIOS DE ESTADO AL SELECCIONAR (ACTIVOS)
+   ========================================== */
+#rol-admin:checked ~ label[for="rol-admin"],
+#rol-barbero:checked ~ label[for="rol-barbero"],
+#rol-cliente:checked ~ label[for="rol-cliente"] {
+    color: var(--dorado); /* Texto dorado elegante */
+    font-weight: bold;
+    border-color: var(--dorado); /* Borde dorado brillante */
+    background: rgba(255, 198, 0, 0.03); /* Un sutil reflejo dorado de fondo */
+    box-shadow: 0 0 12px rgba(255, 198, 0, 0.15); /* Brillo suave alrededor del botón */
+}

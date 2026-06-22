@@ -1,12 +1,6 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 # usuarios/models.py
 from django.db import models
+from django.contrib.auth.models import User
 
 class Rol(models.Model):
     idrol = models.AutoField(db_column='idRol', primary_key=True)
@@ -16,6 +10,10 @@ class Rol(models.Model):
         managed = False
         db_table = 'rol'
 
+    def __str__(self):
+        return self.nombrerol
+
+
 class Usuario(models.Model):
     idusuario = models.AutoField(db_column='idUsuario', primary_key=True)
     cedula = models.CharField(max_length=20, unique=True)
@@ -23,7 +21,6 @@ class Usuario(models.Model):
     correo = models.CharField(db_column='correoUsuario', max_length=50)
     contrasena = models.CharField(max_length=255)
     numcelular = models.CharField(db_column='numCelular', max_length=15)
-    # AÑADE ESTA LÍNEA (ajusta el nombre del db_column si es diferente en tu BD):
     fechanacimiento = models.DateField(db_column='fechaNacimiento') 
     idrolfk = models.ForeignKey(Rol, on_delete=models.DO_NOTHING, db_column='idRolFk')
 
@@ -31,11 +28,37 @@ class Usuario(models.Model):
         managed = False 
         db_table = 'usuario'
 
-from django.db import models
-from django.contrib.auth.models import User
+    def __str__(self):
+        return self.nombre
 
-# Extensión del usuario nativo para manejar roles
+
+class Cliente(models.Model):
+    idcliente = models.AutoField(db_column='idCliente', primary_key=True)
+    idusuariofk = models.ForeignKey(Usuario, on_delete=models.DO_NOTHING, db_column='idUsuarioFk', related_name='perfil_cliente')
+
+    class Meta:
+        managed = False
+        db_table = 'cliente'
+
+
+class Servicio(models.Model):
+    idservicio = models.AutoField(db_column='idServicio', primary_key=True)
+    nombreservicio = models.CharField(db_column='nombreServicio', max_length=45)
+    
+    # CORRECCIÓN AQUÍ: db_column='precio' (o 'precioservicio' según tu tabla física)
+    # Si en tu MySQL la columna se llama solo 'precio', déjala así:
+    precioservicio = models.DecimalField(db_column='precio', max_length=10, max_digits=10, decimal_places=2)
+
+    class Meta:
+        managed = False
+        db_table = 'servicio'
+
+    def __str__(self):
+        return self.nombreservicio
+
+
 class PerfilUsuario(models.Model):
+    id = models.BigAutoField(primary_key=True) # Quita el WARNING del sistema
     ROLES = (
         ('administrador', 'Administrador'),
         ('barbero', 'Barbero'),
@@ -45,24 +68,16 @@ class PerfilUsuario(models.Model):
     rol = models.CharField(max_length=20, choices=ROLES, default='cliente')
     telefono = models.CharField(max_length=20, blank=True, null=True)
 
-    def __str__(self):
-        return f"{self.user.username} - {self.get_rol_display()}"
 
-# Modelo para las Citas de la Barbería
 class Cita(models.Model):
-    ESTADOS = (
-        ('pendiente', 'En espera'),
-        ('completado', 'Completado'),
-        ('cancelado', 'Cancelado'),
-    )
-    
-    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='citas_solicitadas')
-    barbero = models.ForeignKey(User, on_delete=models.CASCADE, related_name='citas_asignadas')
-    servicio = models.CharField(max_length=100)
-    precio = models.IntegerField()
-    fecha = models.DateField()
-    hora = models.TimeField()
-    estado = models.CharField(max_length=15, choices=ESTADOS, default='pendiente')
+    idcita = models.AutoField(db_column='idCita', primary_key=True)
+    idclientefk = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING, db_column='idClienteFk')
+    # Como Barbero y Agenda viven en la app 'negocio', los apuntamos como 'negocio.Barbero' y 'negocio.Agenda'
+    idbarberofk = models.ForeignKey('negocio.Barbero', on_delete=models.DO_NOTHING, db_column='idBarberoFk')
+    idserviciofk = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING, db_column='idServicioFk')
+    idagendafk = models.ForeignKey('negocio.Agenda', on_delete=models.DO_NOTHING, db_column='idAgendaFk')
+    observaciones = models.TextField(db_column='observaciones', blank=True, null=True)
 
-    def __str__(self):
-        return f"{self.hora} - {self.cliente.first_name} con {self.barbero.first_name}"
+    class Meta:
+        managed = False
+        db_table = 'cita'

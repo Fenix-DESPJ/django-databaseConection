@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 18-06-2026 a las 17:36:46
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 22-06-2026 a las 17:14:28
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -216,7 +216,8 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (1, 'pbkdf2_sha256$600000$nPIoL97ZaGfrpLKKKn3GZL$7luiGVpO7Eyar3il5EumDiA+Rj1gbKCQJ8qJgF+FeMs=', NULL, 0, 'ivancito@gmail.com', 'Ivan ', 'Cepeda', 'ivancito@gmail.com', 0, 1, '2026-06-18 12:54:47.350764'),
 (2, 'pbkdf2_sha256$600000$cOmiRYMYpYxwbGXzoqxcHg$BxVF3vH9nwY4PJxNTWbMhNODYw/kxa2C+UgD1uAMsWw=', '2026-06-18 14:09:14.566411', 0, 'ivan@gmail.com', 'Ivancito', 'Cepeda', 'ivan@gmail.com', 0, 1, '2026-06-18 13:04:14.605021'),
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
-(4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-06-18 15:06:02.585858', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567');
+(4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-06-18 15:06:02.585858', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
+(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-06-22 15:07:07.994508', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634');
 
 -- --------------------------------------------------------
 
@@ -268,7 +269,8 @@ INSERT INTO `barbero` (`idBarbero`, `idUsuarioFk`, `especialidad`) VALUES
 (7, 2, 'Niños'),
 (8, 5, 'Navaja'),
 (9, 2, 'Diseño'),
-(10, 5, 'Color');
+(10, 5, 'Color'),
+(11, 17, 'Por asignar');
 
 -- --------------------------------------------------------
 
@@ -443,6 +445,7 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
 ('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562');
 
@@ -576,7 +579,8 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (10, '1722334455', 'PEDRO SALAS', 'pedro@gmail.com', '0955779911', NULL, NULL, 3),
 (13, '1111111111', 'SAMUEL LINARES', 'samueluwu@gmail.com', '3333333333', 'samuel', '2026-06-24', 3),
 (14, '2222222', 'JIMENA  HERNÁNDEZ', 'jimena@gmail.com', '3239343409', 'jimena123', '2008-03-24', 3),
-(16, '1122334455', 'JAMES ABELARDO DIAZ URIBE', 'derecha@gmail.com', '3216579435', 'pbkdf2_sha256$600000$mm9X4dXuc8FX83wY4CvHAu$S3tiZPZarh+2ysTwOTmcLIW8ibjLCUfdKjQ9LMU0Owg=', '1988-04-20', 3);
+(16, '1122334455', 'JAMES ABELARDO DIAZ URIBE', 'derecha@gmail.com', '3216579435', 'pbkdf2_sha256$600000$mm9X4dXuc8FX83wY4CvHAu$S3tiZPZarh+2ysTwOTmcLIW8ibjLCUfdKjQ9LMU0Owg=', '1988-04-20', 3),
+(17, '35919743', 'JUAN MANUEL RESTREPO', 'restrepo123@gmail.com', '3427685463', 'pbkdf2_sha256$600000$Ui57A5R99oF2FSYuJdWQWu$S3PjXGv17+nJfSOMUXEDj8z/TdGK8/4B6gqwgKLTQA0=', '1989-08-12', 2);
 
 --
 -- Disparadores `usuario`
@@ -590,9 +594,58 @@ END
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `DespuesInsertarUsuarioCliente` AFTER INSERT ON `usuario` FOR EACH ROW BEGIN
-    -- Verificar si el usuario que se acaba de registrar tiene el Rol de Cliente (idRolFk = 3)
-    IF NEW.idRolFk = 3 THEN
+CREATE TRIGGER `DespuesActualizarUsuarioCambioRol` AFTER UPDATE ON `usuario` FOR EACH ROW BEGIN
+    -- VALIDAR SI REALMENTE CAMBIÓ EL ROL
+    IF OLD.idRolFk != NEW.idRolFk THEN
+        
+        -- ================================================
+        -- CASO A: EL NUEVO ROL ES BARBERO (Rol 2)
+        -- ================================================
+        IF NEW.idRolFk = 2 THEN
+            -- 1. Borrar de la tabla del rol anterior (Cliente)
+            DELETE FROM cliente WHERE idUsuarioFk = NEW.idUsuario;
+            
+            -- 2. Insertar en la nueva tabla (Barbero) si no existe ya
+            IF NOT EXISTS (SELECT 1 FROM barbero WHERE idUsuarioFk = NEW.idUsuario) THEN
+                INSERT INTO barbero (idUsuarioFk, especialidad) 
+                VALUES (NEW.idUsuario, 'Por asignar');
+            END IF;
+
+        -- ================================================
+        -- CASO B: EL NUEVO ROL ES CLIENTE (Rol 3)
+        -- ================================================
+        ELSEIF NEW.idRolFk = 3 THEN
+            -- 1. Borrar de la tabla del rol anterior (Barbero)
+            DELETE FROM barbero WHERE idUsuarioFk = NEW.idUsuario;
+            
+            -- 2. Insertar en la nueva tabla (Cliente) si no existe ya
+            IF NOT EXISTS (SELECT 1 FROM cliente WHERE idUsuarioFk = NEW.idUsuario) THEN
+                INSERT INTO cliente (idUsuarioFk, direccion, fechaRegistro, contactoEmergencia) 
+                VALUES (NEW.idUsuario, 'Cambio de Rol desde Panel', CURDATE(), 'No asignado');
+            END IF;
+
+        -- ================================================
+        -- CASO C: PASÓ A SER ADMIN (Rol 1) u OTRO
+        -- ================================================
+        ELSE
+            -- Si pasa a ser Admin, lo removemos de ambas tablas operativas
+            DELETE FROM barbero WHERE idUsuarioFk = NEW.idUsuario;
+            DELETE FROM cliente WHERE idUsuarioFk = NEW.idUsuario;
+        END IF;
+        
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `DespuesInsertarUsuarioClasificarRol` AFTER INSERT ON `usuario` FOR EACH ROW BEGIN
+    -- Si es Barbero (Rol 2)
+    IF NEW.idRolFk = 2 THEN
+        INSERT INTO barbero (idUsuarioFk, especialidad) 
+        VALUES (NEW.idUsuario, 'Por asignar');
+        
+    -- Si es Cliente (Rol 3)
+    ELSEIF NEW.idRolFk = 3 THEN
         INSERT INTO cliente (idUsuarioFk, direccion, fechaRegistro, contactoEmergencia) 
         VALUES (NEW.idUsuario, 'Registrado desde la Web', CURDATE(), 'No asignado');
     END IF;
@@ -837,7 +890,7 @@ ALTER TABLE `auth_permission`
 -- AUTO_INCREMENT de la tabla `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user_groups`
@@ -855,7 +908,7 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT de la tabla `barbero`
 --
 ALTER TABLE `barbero`
-  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
@@ -867,7 +920,7 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `django_admin_log`
@@ -909,7 +962,7 @@ ALTER TABLE `servicio`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Restricciones para tablas volcadas

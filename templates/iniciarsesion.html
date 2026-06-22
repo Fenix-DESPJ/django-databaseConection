@@ -31,7 +31,25 @@
             {% endif %}
 
             <form id="form-login" method="POST" action="{% url 'iniciar_sesion' %}">
-                {% csrf_token %} <div class="mb-3">
+                {% csrf_token %} 
+
+                <div class="mb-4">
+                    <label class="form-label text-center d-block">Selecciona tu rol</label>
+                    <div class="role-selector-container">
+                        <input type="radio" name="rol" id="rol-admin" value="administrador" checked>
+                        <label for="rol-admin" class="role-tab">Administrador</label>
+
+                        <input type="radio" name="rol" id="rol-barbero" value="barbero">
+                        <label for="rol-barbero" class="role-tab">Barbero</label>
+
+                        <input type="radio" name="rol" id="rol-cliente" value="cliente">
+                        <label for="rol-cliente" class="role-tab">Cliente</label>
+                        
+                        <div class="role-glider"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
                     <label for="usuario" class="form-label">Correo o Número de Teléfono</label>
                     <input type="text" class="form-control" id="usuario" name="identificador" placeholder="ejemplo@gmail.com o cel" required>
                 </div>
