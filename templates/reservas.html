@@ -44,7 +44,7 @@
                             <select class="form-select custom-select" id="servicio" name="servicio">
                                 <option value="" disabled selected>Selecciona un servicio</option>
                                 {% for s in servicios %}
-                                    <option value="{{ s.idServicio }}">{{ s.nombreServicio }} - {{ s.precio }}</option>
+                                    <option value="{{ s.idservicio }}">{{ s.nombreservicio }} - {{ s.precioservicio }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -54,7 +54,7 @@
                             <select class="form-select custom-select" id="barbero" name="barbero">
                                 <option value="" disabled selected>Selecciona tu barbero de preferencia</option>
                                 {% for b in barberos %}
-                                    <option value="{{ b.idUsuario }}">{{ b.nombre }}</option>
+                                    <option value="{{ b.idusuario }}">{{ b.nombre }}</option>
                                 {% endfor %}
                             </select>
                         </div>

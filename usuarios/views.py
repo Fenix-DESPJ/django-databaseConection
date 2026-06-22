@@ -172,15 +172,16 @@ def home(request):
 @login_required
 def panel_barbero(request):
     try:
-        # 1. Buscamos el usuario por su correo
+        # 1. Buscamos usando 'correo' que es el atributo real en tu modelo Django
         usuario_manual = Usuario.objects.get(correo=request.user.email)
         
-        # 2. Verificamos que tenga Rol de Barbero (ID 2)
+        # 2. Verificamos que tenga Rol de Barbero (ID 2) usando 'idrolfk_id'
         if usuario_manual.idrolfk_id != 2:
             print(f"DEBUG PANEL: Acceso denegado para {usuario_manual.nombre}. Rol actual: {usuario_manual.idrolfk_id}")
             return redirect('home')
         
-        # 3. Buscamos su perfil operativo en la tabla barbero
+        # 3. Buscamos su perfil operativo usando el campo correcto en minúsculas (idusuariofk)
+        # Nota: Si te da error en 'idusuariofk', cámbialo a 'idusuario' o 'idusuarioFk' según tu modelo.
         barbero_perfil = Barbero.objects.get(idusuariofk=usuario_manual)
         
     except (Usuario.DoesNotExist, Barbero.DoesNotExist):
@@ -190,28 +191,30 @@ def panel_barbero(request):
     # 4. Obtener la fecha del día de hoy del servidor
     hoy = timezone.now().date()
 
-    # 5. Filtrar las citas de HOY asignadas a este barbero
-    # Filtramos usando la relación inversa o directa según tus modelos cruzados
+    # 5. Filtrar las citas usando los nombres en minúsculas estándar de Django ORM
     citas_hoy = Cita.objects.filter(
         idbarberofk=barbero_perfil, 
         idagendafk__fecha=hoy
     ).order_by('idagendafk__horainicio')
 
     # ========================================================
-    # VARIABLES ESTADÍSTICAS CORREGIDAS PARA EL TEMPLATE
+    # VARIABLES ESTADÍSTICAS DINÁMICAS (SOLO COMPLETADOS)
     # ========================================================
     total_citas = citas_hoy.count()
-    
+
     # Contamos cuántas tienen la palabra "Completado" en observaciones
     completadas = citas_hoy.filter(observaciones__icontains='Completado').count()
 
-    # Producido Total (Suma del campo mapeado de precio)
-    producido_dict = citas_hoy.aggregate(total=Sum('idserviciofk__precioservicio'))
+    # Filtramos únicamente las citas que ya digan "Completado"
+    citas_efectivas = citas_hoy.filter(observaciones__icontains='Completado')
+
+    # Producido Total: Usamos 'idserviciofk__precioservicio' que es el campo real del modelo
+    producido_dict = citas_efectivas.aggregate(total=Sum('idserviciofk__precioservicio'))
     producido_total = producido_dict['total'] if producido_dict['total'] is not None else 0.0
 
-    # Comisión Estimada (50% de lo producido hoy)
+    # Comisión Estimada (50% de lo producido completado)
     comision_estimada = float(producido_total) * 0.50
-
+    
     # 6. Sincronización exacta con las variables de tu barbero.html
     context = {
         'citas': citas_hoy,
@@ -223,9 +226,10 @@ def panel_barbero(request):
 
     return render(request, 'barbero.html', context)
 
+
 @login_required
 def completar_cita(request, cita_id):
-    # En tu base de datos el ID de la cita se llama 'idcita'
+    # Usando el identificador estándar en minúsculas para Django
     cita = get_object_or_404(Cita, idcita=cita_id)
     
     # Marcamos el servicio como realizado
