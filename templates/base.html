@@ -52,8 +52,13 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'index' %}#barberos">Barberos</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'index' %}#marca">Marca</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'agenda' %}">Agendar</a></li>
-
+                    <li class="nav-item">
+                        {% if request.session.sesion_iniciada %}
+                            <a class="nav-link" href="{% url 'reservas' %}">Agendar</a>
+                        {% else %}
+                            <a class="nav-link" href="{% url 'agenda' %}">Agendar</a>
+                        {% endif %}
+                    </li>
                     <li class="nav-item" id="auth-links">
                         {% if request.session.sesion_iniciada %}
                         <a class="nav-link" href="{% url 'cerrar_sesion' %}"><i class="bi bi-box-arrow-right"></i>
