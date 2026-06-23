@@ -44,7 +44,7 @@
                             <select class="form-select custom-select" id="servicio" name="servicio">
                                 <option value="" disabled selected>Selecciona un servicio</option>
                                 {% for s in servicios %}
-                                    <option value="{{ s.idservicio }}">{{ s.nombreservicio }} - {{ s.precioservicio }}</option>
+                                    <option value="{{ s.idservicio }}">{{ s.nombreservicio }} - {{ s.precio }}</option>
                                 {% endfor %}
                             </select>
                         </div>

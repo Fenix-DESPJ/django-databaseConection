@@ -115,36 +115,19 @@ def crear_reserva(request):
     # --- MÉTODO GET: Consultas SQL limpias mediante cursor directo ---
     # =========================================================================
     try:
-        with connection.cursor() as cursor:
-            # 1. Consulta de Servicios (Corregido a minúsculas)
-            cursor.execute("SELECT idservicio, nombreservicio, precioservicio FROM servicio")
-            filas_servicios = cursor.fetchall()
-            print(f"--- DEBUG GET --- Filas de servicios cargadas con éxito: {len(filas_servicios)}")
-            
-            todos_los_servicios = []
-            for fila in filas_servicios:
-                todos_los_servicios.append({
-                    'idservicio': fila[0],
-                    'nombreservicio': fila[1],
-                    'precioservicio': fila[2]
-                })
-
-            # 2. Consulta de Barberos (Corregido a minúsculas)
-            cursor.execute("SELECT idusuario, nombre FROM usuario WHERE idrolfk = 2")
-            filas_barberos = cursor.fetchall()
-            print(f"--- DEBUG GET --- Filas filtradas de barberos (Rol 2): {len(filas_barberos)}")
-            
-            todos_los_barberos = []
-            for fila in filas_barberos:
-                todos_los_barberos.append({
-                    'idusuario': fila[0],
-                    'nombre': fila[1]
-                })
+        # 1. Traemos todos los servicios directamente usando su modelo de Django
+        todos_los_servicios = Servicio.objects.all()
+        print(f"--- DEBUG GET --- Servicios cargados con éxito: {todos_los_servicios.count()}")
+        
+        # 2. Traemos los usuarios que tengan asignado el rol de barbero
+        # Como en tu modelo 'Usuario' el campo es idrolfk, filtramos por su ID (Rol 2 = Barbero)
+        todos_los_barberos = Usuario.objects.filter(idrolfk=2)
+        print(f"--- DEBUG GET --- Barberos (Rol 2) cargados: {todos_los_barberos.count()}")
             
     except Exception as e:
         todos_los_servicios = []
         todos_los_barberos = []
-        print(f"❌ Error crítico en el GET de MySQL: {e}")
+        print(f"❌ Error crítico al cargar los datos desde Django: {e}")
     
     contexto = {
         'servicios': todos_los_servicios,
