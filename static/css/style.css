@@ -2244,3 +2244,80 @@ body {
         font-size: 0.9rem;
     }
 }
+/* diseño dias y horas en reservas */
+
+/* Estado al pasar el cursor (Hover) */
+.day:hover:not(.selected) {
+    background-color: var(--gris);
+    color: var(--blanco);
+    border: 1px solid var(--dorado);
+    cursor: pointer;
+}
+
+/* Estado del día seleccionado */
+.day.selected {
+    background-color: var(--dorado);
+    color: var(--negro);
+    border: 1px solid var(--dorado-oscuro);
+    font-weight: bold;
+}
+
+.day.disabled {
+    background-color: var(--negro);
+    color: var(--gris);
+    cursor: not-allowed;
+    opacity: 0.3; /* Más tenue para indicar que no hay disponibilidad */
+    border: 1px solid transparent;
+}
+
+/* Contenedor de la grilla de horas */
+.hours-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas para escritorio */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Estilo base de los botones de hora */
+.hour-btn {
+    padding: 10px 5px;
+    background-color: var(--gris-oscuro);
+    color: var(--blanco);
+    border: 1px solid var(--gris);
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+/* Estado al pasar el cursor (Hover) */
+.hour-btn:hover:not(.disabled):not(.selected) {
+    background-color: var(--gris);
+    border-color: var(--dorado);
+    color: var(--blanco);
+}
+
+/* Estado cuando el usuario selecciona una hora */
+.hour-btn.selected {
+    background-color: var(--dorado);
+    color: var(--negro);
+    border-color: var(--dorado-oscuro);
+    font-weight: bold;
+}
+
+/* Estado para horas no disponibles (Regla de 1 hora de antelación) */
+.hour-btn.disabled {
+    background-color: var(--negro);
+    color: var(--gris);
+    border: 1px solid #1a1a1a;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Ajuste responsivo para móviles */
+@media (max-width: 576px) {
+    .hours-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas pequeñas */
+    }
+}

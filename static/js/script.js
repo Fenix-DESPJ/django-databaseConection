@@ -116,26 +116,53 @@ function inicializarModuloReservas() {
     if (!calendarDays) return;
     calendarDays.innerHTML = "";
 
-    // Lunes a Domingo indexado correctamente
     let primerDia = new Date(fechaBase.getFullYear(), fechaBase.getMonth(), 1).getDay();
     const diasEnMes = new Date(fechaBase.getFullYear(), fechaBase.getMonth() + 1, 0).getDate();
     let offset = primerDia === 0 ? 6 : primerDia - 1;
 
-    // Espacios vacíos
     for (let i = 0; i < offset; i++) {
       const divVacio = document.createElement("div");
-      divVacio.classList.add("calendar-day", "empty");
+      divVacio.classList.add("day", "empty"); 
       calendarDays.appendChild(divVacio);
     }
 
-    // Insertar botones numéricos para cada día del mes
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    
+    const fechaLimite = new Date();
+    fechaLimite.setDate(hoy.getDate() + 30);
+    fechaLimite.setHours(0, 0, 0, 0);
+
+    // Lista de horas para validar disponibilidad
+    const listadoHoras = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+
     for (let dia = 1; dia <= diasEnMes; dia++) {
+      const fechaIteradaObj = new Date(fechaBase.getFullYear(), fechaBase.getMonth(), dia);
+      
+      // Calcular si hay al menos una hora disponible en este día
+      const horasDisponibles = listadoHoras.filter(hora => {
+        const [h, m] = hora.split(":").map(Number);
+        const horaCita = new Date(fechaIteradaObj);
+        horaCita.setHours(h, m, 0, 0);
+        
+        const esHoy = fechaIteradaObj.toDateString() === hoy.toDateString();
+        const unaHoraEnMs = 60 * 60 * 1000;
+        
+        // La hora es válida si no es hoy, O si es hoy y falta más de 1 hora
+        return !(esHoy && (horaCita - new Date() < unaHoraEnMs));
+      }).length;
+
       const btonDia = document.createElement("button");
       btonDia.type = "button";
-      btonDia.classList.add("calendar-day");
+      btonDia.classList.add("day"); 
       btonDia.textContent = dia;
 
-      // Si este día coincide con la fecha ya seleccionada en el estado, mantenerlo activo
+      // Inhabilitar si es pasado, muy lejano o NO hay horas disponibles
+      if (fechaIteradaObj < hoy || fechaIteradaObj > fechaLimite || horasDisponibles === 0) {
+        btonDia.classList.add("disabled");
+        btonDia.disabled = true;
+      }
+
       const mesFormateado = String(fechaBase.getMonth() + 1).padStart(2, '0');
       const diaFormateado = String(dia).padStart(2, '0');
       const fechaIterada = `${fechaBase.getFullYear()}-${mesFormateado}-${diaFormateado}`;
@@ -144,17 +171,18 @@ function inicializarModuloReservas() {
         btonDia.classList.add("selected");
       }
 
-      btonDia.addEventListener("click", () => {
-        document.querySelectorAll(".calendar-day").forEach(b => b.classList.remove("selected"));
-        btonDia.classList.add("selected");
-        
-        estadoReserva.fecha = fechaIterada;
-        if (inputFecha) inputFecha.value = fechaIterada;
-        if (summaryDate) summaryDate.textContent = fechaIterada;
+      if (!btonDia.disabled) {
+        btonDia.addEventListener("click", () => {
+          document.querySelectorAll(".day").forEach(b => b.classList.remove("selected"));
+          btonDia.classList.add("selected");
+          
+          estadoReserva.fecha = fechaIterada;
+          if (inputFecha) inputFecha.value = fechaIterada;
+          if (summaryDate) summaryDate.textContent = fechaIterada;
 
-        // Desbloquear u actualizar las horas disponibles al cambiar el día
-        renderizarHoras();
-      });
+          renderizarHoras();
+        });
+      }
 
       calendarDays.appendChild(btonDia);
     }
@@ -165,27 +193,47 @@ function inicializarModuloReservas() {
     if (!hoursGrid) return;
     hoursGrid.innerHTML = "";
 
-    // Horarios requeridos para la grilla de disponibilidad
     const listadoHoras = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+    
+    // Obtenemos la hora actual (23 de junio, 2026, 16:26)
+    const ahora = new Date();
+    
+    // Convertimos la fecha seleccionada en el estado a objeto Date
+    // Asumimos que estadoReserva.fecha viene como "YYYY-MM-DD"
+    const fechaSeleccionada = new Date(estadoReserva.fecha + "T00:00:00");
+    
+    // Verificamos si la fecha seleccionada es hoy
+    const esHoy = fechaSeleccionada.toDateString() === ahora.toDateString();
 
     listadoHoras.forEach(hora => {
+      const [h, m] = hora.split(":").map(Number);
+      const horaCita = new Date(fechaSeleccionada);
+      horaCita.setHours(h, m, 0, 0);
+
       const btonHora = document.createElement("button");
       btonHora.type = "button";
       btonHora.classList.add("hour-btn");
       btonHora.textContent = hora;
 
-      if (estadoReserva.hora === hora) {
-        btonHora.classList.add("selected");
-      }
+      // Lógica de restricción: 1 hora de antelación (3600000 ms)
+      if (esHoy && (horaCita - ahora < 3600000)) {
+        btonHora.classList.add("disabled");
+        btonHora.disabled = true;
+      } else {
+        // Si el botón está disponible, aplicamos la lógica de selección normal
+        if (estadoReserva.hora === hora) {
+          btonHora.classList.add("selected");
+        }
 
-      btonHora.addEventListener("click", () => {
-        document.querySelectorAll(".hour-btn").forEach(b => b.classList.remove("selected"));
-        btonHora.classList.add("selected");
-        
-        estadoReserva.hora = hora;
-        if (inputHora) inputHora.value = hora;
-        if (summaryHour) summaryHour.textContent = hora;
-      });
+        btonHora.addEventListener("click", () => {
+          document.querySelectorAll(".hour-btn").forEach(b => b.classList.remove("selected"));
+          btonHora.classList.add("selected");
+          
+          estadoReserva.hora = hora;
+          if (inputHora) inputHora.value = hora;
+          if (summaryHour) summaryHour.textContent = hora;
+        });
+      }
 
       hoursGrid.appendChild(btonHora);
     });

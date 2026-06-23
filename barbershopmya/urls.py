@@ -20,21 +20,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 # Importa las vistas solo si vas a usarlas directamente en este archivo
 # Aunque, para mantener el orden, lo ideal es que cada app gestione sus propias rutas.
-from servicios import views 
+from django.contrib import admin
+from django.urls import path, include
+from servicios import views as servicios_views # Importa la vista del home
 
 urlpatterns = [
-    # 1. Administración
     path('admin/', admin.site.urls),
     
-    # 2. Rutas de tus aplicaciones (usando include)
-    path('servicios/', include('servicios.urls')),
-    path('reservas/', include('reservas.urls')),
-    path('barbero/', include('usuarios.urls')),
-    # 3. Rutas específicas (Solo si son excepciones o páginas sueltas)
-    path('servicios-ind/', views.servicios_ind, name='servicios_ind'),
+    # La Raíz (Home)
+    path('', servicios_views.index, name='home'), 
     
-    # 4. Rutas raíz al final
-    path('', include('usuarios.urls')), 
+    # Redireccionamiento de Apps
+    path('servicios/', include('servicios.urls')),
+    path('usuarios/', include('usuarios.urls')), 
+    path('reservas/', include('reservas.urls')),
 ]
 
 # 5. Configuración de archivos estáticos (esto siempre va al final)
