@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 24-06-2026 a las 14:34:18
+-- Tiempo de generación: 24-06-2026 a las 17:07:16
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -237,7 +237,7 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-06-18 15:06:02.585858', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
 (5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-06-22 15:07:07.994508', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-06-24 11:59:06.749081', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259');
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-06-24 15:01:48.004481', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259');
 
 -- --------------------------------------------------------
 
@@ -324,11 +324,7 @@ INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idA
 (7, 1, 7, 6, 7, '2026-03-23', '11:30:00', NULL, NULL),
 (8, 2, 8, 7, 8, '2026-03-23', '12:00:00', NULL, NULL),
 (9, 1, 9, 8, 9, '2026-03-24', '09:00:00', NULL, NULL),
-(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL),
-(14, 1, 11, 15, NULL, '2026-06-19', '08:00:00', 'Reserva realizada desde la web', 15),
-(15, 11, 13, 17, NULL, '2026-06-24', '08:00:00', 'Reserva realizada desde la web', 16),
-(16, 11, 13, 10, NULL, '2026-06-25', '09:00:00', 'Reserva realizada desde la web', 17),
-(17, 11, 13, 19, 14, '2026-06-30', '08:00:00', 'Reserva realizada desde la web', 19);
+(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -359,8 +355,7 @@ INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`,
 (8, 6, 'Calle Larga', '2026-02-05', 'Maria-099'),
 (9, 7, 'Condado', '2026-02-10', 'Jose-098'),
 (10, 8, 'La Floresta', '2026-02-15', 'Ana-097'),
-(11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado'),
-(13, 19, 'Registrado desde la Web', '2026-06-23', 'No asignado');
+(11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado');
 
 -- --------------------------------------------------------
 
@@ -471,8 +466,8 @@ CREATE TABLE `django_session` (
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('3nvfahabtzafv8iwoxoy7s8of0c1xcpo', '.eJxVj8EOwiAQRP9lz03TYreUHr37DWRhwaIVEign47-bmibqdd7LZOYJmuq26Fpc1oFhhhGa38yQvbu4A75RvKbWprjlYNpdaQ9a2ktit54P969gobLADLKbOuVPXhql2LP01MtO8GhHT-wmOQmp0ApGOeCAnfAKEUmJfugZrUJooLgSUtQhBhuICeYtV9dALZVySDqmh8luH0oxwDfPaf08O73ePUBO-w:1wc8LF:AnJTM_olgY9kxVw8n3yv50uly67X63W0M-1TSyY9Ph8', '2026-07-07 21:07:33.298062'),
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
-('cqjg09lkxtngo7ac0lrqd7szitrh78pf', '.eJxVj8EOwiAQRP9lz03TYreUHr37DWRhwaIVEign47-bmibqdd7LZOYJmuq26Fpc1oFhhhGa38yQvbu4A75RvKbWprjlYNpdaQ9a2ktit54P969gobLADLKbOuVPXhql2LP01MtO8GhHT-wmOQmp0ApGOeCAnfAKEUmJfugZrUJooLgSUtQhBhuICeYtV9dALZVySDqmh8luH0oxwDfPaf08O73ePUBO-w:1wcMG2:NiNQy0lpqWQ395M7W1nQyC53fufk41z39PFzqXKmDH8', '2026-07-08 11:59:06.752680'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
+('m37qj12g713d43akpcxqc7w88eyn2nfc', '.eJxVj8EOwiAQRP9lz01DsVtKj979BrJlwaIVEign47-bmibqdd7LZOYJhuq2mFpcNoFhggGa32wme3dxB3yjeE2tTXHLYW53pT1oaS-J3Xo-3L-ChcoCEygxCu1PXs1as2flqVNC8mAHT-xGNUql0UpG1WOPQnqNiKRl13eMViM0UFwJKZoQgw3EBNOWq2uglko5JBPTY85uH0oxwDfPaf08615vPTxO-Q:1wcP6q:8ftjTcLXAH0O328CfgWTbOaEmnp2-JGPNN2SPfBuSNs', '2026-07-08 15:01:48.007467'),
 ('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562');
 
 -- --------------------------------------------------------
@@ -610,7 +605,7 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (14, '2222222', 'JIMENA  HERNÁNDEZ', 'jimena@gmail.com', '3239343409', 'jimena123', '2008-03-24', 3),
 (16, '1122334455', 'JAMES ABELARDO DIAZ URIBE', 'derecha@gmail.com', '3216579435', 'pbkdf2_sha256$600000$mm9X4dXuc8FX83wY4CvHAu$S3tiZPZarh+2ysTwOTmcLIW8ibjLCUfdKjQ9LMU0Owg=', '1988-04-20', 3),
 (17, '35919743', 'JUAN MANUEL RESTREPO', 'restrepo123@gmail.com', '3427685463', 'pbkdf2_sha256$600000$Ui57A5R99oF2FSYuJdWQWu$S3PjXGv17+nJfSOMUXEDj8z/TdGK8/4B6gqwgKLTQA0=', '1989-08-12', 2),
-(19, '4444444444', 'DANI JORDIWILDE', 'dani@gmail.com', '22222222222', 'pbkdf2_sha256$600000$ud3U9yK19LvNUYSFpWdxuA$wSPZm1V3A8E2of2uJ9oX39DgBkfzwf3u/vM/rHVvTh0=', '2026-06-16', 3);
+(19, '4444444444', 'DANI JORDIWILDE', 'dani@gmail.com', '22222222222', 'pbkdf2_sha256$600000$ud3U9yK19LvNUYSFpWdxuA$wSPZm1V3A8E2of2uJ9oX39DgBkfzwf3u/vM/rHVvTh0=', '2026-06-16', 1);
 
 --
 -- Disparadores `usuario`
