@@ -32,9 +32,9 @@
                     <span class="brand-title">M&A Barber Shop</span>
                     <small class="brand-role" id="brand-role">
                         {% if request.session.sesion_iniciada %}
-                        {{ request.session.usuario_nombre }}
+                            {{ request.session.usuario_nombre }}
                         {% else %}
-                        Cliente
+                            Cliente
                         {% endif %}
                     </small>
                 </div>
@@ -48,26 +48,45 @@
 
             <div class="collapse navbar-collapse" id="menu">
                 <ul class="navbar-nav align-items-center ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
-                    <li class="nav-item">
-                        {% if request.session.sesion_iniciada %}
-                            <a class="nav-link" href="{% url 'crear_reserva' %}">Agendar</a>
-                        {% else %}
-                            <a class="nav-link" href="{% url 'agenda' %}">Agendar</a>
+                    
+                    {% if request.session.sesion_iniciada %}
+                        
+                        {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Reportes</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Usuarios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                        
+                        {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>
+                        
+                        {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'crear_reserva' %}">Agendar</a></li>
                         {% endif %}
-                    </li>
-                    <li class="nav-item" id="auth-links">
-                        {% if request.session.sesion_iniciada %}
-                        <a class="nav-link" href="{% url 'cerrar_sesion' %}"><i class="bi bi-box-arrow-right"></i>
-                            Cerrar sesión</a>
-                        {% else %}
-                        <a class="nav-link" href="{% url 'iniciar_sesion' %}">Iniciar sesión</a>
-                        <a class="nav-link" href="{% url 'registrarse' %}">Registrarse</a>
-                        {% endif %}
-                    </li>
+
+                        <li class="nav-item" id="auth-links">
+                            <a class="nav-link" href="{% url 'cerrar_sesion' %}">
+                                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                            </a>
+                        </li>
+
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'agenda' %}">Agendar</a></li>
+                        
+                        <li class="nav-item" id="auth-links">
+                            <a class="nav-link" href="{% url 'iniciar_sesion' %}">Iniciar sesión</a>
+                            <a class="nav-link" href="{% url 'registrarse' %}">Registrarse</a>
+                        </li>
+                    {% endif %}
+
                 </ul>
             </div>
         </div>
