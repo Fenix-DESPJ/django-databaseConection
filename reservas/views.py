@@ -22,9 +22,16 @@ def crear_reserva(request):
         fecha_reserva = request.POST.get('fecha')
         hora_reserva = request.POST.get('hora')
         servicio_id = request.POST.get('servicio')
-        barbero_id = request.POST.get('barbero') # Este recibe el ID del usuario seleccionado (ej: 2)
+        barbero_id = request.POST.get('barbero')
         metodo_pago = request.POST.get('metodo_pago')
+        # Capturamos las observaciones enviadas por el usuario de forma limpia
+        observaciones = request.POST.get('observaciones', '').strip()
         
+        # Si el usuario dejó el campo vacío, le ponemos un texto por defecto para la BD
+        if not observaciones:
+            observaciones = "Sin observaciones o notas especiales"
+
+        # Validamos los campos obligatorios
         if not all([fecha_reserva, hora_reserva, servicio_id, barbero_id, metodo_pago]):
             messages.error(request, "Por favor completa todos los campos.")
             return redirect('crear_reserva')
@@ -52,11 +59,11 @@ def crear_reserva(request):
                     else:
                         id_cliente_real = fila_cliente[0]
                     
-                    # 3. BUSCAR EL BARBERO CON EL NOMBRE EXACTO DE TU COLUMNA EN EL SQL (`idBarbero`)
+                    # 3. Buscar el barbero por id
                     cursor.execute("SELECT idBarbero FROM barbero WHERE idBarbero = %s", [barbero_id])
                     fila_barbero = cursor.fetchone()
 
-                # Si por alguna razón de pruebas el usuario con rol 2 no tiene fila en la tabla barbero, la creamos
+                # Si el usuario con rol 2 no tiene fila en la tabla barbero, la creamos
                 if not fila_barbero:
                     with connection.cursor() as cursor:
                         cursor.execute(
@@ -76,7 +83,7 @@ def crear_reserva(request):
                     codigofactura=f"FAC{random.randint(10000, 99999)}"
                 )
                 
-                # 5. Insertar Agenda y Cita removiendo la columna conflictiva del estado
+                # 5. Insertar Agenda y Cita
                 with connection.cursor() as cursor:
                     # Insertar en la tabla Agenda
                     cursor.execute(
@@ -87,7 +94,7 @@ def crear_reserva(request):
                     cursor.execute("SELECT LAST_INSERT_ID()")
                     id_agenda_creada = cursor.fetchone()[0]
 
-                    # Insertar en la tabla Cita omitiendo la columna de estado para evitar el error 1054
+                    # Insertar en la tabla Cita con la estructura exacta que me diste
                     cursor.execute(
                         """INSERT INTO cita (fecha, horaInicio, idServicioFk, idPagoFk, 
                            idClienteFk, idBarberoFk, idAgendaFk, observaciones) 
@@ -100,7 +107,7 @@ def crear_reserva(request):
                             id_cliente_real, 
                             id_barbero_real, 
                             id_agenda_creada, 
-                            "Reserva realizada desde la web"
+                            observaciones
                         ]
                     )
                 
@@ -135,25 +142,39 @@ def mis_citas_view(request):
     try:
         with connection.cursor() as cursor:
             if es_admin:
-                # Consulta global para el administrador
+                # Consulta para el Administrador: Cruzamos idBarberoFk directamente con idUsuario
                 cursor.execute("""
-                    SELECT c.idCita, c.fecha, c.horaInicio, s.nombre, u.nombre, cl.nombre, c.observaciones
+                    SELECT 
+                        c.idCita, 
+                        c.fecha, 
+                        c.horaInicio, 
+                        s.nombreServicio, 
+                        u_barbero.nombre AS nombre_barbero, 
+                        u_cliente.nombre AS nombre_cliente, 
+                        c.observaciones
                     FROM cita c
-                    INNER JOIN servicio s ON c.idServicioFk = s.idServicio
-                    INNER JOIN barbero b ON c.idBarberoFk = b.idBarbero
-                    INNER JOIN usuario u ON b.idBarbero = u.idUsuario
-                    INNER JOIN cliente cl ON c.idClienteFk = cl.idCliente
+                    LEFT JOIN servicio s ON c.idServicioFk = s.idServicio
+                    LEFT JOIN usuario u_barbero ON c.idBarberoFk = u_barbero.idUsuario -- <-- CORREGIDO: Cruce directo
+                    LEFT JOIN cliente cl ON c.idClienteFk = cl.idCliente
+                    LEFT JOIN usuario u_cliente ON cl.idUsuarioFk = u_cliente.idUsuario
                     ORDER BY c.fecha DESC, c.horaInicio DESC
                 """)
             else:
-                # Consulta específica para el cliente actual
+                # Consulta para el Cliente: Cruzamos idBarberoFk directamente con idUsuario
                 cursor.execute("""
-                    SELECT c.idCita, c.fecha, c.horaInicio, s.nombre, u.nombre, cl.nombre, c.observaciones
+                    SELECT 
+                        c.idCita, 
+                        c.fecha, 
+                        c.horaInicio, 
+                        s.nombreServicio, 
+                        u_barbero.nombre AS nombre_barbero, 
+                        u_cliente.nombre AS nombre_cliente, 
+                        c.observaciones
                     FROM cita c
-                    INNER JOIN servicio s ON c.idServicioFk = s.idServicio
-                    INNER JOIN barbero b ON c.idBarberoFk = b.idBarbero
-                    INNER JOIN usuario u ON b.idBarbero = u.idUsuario
-                    INNER JOIN cliente cl ON c.idClienteFk = cl.idCliente
+                    LEFT JOIN servicio s ON c.idServicioFk = s.idServicio
+                    LEFT JOIN usuario u_barbero ON c.idBarberoFk = u_barbero.idUsuario -- <-- CORREGIDO: Cruce directo
+                    LEFT JOIN cliente cl ON c.idClienteFk = cl.idCliente
+                    LEFT JOIN usuario u_cliente ON cl.idUsuarioFk = u_cliente.idUsuario
                     WHERE cl.idUsuarioFk = %s
                     ORDER BY c.fecha DESC, c.horaInicio DESC
                 """, [usuario_actual.idusuario])
@@ -164,13 +185,15 @@ def mis_citas_view(request):
                     'idCita': f[0],
                     'fecha': f[1],
                     'horainicio': f[2],
-                    'servicio_nombre': f[3],
-                    'barbero_nombre': f[4],
-                    'cliente_nombre': f[5],
-                    'observaciones': f[6],
+                    'servicio_nombre': f[3] if f[3] else "No asignado",
+                    'barbero_nombre': f[4] if f[4] else "No asignado",
+                    'cliente_nombre': f[5] if f[5] else "Cliente General", 
+                    'observaciones': f[6] if f[6] else "",
                 })
     except Exception as e:
-        print(f"Error al traer citas: {e}")
+        print(f"======= ERROR CRÍTICO AL TRAER CITAS =======")
+        print(str(e))
+        print("=============================================")
 
     return render(request, 'mis_citas.html', {
         'citas': citas,

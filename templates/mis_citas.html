@@ -2,121 +2,189 @@
 {% load static %}
 
 {% block content %}
-<section class="reservation-header bg-dark text-white py-5 mb-4">
-    <div class="container text-center">
-        <h1 class="page-title text-uppercase fw-bold">
-            {% if es_admin %} Panel de Control: <span class="text-warning">Todas las Citas</span> {% else %} Mis <span class="text-warning">Citas</span> {% endif %}
+<!-- Cabecera de Lujo con Gradiente Oscuro -->
+<section class="reservation-header position-relative py-5 mb-5 header-reserva-premium">
+    <div class="container text-center position-relative z-1">
+        <h1 class="page-title text-uppercase fw-black tracking-wider display-5 m-0 text-white">
+            {% if es_admin %} Panel de Control: <span class="text-gradient">Todas las Citas</span> {% else %} Mis <span class="text-gradient">Reservas</span> {% endif %}
         </h1>
-        <div class="sub-bar bg-warning mx-auto my-2" style="height: 3px; width: 60px;"></div>
-        <p class="header-description text-muted">
-            {% if es_admin %} Gestión y cancelación global de reservas para la Barbería M&A. {% else %} Consulta el estado de tus reservas premium y gestiónalas cómodamente. {% endif %}
+        <div class="sub-bar bg-warning mx-auto my-3" style="height: 3px; width: 50px; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 193, 7, 0.4);"></div>
+        <p class="header-description text-white-50 max-w-md mx-auto small">
+            {% if es_admin %} Gestión global de reservas en tiempo real para la Barbería M&A. {% else %} Consulta el estado de tus turnos exclusivos y gestiónalas cómodamente. {% endif %}
         </p>
     </div>
 </section>
 
 <div class="container my-5">
+    <!-- Mensajes de Alerta Estilizados -->
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} bg-dark text-white border-0 border-start border-4 border-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-lg p-3"
+        role="alert">
+        <div class="d-flex align-items-center">
+            <i
+                class="bi {% if message.tags == 'error' %}bi-x-circle-fill text-danger{% else %}bi-check-circle-fill text-success{% endif %} me-2 fs-5"></i>
+            <div>{{ message }}</div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
     {% endif %}
 
-    <div class="card bg-secondary text-white shadow-lg p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="m-0 text-warning fw-semibold"><i class="bi bi-calendar3"></i> Listado de Citas</h3>
-            <a href="{% url 'crear_reserva' %}" class="btn btn-warning fw-bold text-dark"><i class="bi bi-plus-lg"></i> Nueva Reserva</a>
+    <!-- Fila de Título y Acción Rápida -->
+    <div
+        class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+        <h3 class="m-0 text-white fw-bold fs-4"><i class="bi bi-clock-history text-warning me-2"></i> Historial de Reservas</h3>
+        <a href="{% url 'crear_reserva' %}"
+            class="btn btn-warning fw-bold text-dark px-4 shadow-sm hover-up transition-all"
+            style="border-radius: 8px;"><i class="bi bi-plus-lg me-1"></i> Nueva Reserva</a>
+    </div>
+
+    {% if citas %}
+    <!-- Grid de Tarjetas Premium -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+        {% for cita in citas %}
+        <div class="col">
+            <div
+                class="card h-100 premium-card text-white border border-secondary border-opacity-25 shadow position-relative transition-all hover-glow">
+
+                <!-- Header de la Reserva -->
+                <div
+                    class="card-header bg-transparent border-bottom border-secondary border-opacity-25 d-flex justify-content-between align-items-center py-3 px-4">
+                    <span class="text-white-50 fw-mono small">#ID {{ cita.idCita }}</span>
+                    <span
+                        class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 border border-warning border-opacity-25 fw-semibold sub-badge">
+                        <i class="bi bi-scissors me-1"></i> {{ cita.servicio_nombre }}
+                    </span>
+                </div>
+
+                <!-- Datos del Turno -->
+                <div class="card-body p-4">
+                    <!-- Fecha y Hora Destacadas -->
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-secondary bg-opacity-25 text-warning rounded-circle p-2 d-flex align-items-center justify-content-center me-3 circle-icon-container">
+                            <i class="bi bi-calendar3 fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="m-0 fw-bold text-white">{{ cita.fecha|date:"d \d\e F, Y" }}</h6>
+                            <small class="text-white-50">
+                                <i class="bi bi-clock me-1 text-warning"></i> {{ cita.horainicio|time:"g:i A" }}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Asignaciones (Barbero / Cliente) -->
+                    <div class="row g-2 pt-2 border-top border-secondary border-opacity-10 mb-3">
+                        <div class="col-6">
+                            <small class="text-white-50 d-block small-label">BARBERO</small>
+                            <span class="text-white fw-semibold small">
+                                <i class="bi bi-person-workspace text-warning me-1"></i> {{ cita.barbero_nombre }}
+                            </span>
+                        </div>
+                        {% if es_admin %}
+                        <div class="col-6">
+                            <small class="text-white-50 d-block small-label">CLIENTE</small>
+                            <span class="text-info fw-semibold small">
+                                <i class="bi bi-person text-info me-1"></i> {{ cita.cliente_nombre }}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Caja de Observaciones Exclusiva sin opacidades raras -->
+                    <div class="observation-box p-3 rounded-3 mt-3">
+                        <small class="text-warning d-block fw-bold mb-1 tracking-wider">OBSERVACIONES</small>
+                        <p class="m-0 small lh-base observation-text">
+                            {% if cita.observaciones %}
+                            "{{ cita.observaciones }}"
+                            {% else %}
+                            <span class="no-observation-text">Sin notas o requerimientos especiales.</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botón de Acción Inferior -->
+                <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                    {% if es_admin %}
+                    <button type="button"
+                        class="btn btn-danger w-100 btn-sm py-2 fw-bold shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-1"
+                        data-bs-toggle="modal" data-bs-target="#deleteModalAdmin{{ cita.idCita }}">
+                        <i class="bi bi-x-circle"></i> Cancelar Reserva (Admin)
+                    </button>
+                    {% else %}
+                    <button type="button"
+                        class="btn btn-outline-danger w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 transition-all"
+                        data-bs-toggle="modal" data-bs-target="#deleteModalCliente{{ cita.idCita }}">
+                        <i class="bi bi-trash"></i> Cancelar Cita
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
-        {% if citas %}
-            <div class="table-responsive">
-                <table class="table table-dark table-hover align-middle text-center">
-                    <thead>
-                        <tr class="text-warning border-warning">
-                            <th># ID</th>
-                            <th>Fecha</th>
-                            <th>Hora de Inicio</th>
-                            <th>Servicio</th>
-                            {% if es_admin %}
-                                <th>Cliente (FK)</th>
-                            {% endif %}
-                            <th>Barbero (FK)</th>
-                            <th>Observaciones</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for cita in citas %}
-                            {% for cita in citas %}
-                                <tr>
-                                    <td class="fw-bold">#{{ cita.idCita }}</td>
-                                    <td>{{ cita.fecha|date:"d \d\e F, Y" }}</td>
-                                    <td>{{ cita.horainicio|time:"g:i A" }}</td>
-                                    <td><span class="badge bg-warning text-dark p-2">{{ cita.servicio_nombre }}</span></td>
-                                    
-                                    {% if es_admin %}
-                                        <td class="text-info">{{ cita.cliente_nombre }}</td>
-                                    {% endif %}
-                                    
-                                    <td>{{ cita.barbero_nombre }}</td>
-                                    <td class="text-muted small">{{ cita.observaciones|default:"Sin observaciones" }}</td>
-                                    <td>
-                                        {% if es_admin %}
-                                            <button type="button" class="btn btn-danger btn-sm px-3 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModalAdmin{{ cita.idCita }}">
-                                                <i class="bi bi-x-circle"></i> Cancelar (Admin)
-                                            </button>
-                                        {% else %}
-                                            <button type="button" class="btn btn-outline-danger btn-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModalCliente{{ cita.idCita }}">
-                                                <i class="bi bi-trash"></i> Cancelar Cita
-                                            </button>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-
-                            <div class="modal fade" id="deleteModalCliente{{ cita.idCita }}" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content bg-dark text-white border border-danger">
-                                        <div class="modal-body text-center py-4">
-                                            <i class="bi bi-exclamation-triangle-fill text-danger display-4 mb-3"></i>
-                                            <h4 class="fw-bold">¿Cancelar tu cita?</h4>
-                                            <p class="text-muted">Esta acción liberará tu turno para el {{ cita.fecha }} a las {{ cita.horainicio }}. No se puede deshacer.</p>
-                                            <div class="d-flex justify-content-center gap-2 mt-4">
-                                                <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Regresar</button>
-                                                <a href="{% url 'cancelar_cita_cliente' cita.idCita %}" class="btn btn-danger px-4 fw-bold">Sí, Cancelar</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal fade" id="deleteModalAdmin{{ cita.idCita }}" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content bg-dark text-white border border-warning">
-                                        <div class="modal-body text-center py-4">
-                                            <i class="bi bi-shield-lock-fill text-warning display-4 mb-3"></i>
-                                            <h4 class="fw-bold text-warning">Acción de Administrador</h4>
-                                            <p>Vas a cancelar de forma forzosa la cita <strong>#{{ cita.idCita }}</strong> del cliente. El espacio en agenda quedará libre de inmediato.</p>
-                                            <div class="d-flex justify-content-center gap-2 mt-4">
-                                                <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Cerrar</button>
-                                                <a href="{% url 'cancelar_cita_admin' cita.idCita %}" class="btn btn-warning text-dark px-4 fw-bold">Confirmar Cancelación</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <!-- Modal de Cancelación para Clientes -->
+        <div class="modal fade" id="deleteModalCliente{{ cita.idCita }}" data-bs-backdrop="static" tabindex="-1"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div
+                    class="modal-content bg-dark text-white border border-danger border-opacity-25 custom-modal-content">
+                    <div class="modal-body text-center py-5 px-4">
+                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center shadow-sm"
+                            style="width: 65px; height: 65px;">
+                            <i class="bi bi-exclamation-triangle fs-2"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-2">¿Cancelar tu cita?</h4>
+                        <p class="text-white-50 px-3 small">Esta acción liberará tu turno para el {{ cita.fecha }} a las
+                            {{ cita.horainicio }}. No se puede revertir.</p>
+                        <div class="d-flex justify-content-center gap-3 mt-4 px-3">
+                            <button type="button" class="btn btn-outline-light w-50 py-2 fw-semibold rounded-3"
+                                data-bs-dismiss="modal">Regresar</button>
+                            <a href="{% url 'cancelar_cita_cliente' cita.idCita %}"
+                                class="btn btn-danger w-50 py-2 fw-bold rounded-3">Sí, Cancelar</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% else %}
-            <div class="text-center py-5">
-                <i class="bi bi-calendar-x text-muted display-1 mb-3"></i>
-                <h4 class="text-muted">No se encontraron citas agendadas en este momento.</h4>
+        </div>
+
+        <!-- Modal de Cancelación para Administradores -->
+        <div class="modal fade" id="deleteModalAdmin{{ cita.idCita }}" data-bs-backdrop="static" tabindex="-1"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div
+                    class="modal-content bg-dark text-white border border-warning border-opacity-25 custom-modal-content">
+                    <div class="modal-body text-center py-5 px-4">
+                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center shadow-sm"
+                            style="width: 65px; height: 65px;">
+                            <i class="bi bi-shield-lock fs-2"></i>
+                        </div>
+                        <h4 class="fw-bold text-warning mb-2">Acción Administrativa</h4>
+                        <p class="text-white-50 px-3 small">Vas a cancelar de forma forzosa la cita <strong>#{{
+                                cita.idCita }}</strong>. El espacio de tiempo quedará libre en la agenda.</p>
+                        <div class="d-flex justify-content-center gap-3 mt-4 px-3">
+                            <button type="button" class="btn btn-outline-light w-50 py-2 fw-semibold rounded-3"
+                                data-bs-dismiss="modal">Cerrar</button>
+                            <a href="{% url 'cancelar_cita_admin' cita.idCita %}"
+                                class="btn btn-warning text-dark w-50 py-2 fw-bold rounded-3">Confirmar</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endif %}
+        </div>
+        {% endfor %}
     </div>
+    {% else %}
+    <!-- Mensaje de Estado Vacío Estilizado -->
+    <div class="text-center py-5 rounded-4 border border-secondary border-opacity-25 bg-dark bg-opacity-50 my-4">
+        <div class="bg-secondary bg-opacity-10 rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+            style="width: 70px; height: 70px;">
+            <i class="bi bi-calendar-x fs-2 text-white-50"></i>
+        </div>
+        <h5 class="text-white-50 fw-semibold">No tienes citas agendadas</h5>
+        <p class="text-white-50 text-opacity-40 small mb-4">Reserva un espacio con tu barbero favorito hoy mismo.</p>
+        <a href="{% url 'crear_reserva' %}" class="btn btn-outline-warning btn-sm px-4 fw-bold">Agendar Ahora</a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
