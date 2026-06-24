@@ -307,6 +307,18 @@ function inicializarModuloReservas() {
 
   // Render inicial de elementos visuales
   renderizarCalendario();
+
+  const parametrosUrl = new URLSearchParams(window.location.search);
+  const idServicioUrl = parametrosUrl.get('servicio_id');
+
+  // Validamos que 'idServicioUrl' tenga contenido real y no sea una cadena vacía
+  if (idServicioUrl && idServicioUrl.trim() !== "" && selectServicio) {
+    selectServicio.value = String(idServicioUrl).trim();
+    selectServicio.dispatchEvent(new Event('change'));
+  }
+
+
+  
 }
 
 document.addEventListener("DOMContentLoaded", function() {
