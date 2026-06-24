@@ -49,28 +49,31 @@
                     </thead>
                     <tbody>
                         {% for cita in citas %}
-                            <tr>
-                                <td class="fw-bold">#{{ cita.idCita }}</td>
-                                <td>{{ cita.fecha|date:"d \d\e F, Y" }}</td>
-                                <td>{{ cita.horainicio|time:"g:i A" }}</td>
-                                <td><span class="badge bg-warning text-dark p-2">{{ cita.idserviciofk.nombreservicio }}</span></td>
-                                {% if es_admin %}
-                                    <td class="text-info">ID Cliente: {{ cita.idclientefk_id }}</td>
-                                {% endif %}
-                                <td>ID Barbero: {{ cita.idbarberofk_id }}</td>
-                                <td class="text-muted small">{{ cita.observaciones|default:"Sin observaciones" }}</td>
-                                <td>
+                            {% for cita in citas %}
+                                <tr>
+                                    <td class="fw-bold">#{{ cita.idCita }}</td>
+                                    <td>{{ cita.fecha|date:"d \d\e F, Y" }}</td>
+                                    <td>{{ cita.horainicio|time:"g:i A" }}</td>
+                                    <td><span class="badge bg-warning text-dark p-2">{{ cita.servicio_nombre }}</span></td>
+                                    
                                     {% if es_admin %}
-                                        <button type="button" class="btn btn-danger btn-sm px-3 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModalAdmin{{ cita.idCita }}">
-                                            <i class="bi bi-x-circle"></i> Cancelar (Admin)
-                                        </button>
-                                    {% else %}
-                                        <button type="button" class="btn btn-outline-danger btn-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModalCliente{{ cita.idCita }}">
-                                            <i class="bi bi-trash"></i> Cancelar Cita
-                                        </button>
+                                        <td class="text-info">{{ cita.cliente_nombre }}</td>
                                     {% endif %}
-                                </td>
-                            </tr>
+                                    
+                                    <td>{{ cita.barbero_nombre }}</td>
+                                    <td class="text-muted small">{{ cita.observaciones|default:"Sin observaciones" }}</td>
+                                    <td>
+                                        {% if es_admin %}
+                                            <button type="button" class="btn btn-danger btn-sm px-3 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModalAdmin{{ cita.idCita }}">
+                                                <i class="bi bi-x-circle"></i> Cancelar (Admin)
+                                            </button>
+                                        {% else %}
+                                            <button type="button" class="btn btn-outline-danger btn-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModalCliente{{ cita.idCita }}">
+                                                <i class="bi bi-trash"></i> Cancelar Cita
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
 
                             <div class="modal fade" id="deleteModalCliente{{ cita.idCita }}" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">

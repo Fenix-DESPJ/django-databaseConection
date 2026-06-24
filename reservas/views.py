@@ -76,8 +76,7 @@ def crear_reserva(request):
                     codigofactura=f"FAC{random.randint(10000, 99999)}"
                 )
                 
-                # 5. Insertar Agenda y Cita usando SQL Puro con las mayúsculas/minúsculas correctas de tu DB
-                # 5. Insertar Agenda y Cita usando SQL Puro adaptado a tus columnas reales
+                # 5. Insertar Agenda y Cita removiendo la columna conflictiva del estado
                 with connection.cursor() as cursor:
                     # Insertar en la tabla Agenda
                     cursor.execute(
@@ -88,11 +87,11 @@ def crear_reserva(request):
                     cursor.execute("SELECT LAST_INSERT_ID()")
                     id_agenda_creada = cursor.fetchone()[0]
 
-                    # Insertar en la tabla Cita usando 'observacion' y 'estado' tal como está en tu .sql
+                    # Insertar en la tabla Cita omitiendo la columna de estado para evitar el error 1054
                     cursor.execute(
                         """INSERT INTO cita (fecha, horaInicio, idServicioFk, idPagoFk, 
-                           idClienteFk, idBarberoFk, idAgendaFk, observaciones, estadoCitas) 
-                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                           idClienteFk, idBarberoFk, idAgendaFk, observaciones) 
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
                         [
                             fecha_reserva, 
                             hora_objeto, 
@@ -101,8 +100,7 @@ def crear_reserva(request):
                             id_cliente_real, 
                             id_barbero_real, 
                             id_agenda_creada, 
-                            "Reserva realizada desde la web",
-                            "AGENDADA" # Se insertará correctamente en la columna 'estado'
+                            "Reserva realizada desde la web"
                         ]
                     )
                 
@@ -131,26 +129,48 @@ def mis_citas_view(request):
 
     user_sistema = request.user
     usuario_actual = Usuario.objects.get(correo=user_sistema.email)
-
-    # Identificar si es Administrador (Rol ID 1) o Staff
     es_admin = usuario_actual.idrolfk_id == 1 or user_sistema.is_staff
 
-    if es_admin:
-        # El administrador puede ver todas las citas del sistema
-        # Traemos también las relaciones para evitar consultas extra en el HTML
-        citas = Cita.objects.all().select_related('idserviciofk', 'idbarberofk', 'idclientefk').order_by('-fecha', '-horainicio')
-    else:
-        # El cliente solo ve sus propias citas vinculadas a su ID de cliente
+    citas = []
+    try:
         with connection.cursor() as cursor:
-            # Corregido a 'idUsuarioFk' con las mayúsculas exactas de tu phpMyAdmin
-            cursor.execute("SELECT idCliente FROM cliente WHERE idUsuarioFk = %s", [usuario_actual.idusuario])
-            fila_cliente = cursor.fetchone()
-        
-        if fila_cliente:
-            # Filtramos las citas que pertenecen a este cliente específico
-            citas = Cita.objects.filter(idclientefk=fila_cliente[0]).select_related('idserviciofk', 'idbarberofk').order_by('-fecha', '-horainicio')
-        else:
-            citas = Cita.objects.none()
+            if es_admin:
+                # Consulta global para el administrador
+                cursor.execute("""
+                    SELECT c.idCita, c.fecha, c.horaInicio, s.nombre, u.nombre, cl.nombre, c.observaciones
+                    FROM cita c
+                    INNER JOIN servicio s ON c.idServicioFk = s.idServicio
+                    INNER JOIN barbero b ON c.idBarberoFk = b.idBarbero
+                    INNER JOIN usuario u ON b.idBarbero = u.idUsuario
+                    INNER JOIN cliente cl ON c.idClienteFk = cl.idCliente
+                    ORDER BY c.fecha DESC, c.horaInicio DESC
+                """)
+            else:
+                # Consulta específica para el cliente actual
+                cursor.execute("""
+                    SELECT c.idCita, c.fecha, c.horaInicio, s.nombre, u.nombre, cl.nombre, c.observaciones
+                    FROM cita c
+                    INNER JOIN servicio s ON c.idServicioFk = s.idServicio
+                    INNER JOIN barbero b ON c.idBarberoFk = b.idBarbero
+                    INNER JOIN usuario u ON b.idBarbero = u.idUsuario
+                    INNER JOIN cliente cl ON c.idClienteFk = cl.idCliente
+                    WHERE cl.idUsuarioFk = %s
+                    ORDER BY c.fecha DESC, c.horaInicio DESC
+                """, [usuario_actual.idusuario])
+            
+            filas = cursor.fetchall()
+            for f in filas:
+                citas.append({
+                    'idCita': f[0],
+                    'fecha': f[1],
+                    'horainicio': f[2],
+                    'servicio_nombre': f[3],
+                    'barbero_nombre': f[4],
+                    'cliente_nombre': f[5],
+                    'observaciones': f[6],
+                })
+    except Exception as e:
+        print(f"Error al traer citas: {e}")
 
     return render(request, 'mis_citas.html', {
         'citas': citas,
