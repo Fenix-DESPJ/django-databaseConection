@@ -89,3 +89,107 @@ def crear_reserva(request):
         'servicios': Servicio.objects.all(), 
         'barberos': Usuario.objects.filter(idrolfk=2)
     })
+
+
+# ... (Tus imports actuales permanecen iguales)
+
+def mis_citas_view(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "Debes iniciar sesión para ver tus citas.")
+        return redirect('login')
+
+    user_sistema = request.user
+    usuario_actual = Usuario.objects.get(correo=user_sistema.email)
+
+    # Identificar si es Administrador (Suponiendo idrolfk == 1 para Administrador, ajusta si es necesario)
+    # O también puedes usar request.user.is_staff
+    es_admin = usuario_actual.idrolfk_id == 1 or user_sistema.is_staff
+
+    if es_admin:
+        # El administrador puede ver todas las citas del sistema
+        citas = Cita.objects.all().order_by('-fecha', '-horainicio')
+    else:
+        # El cliente solo ve sus propias citas vinculadas a su ID de cliente
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT idcliente FROM cliente WHERE idusuariofk = %s", [usuario_actual.idusuario])
+            fila_cliente = cursor.fetchone()
+        
+        if fila_cliente:
+            citas = Cita.objects.filter(idclientefk=fila_cliente[0]).order_by('-fecha', '-horainicio')
+        else:
+            citas = Cita.objects.none()
+
+    return render(request, 'mis_citas.html', {
+        'citas': citas,
+        'es_admin': es_admin
+    })
+
+
+def cancelar_cita_cliente(request, id_cita):
+    if not request.user.is_authenticated:
+        messages.error(request, "Acción no permitida.")
+        return redirect('login')
+
+    user_sistema = request.user
+    usuario_actual = Usuario.objects.get(correo=user_sistema.email)
+
+    try:
+        with transaction.atomic():
+            # Obtener el ID de cliente del usuario actual
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT idcliente FROM cliente WHERE idusuariofk = %s", [usuario_actual.idusuario])
+                fila_cliente = cursor.fetchone()
+
+            if not fila_cliente:
+                raise Exception("Cliente no encontrado.")
+
+            # Buscar la cita asegurando que pertenezca al cliente logueado (Seguridad)
+            cita = Cita.objects.get(idCita=id_cita, idclientefk=fila_cliente[0])
+            id_agenda = cita.idagendafk
+
+            # Proceder a eliminar de la base de datos usando SQL Puro para mantener consistencia
+            with connection.cursor() as cursor:
+                # 1. Eliminar la cita
+                cursor.execute("DELETE FROM cita WHERE idCita = %s", [id_cita])
+                # 2. Eliminar de la agenda para liberar el espacio del barbero
+                if id_agenda:
+                    cursor.execute("DELETE FROM agenda WHERE idAgenda = %s", [id_agenda])
+
+        messages.success(request, "Tu reserva ha sido cancelada exitosamente.")
+    except Cita.DoesNotExist:
+        messages.error(request, "La cita no existe o no tienes permisos para cancelarla.")
+    except Exception as e:
+        messages.error(request, f"Error al cancelar la cita: {e}")
+
+    return redirect('mis_citas')
+
+
+def cancelar_cita_admin(request, id_cita):
+    # Validar que sea administrador
+    user_sistema = request.user
+    usuario_actual = Usuario.objects.get(correo=user_sistema.email)
+    
+    if not (usuario_actual.idrolfk_id == 1 or user_sistema.is_staff):
+        messages.error(request, "No tienes permisos de administrador para realizar esta acción.")
+        return redirect('mis_citas')
+
+    try:
+        with transaction.atomic():
+            cita = Cita.objects.get(idCita=id_cita)
+            id_agenda = cita.idagendafk
+
+            with connection.cursor() as cursor:
+                # 1. Eliminar la cita
+                cursor.execute("DELETE FROM cita WHERE idCita = %s", [id_cita])
+                # 2. Eliminar de la agenda
+                if id_agenda:
+                    cursor.execute("DELETE FROM agenda WHERE idAgenda = %s", [id_agenda])
+
+        messages.success(request, f"La cita #{id_cita} ha sido cancelada por el Administrador.")
+    except Cita.DoesNotExist:
+        messages.error(request, "La cita especificada no existe.")
+    except Exception as e:
+        messages.error(request, f"Error administrativo: {e}")
+
+    return redirect('mis_citas')
+

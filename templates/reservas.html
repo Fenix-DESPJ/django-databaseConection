@@ -14,7 +14,7 @@
     </div>
 </section>
 
-<form method="POST" action="" id="formReservas">
+<form method="POST" action="{% url 'crear_reserva' %}" id="formReservas">
     {% csrf_token %}
     <input type="hidden" name="fecha" id="input_fecha_seleccionada">
     <input type="hidden" name="hora" id="input_hora_seleccionada">
@@ -78,7 +78,7 @@
 
                         <div class="buttons-container">
                             <a href="javascript:history.back()" class="btn btn-back"><i class="bi bi-arrow-left"></i> Regresar</a>
-                            <button type="button" class="btn btn-reserve" id="btnReservar">Reservar Cita</button>
+                            <button type="submit" class="btn btn-reserve" id="btnReservar">Reservar Cita</button>
                         </div>
                     </div>
                 </div>
@@ -172,7 +172,7 @@
             <div class="modal-body text-center">
                 <i class="bi bi-check-circle-fill success-icon"></i>
                 <h3>Reserva realizada exitosamente</h3>
-                <button type="button" class="btn btn-reserve mt-3" id="btnVerMisReservas">Ver mis reservas</button>
+                <a href="{% url 'mis_citas' %}" class="btn btn-reserve mt-3 text-decoration-none">Ver mis reservas</a>
             </div>
         </div>
     </div>
