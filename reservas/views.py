@@ -9,6 +9,10 @@ from usuarios.models import Usuario
 from .models import Cita
 from django.db import transaction, connection # Importa transaction
 
+
+def agenda_view(request):
+    return render(request, 'agenda.html')
+
 def crear_reserva(request):
     if not request.user.is_authenticated:
         messages.error(request, "Debes iniciar sesión para realizar una reserva.")

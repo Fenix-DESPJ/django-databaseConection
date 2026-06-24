@@ -32,6 +32,9 @@ def iniciar_sesion(request):
 def registrarse(request):
     return render(request, 'registrarse.html')
 
+def agenda_view(request):
+    return render(request, 'agenda.html')
+
 def servicios_ind(request):
     # 1. Obtener todos los servicios de la base de datos
     servicios_list = Servicio.objects.all().order_by('nombreservicio')
