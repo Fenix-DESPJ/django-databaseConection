@@ -14,13 +14,24 @@
     </div>
 </section>
 
-<form method="POST" action="{% url 'crear_reserva' %}" id="formReservas">
+<form method="POST" action="" id="formReservas">
     {% csrf_token %}
     <input type="hidden" name="fecha" id="input_fecha_seleccionada">
     <input type="hidden" name="hora" id="input_hora_seleccionada">
     <input type="hidden" name="metodo_pago" id="input_metodo_pago">
 
     <section class="reservation-section" id="reservation-module-wrapper">
+        <div class="container mt-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-5">
@@ -78,7 +89,7 @@
 
                         <div class="buttons-container">
                             <a href="javascript:history.back()" class="btn btn-back"><i class="bi bi-arrow-left"></i> Regresar</a>
-                            <button type="submit" class="btn btn-reserve" id="btnReservar">Reservar Cita</button>
+                            <button type="button" class="btn btn-reserve" id="btnReservar">Reservar Cita</button>
                         </div>
                     </div>
                 </div>
@@ -172,7 +183,9 @@
             <div class="modal-body text-center">
                 <i class="bi bi-check-circle-fill success-icon"></i>
                 <h3>Reserva realizada exitosamente</h3>
-                <a href="{% url 'mis_citas' %}" class="btn btn-reserve mt-3 text-decoration-none">Ver mis reservas</a>
+                <button type="submit" form="formReservas" class="btn btn-reserve mt-3" id="btnVerMisReservas">
+                    Ver mis reservas
+                </button>
             </div>
         </div>
     </div>

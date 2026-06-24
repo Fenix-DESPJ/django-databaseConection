@@ -58,7 +58,6 @@ function inicializarModuloReservas() {
 
   // --- ESCUCHADORES DE SELECTS (SINCRO CON EL RESUMEN) ---
   if (selectServicio) {
-    // Inicializar texto del resumen con la opción por defecto elegida o vacía
     actualizarTextoServicio();
     selectServicio.addEventListener("change", actualizarTextoServicio);
   }
@@ -89,15 +88,34 @@ function inicializarModuloReservas() {
       e.preventDefault();
       const metodo = option.getAttribute("data-method");
       
-      // Persistir valor en el estado de JS y en el input oculto de Django
       estadoReserva.metodoPago = metodo;
       if (inputMetodoPago) inputMetodoPago.value = metodo;
 
-      // Actualizar los textos informativos en pantalla
       if (selectedMethodDisplay) selectedMethodDisplay.textContent = metodo;
       if (summaryPayment) summaryPayment.textContent = metodo;
     });
   });
+
+  // Validar cuando confirman dentro del modal de PSE o Tarjeta
+  const btnPagarPSE = document.getElementById("btnPagarPSE");
+  if (btnPagarPSE) {
+    btnPagarPSE.addEventListener("click", () => {
+      inputMetodoPago.value = "PSE";
+      if (selectedMethodDisplay) selectedMethodDisplay.textContent = "PSE";
+      if (summaryPayment) summaryPayment.textContent = "PSE";
+      if (reservationToast) reservationToast.show();
+    });
+  }
+
+  const btnPagarCard = document.getElementById("btnPagarCard");
+  if (btnPagarCard) {
+    btnPagarCard.addEventListener("click", () => {
+      inputMetodoPago.value = "Tarjeta de Crédito";
+      if (selectedMethodDisplay) selectedMethodDisplay.textContent = "Tarjeta de Crédito";
+      if (summaryPayment) summaryPayment.textContent = "Tarjeta de Crédito";
+      if (reservationToast) reservationToast.show();
+    });
+  }
 
   // --- RENDERIZACIÓN DINÁMICA DEL CALENDARIO ---
   function renderizarCalendario() {
@@ -133,13 +151,11 @@ function inicializarModuloReservas() {
     fechaLimite.setDate(hoy.getDate() + 30);
     fechaLimite.setHours(0, 0, 0, 0);
 
-    // Lista de horas para validar disponibilidad
     const listadoHoras = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
 
     for (let dia = 1; dia <= diasEnMes; dia++) {
       const fechaIteradaObj = new Date(fechaBase.getFullYear(), fechaBase.getMonth(), dia);
       
-      // Calcular si hay al menos una hora disponible en este día
       const horasDisponibles = listadoHoras.filter(hora => {
         const [h, m] = hora.split(":").map(Number);
         const horaCita = new Date(fechaIteradaObj);
@@ -148,7 +164,6 @@ function inicializarModuloReservas() {
         const esHoy = fechaIteradaObj.toDateString() === hoy.toDateString();
         const unaHoraEnMs = 60 * 60 * 1000;
         
-        // La hora es válida si no es hoy, O si es hoy y falta más de 1 hora
         return !(esHoy && (horaCita - new Date() < unaHoraEnMs));
       }).length;
 
@@ -157,7 +172,6 @@ function inicializarModuloReservas() {
       btonDia.classList.add("day"); 
       btonDia.textContent = dia;
 
-      // Inhabilitar si es pasado, muy lejano o NO hay horas disponibles
       if (fechaIteradaObj < hoy || fechaIteradaObj > fechaLimite || horasDisponibles === 0) {
         btonDia.classList.add("disabled");
         btonDia.disabled = true;
@@ -194,15 +208,8 @@ function inicializarModuloReservas() {
     hoursGrid.innerHTML = "";
 
     const listadoHoras = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
-    
-    // Obtenemos la hora actual (23 de junio, 2026, 16:26)
     const ahora = new Date();
-    
-    // Convertimos la fecha seleccionada en el estado a objeto Date
-    // Asumimos que estadoReserva.fecha viene como "YYYY-MM-DD"
     const fechaSeleccionada = new Date(estadoReserva.fecha + "T00:00:00");
-    
-    // Verificamos si la fecha seleccionada es hoy
     const esHoy = fechaSeleccionada.toDateString() === ahora.toDateString();
 
     listadoHoras.forEach(hora => {
@@ -215,12 +222,10 @@ function inicializarModuloReservas() {
       btonHora.classList.add("hour-btn");
       btonHora.textContent = hora;
 
-      // Lógica de restricción: 1 hora de antelación (3600000 ms)
       if (esHoy && (horaCita - ahora < 3600000)) {
         btonHora.classList.add("disabled");
         btonHora.disabled = true;
       } else {
-        // Si el botón está disponible, aplicamos la lógica de selección normal
         if (estadoReserva.hora === hora) {
           btonHora.classList.add("selected");
         }
@@ -239,25 +244,9 @@ function inicializarModuloReservas() {
     });
   }
 
-  // --- REACCIONES DE BOTONES DE ACCIÓN EN LOS PASOS DE PAGO ---
-  const btnPagarPSE = document.getElementById("btnPagarPSE");
-  if (btnPagarPSE) {
-    btnPagarPSE.addEventListener("click", () => {
-      if (reservationToast) reservationToast.show();
-    });
-  }
-
-  const btnPagarCard = document.getElementById("btnPagarCard");
-  if (btnPagarCard) {
-    btnPagarCard.addEventListener("click", () => {
-      if (reservationToast) reservationToast.show();
-    });
-  }
-
   // --- FLUJO DE CONTROL: BOTÓN FINAL DE RESERVA ---
   if (btnReservar) {
     btnReservar.addEventListener("click", () => {
-      // Validaciones lógicas obligatorias de Inputs
       if (!selectServicio || !selectServicio.value) {
         alert("Por favor, selecciona un servicio.");
         return;
@@ -266,38 +255,36 @@ function inicializarModuloReservas() {
         alert("Por favor, selecciona un barbero de preferencia.");
         return;
       }
-      if (!estadoReserva.fecha) {
+      if (!inputFecha || !inputFecha.value) {
         alert("Por favor, selecciona un día válido en el calendario.");
         return;
       }
-      if (!estadoReserva.hora) {
+      if (!inputHora || !inputHora.value) {
         alert("Por favor, selecciona un horario disponible.");
         return;
       }
-      if (!estadoReserva.metodoPago) {
+      if (!inputMetodoPago || !inputMetodoPago.value) {
         alert("Por favor, selecciona tu método de pago.");
         return;
       }
 
-      // Si todo es válido, abrimos el modal de confirmación final
       if (successModal) {
         successModal.show();
       }
     });
   }
 
-  // Capturar el envío del Formulario Real cuando el usuario ve el éxito completo
+  // Capturar el envío del Formulario Real desde el Modal de éxito
   const btnVerMisReservas = document.getElementById("btnVerMisReservas");
   if (btnVerMisReservas) {
     btnVerMisReservas.addEventListener("click", () => {
       successModal.hide();
       if (formReservas) {
-        formReservas.submit(); // Dispara la petición POST nativa a Django
+        formReservas.submit(); // Dispara el POST nativo hacia Django
       }
     });
   }
 
-  // Controles del paginador de meses del calendario
   if (prevMonth) {
     prevMonth.addEventListener("click", () => { mesOffset--; renderizarCalendario(); });
   }
@@ -305,77 +292,5 @@ function inicializarModuloReservas() {
     nextMonth.addEventListener("click", () => { mesOffset++; renderizarCalendario(); });
   }
 
-  // Render inicial de elementos visuales
   renderizarCalendario();
-
-  const parametrosUrl = new URLSearchParams(window.location.search);
-  const idServicioUrl = parametrosUrl.get('servicio_id');
-
-  // Validamos que 'idServicioUrl' tenga contenido real y no sea una cadena vacía
-  if (idServicioUrl && idServicioUrl.trim() !== "" && selectServicio) {
-    selectServicio.value = String(idServicioUrl).trim();
-    selectServicio.dispatchEvent(new Event('change'));
-  }
-
-
-  
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-    const paymentOptions = document.querySelectorAll(".payment-option");
-    const selectedMethodDisplay = document.getElementById("selectedMethodDisplay");
-    const dropdownBoton = document.getElementById("dropdownMetodoBoton");
-    const inputMetodoPago = document.getElementById("input_metodo_pago");
-    const summaryPayment = document.getElementById("summaryPayment");
-
-    // Escuchar la selección directa en el Dropdown
-    paymentOptions.forEach(option => {
-        option.addEventListener("click", function(e) {
-            const metodo = this.getAttribute("data-method");
-            inputMetodoPago.value = metodo;
-            selectedMethodDisplay.textContent = metodo;
-            dropdownBoton.textContent = metodo;
-            if(summaryPayment) summaryPayment.textContent = metodo;
-        });
-    });
-
-    // Validar cuando confirman dentro del modal de PSE
-    document.getElementById("btnPagarPSE").addEventListener("click", function() {
-        inputMetodoPago.value = "PSE";
-        selectedMethodDisplay.textContent = "PSE";
-        dropdownBoton.textContent = "PSE";
-        if(summaryPayment) summaryPayment.textContent = "PSE";
-    });
-
-    // Validar cuando confirman dentro del modal de Tarjeta
-    document.getElementById("btnPagarCard").addEventListener("click", function() {
-        inputMetodoPago.value = "Tarjeta de Crédito";
-        selectedMethodDisplay.textContent = "Tarjeta de Crédito";
-        dropdownBoton.textContent = "Tarjeta de Crédito";
-        if(summaryPayment) summaryPayment.textContent = "Tarjeta de Crédito";
-    });
-
-    // Al hacer clic en "Reservar Cita"
-    const btnReservar = document.getElementById("btnReservar");
-    btnReservar.addEventListener("click", function() {
-        const fecha = document.getElementById("input_fecha_seleccionada").value;
-        const hora = document.getElementById("input_hora_seleccionada").value;
-        const servicio = document.getElementById("servicio").value;
-        const barbero = document.getElementById("barbero").value;
-        const metodoPago = inputMetodoPago.value;
-
-        if (!fecha || !hora || !servicio || !barbero || !metodoPago) {
-            alert("Por favor, asegúrate de seleccionar Fecha, Hora, Servicio, Barbero y un Método de pago.");
-            return;
-        }
-
-        // Mostrar modal de éxito antes del guardado final
-        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-        successModal.show();
-    });
-
-    // Enviar formulario POST definitivo a Django al presionar el botón del modal de éxito
-    document.getElementById("btnVerMisReservas").addEventListener("click", function() {
-        document.getElementById("formReservas").submit();
-    });
-});

@@ -22,7 +22,7 @@ def crear_reserva(request):
         fecha_reserva = request.POST.get('fecha')
         hora_reserva = request.POST.get('hora')
         servicio_id = request.POST.get('servicio')
-        barbero_id = request.POST.get('barbero')
+        barbero_id = request.POST.get('barbero') # Este recibe el ID del usuario seleccionado (ej: 2)
         metodo_pago = request.POST.get('metodo_pago')
         
         if not all([fecha_reserva, hora_reserva, servicio_id, barbero_id, metodo_pago]):
@@ -31,24 +31,43 @@ def crear_reserva(request):
             
         try:
             with transaction.atomic():
-                # 1. Obtener datos básicos
+                # 1. Obtener datos del usuario logueado en Django
                 user_sistema = request.user
                 usuario_actual = Usuario.objects.get(correo=user_sistema.email)
                 hora_objeto = datetime.strptime(hora_reserva, '%H:%M').time()
                 servicio = Servicio.objects.get(idservicio=servicio_id)
                 
                 with connection.cursor() as cursor:
-                    # 2. Consultar IDs de Cliente y Barbero
-                    cursor.execute("SELECT idcliente FROM cliente WHERE idusuariofk = %s", [usuario_actual.idusuario])
+                    # 2. Buscar ID del cliente real (si no existe en la tabla cliente, se crea)
+                    cursor.execute("SELECT idCliente FROM cliente WHERE idUsuarioFk = %s", [usuario_actual.idusuario])
                     fila_cliente = cursor.fetchone()
                     
-                    cursor.execute("SELECT idbarbero FROM barbero WHERE idusuariofk = %s", [barbero_id])
+                    if not fila_cliente:
+                        cursor.execute(
+                            "INSERT INTO cliente (idUsuarioFk, nombre, correo) VALUES (%s, %s, %s)",
+                            [usuario_actual.idusuario, user_sistema.get_full_name() or user_sistema.username, user_sistema.email]
+                        )
+                        cursor.execute("SELECT LAST_INSERT_ID()")
+                        id_cliente_real = cursor.fetchone()[0]
+                    else:
+                        id_cliente_real = fila_cliente[0]
+                    
+                    # 3. BUSCAR EL BARBERO CON EL NOMBRE EXACTO DE TU COLUMNA EN EL SQL (`idBarbero`)
+                    cursor.execute("SELECT idBarbero FROM barbero WHERE idBarbero = %s", [barbero_id])
                     fila_barbero = cursor.fetchone()
 
-                if not fila_cliente or not fila_barbero:
-                    raise Exception("Error en la asociación de Cliente o Barbero.")
+                # Si por alguna razón de pruebas el usuario con rol 2 no tiene fila en la tabla barbero, la creamos
+                if not fila_barbero:
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "INSERT INTO barbero (idBarbero, especialidad) VALUES (%s, %s)",
+                            [barbero_id, 'General']
+                        )
+                        id_barbero_real = barbero_id
+                else:
+                    id_barbero_real = fila_barbero[0]
 
-                # 3. Guardar Pago (ORM es seguro aquí)
+                # 4. Guardar Pago usando el ORM de Django
                 nuevo_pago = Pago.objects.create(
                     metodopago=metodo_pago,
                     montototal=servicio.precio,
@@ -57,34 +76,46 @@ def crear_reserva(request):
                     codigofactura=f"FAC{random.randint(10000, 99999)}"
                 )
                 
-                # 4. Insertar Agenda y Cita usando SQL puro para garantizar el ID
+                # 5. Insertar Agenda y Cita usando SQL Puro con las mayúsculas/minúsculas correctas de tu DB
+                # 5. Insertar Agenda y Cita usando SQL Puro adaptado a tus columnas reales
                 with connection.cursor() as cursor:
-                    # Insertar Agenda
+                    # Insertar en la tabla Agenda
                     cursor.execute(
                         "INSERT INTO agenda (idBarberoFk, fecha, horaInicio) VALUES (%s, %s, %s)",
-                        [fila_barbero[0], fecha_reserva, hora_objeto]
+                        [id_barbero_real, fecha_reserva, hora_objeto]
                     )
-                    # Capturar el ID generado
+                    
                     cursor.execute("SELECT LAST_INSERT_ID()")
                     id_agenda_creada = cursor.fetchone()[0]
 
-                    # Insertar Cita vinculando el ID de la agenda
+                    # Insertar en la tabla Cita usando 'observacion' y 'estado' tal como está en tu .sql
                     cursor.execute(
                         """INSERT INTO cita (fecha, horaInicio, idServicioFk, idPagoFk, 
-                           idClienteFk, idBarberoFk, idAgendaFk, observaciones) 
-                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                        [fecha_reserva, hora_objeto, servicio_id, nuevo_pago.idpago, 
-                         fila_cliente[0], fila_barbero[0], id_agenda_creada, "Reserva realizada desde la web"]
+                           idClienteFk, idBarberoFk, idAgendaFk, observaciones, estadoCitas) 
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                        [
+                            fecha_reserva, 
+                            hora_objeto, 
+                            servicio_id, 
+                            nuevo_pago.idpago, 
+                            id_cliente_real, 
+                            id_barbero_real, 
+                            id_agenda_creada, 
+                            "Reserva realizada desde la web",
+                            "AGENDADA" # Se insertará correctamente en la columna 'estado'
+                        ]
                     )
                 
             messages.success(request, "¡Cita reservada y guardada exitosamente!")
-            return redirect('crear_reserva')
+            return redirect('mis_citas')
             
         except Exception as e:
+            print("======= ERROR EN LA CONSULTA DE RESERVAS =======")
+            print(str(e))
+            print("=================================================")
             messages.error(request, f"Hubo un problema al guardar la reserva: {e}")
             return redirect('crear_reserva')
 
-    # Método GET
     return render(request, 'reservas.html', {
         'servicios': Servicio.objects.all(), 
         'barberos': Usuario.objects.filter(idrolfk=2)
@@ -101,21 +132,23 @@ def mis_citas_view(request):
     user_sistema = request.user
     usuario_actual = Usuario.objects.get(correo=user_sistema.email)
 
-    # Identificar si es Administrador (Suponiendo idrolfk == 1 para Administrador, ajusta si es necesario)
-    # O también puedes usar request.user.is_staff
+    # Identificar si es Administrador (Rol ID 1) o Staff
     es_admin = usuario_actual.idrolfk_id == 1 or user_sistema.is_staff
 
     if es_admin:
         # El administrador puede ver todas las citas del sistema
-        citas = Cita.objects.all().order_by('-fecha', '-horainicio')
+        # Traemos también las relaciones para evitar consultas extra en el HTML
+        citas = Cita.objects.all().select_related('idserviciofk', 'idbarberofk', 'idclientefk').order_by('-fecha', '-horainicio')
     else:
         # El cliente solo ve sus propias citas vinculadas a su ID de cliente
         with connection.cursor() as cursor:
-            cursor.execute("SELECT idcliente FROM cliente WHERE idusuariofk = %s", [usuario_actual.idusuario])
+            # Corregido a 'idUsuarioFk' con las mayúsculas exactas de tu phpMyAdmin
+            cursor.execute("SELECT idCliente FROM cliente WHERE idUsuarioFk = %s", [usuario_actual.idusuario])
             fila_cliente = cursor.fetchone()
         
         if fila_cliente:
-            citas = Cita.objects.filter(idclientefk=fila_cliente[0]).order_by('-fecha', '-horainicio')
+            # Filtramos las citas que pertenecen a este cliente específico
+            citas = Cita.objects.filter(idclientefk=fila_cliente[0]).select_related('idserviciofk', 'idbarberofk').order_by('-fecha', '-horainicio')
         else:
             citas = Cita.objects.none()
 
