@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from django.db import connection
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente
@@ -382,11 +383,10 @@ def eliminar_perfil(request, usuario_id):
     cliente_perfil = Cliente.objects.filter(idusuariofk=usuario).first()
     
     if cliente_perfil:
-        # 2. Buscar si el cliente tiene citas pendientes (que no estén marcadas como "Completado")
+        # 2. Buscar si el cliente tiene citas pendientes
         citas_pendientes = Cita.objects.filter(idclientefk=cliente_perfil).exclude(observaciones__icontains='Completado')
         
         if citas_pendientes.exists():
-            # Si existen citas activas, se detiene la eliminación y se lanza la alerta
             num_citas = citas_pendientes.count()
             messages.error(
                 request, 
@@ -395,21 +395,27 @@ def eliminar_perfil(request, usuario_id):
             )
             return redirect('editar_perfiles')
         
-        # 3. Si no tiene citas pendientes pero tiene historial de citas completadas,
-        # debemos eliminarlas primero para evitar el IntegrityError (restricción FK)
+        # 3. Limpiar historial de citas del cliente
         Cita.objects.filter(idclientefk=cliente_perfil).delete()
 
-    # 4. Si es un barbero, también limpiamos sus relaciones antes de borrarlo
+    # 4. Si es un barbero, limpiamos sus citas
     barbero_perfil = Barbero.objects.filter(idusuariofk=usuario).first()
     if barbero_perfil:
-        # Opcional: Puedes replicar la validación aquí si los barberos tienen agendas activas
         Cita.objects.filter(idbarberofk=barbero_perfil).delete()
 
-    # 5. Eliminar de forma segura perfiles hijos y registros principales
+    # 5. Borramos de Cliente y Barbero (estas tablas sí existen físicamente)
     Cliente.objects.filter(idusuariofk=usuario).delete()
     Barbero.objects.filter(idusuariofk=usuario).delete()
-    usuario.delete()
-    User.objects.filter(username=correo_eliminado).delete()
+    
+    # =========================================================================
+    # SOLUCIÓN DEFINITIVA: SQL PURO TOTAL PARA PASAR DE LARGO DEL ORM
+    # =========================================================================
+    with connection.cursor() as cursor:
+        # Borrado directo en tu tabla operativa 'usuario' de MySQL
+        cursor.execute("DELETE FROM usuario WHERE idUsuario = %s", [usuario_id])
+        
+        # Borrado directo en la tabla de autenticación de Django 'auth_user'
+        cursor.execute("DELETE FROM auth_user WHERE username = %s", [correo_eliminado])
     
     messages.success(request, f"Se ha eliminado a {nombre_eliminado} de forma permanente.")
     return redirect('editar_perfiles')
