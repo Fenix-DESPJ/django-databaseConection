@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+    <div class="auth-card" style="width: 100%; max-width: 400px;">
+        <img src="{% static 'img/logo.jpeg' %}" alt="Logo" class="logo-login mb-3 mx-auto d-block" style="width: 80px; border-radius: 50%;">
+        
+        <h1 class="h3 mb-3 text-center">Recuperar contraseña</h1>
+        <p class="text-secondary text-center mb-4">
+            Ingresa tu correo y te enviaremos las instrucciones.
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} bg-transparent border-0 text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'olvide_contrasena' %}">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="correo" class="form-label text-white-50">Correo electrónico</label>
+                <input type="email" class="form-control" id="correo" name="correo" required>
+            </div>
+
+            <button type="submit" class="btn btn-dorado w-100 py-2">
+                Enviar instrucciones
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'iniciar_sesion' %}" class="text-decoration-none text-white-50">
+                &larr; Volver al inicio
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

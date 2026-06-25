@@ -11,4 +11,6 @@ urlpatterns = [
     path('completar-cita/<int:cita_id>/', views.completar_cita, name='completar_cita'),
     path('iniciar-sesion/', views.iniciar_sesion, name='iniciar_sesion'),
     path('cerrar-sesion/', views.cerrar_sesion, name='cerrar_sesion'),
+    path('olvide-contrasena/', views.olvide_contrasena, name='olvide_contrasena'),
+    path('cambiar-contrasena/<str:token>/', views.cambiar_contrasena, name='cambiar_contrasena'),
 ]

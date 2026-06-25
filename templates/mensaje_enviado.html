@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-card text-center" style="max-width: 500px; margin: 100px auto;">
+    <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+    <h2 class="mt-3">¡Correo enviado!</h2>
+    <p class="text-white-50">Revisa tu bandeja de entrada o la consola si estás en modo desarrollo.</p>
+    <a href="{% url 'iniciar_sesion' %}" class="btn btn-dorado mt-3">Volver al inicio</a>
+</div>
+{% endblock %}

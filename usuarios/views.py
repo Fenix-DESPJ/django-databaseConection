@@ -7,7 +7,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.db.models import Q
-
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from django.contrib.auth.hashers import make_password
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio
@@ -237,3 +240,66 @@ def completar_cita(request, cita_id):
     cita.save()
     
     return redirect('panel_barbero')
+
+#olvide contraseña
+
+def olvide_contrasena(request):
+    if request.method == 'POST':
+        email = request.POST.get('correo')
+        usuario = Usuario.objects.filter(correo=email).first()
+        
+        if usuario:
+            signer = TimestampSigner()
+            token = signer.sign(usuario.idusuario) # Firmamos el ID del usuario
+            # Construimos la URL
+            link = request.build_absolute_uri(reverse('cambiar_contrasena', args=[token]))
+            
+            send_mail(
+                'Recuperación de contraseña',
+                f'Hola {usuario.nombre}, haz clic aquí para cambiar tu contraseña: {link}',
+                'tu-barberia@email.com',
+                [usuario.correo],
+                fail_silently=False,
+            )
+            return render(request, 'mensaje_enviado.html')
+            
+    return render(request, 'olvide_contrasena.html')
+
+def cambiar_contrasena(request, token):
+    signer = TimestampSigner()
+    try:
+        # El enlace expira en 3600 segundos (1 hora)
+        id_usuario = signer.unsign(token, max_age=3600)
+        usuario = Usuario.objects.get(pk=id_usuario)
+    except SignatureExpired:
+        messages.error(request, "El enlace ha expirado. Solicita uno nuevo.")
+        return redirect('olvide_contrasena')
+    except (BadSignature, Usuario.DoesNotExist):
+        messages.error(request, "El enlace no es válido.")
+        return redirect('iniciar_sesion')
+
+    if request.method == 'POST':
+        nueva_pass = request.POST.get('contrasena')
+        confirmar = request.POST.get('confirmar')
+        
+        if nueva_pass == confirmar:
+            # 1. Guardamos en tu tabla personalizada
+            usuario.contrasena = make_password(nueva_pass)
+            usuario.save()
+            
+            # 2. Sincronizamos con la tabla auth_user de Django (para que el login funcione)
+            try:
+                # Asumiendo que el campo 'correo' en tu tabla 'usuario' es el username de Django
+                user_auth = User.objects.get(username=usuario.correo) 
+                user_auth.set_password(nueva_pass)
+                user_auth.save()
+            except User.DoesNotExist:
+                # Si el usuario no existe en la tabla de auth, no pasa nada
+                pass
+
+            messages.success(request, "Contraseña actualizada correctamente. Ya puedes iniciar sesión.")
+            return redirect('iniciar_sesion')
+        else:
+            messages.error(request, "Las contraseñas no coinciden. Inténtalo de nuevo.")
+
+    return render(request, 'cambiar_contrasena.html')

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="login-container" style="width: 100%; max-width: 400px;">
+        <div class="login-card p-4">
+            <h1 class="h3 mb-3 text-center">Nueva contraseña</h1>
+            
+            <form method="POST" id="form-cambio">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="contrasena" class="form-label">Nueva contraseña</label>
+                    <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+                </div>
+                <div class="mb-4">
+                    <label for="confirmar" class="form-label">Confirmar contraseña</label>
+                    <input type="password" class="form-control" id="confirmar" name="confirmar" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Guardar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2452,3 +2452,40 @@ body {
 
 .border-borrar { border: 2px solid red !important; }
 .border-editar { border: 2px solid orange !important; }
+
+/* olvide contraseña */
+/* Estilos para las tarjetas de formularios */
+.auth-card {
+    background-color: var(--negro-absoluto);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 2rem;
+    color: var(--texto-blanco);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.auth-card h1 { color: var(--dorado-branding); }
+
+.auth-card .form-control {
+    background-color: var(--negro-navbar);
+    border: 1px solid var(--gris);
+    color: var(--texto-blanco);
+}
+
+.auth-card .form-control:focus {
+    border-color: var(--dorado-branding);
+    box-shadow: 0 0 0 0.25rem rgba(255, 198, 0, 0.25);
+    background-color: var(--negro-navbar);
+    color: var(--texto-blanco);
+}
+
+.btn-dorado {
+    background-color: var(--dorado-branding);
+    color: var(--negro-absoluto);
+    font-weight: bold;
+    border: none;
+}
+
+.btn-dorado:hover {
+    background-color: var(--dorado-hover);
+}
