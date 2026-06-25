@@ -50,27 +50,34 @@
                             <div class="calendar-days" id="calendarDays"></div>
                         </div>
 
-                        <div class="mt-4">
-                            <label class="form-label custom-label">Servicio</label>
+                        <div class="mb-4"></div>
+
+                        <div class="mb-4">
+                            <label class="form-label custom-label" for="servicio">Servicio</label>
                             <select class="form-select custom-select" id="servicio" name="servicio">
                                 <option value="" disabled selected>Selecciona un servicio</option>
                                 {% for s in servicios %}
-                                    <option value="{{ s.idservicio }}">{{ s.nombreservicio }} - {{ s.precio }}</option>
+                                    <option value="{{ s.idservicio }}">{{ s.nombreservicio }} - ${{ s.precio }}</option>
                                 {% endfor %}
                             </select>
                         </div>
 
-                        <div class="mt-4">
-                            <label class="form-label custom-label">Barbero</label>
+                        <div class="mb-4">
+                            <label class="form-label custom-label" for="barbero">Barbero</label>
                             <select class="form-select custom-select" id="barbero" name="barbero">
-                                <option value="" disabled selected>Selecciona tu barbero de preferencia</option>
+                                <option value="" disabled selected>Selecciona un barbero</option>
                                 {% for b in barberos %}
                                     <option value="{{ b.idusuario }}">{{ b.nombre }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         
-                        <div class="mt-4">
+                        <div class="mb-4">
+                            <label class="form-label custom-label" for="observaciones">Observaciones Especiales <span class="text-white-50 small" style="font-size: 0.75rem;">(Opcional)</span></label>
+                            <textarea class="form-control-custom" id="observaciones" name="observaciones" placeholder="Ej: Degradado bajo, diseño con línea, etc..." style="background-color: rgba(0,0,0,0.2); color: #fff; border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 8px; padding: 12px; resize: none; min-height: 120px !important; display: block; width: 100%;"></textarea>
+                        </div>
+
+                        <div class="mb-4">
                             <label class="form-label custom-label">Método de Pago</label>
                             <div class="dropdown w-100">
                                 <button class="btn payment-dropdown dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">Seleccionar método</button>
