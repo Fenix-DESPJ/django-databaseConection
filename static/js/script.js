@@ -294,3 +294,97 @@ function inicializarModuloReservas() {
 
   renderizarCalendario();
 }
+
+/* Estado Centralizado */
+let modoActual = null; // 'editar', 'borrar', o null
+
+function cambiarModo(nuevoModo) {
+    console.log("Cambiando a modo:", nuevoModo);
+  // Si el usuario presiona el mismo botón que ya está activo, cancelamos todo
+    if (modoActual === nuevoModo) {
+        desactivarModos();
+        return;
+    }
+
+    // Si no, activamos el nuevo modo y desactivamos el anterior
+    desactivarModos();
+    modoActual = nuevoModo;
+
+    const btnEditar = document.getElementById('btn-editar-toggle');
+    const btnBorrar = document.querySelector('.btn-danger');
+    const tarjetas = document.querySelectorAll('.card-precio');
+
+    if (modoActual === 'editar') {
+        btnEditar.innerText = "Cancelar Edición";
+        tarjetas.forEach(c => c.classList.add('border-editar'));
+    } 
+    else if (modoActual === 'borrar') {
+        btnBorrar.innerText = "Cancelar Borrado";
+        tarjetas.forEach(c => {
+            c.classList.add('border-borrar');
+            c.onclick = function() {
+                const id = this.getAttribute('data-id');
+                if(confirm('¿Seguro que deseas eliminar este servicio?')) {
+                    const url = document.querySelector('[data-url-eliminar]').dataset.urlEliminar;
+                    window.location.href = url.replace('0', id);
+                }
+            };
+        });
+    }
+}
+
+function desactivarModos() {
+    modoActual = null;
+    document.getElementById('btn-editar-toggle').innerText = "Editar Servicio";
+    document.querySelector('.btn-danger').innerText = "Borrar Servicio";
+    
+    document.querySelectorAll('.card-precio').forEach(c => {
+        c.classList.remove('border-editar', 'border-borrar');
+        c.onclick = null; // Esto es vital para borrar los clics de borrado
+    });
+}
+
+// Para editar, necesitamos que al hacer clic la tarjeta siempre intente abrir el modal
+// pero solo si estamos en modo editar.
+function abrirModalEditar(id, nombre, precio, duracion, tipo) {
+    console.log("Clic detectado en modo:", modoActual);
+    if (modoActual !== 'editar') return;
+    console.log("Abriendo modal para ID:", id);
+    // Solo permitimos editar si estamos en el modo correcto
+
+    const form = document.querySelector('.modal-barberia');
+    const urlBase = document.getElementById('url-data').dataset.editarBase;
+    
+    form.action = urlBase.replace('0', id);
+    document.querySelector('input[name="nombreservicio"]').value = nombre;
+    document.querySelector('input[name="precio"]').value = precio;
+    document.querySelector('input[name="duracion"]').value = duracion;
+    document.querySelector('select[name="tiposervicio"]').value = tipo;
+    
+    new bootstrap.Modal(document.getElementById('modalServicio')).show();
+}
+
+function prepararModalCrear() {
+    desactivarModos(); // Limpiamos cualquier modo antes de crear
+    const form = document.querySelector('.modal-barberia');
+    form.action = document.getElementById('url-data').dataset.crear;
+    form.reset();
+    document.getElementById('modalServicioLabel').innerText = "Nuevo Servicio";
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.card-precio').forEach(card => {
+        card.addEventListener('click', function() {
+            if (modoActual === 'editar') {
+                const id = this.getAttribute('data-id');
+                // Buscamos los datos en la tarjeta (asegúrate de tenerlos en data-atributos)
+                const nombre = this.getAttribute('data-nombre');
+                const precio = this.getAttribute('data-precio');
+                const duracion = this.getAttribute('data-duracion');
+                const tipo = this.getAttribute('data-tipo');
+                
+                abrirModalEditar(id, nombre, precio, duracion, tipo);
+            }
+        });
+    });
+});

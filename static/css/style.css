@@ -821,20 +821,6 @@ h1, h2, h3, h4 {
     margin: 40px auto;
 }
 
-.servicio-card {
-    background: #1a1a1a;
-    border: 1px solid #FFC600;
-    border-radius: 20px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.servicio-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,.5);
-    border-color: #FFD84D;
-}
 
 .servicio-img {
     width: 100%;
@@ -2321,3 +2307,70 @@ body {
         grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas pequeñas */
     }
 }
+
+/* Forzamos el diseño de la barbería */
+.modal-barberia {
+    background-color: var(--negro-tarjeta) !important;
+    border: 1px solid var(--gris) !important;
+    color: var(--blanco) !important;
+}
+
+.modal-barberia .modal-header, 
+.modal-barberia .modal-footer {
+    border-color: var(--gris) !important;
+}
+
+.modal-barberia .modal-title {
+    color: var(--dorado) !important;
+}
+
+.modal-barberia .form-control, 
+.modal-barberia .form-select {
+    background-color: var(--negro) !important;
+    border: 1px solid var(--gris) !important;
+    color: var(--blanco) !important; /* <--- ESTO PONE EL TEXTO EN BLANCO */
+}
+
+/* También añadimos esto para que el placeholder (el texto de ayuda) no se vea gris */
+.modal-barberia .form-control::placeholder {
+    color: var(--gris) !important;
+    opacity: 0.7;
+}
+
+.modal-barberia .btn-dorado {
+    background-color: var(--dorado) !important;
+    color: var(--negro) !important;
+    font-weight: bold;
+}
+
+.modal-barberia .btn-cancelar {
+    color: var(--blanco) !important;
+    border: 1px solid var(--gris) !important;
+}
+
+/* Especificidad máxima para los inputs dentro del modal */
+.modal-barberia .form-control, 
+.modal-barberia .form-select,
+.modal-barberia input, 
+.modal-barberia select, 
+.modal-barberia textarea {
+    color: #ffffff !important;           /* Blanco puro */
+    background-color: #111111 !important; /* Negro */
+    border: 1px solid #565654 !important; /* Gris */
+}
+
+/* Forzar color de texto incluso al escribir o cuando está activo */
+.modal-barberia .form-control:focus, 
+.modal-barberia .form-select:focus {
+    color: #ffffff !important;
+    background-color: #111111 !important;
+}
+
+/* Etiqueta (label) un poco más clara para que se lea mejor */
+.modal-barberia label {
+    color: #ffffff !important; 
+    font-weight: 500;
+}
+
+.border-borrar { border: 2px solid red !important; }
+.border-editar { border: 2px solid orange !important; }

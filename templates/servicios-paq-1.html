@@ -3,38 +3,131 @@
 
 {% block content %}
 <section class="container-fluid py-5" style="max-width: 1200px;">
-    <h2 class="titulo-servicios">Paquetes de Servicios</h2>
-    <p class="subtitulo-servicios">Diseñados para quienes buscan una experiencia completa de barbería.</p>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="servicios-grid-precios">
+    <div id="url-data" 
+        data-crear="{% url 'crear_servicio' %}" 
+        data-editar-base="{% url 'editar_servicio' 0 %}" 
+        style="display:none;">
+    </div>
+
+    <h2 class="titulo-servicios">Paquetes de Servicios</h2>
+    <p class="subtitulo-servicios">
+        Diseñados para quienes buscan una experiencia completa de barbería.
+    </p>
+
+    {% if es_admin %}
+    <div class="d-flex justify-content-end mb-4 gap-2">
+        <button class="btn btn-success" 
+                data-bs-toggle="modal" 
+                data-bs-target="#modalServicio" 
+                onclick="prepararModalCrear()">
+            Crear Paquete
+        </button>
+        
+        <button id="btn-editar-toggle" class="btn btn-warning" onclick="cambiarModo('editar')">
+            Editar Paquete
+        </button>
+        
+        <button class="btn btn-danger" onclick="cambiarModo('borrar')" data-url-eliminar="{% url 'eliminar_servicio' 0 %}">
+            Borrar Paquete
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="servicios-grid-precios">
+        {% for p in paquetes %}
+        <div class="card-precio" 
+            data-id="{{ p.pk }}" 
+            id="card-{{ p.pk }}"
+            onclick="abrirModalEditar('{{ p.pk }}', '{{ p.nombreservicio|escapejs }}', '{{ p.precio }}', '{{ p.duracion }}', '{{ p.tiposervicio }}')">
+            
+            <img src="{{ MEDIA_URL }}{{ p.imagen }}" alt="{{ p.nombreservicio }}" class="card-precio-img">
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0 fw-bold">{{ p.nombreservicio }}</h6>
+                    <small class="text-white-50">{{ p.duracion }} min</small>
+                </div>
                 
-                {% for p in paquetes %}
-                <div class="card-precio">
-                    <img src="{% static 'img/' %}{{ p.imagen }}" alt="{{ p.nombreservicio }}" class="card-precio-img">
-                    
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0 fw-bold">{{ p.nombreservicio }}</h6>
-                            <small class="text-white-50">{{ p.duracion }} min</small>
+                <div class="text-end">
+                    <span class="d-block fw-bold mb-1">$ {{ p.precio|floatformat:0 }}</span>
+                    <a href="{% url 'crear_reserva' %}?servicio_id={{p.pk}}" 
+                    class="btn btn-dark btn-sm btn-servicio-reservar" 
+                    onclick="event.stopPropagation()">Reservar</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-white">No hay paquetes disponibles en este momento.</p>
+        {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center gap-3 mt-5">
+        {% if paquetes.has_previous %}
+            <a href="?page={{ paquetes.previous_page_number }}" class="btn btn-outline-secondary px-4">Anterior</a>
+        {% else %}
+            <button class="btn btn-outline-secondary px-4" disabled>Anterior</button>
+        {% endif %}
+
+        <span class="text-white fw-bold">
+            Página {{ paquetes.number }} de {{ paquetes.paginator.num_pages }}
+        </span>
+
+        {% if paquetes.has_next %}
+            <a href="?page={{ paquetes.next_page_number }}" class="btn px-4" style="background-color: var(--dorado); color: var(--negro); font-weight: bold;">Siguiente</a>
+        {% else %}
+            <button class="btn px-4" style="background-color: var(--gris); color: var(--negro);" disabled>Siguiente</button>
+        {% endif %}
+    </div>
+
+    <div class="modal fade" id="modalServicio" tabindex="-1" aria-labelledby="modalServicioLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="POST" action="" id="formServicio" enctype="multipart/form-data" class="modal-content modal-barberia">
+            {% csrf_token %}
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalServicioLabel">Nuevo Paquete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Paquete</label>
+                        <input type="text" name="nombreservicio" class="form-control" placeholder="Ej: Paquete Completo" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Precio ($)</label>
+                            <input type="number" name="precio" class="form-control" placeholder="0" required>
                         </div>
-                        <div class="text-end">
-                            <span class="d-block fw-bold mb-1">$ {{ p.precio|floatformat:0 }}</span>
-                            <a href="{% url 'crear_reserva' %}?servicio_id={{p.pk}}" class="btn btn-dark btn-sm btn-servicio-reservar">Reservar</a>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Duración (min)</label>
+                            <input type="number" name="duracion" class="form-control" placeholder="60" required>
                         </div>
                     </div>
-                </div>
-                {% empty %}
-                    <p class="text-white">Aún no hay paquetes cargados en el sistema.</p>
-                {% endfor %}
 
-            </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Servicio</label>
+                        <select name="tiposervicio" class="form-select">
+                            <option value="Paquete" selected>Paquete</option>
+                            <option value="Individual">Individual</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Imagen de Referencia</label>
+                        <input type="file" name="imagen" class="form-control">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-dorado">Guardar Paquete</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <div class="d-flex justify-content-between mt-5">
-        <a href="{% url 'servicios' %}" class="btn-regresar-elegante"> ← Regresar</a>
-        </div>
 </section>
 {% endblock %}

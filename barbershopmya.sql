@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 24-06-2026 a las 14:34:18
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Host: 127.0.0.1
+-- Generation Time: Jun 25, 2026 at 02:47 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,12 +18,12 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `barbershopmya`
+-- Database: `barbershopmya`
 --
 
 DELIMITER $$
 --
--- Procedimientos
+-- Procedures
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ActualizarTelefonoUsuario` (`pId` INT, `pNuevoCel` VARCHAR(15))   BEGIN
     UPDATE Usuario SET numCelular = pNuevoCel WHERE idUsuario = pId;
@@ -79,7 +79,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `agenda`
+-- Table structure for table `agenda`
 --
 
 CREATE TABLE `agenda` (
@@ -91,7 +91,7 @@ CREATE TABLE `agenda` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `agenda`
+-- Dumping data for table `agenda`
 --
 
 INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`, `horaFin`) VALUES
@@ -112,7 +112,7 @@ INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`, `horaFin
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `auth_group`
+-- Table structure for table `auth_group`
 --
 
 CREATE TABLE `auth_group` (
@@ -123,7 +123,7 @@ CREATE TABLE `auth_group` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `auth_group_permissions`
+-- Table structure for table `auth_group_permissions`
 --
 
 CREATE TABLE `auth_group_permissions` (
@@ -135,7 +135,7 @@ CREATE TABLE `auth_group_permissions` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `auth_permission`
+-- Table structure for table `auth_permission`
 --
 
 CREATE TABLE `auth_permission` (
@@ -146,7 +146,7 @@ CREATE TABLE `auth_permission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `auth_permission`
+-- Dumping data for table `auth_permission`
 --
 
 INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALUES
@@ -210,7 +210,7 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `auth_user`
+-- Table structure for table `auth_user`
 --
 
 CREATE TABLE `auth_user` (
@@ -228,7 +228,7 @@ CREATE TABLE `auth_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `auth_user`
+-- Dumping data for table `auth_user`
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
@@ -237,12 +237,13 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-06-18 15:06:02.585858', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
 (5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-06-22 15:07:07.994508', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-06-24 11:59:06.749081', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259');
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-06-24 20:59:57.761681', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(7, 'pbkdf2_sha256$600000$nTuulPoWToeM2ENS8nRGdW$pu/F7+mAKGnUum2AR0RSA0zPDFne+7bdQW1WnudBU3M=', '2026-06-24 20:18:02.964932', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `auth_user_groups`
+-- Table structure for table `auth_user_groups`
 --
 
 CREATE TABLE `auth_user_groups` (
@@ -254,7 +255,7 @@ CREATE TABLE `auth_user_groups` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `auth_user_user_permissions`
+-- Table structure for table `auth_user_user_permissions`
 --
 
 CREATE TABLE `auth_user_user_permissions` (
@@ -266,7 +267,7 @@ CREATE TABLE `auth_user_user_permissions` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `barbero`
+-- Table structure for table `barbero`
 --
 
 CREATE TABLE `barbero` (
@@ -276,7 +277,7 @@ CREATE TABLE `barbero` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `barbero`
+-- Dumping data for table `barbero`
 --
 
 INSERT INTO `barbero` (`idBarbero`, `idUsuarioFk`, `especialidad`) VALUES
@@ -295,7 +296,7 @@ INSERT INTO `barbero` (`idBarbero`, `idUsuarioFk`, `especialidad`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `cita`
+-- Table structure for table `cita`
 --
 
 CREATE TABLE `cita` (
@@ -311,7 +312,7 @@ CREATE TABLE `cita` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `cita`
+-- Dumping data for table `cita`
 --
 
 INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idAgendaFk`, `fecha`, `horaInicio`, `observaciones`, `idPagoFk`) VALUES
@@ -324,16 +325,12 @@ INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idA
 (7, 1, 7, 6, 7, '2026-03-23', '11:30:00', NULL, NULL),
 (8, 2, 8, 7, 8, '2026-03-23', '12:00:00', NULL, NULL),
 (9, 1, 9, 8, 9, '2026-03-24', '09:00:00', NULL, NULL),
-(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL),
-(14, 1, 11, 15, NULL, '2026-06-19', '08:00:00', 'Reserva realizada desde la web', 15),
-(15, 11, 13, 17, NULL, '2026-06-24', '08:00:00', 'Reserva realizada desde la web', 16),
-(16, 11, 13, 10, NULL, '2026-06-25', '09:00:00', 'Reserva realizada desde la web', 17),
-(17, 11, 13, 19, 14, '2026-06-30', '08:00:00', 'Reserva realizada desde la web', 19);
+(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `cliente`
+-- Table structure for table `cliente`
 --
 
 CREATE TABLE `cliente` (
@@ -345,7 +342,7 @@ CREATE TABLE `cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `cliente`
+-- Dumping data for table `cliente`
 --
 
 INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`, `contactoEmergencia`) VALUES
@@ -360,12 +357,12 @@ INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`,
 (9, 7, 'Condado', '2026-02-10', 'Jose-098'),
 (10, 8, 'La Floresta', '2026-02-15', 'Ana-097'),
 (11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado'),
-(13, 19, 'Registrado desde la Web', '2026-06-23', 'No asignado');
+(14, 20, 'Registrado desde la Web', '2026-06-24', 'No asignado');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `django_admin_log`
+-- Table structure for table `django_admin_log`
 --
 
 CREATE TABLE `django_admin_log` (
@@ -382,7 +379,7 @@ CREATE TABLE `django_admin_log` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `django_content_type`
+-- Table structure for table `django_content_type`
 --
 
 CREATE TABLE `django_content_type` (
@@ -392,7 +389,7 @@ CREATE TABLE `django_content_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `django_content_type`
+-- Dumping data for table `django_content_type`
 --
 
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
@@ -414,7 +411,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `django_migrations`
+-- Table structure for table `django_migrations`
 --
 
 CREATE TABLE `django_migrations` (
@@ -425,7 +422,7 @@ CREATE TABLE `django_migrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `django_migrations`
+-- Dumping data for table `django_migrations`
 --
 
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
@@ -455,7 +452,7 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `django_session`
+-- Table structure for table `django_session`
 --
 
 CREATE TABLE `django_session` (
@@ -465,20 +462,20 @@ CREATE TABLE `django_session` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `django_session`
+-- Dumping data for table `django_session`
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('3nvfahabtzafv8iwoxoy7s8of0c1xcpo', '.eJxVj8EOwiAQRP9lz03TYreUHr37DWRhwaIVEign47-bmibqdd7LZOYJmuq26Fpc1oFhhhGa38yQvbu4A75RvKbWprjlYNpdaQ9a2ktit54P969gobLADLKbOuVPXhql2LP01MtO8GhHT-wmOQmp0ApGOeCAnfAKEUmJfugZrUJooLgSUtQhBhuICeYtV9dALZVySDqmh8luH0oxwDfPaf08O73ePUBO-w:1wc8LF:AnJTM_olgY9kxVw8n3yv50uly67X63W0M-1TSyY9Ph8', '2026-07-07 21:07:33.298062'),
+('6qxudywbtve2g1ay1mw3dyjktcw40aih', '.eJxVj8EOwiAQRP9lz01DsVtKj979BrJlwaIVEign47-bmibqdd7LZOYJhuq2mFpcNoFhggGa32wme3dxB3yjeE2tTXHLYW53pT1oaS-J3Xo-3L-ChcoCEygxCu1PXs1as2flqVNC8mAHT-xGNUql0UpG1WOPQnqNiKRl13eMViM0UFwJKZoQgw3EBNOWq2uglko5JBPTY85uH0oxwDfPaf08615vPTxO-Q:1wcUhR:2h1XTRWZ7PSjm4s3-fXHz4XO6llGnFdhNuZWXk1yESc', '2026-07-08 20:59:57.767903'),
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
-('cqjg09lkxtngo7ac0lrqd7szitrh78pf', '.eJxVj8EOwiAQRP9lz03TYreUHr37DWRhwaIVEign47-bmibqdd7LZOYJmuq26Fpc1oFhhhGa38yQvbu4A75RvKbWprjlYNpdaQ9a2ktit54P969gobLADLKbOuVPXhql2LP01MtO8GhHT-wmOQmp0ApGOeCAnfAKEUmJfugZrUJooLgSUtQhBhuICeYtV9dALZVySDqmh8luH0oxwDfPaf08O73ePUBO-w:1wcMG2:NiNQy0lpqWQ395M7W1nQyC53fufk41z39PFzqXKmDH8', '2026-07-08 11:59:06.752680'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
+('m37qj12g713d43akpcxqc7w88eyn2nfc', '.eJxVj8EOwiAQRP9lz01DsVtKj979BrJlwaIVEign47-bmibqdd7LZOYJhuq2mFpcNoFhggGa32wme3dxB3yjeE2tTXHLYW53pT1oaS-J3Xo-3L-ChcoCEygxCu1PXs1as2flqVNC8mAHT-xGNUql0UpG1WOPQnqNiKRl13eMViM0UFwJKZoQgw3EBNOWq2uglko5JBPTY85uH0oxwDfPaf08615vPTxO-Q:1wcP6q:8ftjTcLXAH0O328CfgWTbOaEmnp2-JGPNN2SPfBuSNs', '2026-07-08 15:01:48.007467'),
 ('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `pago`
+-- Table structure for table `pago`
 --
 
 CREATE TABLE `pago` (
@@ -491,7 +488,7 @@ CREATE TABLE `pago` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `pago`
+-- Dumping data for table `pago`
 --
 
 INSERT INTO `pago` (`idPago`, `metodoPago`, `montoTotal`, `fechaPago`, `estadoPago`, `codigoFactura`) VALUES
@@ -517,7 +514,7 @@ INSERT INTO `pago` (`idPago`, `metodoPago`, `montoTotal`, `fechaPago`, `estadoPa
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `rol`
+-- Table structure for table `rol`
 --
 
 CREATE TABLE `rol` (
@@ -526,7 +523,7 @@ CREATE TABLE `rol` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `rol`
+-- Dumping data for table `rol`
 --
 
 INSERT INTO `rol` (`idRol`, `nombreRol`) VALUES
@@ -537,7 +534,7 @@ INSERT INTO `rol` (`idRol`, `nombreRol`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `servicio`
+-- Table structure for table `servicio`
 --
 
 CREATE TABLE `servicio` (
@@ -550,34 +547,35 @@ CREATE TABLE `servicio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `servicio`
+-- Dumping data for table `servicio`
 --
 
 INSERT INTO `servicio` (`idServicio`, `nombreServicio`, `duracion`, `precio`, `tipoServicio`, `imagen`) VALUES
-(1, 'Corte Tradicional', 35, 13.00, 'Individual', 'corte-tradicional.webp'),
-(2, 'Perfilado Barba', 25, 8.00, 'Individual', 'perfilado-barba.jpeg'),
-(3, 'Combo', 60, 18.00, 'Paquete', 'paquete1.jpg'),
-(4, 'Facial', 30, 15.00, 'Paquete', 'servicios-limpieza1.jpg'),
-(5, 'Fade', 45, 14.00, 'Individual', 'fade.jpg'),
-(6, 'Tinte', 60, 25.00, 'Paquete', 'tinte-cabello.jpg'),
-(7, 'Líneas', 15, 5.00, 'Paquete', 'diseño-lineas.jpeg'),
-(8, 'Lavado', 10, 5.00, 'Individual', 'servicios-lavado.avif'),
-(9, 'Cejas', 15, 4.00, 'Individual', 'servicios-cejas.png'),
-(10, 'Mascarilla', 20, 10.00, 'Individual', 'servicios-mascarilla.jpg'),
-(11, 'Corte Clásico + Cejas', 45, 20.00, 'Paquete', 'paquete1.jpg'),
-(12, 'Perfil Perfecto', 50, 22.00, 'Paquete', 'paquete2.jpg'),
-(13, 'Barba + Cejas', 40, 18.00, 'Paquete', 'paquete3.jpg'),
-(14, 'Corte personalizado', 60, 26.00, 'Paquete', 'paquete4.jpeg'),
-(15, 'Look Completo', 70, 28.00, 'Paquete', 'paquete5.jpg'),
-(16, 'Combo de limpieza facial', 80, 30.00, 'Paquete', 'paquete6.jpg'),
-(17, 'Imagen Ejecutiva', 90, 32.00, 'Paquete', 'paquete7.jpeg'),
-(18, 'Cambio de Imagen', 90, 35.00, 'Paquete', 'paquete8.jpg'),
-(19, 'Experiencia Premium', 140, 60.00, 'Paquete', 'paquete9.jpeg');
+(1, 'Corte Tradicional', 35, 13.00, 'Individual', 'servicios/corte-tradicional.webp'),
+(2, 'Perfilado Barba', 25, 8.00, 'Individual', 'servicios/perfilado-barba.jpeg'),
+(3, 'Combo', 60, 18.00, 'Paquete', 'servicios/paquete1.jpg'),
+(4, 'Facial', 30, 15.00, 'Paquete', 'servicios/servicios-limpieza1.jpg'),
+(5, 'Fade', 45, 14.00, 'Individual', 'servicios/fade.jpg'),
+(6, 'Tinte', 60, 25.00, 'Paquete', 'servicios/tinte-cabello.jpg'),
+(7, 'Líneas', 15, 5.00, 'Paquete', 'servicios/diseño-lineas.jpeg'),
+(8, 'Lavado', 10, 5.00, 'Individual', 'servicios/servicios-lavado.avif'),
+(9, 'Cejas', 15, 4.00, 'Individual', 'servicios/servicios-cejas.png'),
+(10, 'Mascarilla', 20, 10.00, 'Individual', 'servicios/servicios-mascarilla.jpg'),
+(11, 'Corte Clásico + Cejas', 45, 20.00, 'Paquete', 'servicios/paquete1.jpg'),
+(12, 'Perfil Perfecto', 50, 22.00, 'Paquete', 'servicios/paquete2.jpg'),
+(13, 'Barba + Cejas', 40, 18.00, 'Paquete', 'servicios/paquete3.jpg'),
+(14, 'Corte personalizado', 60, 26.00, 'Paquete', 'servicios/paquete4.jpeg'),
+(15, 'Look Completo', 70, 28.00, 'Paquete', 'servicios/paquete5.jpg'),
+(16, 'Combo de limpieza facial', 80, 30.00, 'Paquete', 'servicios/paquete6.jpg'),
+(17, 'Imagen Ejecutiva', 90, 32.00, 'Paquete', 'servicios/paquete7.jpeg'),
+(18, 'Cambio de Imagen', 90, 35.00, 'Paquete', 'servicios/paquete8.jpg'),
+(19, 'Experiencia Premium', 140, 60.00, 'Paquete', 'servicios/paquete9.jpeg'),
+(21, 'Cejassss', 15, 500.00, 'Individual', 'servicios/logo.jpeg');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuario`
+-- Table structure for table `usuario`
 --
 
 CREATE TABLE `usuario` (
@@ -592,7 +590,7 @@ CREATE TABLE `usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `usuario`
+-- Dumping data for table `usuario`
 --
 
 INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCelular`, `contrasena`, `fechaNacimiento`, `idRolFk`) VALUES
@@ -610,10 +608,11 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (14, '2222222', 'JIMENA  HERNÁNDEZ', 'jimena@gmail.com', '3239343409', 'jimena123', '2008-03-24', 3),
 (16, '1122334455', 'JAMES ABELARDO DIAZ URIBE', 'derecha@gmail.com', '3216579435', 'pbkdf2_sha256$600000$mm9X4dXuc8FX83wY4CvHAu$S3tiZPZarh+2ysTwOTmcLIW8ibjLCUfdKjQ9LMU0Owg=', '1988-04-20', 3),
 (17, '35919743', 'JUAN MANUEL RESTREPO', 'restrepo123@gmail.com', '3427685463', 'pbkdf2_sha256$600000$Ui57A5R99oF2FSYuJdWQWu$S3PjXGv17+nJfSOMUXEDj8z/TdGK8/4B6gqwgKLTQA0=', '1989-08-12', 2),
-(19, '4444444444', 'DANI JORDIWILDE', 'dani@gmail.com', '22222222222', 'pbkdf2_sha256$600000$ud3U9yK19LvNUYSFpWdxuA$wSPZm1V3A8E2of2uJ9oX39DgBkfzwf3u/vM/rHVvTh0=', '2026-06-16', 3);
+(19, '4444444444', 'DANI JORDIWILDE', 'dani@gmail.com', '22222222222', 'pbkdf2_sha256$600000$ud3U9yK19LvNUYSFpWdxuA$wSPZm1V3A8E2of2uJ9oX39DgBkfzwf3u/vM/rHVvTh0=', '2026-06-16', 1),
+(20, '1111222333', 'CLIENTE DE PRUEBA UWU', 'cliente@gmail.com', '3334445555', 'pbkdf2_sha256$600000$M5mhPNm8MiRUx2yC4uZisY$MVofGM8jpZ6QmqLjo/d0lxYjlml+2B8ipoSC7wgEOE8=', '2026-06-25', 3);
 
 --
--- Disparadores `usuario`
+-- Triggers `usuario`
 --
 DELIMITER $$
 CREATE TRIGGER `AntesEliminarUsuario` BEFORE DELETE ON `usuario` FOR EACH ROW BEGIN
@@ -692,8 +691,8 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estructura Stand-in para la vista `vistapagosexitosos`
--- (Véase abajo para la vista actual)
+-- Stand-in structure for view `vistapagosexitosos`
+-- (See below for the actual view)
 --
 CREATE TABLE `vistapagosexitosos` (
 `codigoFactura` varchar(20)
@@ -704,8 +703,8 @@ CREATE TABLE `vistapagosexitosos` (
 -- --------------------------------------------------------
 
 --
--- Estructura Stand-in para la vista `vistaproximasagendas`
--- (Véase abajo para la vista actual)
+-- Stand-in structure for view `vistaproximasagendas`
+-- (See below for the actual view)
 --
 CREATE TABLE `vistaproximasagendas` (
 `fecha` date
@@ -716,8 +715,8 @@ CREATE TABLE `vistaproximasagendas` (
 -- --------------------------------------------------------
 
 --
--- Estructura Stand-in para la vista `vistarankingservicios`
--- (Véase abajo para la vista actual)
+-- Stand-in structure for view `vistarankingservicios`
+-- (See below for the actual view)
 --
 CREATE TABLE `vistarankingservicios` (
 `nombreServicio` varchar(60)
@@ -727,7 +726,7 @@ CREATE TABLE `vistarankingservicios` (
 -- --------------------------------------------------------
 
 --
--- Estructura para la vista `vistapagosexitosos`
+-- Structure for view `vistapagosexitosos`
 --
 DROP TABLE IF EXISTS `vistapagosexitosos`;
 
@@ -736,7 +735,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Estructura para la vista `vistaproximasagendas`
+-- Structure for view `vistaproximasagendas`
 --
 DROP TABLE IF EXISTS `vistaproximasagendas`;
 
@@ -745,32 +744,32 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Estructura para la vista `vistarankingservicios`
+-- Structure for view `vistarankingservicios`
 --
 DROP TABLE IF EXISTS `vistarankingservicios`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vistarankingservicios`  AS SELECT `s`.`nombreServicio` AS `nombreServicio`, count(`c`.`idCita`) AS `vecesSolicitado` FROM (`servicio` `s` left join `cita` `c` on(`s`.`idServicio` = `c`.`idServicioFk`)) GROUP BY `s`.`nombreServicio` ;
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `agenda`
+-- Indexes for table `agenda`
 --
 ALTER TABLE `agenda`
   ADD PRIMARY KEY (`idAgenda`),
   ADD KEY `fk_agenda_barbero` (`idBarberoFk`);
 
 --
--- Indices de la tabla `auth_group`
+-- Indexes for table `auth_group`
 --
 ALTER TABLE `auth_group`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indices de la tabla `auth_group_permissions`
+-- Indexes for table `auth_group_permissions`
 --
 ALTER TABLE `auth_group_permissions`
   ADD PRIMARY KEY (`id`),
@@ -778,21 +777,21 @@ ALTER TABLE `auth_group_permissions`
   ADD KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`);
 
 --
--- Indices de la tabla `auth_permission`
+-- Indexes for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`);
 
 --
--- Indices de la tabla `auth_user`
+-- Indexes for table `auth_user`
 --
 ALTER TABLE `auth_user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indices de la tabla `auth_user_groups`
+-- Indexes for table `auth_user_groups`
 --
 ALTER TABLE `auth_user_groups`
   ADD PRIMARY KEY (`id`),
@@ -800,7 +799,7 @@ ALTER TABLE `auth_user_groups`
   ADD KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`);
 
 --
--- Indices de la tabla `auth_user_user_permissions`
+-- Indexes for table `auth_user_user_permissions`
 --
 ALTER TABLE `auth_user_user_permissions`
   ADD PRIMARY KEY (`id`),
@@ -808,14 +807,14 @@ ALTER TABLE `auth_user_user_permissions`
   ADD KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`);
 
 --
--- Indices de la tabla `barbero`
+-- Indexes for table `barbero`
 --
 ALTER TABLE `barbero`
   ADD PRIMARY KEY (`idBarbero`),
   ADD KEY `fk_barbero_usuario` (`idUsuarioFk`);
 
 --
--- Indices de la tabla `cita`
+-- Indexes for table `cita`
 --
 ALTER TABLE `cita`
   ADD PRIMARY KEY (`idCita`),
@@ -827,14 +826,14 @@ ALTER TABLE `cita`
   ADD KEY `fk_cita_pago` (`idPagoFk`);
 
 --
--- Indices de la tabla `cliente`
+-- Indexes for table `cliente`
 --
 ALTER TABLE `cliente`
   ADD PRIMARY KEY (`idCliente`),
   ADD KEY `fk_cliente_usuario` (`idUsuarioFk`);
 
 --
--- Indices de la tabla `django_admin_log`
+-- Indexes for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
   ADD PRIMARY KEY (`id`),
@@ -842,45 +841,45 @@ ALTER TABLE `django_admin_log`
   ADD KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`);
 
 --
--- Indices de la tabla `django_content_type`
+-- Indexes for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`);
 
 --
--- Indices de la tabla `django_migrations`
+-- Indexes for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `django_session`
+-- Indexes for table `django_session`
 --
 ALTER TABLE `django_session`
   ADD PRIMARY KEY (`session_key`),
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
 
 --
--- Indices de la tabla `pago`
+-- Indexes for table `pago`
 --
 ALTER TABLE `pago`
   ADD PRIMARY KEY (`idPago`);
 
 --
--- Indices de la tabla `rol`
+-- Indexes for table `rol`
 --
 ALTER TABLE `rol`
   ADD PRIMARY KEY (`idRol`);
 
 --
--- Indices de la tabla `servicio`
+-- Indexes for table `servicio`
 --
 ALTER TABLE `servicio`
   ADD PRIMARY KEY (`idServicio`);
 
 --
--- Indices de la tabla `usuario`
+-- Indexes for table `usuario`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`idUsuario`),
@@ -889,156 +888,156 @@ ALTER TABLE `usuario`
   ADD KEY `fk_usuario_rol` (`idRolFk`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `agenda`
+-- AUTO_INCREMENT for table `agenda`
 --
 ALTER TABLE `agenda`
   MODIFY `idAgenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT de la tabla `auth_group`
+-- AUTO_INCREMENT for table `auth_group`
 --
 ALTER TABLE `auth_group`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `auth_group_permissions`
+-- AUTO_INCREMENT for table `auth_group_permissions`
 --
 ALTER TABLE `auth_group_permissions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `auth_permission`
+-- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
--- AUTO_INCREMENT de la tabla `auth_user`
+-- AUTO_INCREMENT for table `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT de la tabla `auth_user_groups`
+-- AUTO_INCREMENT for table `auth_user_groups`
 --
 ALTER TABLE `auth_user_groups`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `auth_user_user_permissions`
+-- AUTO_INCREMENT for table `auth_user_user_permissions`
 --
 ALTER TABLE `auth_user_user_permissions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `barbero`
+-- AUTO_INCREMENT for table `barbero`
 --
 ALTER TABLE `barbero`
   MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla `cita`
+-- AUTO_INCREMENT for table `cita`
 --
 ALTER TABLE `cita`
   MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT de la tabla `cliente`
+-- AUTO_INCREMENT for table `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT de la tabla `django_admin_log`
+-- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `django_content_type`
+-- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT de la tabla `django_migrations`
+-- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT de la tabla `pago`
+-- AUTO_INCREMENT for table `pago`
 --
 ALTER TABLE `pago`
   MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT de la tabla `rol`
+-- AUTO_INCREMENT for table `rol`
 --
 ALTER TABLE `rol`
   MODIFY `idRol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `servicio`
+-- AUTO_INCREMENT for table `servicio`
 --
 ALTER TABLE `servicio`
-  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
--- AUTO_INCREMENT de la tabla `usuario`
+-- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- Restricciones para tablas volcadas
+-- Constraints for dumped tables
 --
 
 --
--- Filtros para la tabla `agenda`
+-- Constraints for table `agenda`
 --
 ALTER TABLE `agenda`
   ADD CONSTRAINT `fk_agenda_barbero` FOREIGN KEY (`idBarberoFk`) REFERENCES `barbero` (`idBarbero`);
 
 --
--- Filtros para la tabla `auth_group_permissions`
+-- Constraints for table `auth_group_permissions`
 --
 ALTER TABLE `auth_group_permissions`
   ADD CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
   ADD CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`);
 
 --
--- Filtros para la tabla `auth_permission`
+-- Constraints for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
   ADD CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`);
 
 --
--- Filtros para la tabla `auth_user_groups`
+-- Constraints for table `auth_user_groups`
 --
 ALTER TABLE `auth_user_groups`
   ADD CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
   ADD CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 --
--- Filtros para la tabla `auth_user_user_permissions`
+-- Constraints for table `auth_user_user_permissions`
 --
 ALTER TABLE `auth_user_user_permissions`
   ADD CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
   ADD CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 --
--- Filtros para la tabla `barbero`
+-- Constraints for table `barbero`
 --
 ALTER TABLE `barbero`
   ADD CONSTRAINT `fk_barbero_usuario` FOREIGN KEY (`idUsuarioFk`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `cita`
+-- Constraints for table `cita`
 --
 ALTER TABLE `cita`
   ADD CONSTRAINT `fk_cita_agenda` FOREIGN KEY (`idAgendaFk`) REFERENCES `agenda` (`idAgenda`),
@@ -1048,20 +1047,20 @@ ALTER TABLE `cita`
   ADD CONSTRAINT `fk_cita_servicio` FOREIGN KEY (`idServicioFk`) REFERENCES `servicio` (`idServicio`);
 
 --
--- Filtros para la tabla `cliente`
+-- Constraints for table `cliente`
 --
 ALTER TABLE `cliente`
   ADD CONSTRAINT `fk_cliente_usuario` FOREIGN KEY (`idUsuarioFk`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `django_admin_log`
+-- Constraints for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
   ADD CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   ADD CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 --
--- Filtros para la tabla `usuario`
+-- Constraints for table `usuario`
 --
 ALTER TABLE `usuario`
   ADD CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`idRolFk`) REFERENCES `rol` (`idRol`);
