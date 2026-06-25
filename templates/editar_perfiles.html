@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container dashboard-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger bg-danger{% else %}alert-success bg-success{% endif %} alert-dismissible fade show text-white border-0" role="alert">
+                {% if message.tags == 'error' %}
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {% else %}
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                {% endif %}
+                {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h1 class="main-title">Gestión de Perfiles</h1>
+
+    <div class="panel-bg">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="text-white-50 m-0"><i class="bi bi-people me-2"></i>Clientes y Barberos</h5>
+            </div>
+
+        <div class="row table-header px-3 d-none d-md-flex">
+            <div class="col-md-3">Nombre Completo</div>
+            <div class="col-md-3">Correo Electrónico</div>
+            <div class="col-md-2">Número de contacto</div>
+            <div class="col-md-3">Asignar Rol</div>
+            <div class="col-md-1 text-center">Acción</div>
+        </div>
+
+        <form method="POST" action="{% url 'editar_perfiles' %}">
+            {% csrf_token %}
+            <div class="scrollable-panel">
+                {% for usuario in usuarios %}
+                <input type="hidden" name="usuario_id" value="{{ usuario.idusuario }}">
+                <div class="row profile-row mx-0">
+                    <div class="col-md-3 mb-2 mb-md-0">
+                        <input type="text" class="form-control form-control-custom" value="{{ usuario.nombre }}" readonly disabled>
+                    </div>
+                    <div class="col-md-3 mb-2 mb-md-0">
+                        <input type="email" name="correo_{{ usuario.idusuario }}" class="form-control form-control-custom" value="{{ usuario.correo }}" required>
+                    </div>
+                    <div class="col-md-2 mb-2 mb-md-0">
+                        <input type="text" name="celular_{{ usuario.idusuario }}" class="form-control form-control-custom" value="{{ usuario.numcelular }}" required>
+                    </div>
+                    <div class="col-md-3 mb-2 mb-md-0">
+                        <select name="rol_{{ usuario.idusuario }}" class="form-select form-control-custom">
+                            {% for rol in roles_disponibles %}
+                                <option value="{{ rol.idrol }}" {% if usuario.idrolfk_id == rol.idrol %}selected{% endif %}>
+                                    {{ rol.nombrerol }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-flex justify-content-center">
+                        <a href="{% url 'eliminar_perfil' usuario.idusuario %}" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente a este usuario y sus perfiles relacionados?');">
+                            <i class="bi bi-trash-fill"></i>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-person-x-fill display-4 d-block mb-3"></i>
+                    No hay registros de clientes o barberos activos.
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-secondary">
+                <a href="{% url 'home' %}" class="btn-return">Regresar</a>
+                <button type="submit" name="guardar_cambios" class="btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

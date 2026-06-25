@@ -1,11 +1,9 @@
+# usuarios/urls.py
 from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Esta es la ruta para http://127.0.0.1:8000/
     path('', views.home, name='home'), 
-    
-    # Esta es la ruta para http://127.0.0.1:8000/registrarse/
     path('registrarse/', views.registrarse, name='registrarse'),
     path('panel-barbero/', views.panel_barbero, name='panel_barbero'),
     path('completar-cita/<int:cita_id>/', views.completar_cita, name='completar_cita'),
@@ -15,4 +13,8 @@ urlpatterns = [
     path('cambiar-contrasena/<str:token>/', views.cambiar_contrasena, name='cambiar_contrasena'),
     path('perfil/', views.perfil_usuario, name='perfil_usuario'),
     path('perfil/guardar/', views.guardar_perfil, name='guardar_perfil'),
+
+    # Rutas del Panel de Administración para perfiles
+    path('dashboard/perfiles/', views.editar_perfiles_admin, name='editar_perfiles'),
+    path('dashboard/perfiles/eliminar/<int:usuario_id>/', views.eliminar_perfil, name='eliminar_perfil'),
 ]

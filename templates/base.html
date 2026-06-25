@@ -52,7 +52,7 @@
                         {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Reportes</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Usuarios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
                         
                         {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
@@ -115,7 +115,7 @@
                         {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="#">Reportes</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Usuarios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
                         
                         {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
