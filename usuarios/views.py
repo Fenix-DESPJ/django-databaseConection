@@ -303,3 +303,59 @@ def cambiar_contrasena(request, token):
             messages.error(request, "Las contraseñas no coinciden. Inténtalo de nuevo.")
 
     return render(request, 'cambiar_contrasena.html')
+
+def perfil_usuario(request):
+    return render(request, 'perfil.html')
+
+
+@login_required
+def perfil_usuario(request):
+    try:
+        # Buscamos al usuario en tu tabla manual mediante el correo de Django
+        usuario_manual = Usuario.objects.get(correo=request.user.email)
+    except Usuario.DoesNotExist:
+        messages.error(request, "No se encontraron datos registrados para este usuario.")
+        return redirect('home')
+        
+    # Enviamos 'usuario' para que pinte los datos correctamente en el HTML
+    return render(request, 'perfil.html', {'usuario': usuario_manual})
+
+
+@login_required
+def guardar_perfil(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        telefono = request.POST.get('telefono')
+        password_actual = request.POST.get('password_actual')
+        password_nueva = request.POST.get('password_nueva')
+        
+        user_django = authenticate(username=request.user.username, password=password_actual)
+        
+        if user_django is not None:
+            try:
+                usuario_manual = Usuario.objects.get(correo=request.user.email)
+                
+                # 1. Actualizar en la base de datos
+                usuario_manual.nombre = nombre
+                usuario_manual.numcelular = telefono
+                
+                # ========================================================
+                # 2. ¡AQUÍ ESTÁ EL TRUCO! Actualizamos la sesión del navegador
+                # ========================================================
+                request.session['usuario_nombre'] = nombre
+                
+                if password_nueva and password_nueva.strip() != "":
+                    usuario_manual.contrasena = make_password(password_nueva)
+                    user_django.set_password(password_nueva)
+                    user_django.save()
+                    auth_login(request, user_django)
+                
+                usuario_manual.save()
+                messages.success(request, "¡Perfil actualizado con éxito!")
+                
+            except Exception as e:
+                messages.error(request, f"Ocurrió un error al guardar los datos: {e}")
+        else:
+            messages.error(request, "La contraseña actual es incorrecta. No se realizaron cambios.")
+            
+    return redirect('perfil_usuario')

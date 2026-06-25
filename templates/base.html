@@ -16,21 +16,15 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark py-3 fixed-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}" id="brand-area">
-            <a class="navbar-brand d-flex align-items-center" 
+        <a class="navbar-brand d-flex align-items-center" 
             href="{% if request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}{% url 'panel_barbero' %}{% else %}{% url 'home' %}{% endif %}" 
             id="brand-area">
 
-                {% if request.session.sesion_iniciada %}
-                <i class="bi bi-gear text-white me-2" id="gear-icon-desktop" style="font-size:1.5rem; cursor:pointer;"
-                    data-bs-toggle="offcanvas" data-bs-target="#sidebarPerfil" aria-controls="sidebarPerfil"></i>
-                {% else %}
-                <div id="logo-container" class="d-flex align-items-center">
-                    <img src="{% static 'img/logo.jpeg' %}" alt="Logo M&A" class="logo me-2"
-                        style="width: 40px; height: 40px; border-radius: 50%;">
-                </div>
-                {% endif %}
-
+            <div id="logo-container" class="d-flex align-items-center">
+                <img src="{% static 'img/logo.jpeg' %}" alt="Logo M&A" class="logo me-2"
+                    style="width: 40px; height: 40px; border-radius: 50%;">
+            </div>
+                
                 <div class="brand-text">
                     <span class="brand-title">M&A Barber Shop</span>
                     <small class="brand-role" id="brand-role">
@@ -69,6 +63,7 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'crear_reserva' %}">Agendar</a></li>
                         {% endif %}
 

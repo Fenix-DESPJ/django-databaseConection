@@ -13,4 +13,6 @@ urlpatterns = [
     path('cerrar-sesion/', views.cerrar_sesion, name='cerrar_sesion'),
     path('olvide-contrasena/', views.olvide_contrasena, name='olvide_contrasena'),
     path('cambiar-contrasena/<str:token>/', views.cambiar_contrasena, name='cambiar_contrasena'),
+    path('perfil/', views.perfil_usuario, name='perfil_usuario'),
+    path('perfil/guardar/', views.guardar_perfil, name='guardar_perfil'),
 ]
