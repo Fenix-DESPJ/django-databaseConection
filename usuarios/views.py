@@ -1,3 +1,4 @@
+# usuarios/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -10,10 +11,9 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
-from django.contrib.auth.hashers import make_password
 
 # Importación de tus modelos manuales
-from .models import Usuario, Rol, Cita, Servicio
+from .models import Usuario, Rol, Cita, Servicio, Cliente
 from negocio.models import Barbero, Agenda
 
 # =========================================================================
@@ -25,11 +25,9 @@ def iniciar_sesion(request):
         contrasena_input = request.POST.get('contrasena')
         rol_formulario = request.POST.get('rol')  
         
-        # 1. Aseguramos que el rol del HTML venga limpio y en minúsculas
         if rol_formulario:
             rol_formulario = str(rol_formulario).lower().strip()
         
-        # Mapeo manual super estricto
         rol_esperado_id = None
         if rol_formulario in ['admin', 'administrador']:
             rol_esperado_id = 1  
@@ -47,7 +45,6 @@ def iniciar_sesion(request):
             try:
                 usuario_manual = Usuario.objects.get(correo=user.email)
                 
-                # Intentamos obtener el ID del rol de dos maneras por seguridad
                 try:
                     rol_actual_id = usuario_manual.idrolfk.idrol
                 except Exception:
@@ -56,21 +53,17 @@ def iniciar_sesion(request):
                 print(f"Usuario encontrado en MySQL: {usuario_manual.nombre}")
                 print(f"Rol ID real en la Base de Datos: {rol_actual_id}")
                 
-                # 2. Control de seguridad
                 if rol_actual_id != rol_esperado_id:
                     print(f"BLOQUEO: Roles no coinciden (DB: {rol_actual_id} vs Form: {rol_esperado_id})")
                     messages.error(request, "El usuario no corresponde al rol seleccionado.")
                     return redirect('iniciar_sesion')
 
-                # 3. Loguear al usuario en Django
                 auth_login(request, user)
                 
-                # Variables de sesión para el navbar
                 request.session['sesion_iniciada'] = True
                 request.session['usuario_nombre'] = user.first_name if user.first_name else user.username
                 request.session['usuario_rol_id'] = int(rol_actual_id)
                 
-                # 4. REDIRECCIÓN FORZADA DE SEGURIDAD (Convertimos a int para asegurar)
                 rol_final = int(rol_actual_id)
                 
                 if rol_final == 1:
@@ -93,26 +86,19 @@ def iniciar_sesion(request):
             return redirect('iniciar_sesion')
             
     return render(request, 'iniciarsesion.html')
+
 # =========================================================================
 # 2. VISTA: CERRAR SESIÓN
-# ======================================================o===================
+# =========================================================================
 def cerrar_sesion(request):
-    # 1. Desloguear de Django nativo
     auth_logout(request)
-    
-    # 2. Eliminamos los datos manuales de sesión de la memoria
     if 'sesion_iniciada' in request.session:
         del request.session['sesion_iniciada']
     if 'usuario_nombre' in request.session:
         del request.session['usuario_nombre']
         
-    # Limpieza total y destrucción de la cookie de sesión por seguridad
     request.session.flush() 
-    
-    # 3. Mensaje de éxito para el usuario
     messages.success(request, "Has cerrado sesión exitosamente. ¡Vuelve pronto!")
-    
-    # 4. Redirigir al formulario de login limpio
     return redirect('iniciar_sesion')
 
 # =========================================================================
@@ -121,7 +107,6 @@ def cerrar_sesion(request):
 def registrarse(request):
     if request.method == 'POST':
         try:
-            # 1. Capturar datos del formulario HTML
             nombre = request.POST.get('nombre')
             apellido = request.POST.get('apellido')
             cedula = request.POST.get('cedula')
@@ -130,10 +115,8 @@ def registrarse(request):
             telefono = request.POST.get('telefono')
             fecha = request.POST.get('fecha')
             
-            # 2. Buscar el Rol en tu tabla manual (ID 3 = Cliente)
             rol_cliente = Rol.objects.get(idrol=3)
 
-            # 3. GUARDAR EN TU TABLA MANUAL ('usuario') en minúsculas
             nuevo_usuario_manual = Usuario.objects.create(
                 cedula=cedula,
                 nombre=f"{nombre} {apellido}",
@@ -144,7 +127,6 @@ def registrarse(request):
                 idrolfk=rol_cliente
             )
 
-            # 4. GUARDAR EN LA TABLA NATIVA DE DJANGO ('auth_user')
             nuevo_usuario_django = User.objects.create_user(
                 username=correo,
                 email=correo,
@@ -175,50 +157,31 @@ def home(request):
 @login_required
 def panel_barbero(request):
     try:
-        # 1. Buscamos usando 'correo' que es el atributo real en tu modelo Django
         usuario_manual = Usuario.objects.get(correo=request.user.email)
-        
-        # 2. Verificamos que tenga Rol de Barbero (ID 2) usando 'idrolfk_id'
         if usuario_manual.idrolfk_id != 2:
             print(f"DEBUG PANEL: Acceso denegado para {usuario_manual.nombre}. Rol actual: {usuario_manual.idrolfk_id}")
             return redirect('home')
         
-        # 3. Buscamos su perfil operativo usando el campo correcto en minúsculas (idusuariofk)
-        # Nota: Si te da error en 'idusuariofk', cámbialo a 'idusuario' o 'idusuarioFk' según tu modelo.
         barbero_perfil = Barbero.objects.get(idusuariofk=usuario_manual)
         
     except (Usuario.DoesNotExist, Barbero.DoesNotExist):
         print("DEBUG PANEL: El usuario o perfil de barbero no existe.")
         return redirect('home')
 
-    # 4. Obtener la fecha del día de hoy del servidor
     hoy = timezone.now().date()
-
-    # 5. Filtrar las citas usando los nombres en minúsculas estándar de Django ORM
     citas_hoy = Cita.objects.filter(
         idbarberofk=barbero_perfil, 
         idagendafk__fecha=hoy
     ).order_by('idagendafk__horainicio')
 
-    # ========================================================
-    # VARIABLES ESTADÍSTICAS DINÁMICAS (SOLO COMPLETADOS)
-    # ========================================================
     total_citas = citas_hoy.count()
-
-    # Contamos cuántas tienen la palabra "Completado" en observaciones
     completadas = citas_hoy.filter(observaciones__icontains='Completado').count()
-
-    # Filtramos únicamente las citas que ya digan "Completado"
     citas_efectivas = citas_hoy.filter(observaciones__icontains='Completado')
 
-    # Producido Total: Usamos 'idserviciofk__precioservicio' que es el campo real del modelo
     producido_dict = citas_efectivas.aggregate(total=Sum('idserviciofk__precioservicio'))
     producido_total = producido_dict['total'] if producido_dict['total'] is not None else 0.0
-
-    # Comisión Estimada (50% de lo producido completado)
     comision_estimada = float(producido_total) * 0.50
     
-    # 6. Sincronización exacta con las variables de tu barbero.html
     context = {
         'citas': citas_hoy,
         'total_citas': total_citas,
@@ -226,22 +189,16 @@ def panel_barbero(request):
         'producido_total': producido_total,
         'comision_estimada': comision_estimada,
     }
-
     return render(request, 'barbero.html', context)
 
 
 @login_required
 def completar_cita(request, cita_id):
-    # Usando el identificador estándar en minúsculas para Django
     cita = get_object_or_404(Cita, idcita=cita_id)
-    
-    # Marcamos el servicio como realizado
     cita.observaciones = "Completado - Servicio realizado"
     cita.save()
-    
     return redirect('panel_barbero')
 
-#olvide contraseña
 
 def olvide_contrasena(request):
     if request.method == 'POST':
@@ -250,8 +207,7 @@ def olvide_contrasena(request):
         
         if usuario:
             signer = TimestampSigner()
-            token = signer.sign(usuario.idusuario) # Firmamos el ID del usuario
-            # Construimos la URL
+            token = signer.sign(usuario.idusuario) 
             link = request.build_absolute_uri(reverse('cambiar_contrasena', args=[token]))
             
             send_mail(
@@ -265,10 +221,10 @@ def olvide_contrasena(request):
             
     return render(request, 'olvide_contrasena.html')
 
+
 def cambiar_contrasena(request, token):
     signer = TimestampSigner()
     try:
-        # El enlace expira en 3600 segundos (1 hora)
         id_usuario = signer.unsign(token, max_age=3600)
         usuario = Usuario.objects.get(pk=id_usuario)
     except SignatureExpired:
@@ -283,18 +239,14 @@ def cambiar_contrasena(request, token):
         confirmar = request.POST.get('confirmar')
         
         if nueva_pass == confirmar:
-            # 1. Guardamos en tu tabla personalizada
             usuario.contrasena = make_password(nueva_pass)
             usuario.save()
             
-            # 2. Sincronizamos con la tabla auth_user de Django (para que el login funcione)
             try:
-                # Asumiendo que el campo 'correo' en tu tabla 'usuario' es el username de Django
                 user_auth = User.objects.get(username=usuario.correo) 
                 user_auth.set_password(nueva_pass)
                 user_auth.save()
             except User.DoesNotExist:
-                # Si el usuario no existe en la tabla de auth, no pasa nada
                 pass
 
             messages.success(request, "Contraseña actualizada correctamente. Ya puedes iniciar sesión.")
@@ -303,3 +255,106 @@ def cambiar_contrasena(request, token):
             messages.error(request, "Las contraseñas no coinciden. Inténtalo de nuevo.")
 
     return render(request, 'cambiar_contrasena.html')
+
+
+# =========================================================================
+# 6. VISTAS: ADMINISTRACIÓN - EDICIÓN DE PERFILES
+# =========================================================================
+
+def editar_perfiles_admin(request):
+    ID_ROL_BARBERO = 2
+    ID_ROL_CLIENTE = 3
+
+    rol_barbero = get_object_or_404(Rol, pk=ID_ROL_BARBERO)
+    rol_cliente = get_object_or_404(Rol, pk=ID_ROL_CLIENTE)
+    
+    # PROCESAR GUARDAR CAMBIOS (SE MANTEIENE)
+    if request.method == 'POST' and 'guardar_cambios' in request.POST:
+        usuarios_ids = request.POST.getlist('usuario_id')
+        
+        for u_id in usuarios_ids:
+            usuario = get_object_or_404(Usuario, pk=u_id)
+            
+            nuevo_correo = request.POST.get(f'correo_{u_id}')
+            nuevo_celular = request.POST.get(f'celular_{u_id}')
+            nuevo_rol_id = request.POST.get(f'rol_{u_id}')
+            
+            if nuevo_correo: 
+                antiguo_correo = usuario.correo
+                usuario.correo = nuevo_correo
+            if nuevo_celular: 
+                usuario.numcelular = nuevo_celular
+            
+            if nuevo_correo and antiguo_correo != nuevo_correo:
+                User.objects.filter(username=antiguo_correo).update(username=nuevo_correo, email=nuevo_correo)
+            
+            if nuevo_rol_id:
+                rol_final_id = int(nuevo_rol_id)
+                
+                if usuario.idrolfk_id == ID_ROL_CLIENTE and rol_final_id == ID_ROL_BARBERO:
+                    usuario.idrolfk = rol_barbero
+                    Barbero.objects.get_or_create(idusuariofk=usuario)
+                    Cliente.objects.filter(idusuariofk=usuario).delete()
+                
+                elif usuario.idrolfk_id == ID_ROL_BARBERO and rol_final_id == ID_ROL_CLIENTE:
+                    usuario.idrolfk = rol_cliente
+                    Cliente.objects.get_or_create(idusuariofk=usuario)
+                    Barbero.objects.filter(idusuariofk=usuario).delete()
+            
+            usuario.save()
+            
+        messages.success(request, "¡Los perfiles se actualizaron correctamente!")
+        return redirect('editar_perfiles')
+
+    # EL BLOQUE DE 'agregar_barbero' HA SIDO REMOVIDO DE AQUÍ
+
+    # OBTENER DATOS PARA EL TEMPLATE
+    usuarios = Usuario.objects.filter(idrolfk_id__in=[ID_ROL_BARBERO, ID_ROL_CLIENTE]).order_by('nombre')
+    roles_disponibles = Rol.objects.filter(idrol__in=[ID_ROL_BARBERO, ID_ROL_CLIENTE])
+
+    return render(request, 'editar_perfiles.html', {
+        'usuarios': usuarios,
+        'roles_disponibles': roles_disponibles
+    })
+
+
+def eliminar_perfil(request, usuario_id):
+    usuario = get_object_or_404(Usuario, pk=usuario_id)
+    nombre_eliminado = usuario.nombre
+    correo_eliminado = usuario.correo
+    
+    # 1. Verificar si tiene un perfil de cliente asociado
+    cliente_perfil = Cliente.objects.filter(idusuariofk=usuario).first()
+    
+    if cliente_perfil:
+        # 2. Buscar si el cliente tiene citas pendientes (que no estén marcadas como "Completado")
+        citas_pendientes = Cita.objects.filter(idclientefk=cliente_perfil).exclude(observaciones__icontains='Completado')
+        
+        if citas_pendientes.exists():
+            # Si existen citas activas, se detiene la eliminación y se lanza la alerta
+            num_citas = citas_pendientes.count()
+            messages.error(
+                request, 
+                f"No se puede eliminar a '{nombre_eliminado}' porque tiene {num_citas} cita(s) pendiente(s). "
+                f"Por favor, completa o cancela sus citas antes de remover su cuenta."
+            )
+            return redirect('editar_perfiles')
+        
+        # 3. Si no tiene citas pendientes pero tiene historial de citas completadas,
+        # debemos eliminarlas primero para evitar el IntegrityError (restricción FK)
+        Cita.objects.filter(idclientefk=cliente_perfil).delete()
+
+    # 4. Si es un barbero, también limpiamos sus relaciones antes de borrarlo
+    barbero_perfil = Barbero.objects.filter(idusuariofk=usuario).first()
+    if barbero_perfil:
+        # Opcional: Puedes replicar la validación aquí si los barberos tienen agendas activas
+        Cita.objects.filter(idbarberofk=barbero_perfil).delete()
+
+    # 5. Eliminar de forma segura perfiles hijos y registros principales
+    Cliente.objects.filter(idusuariofk=usuario).delete()
+    Barbero.objects.filter(idusuariofk=usuario).delete()
+    usuario.delete()
+    User.objects.filter(username=correo_eliminado).delete()
+    
+    messages.success(request, f"Se ha eliminado a {nombre_eliminado} de forma permanente.")
+    return redirect('editar_perfiles')

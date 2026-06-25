@@ -44,9 +44,6 @@ class Cliente(models.Model):
 class Servicio(models.Model):
     idservicio = models.AutoField(db_column='idServicio', primary_key=True)
     nombreservicio = models.CharField(db_column='nombreServicio', max_length=45)
-    
-    # CORRECCIÓN AQUÍ: db_column='precio' (o 'precioservicio' según tu tabla física)
-    # Si en tu MySQL la columna se llama solo 'precio', déjala así:
     precioservicio = models.DecimalField(db_column='precio', max_length=10, max_digits=10, decimal_places=2)
 
     class Meta:
@@ -58,7 +55,7 @@ class Servicio(models.Model):
 
 
 class PerfilUsuario(models.Model):
-    id = models.BigAutoField(primary_key=True) # Quita el WARNING del sistema
+    id = models.BigAutoField(primary_key=True)
     ROLES = (
         ('administrador', 'Administrador'),
         ('barbero', 'Barbero'),
@@ -72,7 +69,6 @@ class PerfilUsuario(models.Model):
 class Cita(models.Model):
     idcita = models.AutoField(db_column='idCita', primary_key=True)
     idclientefk = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING, db_column='idClienteFk')
-    # Como Barbero y Agenda viven en la app 'negocio', los apuntamos como 'negocio.Barbero' y 'negocio.Agenda'
     idbarberofk = models.ForeignKey('negocio.Barbero', on_delete=models.DO_NOTHING, db_column='idBarberoFk')
     idserviciofk = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING, db_column='idServicioFk')
     idagendafk = models.ForeignKey('negocio.Agenda', on_delete=models.DO_NOTHING, db_column='idAgendaFk')
