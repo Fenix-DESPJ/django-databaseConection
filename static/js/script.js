@@ -347,29 +347,36 @@ function desactivarModos() {
 // Para editar, necesitamos que al hacer clic la tarjeta siempre intente abrir el modal
 // pero solo si estamos en modo editar.
 function abrirModalEditar(id, nombre, precio, duracion, tipo) {
-    console.log("Clic detectado en modo:", modoActual);
-    if (modoActual !== 'editar') return;
-    console.log("Abriendo modal para ID:", id);
-    // Solo permitimos editar si estamos en el modo correcto
-
-    const form = document.querySelector('.modal-barberia');
-    const urlBase = document.getElementById('url-data').dataset.editarBase;
+    // 1. Obtener referencia al modal y elementos
+    const modal = document.getElementById('modalServicio');
+    const form = document.getElementById('formServicio');
+    const titulo = document.getElementById('modalServicioLabel');
     
+    // 2. Cambiar título y acción del formulario
+    titulo.innerText = "Editar Servicio: " + nombre;
+    
+    // Usamos el data-editar-base que ya tienes en el HTML (reemplazando el 0 por el id real)
+    const urlBase = document.getElementById('url-data').getAttribute('data-editar-base');
     form.action = urlBase.replace('0', id);
-    document.querySelector('input[name="nombreservicio"]').value = nombre;
-    document.querySelector('input[name="precio"]').value = precio;
-    document.querySelector('input[name="duracion"]').value = duracion;
-    document.querySelector('select[name="tiposervicio"]').value = tipo;
     
-    new bootstrap.Modal(document.getElementById('modalServicio')).show();
+    // 3. Llenar los campos del formulario
+    form.querySelector('[name="nombreservicio"]').value = nombre;
+    form.querySelector('[name="precio"]').value = precio;
+    form.querySelector('[name="duracion"]').value = duracion;
+    form.querySelector('[name="tiposervicio"]').value = tipo;
+    
+    // 4. Mostrar el modal
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
 }
 
 function prepararModalCrear() {
-    desactivarModos(); // Limpiamos cualquier modo antes de crear
-    const form = document.querySelector('.modal-barberia');
-    form.action = document.getElementById('url-data').dataset.crear;
-    form.reset();
-    document.getElementById('modalServicioLabel').innerText = "Nuevo Servicio";
+    const form = document.getElementById('formServicio');
+    const titulo = document.getElementById('modalServicioLabel');
+    
+    titulo.innerText = "Nuevo Servicio";
+    form.action = document.getElementById('url-data').getAttribute('data-crear');
+    form.reset(); // Limpiar campos
 }
 
 document.addEventListener('DOMContentLoaded', () => {

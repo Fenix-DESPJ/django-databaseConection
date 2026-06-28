@@ -37,8 +37,12 @@
     <div class="servicios-grid-precios">
         {% for s in servicios %}
         <div class="card-precio" 
-            data-id="{{ s.pk }}" 
             id="card-{{ s.pk }}"
+            data-id="{{ s.pk }}" 
+            data-nombre="{{ s.nombreservicio|escapejs }}" 
+            data-precio="{{ s.precio }}" 
+            data-duracion="{{ s.duracion }}" 
+            data-tipo="{{ s.tiposervicio }}"
             onclick="abrirModalEditar('{{ s.pk }}', '{{ s.nombreservicio|escapejs }}', '{{ s.precio }}', '{{ s.duracion }}', '{{ s.tiposervicio }}')">
             
             <img src="{{ MEDIA_URL }}{{ s.imagen }}" alt="{{ s.nombreservicio }}" class="card-precio-img">
