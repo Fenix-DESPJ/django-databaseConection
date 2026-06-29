@@ -1,71 +1,202 @@
 /* ==========================================================================
-   CONFIGURACIÓN GLOBAL Y VARIABLES
+   HOJA DE ESTILOS — BARBERÍA M&A
+   Reorganizado y sin duplicados (junio 2026)
+
+   Este archivo es el resultado de fusionar todas las reglas repetidas que
+   existían en el CSS original (varios ":root", varios "body", varias veces
+   ".carrusel-container", ".barber-card", ".form-control-custom", etc.)
+   conservando el comportamiento visual que tenías actualmente.
+
+   Donde dos versiones de una misma clase tenían valores distintos (no solo
+   duplicados idénticos), se dejó el valor que YA estaba "ganando" en tu CSS
+   original según el orden de cascada, para no cambiar nada visualmente.
+   Esos puntos quedaron marcados con "⚠ REVISAR" para que los veas fácil.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. VARIABLES GLOBALES
    ========================================================================== */
 :root {
-  /* Paleta de colores principal */
+  /* Paleta principal (tema dorado/negro) */
   --dorado: #FFC600;
   --dorado-oscuro: #BF930D;
   --gris: #565654;
   --gris-oscuro: #30302E;
   --negro: #111111;
+  --negro-tarjeta: #1d1d1d;
   --blanco: #FFFFFF;
-  
-  /* Variables específicas para el Footer (M&A Identidad) */
+
+  /* Variante de marca usada en navbar/reservas ("branding") — mismos tonos,
+     otros nombres de variable, conservados porque otras reglas los usan */
+  --dorado-branding: #FFC600;
+  --dorado-hover: #FFD43E;
+  --gris-borde: #30302E;
+  --negro-absoluto: #111111;
+  --negro-navbar: #000000;
+  --texto-blanco: #FFFFFF;
+  --fuente-titulos: 'Times New Roman', Times, serif;
+  --fuente-cuerpo: 'Segoe UI', Roboto, sans-serif;
+
+  /* Variables del Footer (identidad M&A) */
   --mya-gold-light: #FFD43E;
   --mya-gold: #FFC600;
   --mya-gold-dark: #BF930D;
   --mya-white: #FFFFFF;
-}
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: var(--negro);
-  color: var(--blanco);
-}
-
-/* Tipografías de títulos generales */
-h1, h2, h3, h4 {
-  font-family: "Times New Roman", serif;
+  /* Tema cálido usado en "Editar perfil" (definido pero hoy sobreescrito,
+     ver advertencia en la sección 19) */
+  --bg-dark-page: #161513;
+  --bg-card: #1f1e1b;
+  --bg-input: #262421;
+  --gold-accent: #cca553;
+  --gold-hover: #bca067;
+  --text-light: #f4f2ee;
+  --text-muted: #9e9b96;
 }
 
 /* ==========================================================================
-   SECCIÓN: NAVBAR (Encabezado de navegación)
+   2. BASE / RESET
+   ========================================================================== */
+
+/* ⚠ REVISAR: "body" estaba definido 4 veces con fondos y tipografías
+   distintas (negro+Arial / negro-absoluto+fuente-cuerpo / bg-dark-page
+   tipo "Poppins" / negro+Arial). En cascada, la ÚLTIMA definición es la que
+   realmente se aplica hoy en TODO el sitio, así que el resultado real
+   actual es negro + Arial. Si "Editar perfil" debía verse con fondo cálido
+   y tipografía Poppins, eso NUNCA se está aplicando porque queda tapado por
+   esta regla. Te lo dejo igual a como se ve hoy; si quieres que cada página
+   tenga su propio fondo, lo ideal es mover esos estilos a una clase en el
+   <body> de esa página en concreto (ej. body.pagina-perfil) en vez de "body"
+   a secas. */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--negro);
+  color: var(--blanco);
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--fuente-titulos);
+}
+
+section {
+  scroll-margin-top: 100px;
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.text-gold {
+  color: var(--dorado);
+}
+
+.d-none {
+  display: none !important;
+}
+
+.img-fluid {
+  max-height: 300px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.tracking-wider {
+  letter-spacing: 1.2px;
+}
+
+.fw-black {
+  font-weight: 800;
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.small-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.8px;
+  opacity: 0.5;
+  font-weight: 700;
+}
+
+.text-gradient {
+  background-image: linear-gradient(45deg, #ffc107, #ff9800);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* "sub-bar" (la rayita dorada bajo títulos) estaba definida 2 veces;
+   se conserva la versión que gana actualmente (60px, margin 20px auto) */
+.sub-bar {
+  width: 60px;
+  height: 3px;
+  background: var(--dorado-branding);
+  margin: 20px auto;
+}
+
+/* ==========================================================================
+   3. BOTONES GLOBALES (CTA reutilizados en varias páginas)
+   ========================================================================== */
+
+/* "btn-dorado" estaba definido 2 veces (Inicio y Auth) y su :hover 3 veces
+   (Inicio, Auth, Animaciones). Se conserva el resultado final actual. */
+.btn-dorado {
+  background-color: var(--dorado-branding);
+  color: var(--negro-absoluto);
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-dorado:hover {
+  background-color: #d4af37 !important;
+  color: var(--blanco);
+  transform: scale(1.05);
+}
+
+.btn-borde {
+  border: 1px solid var(--dorado);
+  color: var(--dorado);
+  border-radius: 30px;
+  padding: 12px 30px;
+  transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   4. NAVBAR
    ========================================================================== */
 .navbar {
   background-color: var(--negro);
   border-bottom: 1px solid rgba(255, 198, 0, 0.25);
 }
 
-/* ===== NAVBAR INDICADOR ACTIVO ===== */
-
 .navbar .nav-link {
-    position: relative;
-    color: white;
-    transition: color 0.3s ease;
+  position: relative;
+  color: white;
+  transition: color 0.3s ease;
 }
 
 .navbar .nav-link::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -5px;
-    width: 0;
-    height: 3px;
-    background-color: #FFC600; /* Dorado */
-    border-radius: 10px;
-    transform: translateX(-50%);
-    transition: width 0.3s ease;
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 0;
+  height: 3px;
+  background-color: #FFC600;
+  border-radius: 10px;
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
 }
 
-/* Hover */
-.navbar .nav-link:hover::after {
-    width: 80%;
-}
-
-/* Sección activa */
+.navbar .nav-link:hover::after,
 .navbar .nav-link.active::after {
-    width: 80%;
+  width: 80%;
 }
 
 .logo {
@@ -90,7 +221,6 @@ h1, h2, h3, h4 {
   color: var(--dorado) !important;
 }
 
-/* Botón especial de Agenda en el menú */
 .btn-agenda {
   background-color: var(--dorado);
   color: var(--negro) !important;
@@ -99,8 +229,469 @@ h1, h2, h3, h4 {
   font-weight: bold;
 }
 
+/* --- Variante "custom-navbar" (reservas / páginas internas) --- */
+.custom-navbar {
+  background-color: var(--negro-navbar);
+  border-bottom: 1px solid var(--gris-borde);
+  padding: 18px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-logo {
+  color: var(--dorado-branding);
+  text-decoration: none;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: var(--fuente-titulos);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-navbar {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 35px;
+  margin: 0 30px 0 auto;
+  padding: 0;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  transition: .3s;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: var(--dorado-branding);
+}
+
+.active-link {
+  color: var(--dorado-branding);
+}
+
+.notification-btn {
+  background: transparent;
+  border: none;
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-btn i {
+  color: var(--dorado-branding);
+  font-size: 1.2rem;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  font-size: .65rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- Variante "navbar-barber" (panel del barbero) --- */
+.navbar-barber {
+  background-color: #0b0b0b;
+  border-bottom: 1px solid rgba(255, 198, 0, 0.15);
+  padding: 15px 20px;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: bold;
+}
+
+.logo-nav {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid var(--dorado);
+  object-fit: cover;
+}
+
+.btn-logout {
+  color: #d8d8d8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border: 1px solid #444;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+.btn-logout:hover {
+  background-color: #d9534f;
+  color: white;
+  border-color: #d9534f;
+}
+
+/* --- Área de marca / íconos dinámicos del navbar --- */
+
+/* "#brand-area" estaba definido 2 veces (additivas, sin conflicto):
+   se combinan ambas. El orden frente al @media (min-width:992px) de abajo
+   se conserva para no romper el ajuste de "gap" en escritorio. */
+#brand-area {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 50px;
+  gap: 12px;
+  text-decoration: none;
+}
+
+#gear-icon-desktop {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+#gear-icon-desktop.d-none {
+  display: none !important;
+}
+
+#auth-links.d-none {
+  display: none !important;
+}
+
+#logo-container {
+  display: flex !important;
+}
+
+#dynamic-nav-area {
+  display: flex;
+  align-items: center;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-title {
+  color: var(--dorado-branding);
+  font-family: var(--fuente-titulos);
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.brand-role {
+  color: #e2e2e2;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+#mobile-extra-options {
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100%;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 198, 0, 0.2);
+}
+
+#mobile-extra-options .nav-link {
+  font-size: 1.1rem;
+  padding: 10px 0 !important;
+}
+
+/* --- Media queries de escritorio (≥992px) del navbar/marca --- */
+@media (min-width: 992px) {
+  .col-lg-2-5 {
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+  .d-lg-none {
+    display: none !important;
+  }
+  #dynamic-nav-area {
+    margin-left: auto;
+  }
+  #mobile-bell-container {
+    display: none !important;
+  }
+  #auth-links {
+    display: flex !important;
+    flex-direction: row !important;
+  }
+  body.sesion-iniciada #logo-container {
+    display: none !important;
+  }
+  /* gap de #brand-area un poco mayor en escritorio (sobrescribe el 12px de
+     arriba — se mantiene este orden a propósito) */
+  #brand-area {
+    gap: 15px;
+  }
+}
+
+/* --- Media queries de móvil (≤991px) del navbar/marca --- */
+@media (max-width: 991px) {
+  #auth-links {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  #gear-icon {
+    display: none !important;
+  }
+  .user-welcome-text {
+    display: none !important;
+  }
+  #gear-icon-desktop {
+    display: none !important;
+  }
+}
+
 /* ==========================================================================
-   SECCIÓN: INICIO (Hero Section / Portada)
+   5. MENÚ LATERAL (Escritorio / Móvil)
+   ========================================================================== */
+
+/* "#side-menu" estaba definido 2 veces (la segunda con el gradiente dorado
+   es la que realmente se ve hoy; se conservan también el padding y el color
+   de texto de la primera versión, que seguían aplicándose porque la segunda
+   no los tocaba). */
+#side-menu {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100%;
+  padding: 20px;
+  color: white;
+  background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+  border-right: 2px solid #FFC600;
+  box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+  transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 2000;
+}
+
+#side-menu.active {
+  left: 0;
+}
+
+.menu-header {
+  padding: 30px;
+  border-bottom: 1px solid rgba(255, 198, 0, 0.2);
+  text-align: center;
+}
+
+.menu-items {
+  padding: 20px;
+}
+
+.menu-items a {
+  display: block;
+  padding: 15px 20px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: 0.3s;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.menu-items a:hover {
+  background-color: rgba(255, 198, 0, 0.1);
+  color: #FFC600;
+  padding-left: 30px;
+}
+
+.menu-items a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0;
+  height: 3px;
+  background-color: #FFC600;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.menu-items a.active::after {
+  width: 100%;
+}
+
+#menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1500;
+  display: none;
+}
+
+.close-menu-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.5rem;
+  color: #FFC600;
+  cursor: pointer;
+}
+
+@media (max-width: 991px) {
+  #side-menu {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   6. PANEL DE NOTIFICACIONES
+   ========================================================================== */
+.bi-bell-fill {
+  font-size: 1.2rem;
+  color: var(--dorado);
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  background-color: var(--negro);
+  border: 1px solid var(--dorado);
+}
+
+.dropdown-item {
+  color: var(--blanco);
+}
+
+.dropdown-item:hover {
+  background-color: var(--gris-oscuro);
+}
+
+#notificaciones-panel {
+  position: absolute;
+  top: 70px;
+  right: 15px;
+  width: 340px;
+  background: var(--negro);
+  border: 1px solid #333;
+  border-radius: 16px;
+  display: none;
+  z-index: 9999;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+#notificaciones-panel.active {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+#notificaciones-panel h6 {
+  margin: 0 0 20px 0;
+  color: var(--dorado);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  font-weight: 600;
+}
+
+#notificaciones-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+#notificaciones-panel::-webkit-scrollbar-track {
+  background: #30302E;
+  border-radius: 10px;
+}
+
+#notificaciones-panel::-webkit-scrollbar-thumb {
+  background: #FFC600;
+  border-radius: 10px;
+}
+
+#notificaciones-panel::-webkit-scrollbar-thumb:hover {
+  background: #BF930D;
+}
+
+#lista-notificaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#lista-notificaciones::-webkit-scrollbar {
+  width: 4px;
+}
+
+#lista-notificaciones::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+.notification-item {
+  background: #1a1a1a;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid var(--dorado);
+  transition: transform 0.2s;
+}
+
+.notification-item:hover {
+  transform: translateX(5px);
+  background: #222;
+}
+
+.notification-item strong {
+  display: block;
+  color: #ffffff;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.notification-item small {
+  display: block;
+  color: #888;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   7. INICIO (Hero / Portada)
    ========================================================================== */
 .inicio {
   padding: 90px 0;
@@ -126,213 +717,77 @@ h1, h2, h3, h4 {
   margin-bottom: 30px;
 }
 
-/* Botones de acción (CTA) en Inicio y otras secciones */
-.btn-dorado {
-  background-color: var(--dorado);
-  color: var(--negro);
-  border: none;
-  border-radius: 30px;
-  padding: 12px 30px;
-  font-weight: bold;
+.contenedor-principal-visual {
+  position: relative;
+  width: 100%;
 }
 
-.btn-dorado:hover {
-  background-color: var(--dorado-oscuro);
-  color: var(--blanco);
-}
-
-.btn-borde {
-  border: 1px solid var(--dorado);
-  color: var(--dorado);
-  border-radius: 30px;
-  padding: 12px 30px;
-}
-
-/* Este es el contenedor que debe tener el diseño que buscas */
+/* "carrusel-container" estaba definido 2 veces (520px/borde dorado vs
+   400px/fondo gris claro). Se conserva el resultado final actual:
+   altura 400px + radio 15px (de la 2ª) pero CONSERVANDO el borde dorado
+   de la 1ª, porque la 2ª nunca lo sobrescribió. */
 .carrusel-container {
-    position: relative;
-    width: 100%;
-    height: 520px; /* Ajustado a la altura que querías */
-    border-radius: 35px; /* Bordes redondeados */
-    overflow: hidden;
-    border: 2px solid rgba(255, 198, 0, 0.35); /* El borde dorado que definiste */
+  position: relative;
+  width: 100%;
+  height: 400px;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 198, 0, 0.35);
+  background-color: #f0f0f0;
 }
 
-/* Las imágenes ahora ocupan este espacio con el estilo correcto */
 .carrusel-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  display: block;
+  transition: opacity 1.5s ease-in-out;
 }
 
 .carrusel-container img.active {
-    opacity: 1;
+  opacity: 1;
 }
 
+@media (max-width: 768px) {
+  .inicio h1 {
+    font-size: 2.8rem;
+  }
+  .imagen-principal img {
+    height: 380px;
+  }
+}
+
+/* "tarjeta-flotante" estaba definido 2 veces (versión dorada vs versión
+   negra semitransparente). La versión negra es la que gana hoy, pero
+   conserva la sombra de la versión dorada porque nunca fue sobrescrita.
+   ⚠ REVISAR: el @media (max-width:768px) más abajo intenta poner esta
+   tarjeta en flujo normal ("position: static") en móvil, pero como esta
+   regla va DESPUÉS en tu CSS original y vuelve a fijar "position: absolute"
+   sin condición, ese ajuste para móvil queda sin efecto actualmente. Se
+   conserva tal cual para no cambiar el comportamiento, pero probablemente
+   quieras revisarlo. */
 .tarjeta-flotante {
   position: absolute;
-  bottom: 30px;
-  left: -25px;
-  background-color: var(--dorado);
-  color: var(--negro);
-  padding: 20px;
-  border-radius: 20px;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 15px;
+  border-radius: 10px;
   display: flex;
-  gap: 15px;
   align-items: center;
+  gap: 10px;
+  color: white;
+  z-index: 2;
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* ══════════════════════════════════════════════
-   CSS PARA CARRUSEL DE BARBEROS
-   ══════════════════════════════════════════════ */
-
-.barbers-carousel-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 0 70px;
-    box-sizing: border-box;
-}
-
-.barbers-track-container {
-    overflow: hidden;
-    width: 100%;
-}
-
-.barbers-track {
-    display: flex;
-    gap: 24px;
-    /* Esto es vital para que las cartas se mantengan en una sola fila */
-    flex-wrap: nowrap; 
-}
-
-/* CARD */
-.barber-card {
-    flex: 0 0 calc((100% - 48px) / 3);
-    background-color: #000000;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 198, 0, 0.12);
-    box-shadow: 0 8px 30px #565654;
-    transition: 0.35s ease;
-}
-
-.barbers-carousel-wrapper {
-    background-color: #222220;
-}
-
-.barbers-track-container {
-    background-color: inherit;
-}
-
-.barber-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(255, 198, 0, 0.45);
-    box-shadow: 0 16px 40px rgba(255, 198, 0, 0.12);
-}
-
-.barber-img-wrap {
-    position: relative;
-    height: 340px;
-    overflow: hidden;
-}
-
-.barber-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-    filter: grayscale(20%);
-}
-
-.barber-card:hover .barber-img-wrap img {
-    transform: scale(1.06);
-    filter: grayscale(0%);
-}
-
-.barber-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background: linear-gradient(to top, #565654, transparent);
-}
-
-.barber-info {
-    padding: 20px 22px 24px;
-    text-align: center;
-}
-
-.barber-name {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #ffffff;
-    margin-bottom: 6px;
-}
-
-.barber-specialty {
-    display: block;
-    font-size: 0.80rem;
-    color: #FFC600;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-}
-
-/* FLECHAS */
-.carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background-color: #FFC600;
-    color: #565654;
-    border: none;
-    border-radius: 50%;
-    width: 46px;
-    height: 46px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.carousel-arrow-prev {
-    left: 14px;
-}
-
-.carousel-arrow-next {
-    right: 14px;
-}
-
-/* DOTS */
-.carousel-dots {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 32px;
-}
-
-.carousel-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,198,0,0.5);
-    background-color: transparent;
-    cursor: pointer;
-}
-
-.carousel-dot.active {
-    background-color: #FFC600;
-    transform: scale(1.25);
-}
-
+/* ==========================================================================
+   8. CARRUSEL Y TARJETAS DE BARBEROS
+   ========================================================================== */
 .section-padding {
   padding: 100px 0;
 }
@@ -351,19 +806,320 @@ h1, h2, h3, h4 {
   font-size: 2rem;
 }
 
-.sub-bar {
-  width: 48px;
-  height: 3px;
-  background-color: #FFC600;
-  margin: 15px auto 45px auto;
-}
-
 #barberos {
   background-color: #222220;
 }
 
+.barbers-carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 70px;
+  box-sizing: border-box;
+  background-color: #222220;
+}
+
+.barbers-track-container {
+  overflow: hidden;
+  width: 100%;
+  background-color: inherit;
+}
+
+.barbers-track {
+  display: flex;
+  gap: 24px;
+  flex-wrap: nowrap;
+}
+
+/* "barber-card" tenía 4 bloques (base, will-change/transición de hover,
+   animación de entrada, opacidad inicial). Son complementarios: la
+   transición específica para "transform/box-shadow" reemplaza la genérica
+   de 0.35s que tenía la base, igual que hoy. */
+.barber-card {
+  flex: 0 0 calc(33.333% - 14px); /* (gap de 20px / 3 elementos) */
+  min-width: calc(33.333% - 14px);
+  background-color: #000000;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 198, 0, 0.12);
+  box-shadow: 0 8px 30px #565654;
+  will-change: transform;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 1s ease-out forwards;
+  opacity: 0;
+}
+
+/* ":hover" tenía 2 bloques; se conserva el resultado actual (elevación
+   -10px + sombra negra) y se mantiene el "border-color" dorado porque la
+   segunda versión nunca lo tocó. */
+.barber-card:hover {
+  border-color: rgba(255, 198, 0, 0.45);
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.barber-img-wrap {
+  position: relative;
+  height: 340px;
+  overflow: hidden;
+}
+
+.barber-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  filter: grayscale(20%);
+}
+
+.barber-card:hover .barber-img-wrap img {
+  transform: scale(1.06);
+  filter: grayscale(0%);
+}
+
+.barber-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to top, #565654, transparent);
+}
+
+.barber-info {
+  padding: 20px 22px 24px;
+  text-align: center;
+}
+
+.barber-name {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.barber-specialty {
+  display: block;
+  font-size: 0.80rem;
+  color: #FFC600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: #FFC600;
+  color: #565654;
+  border: none;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.carousel-arrow-prev {
+  left: 14px;
+}
+
+.carousel-arrow-next {
+  right: 14px;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,198,0,0.5);
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.carousel-dot.active {
+  background-color: #FFC600;
+  transform: scale(1.25);
+}
+
 /* ==========================================================================
-   SECCIÓN: MARCA (Nuestra historia y valores)
+   9. SERVICIOS
+   ========================================================================== */
+.servicios-container {
+  padding: 80px 20px;
+  background-color: #111111;
+}
+
+.servicios-container h2 {
+  margin-bottom: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+.servicio-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 20px;
+}
+
+.servicio-card .btn-warning {
+  background-color: #FFC600;
+  border-color: #FFC600;
+  color: #000;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.servicio-card .btn-warning:hover {
+  background-color: #e6b200;
+}
+
+.titulo-card-servicio {
+  color: white;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.descripcion-card-servicio {
+  color: rgba(255,255,255,.65);
+  font-size: .95rem;
+  min-height: 60px;
+  margin-bottom: 20px;
+}
+
+.titulo-servicios {
+  color: white;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.subtitulo-servicios {
+  color: rgba(255,255,255,.65);
+  font-size: 1.05rem;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.servicios-grid-precios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.card-precio {
+  background: linear-gradient(145deg, #151515, #1f1f1f);
+  color: white;
+  padding: 26px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,198,0,0.12);
+  transition: all .35s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 260px;
+}
+
+.card-precio:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255,198,0,.45);
+  box-shadow: 0 20px 40px rgba(0,0,0,.55);
+}
+
+.card-precio h6 {
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.card-precio small {
+  color: #bdbdbd;
+}
+
+.card-precio span {
+  color: #FFC600;
+  font-weight: bold;
+}
+
+.card-precio-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 18px;
+}
+
+.section-badge {
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  color: var(--dorado);
+  border: 1px solid rgba(255,198,0,0.25);
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-servicio-reservar {
+  background: transparent;
+  border: 1px solid var(--dorado);
+  color: var(--dorado);
+  border-radius: 12px;
+  padding: 6px 16px;
+  font-size: .9rem;
+  transition: all .3s ease;
+}
+
+.btn-servicio-reservar:hover {
+  background-color: var(--dorado);
+  color: #111;
+  transform: translateY(-2px);
+}
+
+.btn-regresar-elegante {
+  border: 1px solid rgba(255,198,0,.20);
+  background: transparent;
+  color: #d4d4d4;
+  padding: 10px 18px;
+  border-radius: 12px;
+  transition: all .3s ease;
+}
+
+.btn-regresar-elegante:hover {
+  color: var(--dorado);
+  border-color: var(--dorado);
+  transform: translateX(-4px);
+}
+
+#main-content {
+  padding-top: 100px;
+  min-height: 80vh;
+}
+
+/* ==========================================================================
+   10. MARCA (Historia y valores)
    ========================================================================== */
 .marca {
   background-color: var(--blanco);
@@ -375,7 +1131,6 @@ h1, h2, h3, h4 {
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
-/* Tarjetas de valores (Originalidad, Calidad, etc.) */
 .valor {
   background-color: #f4f4f4;
   padding: 20px;
@@ -385,7 +1140,7 @@ h1, h2, h3, h4 {
 }
 
 /* ==========================================================================
-   SECCIÓN: CTA (Llamada a la acción final)
+   11. CTA (Llamada final)
    ========================================================================== */
 .cta {
   padding: 70px 0;
@@ -393,2236 +1148,1392 @@ h1, h2, h3, h4 {
 }
 
 /* ==========================================================================
-   SECCIÓN: FOOTER Y DATOS DE CONTACTO
+   12. CONTACTO
    ========================================================================== */
-   
-/* Tipografía elegante para el título "Datos De Contacto" */
-.font-elegante {
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-/* Estructura del área gris oscura antes del cierre final */
-.background-datos-inferior {
-    background-color: rgba(20, 20, 20, 0.4);
-    border-radius: 8px 8px 0 0;
-}
-
-/* Estilos de texto para las listas de contacto */
-.small-title-datos {
-    font-size: 0.85rem !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.x-small-text {
-    font-size: 0.75rem !important;
-    line-height: 1.5;
-    opacity: 0.95;
-}
-
-.fs-mini {
-    font-size: 0.68rem !important;
-    display: block;
-    margin-top: 2px;
-}
-
-/* Columna especial de 5 espacios para pantallas grandes */
-@media (min-width: 992px) {
-    .col-lg-2-5 {
-        flex: 0 0 20%;
-        max-width: 20%;
-    }
-}
-
-/* Franja negra final del pie de página */
-.footer-mya {
-    background-color: #1a1a1a;
-    border-top: 1px solid rgba(255, 198, 0, 0.1);
-    width: 100%;
-}
-
-/* Efectos de hover para links de redes sociales */
-.mya-link-hover {
-    transition: color 0.2s ease;
-}
-
-.mya-link-hover:hover {
-    color: var(--mya-white) !important;
-}
-
-/* ==========================================================================
-   RESPONSIVIDAD (Media Queries)
-   ========================================================================== */
-@media (max-width: 768px) {
-  .inicio h1 {
-    font-size: 2.8rem;
-  }
-
-  .imagen-principal img {
-    height: 380px;
-  }
-
-  /* Ajuste de la tarjeta flotante en móviles */
-  .tarjeta-flotante {
-    position: static;
-    margin-top: 20px;
-  }
-}
-
-/* Asegurar que la campanita tenga el estilo correcto */
-.bi-bell-fill {
-    font-size: 1.2rem;
-    color: var(--dorado);
-    cursor: pointer;
-}
-
-.dropdown-menu {
-    background-color: var(--negro);
-    border: 1px solid var(--dorado);
-}
-
-.dropdown-item {
-    color: var(--blanco);
-}
-
-.dropdown-item:hover {
-    background-color: var(--gris-oscuro);
-}
-
-/* Menú lateral (Escritorio) */
-#side-menu {
-    position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
-    background-color: #333; transition: 0.3s; z-index: 1050; padding: 20px; color: white;
-}
-#side-menu.active { left: 0; }
-
-/* Ocultar en móvil para que se muestren en el menú colapsado */
-@media (max-width: 991px) {
-    #side-menu { display: none !important; }
-}
-/* Menu Lateral */
-#side-menu {
-    position: fixed;
-    top: 0;
-    left: -300px;
-    width: 300px;
-    height: 100%;
-    /* Gradiente oscuro que combina con tu barbería */
-    background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
-    border-right: 2px solid #FFC600;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-    transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    z-index: 2000;
-}
-
-#side-menu.active { left: 0; }
-
-.menu-header {
-    padding: 30px;
-    border-bottom: 1px solid rgba(255, 198, 0, 0.2);
-    text-align: center;
-}
-
-.menu-items {
-    padding: 20px;
-}
-
-.menu-items a {
-    display: block;
-    padding: 15px 20px;
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: 0.3s;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.menu-items a:hover {
-    background-color: rgba(255, 198, 0, 0.1);
-    color: #FFC600;
-    padding-left: 30px;
-}
-
-/* Capa oscura (Overlay) */
-#menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Oscuro transparente */
-    z-index: 1500;
-    display: none; /* Oculto por defecto */
-}
-
-/* Botón de cierre (X) */
-.close-menu-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 1.5rem;
-    color: #FFC600;
-    cursor: pointer;
-}
-
-/* Contacto */
-/* Contenedor elegante */
 .mya-contact-section {
-    position: relative;
-    background: #050505;
+  position: relative;
+  background: #050505;
 }
 
 .mya-contact-card {
-    background: linear-gradient(145deg, #0f0f0f, #000000);
-    border: 1px solid #2a2a2a;
-    padding: 3.5rem; /* Aumentamos el padding para hacerlo más grande */
-    border-radius: 20px;
-    min-height: 400px; /* Asegura altura mínima para presencia */
-    transition: all 0.4s ease;
+  background: linear-gradient(145deg, #0f0f0f, #000000);
+  border: 1px solid #2a2a2a;
+  padding: 3.5rem;
+  border-radius: 20px;
+  min-height: 400px;
+  transition: all 0.4s ease;
+}
+
+.mya-contact-card:hover {
+  border-color: var(--mya-gold);
+  box-shadow: 0 0 20px rgba(255, 198, 0, 0.1);
 }
 
 .map-frame iframe {
-    border-radius: 10px;
-    filter: none !important; 
+  border-radius: 10px;
+  filter: none !important;
 }
 
-/* Efecto de borde dorado al pasar el mouse */
-.mya-contact-card:hover {
-    border-color: var(--mya-gold);
-    box-shadow: 0 0 20px rgba(255, 198, 0, 0.1);
-}
-
-/* Títulos con estilo */
 .contact-label {
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--mya-gold);
-    margin-bottom: 1.5rem !important;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--mya-gold);
+  margin-bottom: 1.5rem !important;
 }
 
-/* Estilo para los iconos */
 .icon-box {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 198, 0, 0.1);
-    border-radius: 50%;
-    margin-right: 15px;
-    color: var(--mya-gold);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 198, 0, 0.1);
+  border-radius: 50%;
+  margin-right: 15px;
+  color: var(--mya-gold);
 }
 
-
-@media (min-width: 992px) {
-    .d-lg-none {
-        display: none !important;
-    }
+/* ==========================================================================
+   13. FOOTER
+   ========================================================================== */
+.font-elegante {
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
-@media (max-width: 991px) {
-    /* Asegura el despliegue correcto del auth-links si se requiere al cerrar sesión */
-    #auth-links {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-    }
+.background-datos-inferior {
+  background-color: rgba(20, 20, 20, 0.4);
+  border-radius: 8px 8px 0 0;
 }
 
-/* Asegurar que las opciones de configuración en móvil estén centradas y en columna */
-#mobile-extra-options {
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 100%;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid rgba(255, 198, 0, 0.2);
+.small-title-datos {
+  font-size: 0.85rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-#mobile-extra-options .nav-link {
-    font-size: 1.1rem;
-    padding: 10px 0 !important;
+.x-small-text {
+  font-size: 0.75rem !important;
+  line-height: 1.5;
+  opacity: 0.95;
 }
 
-/* Esto asegura que la marca siempre se comporte igual */
-#brand-area {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 50px; 
+.fs-mini {
+  font-size: 0.68rem !important;
+  display: block;
+  margin-top: 2px;
 }
 
-/* Forzar que el icono de la rueda no aparezca en móvil bajo ninguna circunstancia */
-@media (max-width: 991px) {
-    #gear-icon { display: none !important; }
+.footer-mya {
+  background-color: #1a1a1a;
+  border-top: 1px solid rgba(255, 198, 0, 0.1);
+  width: 100%;
 }
 
-/* Contenedor dinámico (Nombre + Campana) */
-#dynamic-nav-area {
-    display: flex;
-    align-items: center;
+.mya-link-hover {
+  transition: color 0.2s ease;
 }
 
-/* En móvil, ocultamos el nombre del usuario (solo dejamos campana) */
-@media (max-width: 991px) {
-    .user-welcome-text { display: none !important; }
+.mya-link-hover:hover {
+  color: var(--mya-white) !important;
 }
 
-/* En escritorio, aseguramos que el nombre y campana estén a la derecha */
-@media (min-width: 992px) {
-    #dynamic-nav-area { margin-left: auto; }
-    #mobile-bell-container { display: none !important; }
-}
-
-/* Fuerza la ocultación absoluta si no tiene la clase adecuada */
-#gear-icon-desktop.d-none {
-    display: none !important;
-}
-
-#auth-links.d-none {
-    display: none !important;
-}
-
-/* Asegura que d-none oculte completamente */
-.d-none {
-    display: none !important;
-}
-
-/* Fuerza el diseño de fila para el contenedor de botones de auth en escritorio */
-@media (min-width: 992px) {
-    #auth-links {
-        display: flex !important; /* Fuerza la fila en escritorio */
-        flex-direction: row !important;
-    }
-}
-
-/* Regla base: el logo siempre es visible */
-#logo-container { display: flex !important; }
-
-/* Regla condicional: si el body tiene la clase, ocultamos el logo en escritorio */
-@media (min-width: 992px) {
-    body.sesion-iniciada #logo-container { display: none !important; }
-}
-
-/* Panel de notificaciones - Estilo "Elegancia Visual" */
-#notificaciones-panel {
-    position: absolute;
-    top: 70px;
-    right: 15px;
-    width: 340px;
-    background: var(--negro);
-    border: 1px solid #333; /* Borde muy sutil, no brillante */
-    border-radius: 16px;
-    display: none;
-    z-index: 9999;
-    padding: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    /* Animación de apertura fluida */
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    max-height: 400px;
-    overflow-y: auto;
-}
-#notificaciones-panel::-webkit-scrollbar{
-    width: 8px;
-}
-
-/* Fondo de la barra */
-#notificaciones-panel::-webkit-scrollbar-track{
-    background: #30302E;
-    border-radius: 10px;
-}
-
-/* Parte que se mueve */
-#notificaciones-panel::-webkit-scrollbar-thumb{
-    background: #FFC600;
-    border-radius: 10px;
-}
-
-/* Efecto al pasar el mouse */
-#notificaciones-panel::-webkit-scrollbar-thumb:hover{
-    background: #BF930D;
-}
-#notificaciones-panel.active {
-    display: block;
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-/* Título con mucho aire alrededor para que no abrume */
-#notificaciones-panel h6 {
-    margin: 0 0 20px 0;
-    color: var(--dorado);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2rem;
-    font-weight: 600;
-}
-
-/* Contenedor de items con espacio cómodo */
-#lista-notificaciones {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Espacio cómodo entre notificaciones */
-}
-
-/* Notificación estilizada: Diseño de tarjeta flotante */
-.notification-item {
-    background: #1a1a1a; /* Un gris muy oscuro que destaca sobre el negro del panel */
-    padding: 16px;
-    border-radius: 12px;
-    border-left: 4px solid var(--dorado); /* Solo el acento dorado */
-    transition: transform 0.2s;
-}
-
-.notification-item strong {
-    display: block;
-    color: #ffffff; /* Blanco suave */
-    font-size: 0.9rem;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-.notification-item small {
-    display: block;
-    color: #888; /* Gris plata suave, cómodo de leer */
-    font-size: 0.8rem;
-    line-height: 1.5;
-}
-
-/* Efecto hover elegante */
-.notification-item:hover {
-    transform: translateX(5px);
-    background: #222;
-}
-
-/* Scrollbar minimalista */
-#lista-notificaciones::-webkit-scrollbar { width: 4px; }
-#lista-notificaciones::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-/* --- SECCIÓN SERVICIOS: Ajustes de acabado --- */
-
-.servicios-container {
-    padding: 80px 20px;
-    background-color: #111111;
-}
-
-.servicios-grid {
-    display: grid;
-    /* Esto crea el grid responsivo automáticamente */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    max-width: 1200px;
-    margin: 40px auto;
-}
-
-
-.servicio-img {
-    width: 100%;
-    height: 280px; /* Altura fija para que todas las tarjetas sean iguales */
-    object-fit: cover;
-    border-radius: 15px;
-    margin-bottom: 20px;
-}
-
-/* Para que el botón de Bootstrap luzca más elegante */
-.servicio-card .btn-warning {
-    background-color: #FFC600;
-    border-color: #FFC600;
-    color: #000;
-    font-weight: bold;
-    border-radius: 10px;
-}
-
-.servicio-card .btn-warning:hover {
-    background-color: #e6b200;
-}
-.titulo-card-servicio{
-    color: white;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.descripcion-card-servicio{
-    color: rgba(255,255,255,.65);
-    font-size: .95rem;
-    min-height: 60px;
-    margin-bottom: 20px;
-}
-
-/* Dale espacio al main para que el navbar fijo no tape el contenido */
-#main-content {
-    padding-top: 100px; /* Ajusta según la altura de tu navbar */
-    min-height: 80vh;   /* Asegura que el footer siempre quede abajo */
-}
-
-/* Mejora el título de la sección */
-.servicios-container h2 {
-    margin-bottom: 2rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-/* Servicios Individuales*/
-.titulo-servicios{
-    color: white;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-.subtitulo-servicios{
-    color: rgba(255,255,255,.65);
-    font-size: 1.05rem;
-    margin-bottom: 50px;
-    text-align: center;
-}
-.servicios-grid-precios {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 15px;
-}
-
-.card-precio {
-    background: linear-gradient(145deg, #151515, #1f1f1f);
-    color: white;
-    padding: 26px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,198,0,0.12);
-    transition: all .35s ease;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 260px;
-}
-
-.card-precio h6 {
-    color: #ffffff;
-    margin-bottom: 2px;
-}
-
-.card-precio small {
-    color: #bdbdbd;
-}
-
-.card-precio span {
-    color: #FFC600;
-    font-weight: bold;
-}
-
-.card-precio:hover {
-    transform: translateY(-8px);
-    border-color: rgba(255,198,0,.45);
-    box-shadow: 0 20px 40px rgba(0,0,0,.55);
-}
-
-/* Imagen dentro de las tarjetas de servicios */
-.card-precio-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 14px;
-    margin-bottom: 18px;
-}
-/* Badge más elegante (menos agresivo que amarillo plano) */
-.section-badge {
-    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-    color: var(--dorado);
-    border: 1px solid rgba(255,198,0,0.25);
-    font-weight: 600;
-    padding: 10px 16px;
-    border-radius: 14px;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-}
-
-/* Botón reservar más elegante */
-.btn-servicio-reservar {
-    background: transparent;
-    border: 1px solid var(--dorado);
-    color: var(--dorado);
-    border-radius: 12px;
-    padding: 6px 16px;
-    font-size: .9rem;
-    transition: all .3s ease;
-}
-
-.btn-servicio-reservar:hover {
-    background-color: var(--dorado);
-    color: #111;
-    transform: translateY(-2px);
-}
-
-/* Botón regresar mejorado */
-.btn-regresar-elegante {
-    border: 1px solid rgba(255,198,0,.20);
-    background: transparent;
-    color: #d4d4d4;
-    padding: 10px 18px;
-    border-radius: 12px;
-    transition: all .3s ease;
-}
-
-.btn-regresar-elegante:hover {
-    color: var(--dorado);
-    border-color: var(--dorado);
-    transform: translateX(-4px);
-}
-
-
-/* Ajuste para la imagen */
-.img-fluid {
-    max-height: 300px;
-    object-fit: cover;
-    width: 100%;
-}
-
-/* Esto hace que el navegador no pegue el título al borde del menú fijo */
-section {
-    scroll-margin-top: 100px; 
-}
-
-/* --- CABECERA PREMIUM --- */
+/* ==========================================================================
+   14. RESERVAS / AGENDA
+   ========================================================================== */
 .header-reserva-premium {
-    background: #212529; /* Equivalente exacto a bg-dark de Bootstrap */
-    background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
-    border-bottom: 1px solid rgba(255, 193, 7, 0.25); /* Borde dorado translúcido */
-}
-
-/* --- TU CSS RESTANTE COMPLETO --- */
-.tracking-wider { 
-    letter-spacing: 1.2px; 
-}
-
-.text-gradient {
-    background-image: linear-gradient(45deg, #ffc107, #ff9800);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    color: transparent;
-}
-
-.premium-card {
-    border-radius: 14px; 
-    background-color: #1a1a1a;
-}
-
-.sub-badge {
-    border-radius: 20px;
-}
-
-.hover-up:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
-}
-
-.hover-glow {
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.hover-glow:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 193, 7, 0.3) ;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) ;
-}
-
-.small-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.8px;
-    opacity: 0.5;
-    font-weight: 700;
-}
-
-.transition-all { 
-    transition: all 0.2s ease-in-out; 
-}
-
-.fw-black { 
-    font-weight: 800; 
-}
-
-.observation-box {
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(108, 117, 125, 0.25);
-}
-
-.observation-box .observation-text {
-    color: #e5e5e5;
-    font-style: italic;
-}
-
-.observation-box .no-observation-text {
-    color: rgba(255, 255, 255, 0.25);
-}
-
-.custom-modal-content {
-    border-radius: 16px; 
-    background-color: #141414;
-}
-
-:root {
-
-    --dorado-branding: #FFC600;
-    --dorado-hover: #FFD43E;
-
-    --gris: #565654;
-    --gris-borde: #30302E;
-
-    --negro-absoluto: #111111;
-    --negro-navbar: #000000;
-
-    --texto-blanco: #FFFFFF;
-
-    --fuente-titulos: 'Times New Roman', Times, serif;
-    --fuente-cuerpo: 'Segoe UI', Roboto, sans-serif;
-
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--negro-absoluto);
-    color: var(--texto-blanco);
-    font-family: var(--fuente-cuerpo);
-    overflow-x: hidden;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5 {
-    font-family: var(--fuente-titulos);
-}
-
-.text-gold {
-    color: var(--dorado-branding);
-}
-
-.sub-bar {
-    width: 60px;
-    height: 3px;
-    background: var(--dorado-branding);
-    margin: 20px auto;
-}
-
-.custom-navbar {
-    background-color: var(--negro-navbar);
-    border-bottom: 1px solid var(--gris-borde);
-    padding: 18px 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.navbar-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.brand-logo {
-    color: var(--dorado-branding);
-    text-decoration: none;
-    font-size: 2rem;
-    font-weight: bold;
-    font-family: var(--fuente-titulos);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.logo-navbar {
-    width: 55px;
-    height: 55px;
-    object-fit: contain;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 35px;
-    margin: 0 30px 0 auto;
-    padding: 0;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    transition: .3s;
-    font-weight: 500;
-}
-
-.nav-links a:hover {
-    color: var(--dorado-branding);
-}
-
-.active-link {
-    color: var(--dorado-branding);
-}
-
-.notification-btn {
-    background: transparent;
-    border: none;
-    position: relative;
-    cursor: pointer;
-}
-
-.notification-btn i {
-    color: var(--dorado-branding);
-    font-size: 1.2rem;
-}
-
-.notification-badge {
-    position: absolute;
-    top: -6px;
-    right: -8px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: red;
-    color: white;
-    font-size: .65rem;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+  border-bottom: 1px solid rgba(255, 193, 7, 0.25);
 }
 
 .reservation-header {
-    padding: 70px 0 40px;
+  padding: 70px 0 40px;
 }
-.reservation-section{
-    padding-bottom: 70px;
+
+.reservation-section {
+  padding-bottom: 70px;
 }
+
 .page-title {
-    font-size: 4rem;
-    font-weight: bold;
+  font-size: 4rem;
+  font-weight: bold;
 }
 
 .header-description {
-    color: #BDBDBD;
-    max-width: 700px;
-    margin: auto;
+  color: #BDBDBD;
+  max-width: 700px;
+  margin: auto;
 }
+
 .reservation-card {
-    background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,.05);
-    border-radius: 18px;
-    padding: 30px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.35);
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.35);
 }
 
+/* "section-title" estaba definido 2 veces (reservas vs panel barbero);
+   son complementarios (el segundo añade borde y tipografía sin pisar el
+   color ni el margen del primero), así que se combinan sin conflicto. */
 .section-title {
-    margin-bottom: 25px;
-    color: var(--dorado-branding);
-}
-.calendar-container {
-    background: #0a0a0a;
-    border-radius: 16px;
-    padding: 20px;
-    border: 1px solid rgba(255,198,0,.12);
-}
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-.month-btn {
-    background: transparent;
-    border: 1px solid var(--dorado-branding);
-    color: var(--dorado-branding);
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    transition: .3s;
-}
-.month-btn:hover {
-    background: var(--dorado-branding);
-    color: black;
-}
-.weekdays {
-    display: grid;
-    grid-template-columns: repeat(7,1fr);
-    text-align: center;
-    margin-bottom: 15px;
-    color: var(--dorado-branding);
-    font-weight: bold;
-}
-.calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7,1fr);
-    gap: 10px;
-}
-.day {
-    border: none;
-    border-radius: 12px;
-    height: 45px;
-    background: #1a1a1a;
-    color: white;
-    transition: .3s;
-}
-.day:hover {
-    background: var(--dorado-branding);
-    color: black;
+  margin-bottom: 25px;
+  color: var(--dorado);
+  font-family: "Times New Roman", serif;
+  border-left: 4px solid var(--dorado);
+  padding-left: 12px;
 }
 
-.selected-day {
-    background: var(--dorado-branding);
-    color: black;
-    font-weight: bold;
+.calendar-container {
+  background: #0a0a0a;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255,198,0,.12);
 }
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.month-btn {
+  background: transparent;
+  border: 1px solid var(--dorado-branding);
+  color: var(--dorado-branding);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  transition: .3s;
+}
+
+.month-btn:hover {
+  background: var(--dorado-branding);
+  color: black;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--dorado-branding);
+  font-weight: bold;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: 10px;
+}
+
+.day {
+  border: none;
+  border-radius: 12px;
+  height: 45px;
+  background: #1a1a1a;
+  color: white;
+  transition: .3s;
+}
+
+.day:hover {
+  background: var(--dorado-branding);
+  color: black;
+}
+
+.day:hover:not(.selected) {
+  background-color: var(--gris);
+  color: var(--blanco);
+  border: 1px solid var(--dorado);
+  cursor: pointer;
+}
+
+.day.selected,
+.selected-day {
+  background: var(--dorado-branding);
+  color: black;
+  font-weight: bold;
+}
+
+.day.selected {
+  background-color: var(--dorado);
+  border: 1px solid var(--dorado-oscuro);
+}
+
+.day.disabled {
+  background-color: var(--negro);
+  color: var(--gris);
+  cursor: not-allowed;
+  opacity: 0.3;
+  border: 1px solid transparent;
+}
+
 .custom-label {
-    margin-bottom: 10px;
-    color: var(--dorado-branding);
-    font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--dorado-branding);
+  font-weight: 600;
 }
 
 .custom-select,
 .custom-input {
-    background-color: #1a1a1a;
-    border: 1px solid rgba(255,198,0,.15);
-    color: white;
-    padding: 12px;
-    border-radius: 12px;
+  background-color: #1a1a1a;
+  border: 1px solid rgba(255,198,0,.15);
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
 }
 
 .custom-select:focus,
 .custom-input:focus {
-    border-color: var(--dorado-branding);
-    box-shadow: 0 0 0 .2rem rgba(255,198,0,.15);
-    background-color: #1a1a1a;
-    color: white;
+  border-color: var(--dorado-branding);
+  box-shadow: 0 0 0 .2rem rgba(255,198,0,.15);
+  background-color: #1a1a1a;
+  color: white;
 }
+
 .custom-input::placeholder {
-    color: #cfcfcf;
-    opacity: 1;
+  color: #cfcfcf;
+  opacity: 1;
 }
+
 .payment-dropdown {
-    background-color: #1a1a1a;
-    color: white;
-    border: 1px solid rgba(255,198,0,.15);
-    border-radius: 12px;
-    padding: 12px;
+  background-color: #1a1a1a;
+  color: white;
+  border: 1px solid rgba(255,198,0,.15);
+  border-radius: 12px;
+  padding: 12px;
 }
 
 .payment-dropdown:hover {
-    border-color: var(--dorado-branding);
-    color: white;
+  border-color: var(--dorado-branding);
+  color: white;
 }
 
 .payment-menu {
-    background: #111;
-    border: 1px solid rgba(255,198,0,.15);
-    width: 100%;
+  background: #111;
+  border: 1px solid rgba(255,198,0,.15);
+  width: 100%;
 }
 
 .payment-option {
-    color: white;
-    padding: 12px;
+  color: white;
+  padding: 12px;
 }
 
 .payment-option:hover {
-    background: var(--dorado-branding);
-    color: black;
+  background: var(--dorado-branding);
+  color: black;
 }
+
 .selected-method-card {
-    background: #0a0a0a;
-    border: 1px solid rgba(255,198,0,.20);
-    border-radius: 15px;
-    padding: 20px;
+  background: #0a0a0a;
+  border: 1px solid rgba(255,198,0,.20);
+  border-radius: 15px;
+  padding: 20px;
 }
 
 .method-title {
-    display: block;
-    color: #999;
-    margin-bottom: 10px;
+  display: block;
+  color: #999;
+  margin-bottom: 10px;
 }
+
 .buttons-container {
-    margin-top: 30px;
-    display: flex;
-    gap: 15px;
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
 }
 
 .btn-back {
-    flex: 1;
-    border: 1px solid var(--dorado-branding);
-    color: white;
-    border-radius: 12px;
-    padding: 12px;
+  flex: 1;
+  border: 1px solid var(--dorado-branding);
+  color: white;
+  border-radius: 12px;
+  padding: 12px;
 }
 
 .btn-back:hover {
-    background: var(--dorado-branding);
-    color: black;
+  background: var(--dorado-branding);
+  color: black;
 }
 
 .btn-reserve {
-    flex: 2;
-    background: var(--dorado-branding);
-    color: black;
-    font-weight: bold;
-    border-radius: 12px;
-    padding: 12px;
-    border: none;
+  flex: 2;
+  background: var(--dorado-branding);
+  color: black;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 12px;
+  border: none;
 }
 
 .btn-reserve:hover {
-    background: var(--dorado-hover);
-}
-.hours-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 15px;
+  background: var(--dorado-hover);
 }
 
 .hour-card {
-    height: 60px;
-    border-radius: 15px;
-    border: 1px solid rgba(255,198,0,.15);
-    background: #151515;
-    color: white;
-    transition: .3s;
+  height: 60px;
+  border-radius: 15px;
+  border: 1px solid rgba(255,198,0,.15);
+  background: #151515;
+  color: white;
+  transition: .3s;
 }
 
 .hour-card:hover {
-    background: var(--dorado-branding);
-    color: black;
+  background: var(--dorado-branding);
+  color: black;
 }
 
-.agenda-page .calendar-container-agenda {
-    background-color: transparent;
-    border: 1px solid rgba(255,255,255,0.16);
-    border-radius: 16px;
-    padding: 16px;
+.hour-btn {
+  padding: 10px 5px;
+  background-color: var(--gris-oscuro);
+  color: var(--blanco);
+  border: 1px solid var(--gris);
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
-.agenda-page .calendar-header {
-    margin-bottom: 16px;
+.hour-btn:hover:not(.disabled):not(.selected) {
+  background-color: var(--gris);
+  border-color: var(--dorado);
+  color: var(--blanco);
 }
 
-.agenda-page .calendar-header h5 {
-    color: #fff;
-    margin: 0;
-    font-size: 1rem;
-}
-
-.agenda-page .month-btn {
-    background: transparent;
-    border: 1px solid #fff;
-    color: #fff;
-    cursor: pointer;
-    font-size: 1.1rem;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    transition: all 0.25s ease;
-}
-
-.agenda-page .month-btn:hover {
-    background-color: #fff;
-    color: #111;
-}
-
-.agenda-page .weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
-.agenda-page .weekdays span {
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-
-.agenda-page .calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    margin-bottom: 14px;
-}
-
-.agenda-page .day {
-    background-color: #ffffff;
-    border: 1px solid #ffffff;
-    color: #111111;
-    padding: 10px 0;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.agenda-page .day:hover:not(.disabled-day) {
-    background-color: #f5f5f5;
-    border-color: #111111;
-}
-
-.agenda-page .day.selected-day {
-    background-color: #ffffff;
-    color: #111111;
-    border-color: var(--dorado-branding);
-    box-shadow: 0 0 0 2px rgba(255,198,0,0.22);
-}
-
-.agenda-page .day.disabled-day {
-    opacity: 0.35;
-    cursor: not-allowed;
-}
-
-.agenda-page .hours-grid-agenda {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 10px;
-    margin-bottom: 12px;
-}
-
-.agenda-page .hour-card {
-    background-color: #ffffff;
-    border: 1px solid rgba(0,0,0,0.08);
-    color: #111111;
-    padding: 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.agenda-page .hour-card:hover {
-    background-color: #f5f5f5;
-    color: #111111;
-    border-color: #111111;
-}
-
-.agenda-page .hour-card.hour-selected {
-    background-color: var(--dorado-branding);
-    color: black;
-    border-color: var(--dorado-branding);
-}
-
+.hour-btn.selected,
 .hour-selected {
-    background: var(--dorado-branding);
-    color: black;
-    font-weight: bold;
+  background-color: var(--dorado);
+  color: var(--negro);
+  border-color: var(--dorado-oscuro);
+  font-weight: bold;
 }
 
-.summary-card {
-    margin-top: 35px;
-    background: #0a0a0a;
-    border-radius: 15px;
-    padding: 25px;
-    border: 1px solid rgba(255,198,0,.15);
+.hour-btn.disabled {
+  background-color: var(--negro);
+  color: var(--gris);
+  border: 1px solid #1a1a1a;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
-.summary-card h4 {
-    color: var(--dorado-branding);
-    margin-bottom: 20px;
-}
-
-.summary-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-
-.summary-item span:last-child {
-    font-weight: 600;
-}
-
-.custom-modal {
-    background-color: #0f0f0f; /* color sólido, no transparente */
-    color: var(--blanco);
-    border: 1px solid rgba(255,198,0,0.08);
-    border-radius: 14px;
-    padding: 22px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-    max-width: 760px;
-}
-
-.custom-modal .modal-header {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.custom-modal .modal-title {
-    color: var(--dorado);
-    font-weight: 700;
-}
-
-/* Modal title font más cómodo */
-.custom-modal .modal-title {
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 1.25rem;
-}
-
-.custom-modal .btn-close {
-    opacity: 0.85;
-}
-
-.custom-modal .custom-input {
-    background-color: #141414;
-    border: 1px solid rgba(255,198,0,0.05);
-    color: #e9e9e9;
-    padding: 10px 12px;
-    border-radius: 8px;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.custom-modal .custom-input::placeholder {
-    color: #bfbfbf;
-}
-
-.custom-modal .custom-input:focus {
-    border-color: var(--dorado-oscuro);
-    box-shadow: 0 6px 18px rgba(191,147,13,0.06);
-    outline: none;
-}
-
-.custom-modal .btn-reserve {
-    background-color: var(--dorado);
-    color: var(--negro);
-    font-weight: 700;
-    padding: 10px 16px;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 8px 18px rgba(197,160,89,0.12);
-}
-
-.custom-modal .btn-reserve:hover {
-    background-color: var(--dorado-oscuro);
-}
-
-.custom-modal .nav-tabs .nav-link {
-    color: #bdbdbd;
-    border: none;
-    padding: 10px 12px;
-    border-radius: 8px;
-}
-
-.custom-modal .nav-tabs .nav-link.active {
-    background: transparent;
-    color: var(--dorado);
-    border-bottom: 2px solid var(--dorado);
-}
-
-.custom-modal .btn-link {
-    color: var(--dorado);
-    text-decoration: none;
-    font-size: 0.95rem;
-}
-
-.custom-modal .btn-link:hover {
-    color: var(--mya-gold);
-    text-decoration: underline;
-}
-
-.custom-modal .form-label {
-    color: #d1d1d1;
-    font-size: 0.95rem;
-    margin-bottom: 6px;
-}
-
-/* Logo dentro del modal */
-.custom-modal .modal-logo {
-    display: block;
-    margin: 0 auto 14px auto;
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(255,198,0,0.12);
-}
-
-.success-icon {
-    color: #28a745;
-    font-size: 5rem;
-    margin-bottom: 20px;
-}
-
-.toast {
-    background: #111;
-    color: white;
-    border: 1px solid rgba(255,198,0,.15);
-}
-
-.mis-reservas-container {
-    max-width: 900px;
-    margin: 40px auto;
-}
-
-.reserva-card {
-    background: #111;
-    border: 1px solid rgba(255,198,0,.15);
-    border-radius: 18px;
-    padding: 30px;
-    margin-bottom: 25px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.35);
-}
-
-.reserva-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.reserva-title {
-    color: var(--dorado-branding);
-    font-family: var(--fuente-titulos);
-    font-size: 1.8rem;
-}
-
-.reserva-info {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 15px;
-}
-
-.reserva-item {
-    background: #1a1a1a;
-    padding: 15px;
-    border-radius: 12px;
-}
-
-.reserva-item span {
-    display: block;
-    color: #999;
-    margin-bottom: 5px;
-}
-
-.reserva-item strong {
-    color: white;
-}
-
-.btn-cancelar-reserva {
-    margin-top: 25px;
-    background: #c62828;
-    border: none;
-    color: white;
-    font-weight: bold;
-    padding: 12px 20px;
-    border-radius: 12px;
-    transition: .3s;
-}
-
-.btn-cancelar-reserva:hover {
-    background: #e53935;
-}
-
-.no-reservas {
-    text-align: center;
-    padding: 60px;
-    background: #111;
-    border-radius: 20px;
-}
-
-.no-reservas h3 {
-    color: var(--dorado-branding);
-}
-
-.btn-volver-agendar{
-    border:1px solid var(--dorado-branding);
-    color:white;
-    text-decoration:none;
-    padding:12px 18px;
-    border-radius:12px;
-    transition:.3s;
-    font-weight:600;
-}
-
-.btn-volver-agendar:hover{
-    background:var(--dorado-branding);
-    color:black;
-}
-
-@media(max-width:768px){
-
-    .reserva-info{
-        grid-template-columns:1fr;
-    }
-
-}
-
+/* ⚠ REVISAR: ".hours-grid" estaba definido 2 veces sin condición
+   (repeat(3,1fr) y luego repeat(4,1fr)), además de overrides en
+   @media(≤991px) y @media(≤576px). En tu CSS original, esta versión de
+   escritorio sin condición queda escrita DESPUÉS del @media(≤991px), así
+   que termina ganándole a esa regla — hoy, en pantallas entre 577px y
+   991px, la grilla de horas se sigue viendo en 4 columnas en vez de 2.
+   Conservo este orden exacto para no cambiar el resultado visual actual.
+   Si quieres que en tablet se vea en 2 columnas, dime y lo ajusto. */
 @media (max-width: 991px) {
+  .nav-links {
+    display: none;
+  }
+  .page-title {
+    font-size: 3rem;
+  }
+  .hours-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
 
-    .nav-links {
-        display: none;
-    }
-
-    .page-title {
-        font-size: 3rem;
-    }
-
-    .hours-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-
+.hours-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 20px;
 }
 
 @media (max-width: 576px) {
-
-    .hours-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .buttons-container {
-        flex-direction: column;
-    }
-
-    .page-title {
-        font-size: 2.3rem;
-    }
-
+  .hours-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .buttons-container {
+    flex-direction: column;
+  }
+  .page-title {
+    font-size: 2.3rem;
+  }
 }
 
-/* PALETA DE COLORES DE LA BARBERÍA (Inspirado en tu proyecto anterior) */
-:root {
-    --bg-dark-page: #161513;        /* Fondo general de la página */
-    --bg-card: #1f1e1b;             /* Fondo de la tarjeta central */
-    --bg-input: #262421;            /* Fondo interno de los campos de texto */
-    --gold-accent: #cca553;         /* Dorado elegante para labels y bordes */
-    --gold-hover: #bca067;          /* Dorado al pasar el cursor */
-    --text-light: #f4f2ee;          /* Color del texto de los inputs */
-    --text-muted: #9e9b96;          /* Color grisáceo para textos secundarios */
+/* --- Variante "agenda-page" (mismo flujo, paleta clara) --- */
+.agenda-page .calendar-container-agenda {
+  background-color: transparent;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 16px;
+  padding: 16px;
 }
 
-/* Estilos de fondo globales */
-body {
-    background-color: var(--bg-dark-page);
-    color: var(--text-light);
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
+.agenda-page .calendar-header {
+  margin-bottom: 16px;
 }
 
-/* Estructura de la tarjeta central basada en image_f062a5.png */
+.agenda-page .calendar-header h5 {
+  color: #fff;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.agenda-page .month-btn {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.1rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  transition: all 0.25s ease;
+}
+
+.agenda-page .month-btn:hover {
+  background-color: #fff;
+  color: #111;
+}
+
+.agenda-page .weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.agenda-page .weekdays span {
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.agenda-page .calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.agenda-page .day {
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  color: #111111;
+  padding: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.agenda-page .day:hover:not(.disabled-day) {
+  background-color: #f5f5f5;
+  border-color: #111111;
+}
+
+.agenda-page .day.selected-day {
+  background-color: #ffffff;
+  color: #111111;
+  border-color: var(--dorado-branding);
+  box-shadow: 0 0 0 2px rgba(255,198,0,0.22);
+}
+
+.agenda-page .day.disabled-day {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.agenda-page .hours-grid-agenda {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.agenda-page .hour-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  color: #111111;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.agenda-page .hour-card:hover {
+  background-color: #f5f5f5;
+  color: #111111;
+  border-color: #111111;
+}
+
+.agenda-page .hour-card.hour-selected {
+  background-color: var(--dorado-branding);
+  color: black;
+  border-color: var(--dorado-branding);
+}
+
+.summary-card {
+  margin-top: 35px;
+  background: #0a0a0a;
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid rgba(255,198,0,.15);
+}
+
+.summary-card h4 {
+  color: var(--dorado-branding);
+  margin-bottom: 20px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.summary-item span:last-child {
+  font-weight: 600;
+}
+
+.observation-box {
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(108, 117, 125, 0.25);
+}
+
+.observation-box .observation-text {
+  color: #e5e5e5;
+  font-style: italic;
+}
+
+.observation-box .no-observation-text {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.premium-card {
+  border-radius: 14px;
+  background-color: #1a1a1a;
+}
+
+.sub-badge {
+  border-radius: 20px;
+}
+
+.hover-up:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+}
+
+.hover-glow {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hover-glow:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 193, 7, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.custom-modal-content {
+  border-radius: 16px;
+  background-color: #141414;
+}
+
+@media (max-width: 991px) {
+  .nav-links {
+    display: none;
+  }
+  .page-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .buttons-container {
+    flex-direction: column;
+  }
+  .page-title {
+    font-size: 2.3rem;
+  }
+}
+
+/* ==========================================================================
+   15. MODALES
+   ========================================================================== */
+.custom-modal {
+  background-color: #0f0f0f;
+  color: var(--blanco);
+  border: 1px solid rgba(255,198,0,0.08);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  max-width: 760px;
+}
+
+.custom-modal .modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* "modal-title" tenía 2 bloques complementarios (color/peso + tipografía
+   de letra/tamaño); se combinan sin conflicto */
+.custom-modal .modal-title {
+  color: var(--dorado);
+  font-weight: 700;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.25rem;
+}
+
+.custom-modal .btn-close {
+  opacity: 0.85;
+}
+
+.custom-modal .custom-input {
+  background-color: #141414;
+  border: 1px solid rgba(255,198,0,0.05);
+  color: #e9e9e9;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.custom-modal .custom-input::placeholder {
+  color: #bfbfbf;
+}
+
+.custom-modal .custom-input:focus {
+  border-color: var(--dorado-oscuro);
+  box-shadow: 0 6px 18px rgba(191,147,13,0.06);
+  outline: none;
+}
+
+.custom-modal .btn-reserve {
+  background-color: var(--dorado);
+  color: var(--negro);
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 8px 18px rgba(197,160,89,0.12);
+}
+
+.custom-modal .btn-reserve:hover {
+  background-color: var(--dorado-oscuro);
+}
+
+.custom-modal .nav-tabs .nav-link {
+  color: #bdbdbd;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.custom-modal .nav-tabs .nav-link.active {
+  background: transparent;
+  color: var(--dorado);
+  border-bottom: 2px solid var(--dorado);
+}
+
+.custom-modal .btn-link {
+  color: var(--dorado);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.custom-modal .btn-link:hover {
+  color: var(--mya-gold);
+  text-decoration: underline;
+}
+
+.custom-modal .form-label {
+  color: #d1d1d1;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.custom-modal .modal-logo {
+  display: block;
+  margin: 0 auto 14px auto;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,198,0,0.12);
+}
+
+.success-icon {
+  color: #28a745;
+  font-size: 5rem;
+  margin-bottom: 20px;
+}
+
+.toast {
+  background: #111;
+  color: white;
+  border: 1px solid rgba(255,198,0,.15);
+}
+
+/* --- Modal de la barbería (formularios admin) --- */
+.modal-barberia {
+  background-color: var(--negro-tarjeta) !important;
+  border: 1px solid var(--gris) !important;
+  color: var(--blanco) !important;
+}
+
+.modal-barberia .modal-header,
+.modal-barberia .modal-footer {
+  border-color: var(--gris) !important;
+}
+
+.modal-barberia .modal-title {
+  color: var(--dorado) !important;
+}
+
+.modal-barberia .form-control,
+.modal-barberia .form-select,
+.modal-barberia input,
+.modal-barberia select,
+.modal-barberia textarea {
+  color: #ffffff !important;
+  background-color: #111111 !important;
+  border: 1px solid #565654 !important;
+}
+
+.modal-barberia .form-control:focus,
+.modal-barberia .form-select:focus {
+  color: #ffffff !important;
+  background-color: #111111 !important;
+}
+
+.modal-barberia .form-control::placeholder {
+  color: var(--gris) !important;
+  opacity: 0.7;
+}
+
+.modal-barberia label {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+.modal-barberia .btn-dorado {
+  background-color: var(--dorado) !important;
+  color: var(--negro) !important;
+  font-weight: bold;
+}
+
+.modal-barberia .btn-cancelar {
+  color: var(--blanco) !important;
+  border: 1px solid var(--gris) !important;
+}
+
+.border-borrar {
+  border: 2px solid red !important;
+}
+
+.border-editar {
+  border: 2px solid orange !important;
+}
+
+/* --- Modales estáticos genéricos --- */
+.modal-content .form-control {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px;
+}
+
+.modal-content .form-control:focus {
+  background-color: #1a1a1a;
+  border-color: #ffc107;
+  color: #fff;
+  box-shadow: none;
+}
+
+.modal-content a {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.modal-content-dark {
+  background-color: #121212;
+  color: white;
+  border: 1px solid #2c2c2e;
+}
+
+/* ==========================================================================
+   16. MIS RESERVAS
+   ========================================================================== */
+.mis-reservas-container {
+  max-width: 900px;
+  margin: 40px auto;
+}
+
+.reserva-card {
+  background: #111;
+  border: 1px solid rgba(255,198,0,.15);
+  border-radius: 18px;
+  padding: 30px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.35);
+}
+
+.reserva-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.reserva-title {
+  color: var(--dorado-branding);
+  font-family: var(--fuente-titulos);
+  font-size: 1.8rem;
+}
+
+.reserva-info {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 15px;
+}
+
+.reserva-item {
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.reserva-item span {
+  display: block;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.reserva-item strong {
+  color: white;
+}
+
+.btn-cancelar-reserva {
+  margin-top: 25px;
+  background: #c62828;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: .3s;
+}
+
+.btn-cancelar-reserva:hover {
+  background: #e53935;
+}
+
+.no-reservas {
+  text-align: center;
+  padding: 60px;
+  background: #111;
+  border-radius: 20px;
+}
+
+.no-reservas h3 {
+  color: var(--dorado-branding);
+}
+
+.btn-volver-agendar {
+  border: 1px solid var(--dorado-branding);
+  color: white;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  transition: .3s;
+  font-weight: 600;
+}
+
+.btn-volver-agendar:hover {
+  background: var(--dorado-branding);
+  color: black;
+}
+
+@media (max-width: 768px) {
+  .reserva-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   17. AUTENTICACIÓN (Login / Olvidé contraseña)
+   ========================================================================== */
+.auth-card {
+  background-color: var(--negro-absoluto);
+  border: 1px solid var(--gris-borde);
+  border-radius: 12px;
+  padding: 2rem;
+  color: var(--texto-blanco);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.auth-card h1 {
+  color: var(--dorado-branding);
+}
+
+.auth-card .form-control {
+  background-color: var(--negro-navbar);
+  border: 1px solid var(--gris);
+  color: var(--texto-blanco);
+}
+
+.auth-card .form-control:focus {
+  border-color: var(--dorado-branding);
+  box-shadow: 0 0 0 0.25rem rgba(255, 198, 0, 0.25);
+  background-color: var(--negro-navbar);
+  color: var(--texto-blanco);
+}
+
+/* ==========================================================================
+   18. EDITAR PERFIL
+   ========================================================================== */
+
+/* "edit-profile-card" y "card-title" estaban definidos 2 veces cada uno
+   (versión "cálida" inicial vs versión ajustada al tema dorado/negro). Se
+   conserva el resultado final actual (tema dorado/negro), manteniendo el
+   ancho/padding/radio de la primera versión que la segunda no tocaba. */
 .edit-profile-card {
-    background-color: var(--bg-card);
-    width: 100%;
-    max-width: 650px;
-    padding: 40px 45px;
-    border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.02);
-}
-
-/* Título principal superior */
-.card-title {
-    color: var(--text-light);
-    font-weight: 600;
-    font-size: 1.85rem;
-    letter-spacing: 0.5px;
-}
-
-/* Ajuste de colores para perfil: más coherente con root */
-.edit-profile-card {
-    background-color: var(--gris-oscuro);
-    border: 1px solid rgba(255,198,0,0.12);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  background-color: var(--gris-oscuro);
+  width: 100%;
+  max-width: 650px;
+  padding: 40px 45px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,198,0,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 
 .card-title {
-    color: var(--dorado);
-    font-family: "Times New Roman", serif;
+  color: var(--dorado);
+  font-weight: 600;
+  font-size: 1.85rem;
+  letter-spacing: 0.5px;
+  font-family: "Times New Roman", serif;
 }
 
-/* Etiquetas que van arriba de los controles (Centrados) */
 .form-label-custom {
-    color: #d9d9d9;
-    font-size: 0.95rem;
-    font-weight: 400;
-    margin-bottom: 8px;
-    display: inline-block;
+  color: #d9d9d9;
+  font-size: 0.95rem;
+  font-weight: 400;
+  margin-bottom: 8px;
+  display: inline-block;
 }
 
 .form-label-custom small {
-    color: #bdbdbd;
-    font-size: 0.85rem;
+  color: #bdbdbd;
+  font-size: 0.85rem;
 }
 
-/* Estilo unificado para inputs y selectores oscuros */
+/* ⚠ REVISAR — CONFLICTO REAL: ".form-control-custom" y su ":focus" están
+   definidos 2 veces con paletas distintas: una dorada (Editar perfil) y
+   una verde #00e676 (Panel de gestión de perfiles, sección 19). Como
+   varias de las propiedades duplicadas usan "!important" en lados
+   distintos, el resultado actual mezclado es: fondo/borde/texto en verde
+   gris oscuro, pero el padding y el resplandor del focus quedan en los
+   valores DORADOS porque esos sí tienen "!important" y los verdes no.
+   Es decir, ambos formularios (perfil y panel) están usando hoy esta
+   combinación mixta, probablemente sin querer. Te dejo el resultado tal
+   cual se ve hoy; si en realidad cada página debía tener su propio estilo,
+   lo más limpio es darle una clase distinta a cada formulario (por
+   ejemplo ".form-control-perfil" y ".form-control-panel") en vez de
+   compartir ".form-control-custom" — dime si quieres que lo separe así. */
 .form-control-custom {
-    background-color: #1a1a1a !important;
-    border: 1px solid rgba(255,198,0,0.08) !important;
-    color: #fff !important;
-    border-radius: 8px !important;
-    padding: 11px 16px !important;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
+  background-color: #2c2c2e !important;
+  border: 1px solid #3a3a3c !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 11px 16px !important;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
 }
 
-/* Efecto focus al seleccionar campos */
 .form-control-custom:focus {
-    border-color: var(--dorado) !important;
-    box-shadow: 0 0 12px rgba(255,198,0,0.15) !important;
-    outline: none;
-}
-
-/* Manejo de anchuras de teléfono móvil */
-.phone-prefix-wrapper {
-    width: 30%;
-}
-.phone-input {
-    width: 70%;
-}
-
-/* Modificación de la flecha de los Select en Bootstrap para que combine */
-select.form-control-custom {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cca553' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
-    background-position: right 12px center;
-    background-size: 12px 12px;
+  border-color: #00e676 !important;
+  box-shadow: 0 0 12px rgba(255,198,0,0.15) !important;
+  outline: none;
 }
 
 .form-control-custom[disabled],
 .form-select.form-control-custom[disabled] {
-    background-color: rgba(255,255,255,0.06) !important;
-    border-color: rgba(255,198,0,0.08) !important;
-    color: #bfbfbf !important;
-    opacity: 1;
-    cursor: not-allowed;
+  background-color: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,198,0,0.08) !important;
+  color: #bfbfbf !important;
+  opacity: 1;
+  cursor: not-allowed;
 }
 
 .disabled-input {
-    opacity: 0.75;
+  opacity: 0.75;
 }
 
-/* Estructura para los selectores de fecha con etiqueta flotante simulada */
+select.form-control-custom {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cca553' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-position: right 12px center;
+  background-size: 12px 12px;
+}
+
+.phone-prefix-wrapper {
+  width: 30%;
+}
+
+.phone-input {
+  width: 70%;
+}
+
 .date-select-container {
-    position: relative;
-    width: 32%;
+  position: relative;
+  width: 32%;
 }
 
 .date-select-container .form-control-custom {
-    padding-top: 18px !important;
-    padding-bottom: 6px !important;
-    font-size: 0.9rem !important;
+  padding-top: 18px !important;
+  padding-bottom: 6px !important;
+  font-size: 0.9rem !important;
 }
 
-/* El texto pequeño encima de los selectores de fecha (Mes, Día, Año) */
 .date-label {
-    position: absolute;
-    top: 3px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    z-index: 5;
-    pointer-events: none;
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  z-index: 5;
+  pointer-events: none;
 }
 
-/* Alineación de los textos de aceptación de WhatsApp */
 .checkbox-container-custom {
-    max-width: 530px;
-    padding-top: 10px;
+  max-width: 530px;
+  padding-top: 10px;
 }
 
 .checkbox-text {
-    color: var(--text-light);
-    font-size: 0.85rem;
-    line-height: 1.4;
-    cursor: pointer;
+  color: var(--text-light);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  cursor: pointer;
 }
 
-/* Estilos de los checkboxes personalizados dorados */
 .custom-checkbox {
-    background-color: #1a1a1a !important;
-    border: 1px solid rgba(255,198,0,0.15) !important;
-    cursor: pointer;
-    border-radius: 4px !important;
+  background-color: #1a1a1a !important;
+  border: 1px solid rgba(255,198,0,0.15) !important;
+  cursor: pointer;
+  border-radius: 4px !important;
 }
 
 .custom-checkbox:checked {
-    background-color: var(--dorado) !important;
-    border-color: var(--dorado) !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23111111' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+  background-color: var(--dorado) !important;
+  border-color: var(--dorado) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23111111' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
 }
 
 .custom-checkbox:focus {
-    box-shadow: 0 0 8px rgba(255,198,0,0.2) !important;
+  box-shadow: 0 0 8px rgba(255,198,0,0.2) !important;
 }
 
-/* Botón de envío estilizado en dorado elegante en lugar de azul */
 .btn-guardar-custom {
-    background-color: var(--dorado) !important;
-    color: var(--negro) !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1rem;
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(255,198,0,0.15);
-    transition: all 0.3s ease;
+  background-color: var(--dorado) !important;
+  color: var(--negro) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(255,198,0,0.15);
+  transition: all 0.3s ease;
 }
 
 .btn-guardar-custom:hover {
-    background-color: var(--dorado-oscuro) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255,198,0,0.25);
+  background-color: var(--dorado-oscuro) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,198,0,0.25);
 }
 
-#side-menu .menu-items a {
-    position: relative;
+/* ==========================================================================
+   19. PANEL DE GESTIÓN DE PERFILES
+   (los inputs de este panel comparten ".form-control-custom" con la
+   sección 18 — ver el aviso ⚠ de arriba)
+   ========================================================================== */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
 }
 
-#side-menu .menu-items a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    width: 0;
-    height: 3px;
-    background-color: #FFC600;
-    border-radius: 10px;
-    transition: width 0.3s ease;
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #ffffff;
 }
 
-#side-menu .menu-items a.active::after {
-    width: 100%;
+.panel-bg {
+  background-color: #121212;
+  border-radius: 15px;
+  padding: 30px;
+  border: 1px solid #1f1f1f;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-.brand-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.1;
+.table-header {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: #a0a0a0;
+  margin-bottom: 15px;
 }
 
-.brand-title {
-    color: var(--dorado-branding);
-    font-family: var(--fuente-titulos);
-    font-size: 1.8rem;
-    font-weight: bold;
+.profile-row {
+  background-color: #1c1c1e;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  align-items: center;
+  border: 1px solid #2c2c2e;
 }
 
-.brand-role {
-    color: #e2e2e2;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+.btn-delete {
+  background-color: #ff3b30;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  text-decoration: none;
 }
 
-/* Corrección y unificación de Brand Area */
-#brand-area {
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px; /* Espacio entre el icono y el resto del logo */
-    text-decoration: none;
+.btn-delete:hover {
+  background-color: #d32f2f;
+  transform: scale(1.1);
+  color: white;
 }
 
-/* Asegurar visibilidad del icono solo en escritorio */
-#gear-icon-desktop {
-    cursor: pointer;
-    font-size: 1.5rem;
+.btn-save {
+  background-color: #00e676;
+  color: #000000;
+  font-weight: 600;
+  padding: 10px 30px;
+  border-radius: 8px;
+  border: none;
+  transition: background-color 0.2s;
 }
 
-/* Asegurar que el icono solo se vea en escritorio como querías */
-@media (max-width: 991px) {
-    #gear-icon-desktop {
-        display: none !important;
-    }
+.btn-save:hover {
+  background-color: #00c853;
 }
 
-/* Ajuste para que el texto y la rueda queden bien alineados en escritorio */
-@media (min-width: 992px) {
-    #brand-area {
-        gap: 15px; /* Espacio entre rueda y nombre */
-    }
+.btn-return {
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: 500;
+  padding: 8px 25px;
+  border-radius: 20px;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity 0.2s;
 }
 
-.contenedor-principal-visual {
-    position: relative;
-    width: 100%;
+.btn-return:hover {
+  opacity: 0.9;
+  color: #000000;
 }
 
-.carrusel-container {
-    position: relative;
-    width: 100%;
-    height: 400px; /* Asegura esta altura */
-    border-radius: 15px;
-    overflow: hidden;
-    background-color: #f0f0f0; /* Color de fondo por si la imagen tarda en cargar */
+.scrollable-panel {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 5px;
 }
 
-.carrusel-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    /* Esto es importante si las imágenes no cargan bien */
-    display: block; 
+.scrollable-panel::-webkit-scrollbar {
+  width: 6px;
 }
 
-.carrusel-container img.active {
-    opacity: 1;
+.scrollable-panel::-webkit-scrollbar-track {
+  background: #121212;
 }
 
-.contenedor-principal-visual {
-    position: relative;
+.scrollable-panel::-webkit-scrollbar-thumb {
+  background: #2c2c2e;
+  border-radius: 10px;
 }
 
-.tarjeta-flotante {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: white;
-    z-index: 2;
-}
-
-/* Estilos para los modales estáticos */
-.modal-content .form-control {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 10px;
-}
-
-.modal-content .form-control:focus {
-    background-color: #1a1a1a;
-    border-color: #ffc107;
-    color: #fff;
-    box-shadow: none;
-}
-
-.modal-content a {
-    text-decoration: none;
-    font-weight: bold;
-}
-
-/*Seccion Barberos*/
-:root {
-    --dorado: #FFC600;
-    --dorado-oscuro: #BF930D;
-    --gris: #565654;
-    --gris-oscuro: #30302E;
-    --negro: #111111;
-    --negro-tarjeta: #1d1d1d;
-    --blanco: #FFFFFF;
-}
-
-body {
-    background-color: var(--negro);
-    color: var(--blanco);
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-}
-
-.text-gold {
-    color: var(--dorado);
-}
-
-/* --- NAVBAR STYLES --- */
-.navbar-barber {
-    background-color: #0b0b0b;
-    border-bottom: 1px solid rgba(255, 198, 0, 0.15);
-    padding: 15px 20px;
-}
-
-.nav-container {
-    max-width: 1200px;
-    margin: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-weight: bold;
-}
-
-.logo-nav {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    border: 2px solid var(--dorado);
-    object-fit: cover;
-}
-
-.btn-logout {
-    color: #d8d8d8;
-    text-decoration: none;
-    font-size: 0.9rem;
-    padding: 8px 16px;
-    border: 1px solid #444;
-    border-radius: 20px;
-    transition: 0.3s;
-}
-
-.btn-logout:hover {
-    background-color: #d9534f;
-    color: white;
-    border-color: #d9534f;
-}
-
-/* --- STATS CARDS (PRODUCIDO) --- */
+/* ==========================================================================
+   20. PANEL DEL BARBERO (Producción / estadísticas)
+   ========================================================================== */
 .stats-card {
-    background-color: var(--negro-tarjeta);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  background-color: var(--negro-tarjeta);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
 .highlight-card {
-    border: 1px solid rgba(255, 198, 0, 0.25);
-    background: linear-gradient(145deg, #1d1d1d, #151515);
+  border: 1px solid rgba(255, 198, 0, 0.25);
+  background: linear-gradient(145deg, #1d1d1d, #151515);
 }
 
 .stats-label {
-    color: #a0a0a0;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
 }
 
 .stats-value {
-    font-size: 2.2rem;
-    font-weight: bold;
-    margin-bottom: 5px;
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .stats-sub {
-    font-size: 0.85rem;
-}
-
-/* --- SECTION & TABLE --- */
-.section-title {
-    font-family: "Times New Roman", serif;
-    color: var(--dorado);
-    border-left: 4px solid var(--dorado);
-    padding-left: 12px;
+  font-size: 0.85rem;
 }
 
 .custom-table-container {
-    background-color: var(--negro-tarjeta);
-    border-radius: 20px;
-    padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: var(--negro-tarjeta);
+  border-radius: 20px;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .custom-table {
-    --bs-table-bg: transparent !important; /* Quita el fondo blanco nativo de Bootstrap */
-    --bs-table-color: var(--blanco) !important;
-    color: var(--blanco);
-    margin-bottom: 0;
+  --bs-table-bg: transparent !important;
+  --bs-table-color: var(--blanco) !important;
+  color: var(--blanco);
+  margin-bottom: 0;
 }
 
 .custom-table thead th {
-    color: var(--dorado);
-    border-bottom: 2px solid #333;
-    padding: 15px 10px;
-    font-weight: 600;
+  color: var(--dorado);
+  border-bottom: 2px solid #333;
+  padding: 15px 10px;
+  font-weight: 600;
 }
 
 .custom-table tbody td {
-    padding: 18px 10px;
-    border-bottom: 1px solid #2a2a2a;
-    background-color: transparent !important;
-    color: #e0e0e0;
+  padding: 18px 10px;
+  border-bottom: 1px solid #2a2a2a;
+  background-color: transparent !important;
+  color: #e0e0e0;
 }
 
 .time-col {
-    font-weight: bold;
-    color: var(--dorado);
+  font-weight: bold;
+  color: var(--dorado);
 }
 
-/* --- BADGES DE ESTADO --- */
 .badge {
-    padding: 6px 12px;
-    border-radius: 30px;
-    font-size: 0.8rem;
-    font-weight: normal;
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: normal;
 }
 
 .status-done {
-    background-color: rgba(40, 167, 69, 0.15);
-    color: #28a745;
-    border: 1px solid rgba(40, 167, 69, 0.3);
+  background-color: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+  border: 1px solid rgba(40, 167, 69, 0.3);
 }
 
 .status-pending {
-    background-color: rgba(255, 198, 0, 0.12);
-    color: var(--dorado);
-    border: 1px solid rgba(255, 198, 0, 0.3);
+  background-color: rgba(255, 198, 0, 0.12);
+  color: var(--dorado);
+  border: 1px solid rgba(255, 198, 0, 0.3);
 }
 
 .status-cancelled {
-    background-color: rgba(220, 53, 69, 0.15);
-    color: #dc3545;
-    border: 1px solid rgba(220, 53, 69, 0.3);
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
 }
 
-/* --- ACCIONES BUTTONS --- */
 .btn-action {
-    padding: 6px 15px;
-    border-radius: 15px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    border: none;
-    transition: 0.2s;
+  padding: 6px 15px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border: none;
+  transition: 0.2s;
 }
 
 .btn-complete {
-    background-color: var(--dorado);
-    color: var(--negro);
+  background-color: var(--dorado);
+  color: var(--negro);
 }
 
 .btn-complete:hover {
-    background-color: var(--dorado-oscuro);
-    color: white;
+  background-color: var(--dorado-oscuro);
+  color: white;
 }
 
 .btn-view {
-    background-color: #333;
-    color: #888;
+  background-color: #333;
+  color: #888;
 }
 
-/* Adaptabilidad para móviles */
-@media(max-width: 768px) {
-    .stats-value {
-        font-size: 1.8rem;
-    }
-    .custom-table {
-        font-size: 0.9rem;
-    }
-}
-/* diseño dias y horas en reservas */
-
-/* Estado al pasar el cursor (Hover) */
-.day:hover:not(.selected) {
-    background-color: var(--gris);
-    color: var(--blanco);
-    border: 1px solid var(--dorado);
-    cursor: pointer;
+@media (max-width: 768px) {
+  .stats-value {
+    font-size: 1.8rem;
+  }
+  .custom-table {
+    font-size: 0.9rem;
+  }
 }
 
-/* Estado del día seleccionado */
-.day.selected {
-    background-color: var(--dorado);
-    color: var(--negro);
-    border: 1px solid var(--dorado-oscuro);
-    font-weight: bold;
+/* ==========================================================================
+   21. ANIMACIONES
+   ========================================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.day.disabled {
-    background-color: var(--negro);
-    color: var(--gris);
-    cursor: not-allowed;
-    opacity: 0.3; /* Más tenue para indicar que no hay disponibilidad */
-    border: 1px solid transparent;
+.barbers-track-container {
+    overflow: hidden; /* Oculta la barra de scroll nativa */
 }
 
-/* Contenedor de la grilla de horas */
-.hours-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columnas para escritorio */
+.barbers-track {
+    display: flex;
+    gap: 20px; /* Importante para el cálculo del índice */
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 20px;
+}
+
+/* Esconde la barra de scroll en navegadores modernos */
+.barbers-track::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
     gap: 10px;
     margin-top: 20px;
 }
 
-/* Estilo base de los botones de hora */
-.hour-btn {
-    padding: 10px 5px;
-    background-color: var(--gris-oscuro);
-    color: var(--blanco);
-    border: 1px solid var(--gris);
-    border-radius: 4px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-}
-
-/* Estado al pasar el cursor (Hover) */
-.hour-btn:hover:not(.disabled):not(.selected) {
-    background-color: var(--gris);
-    border-color: var(--dorado);
-    color: var(--blanco);
-}
-
-/* Estado cuando el usuario selecciona una hora */
-.hour-btn.selected {
-    background-color: var(--dorado);
-    color: var(--negro);
-    border-color: var(--dorado-oscuro);
-    font-weight: bold;
-}
-
-/* Estado para horas no disponibles (Regla de 1 hora de antelación) */
-.hour-btn.disabled {
-    background-color: var(--negro);
-    color: var(--gris);
-    border: 1px solid #1a1a1a;
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-/* Ajuste responsivo para móviles */
-@media (max-width: 576px) {
-    .hours-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas pequeñas */
-    }
-}
-
-/* Forzamos el diseño de la barbería */
-.modal-barberia {
-    background-color: var(--negro-tarjeta) !important;
-    border: 1px solid var(--gris) !important;
-    color: var(--blanco) !important;
-}
-
-.modal-barberia .modal-header, 
-.modal-barberia .modal-footer {
-    border-color: var(--gris) !important;
-}
-
-.modal-barberia .modal-title {
-    color: var(--dorado) !important;
-}
-
-.modal-barberia .form-control, 
-.modal-barberia .form-select {
-    background-color: var(--negro) !important;
-    border: 1px solid var(--gris) !important;
-    color: var(--blanco) !important; /* <--- ESTO PONE EL TEXTO EN BLANCO */
-}
-
-/* También añadimos esto para que el placeholder (el texto de ayuda) no se vea gris */
-.modal-barberia .form-control::placeholder {
-    color: var(--gris) !important;
-    opacity: 0.7;
-}
-
-.modal-barberia .btn-dorado {
-    background-color: var(--dorado) !important;
-    color: var(--negro) !important;
-    font-weight: bold;
-}
-
-.modal-barberia .btn-cancelar {
-    color: var(--blanco) !important;
-    border: 1px solid var(--gris) !important;
-}
-
-/* Especificidad máxima para los inputs dentro del modal */
-.modal-barberia .form-control, 
-.modal-barberia .form-select,
-.modal-barberia input, 
-.modal-barberia select, 
-.modal-barberia textarea {
-    color: #ffffff !important;           /* Blanco puro */
-    background-color: #111111 !important; /* Negro */
-    border: 1px solid #565654 !important; /* Gris */
-}
-
-/* Forzar color de texto incluso al escribir o cuando está activo */
-.modal-barberia .form-control:focus, 
-.modal-barberia .form-select:focus {
-    color: #ffffff !important;
-    background-color: #111111 !important;
-}
-
-/* Etiqueta (label) un poco más clara para que se lea mejor */
-.modal-barberia label {
-    color: #ffffff !important; 
-    font-weight: 500;
-}
-
-.border-borrar { border: 2px solid red !important; }
-.border-editar { border: 2px solid orange !important; }
-
-/* olvide contraseña */
-/* Estilos para las tarjetas de formularios */
-.auth-card {
-    background-color: var(--negro-absoluto);
-    border: 1px solid var(--gris-borde);
-    border-radius: 12px;
-    padding: 2rem;
-    color: var(--texto-blanco);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-
-.auth-card h1 { color: var(--dorado-branding); }
-
-.auth-card .form-control {
-    background-color: var(--negro-navbar);
-    border: 1px solid var(--gris);
-    color: var(--texto-blanco);
-}
-
-.auth-card .form-control:focus {
-    border-color: var(--dorado-branding);
-    box-shadow: 0 0 0 0.25rem rgba(255, 198, 0, 0.25);
-    background-color: var(--negro-navbar);
-    color: var(--texto-blanco);
-}
-
-.btn-dorado {
-    background-color: var(--dorado-branding);
-    color: var(--negro-absoluto);
-    font-weight: bold;
-    border: none;
-}
-
-.btn-dorado:hover {
-    background-color: var(--dorado-hover);
-}
-
-/* =========================================================================
-   PANEL GESTIÓN DE PERFILES - BARBERÍA M&A
-   ========================================================================= */
-
-.dashboard-container {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 20px;
-}
-
-.main-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 40px;
-    color: #ffffff;
-}
-
-.panel-bg {
-    background-color: #121212;
-    border-radius: 15px;
-    padding: 30px;
-    border: 1px solid #1f1f1f;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-.table-header {
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    color: #a0a0a0;
-    margin-bottom: 15px;
-}
-
-.profile-row {
-    background-color: #1c1c1e;
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 12px;
-    align-items: center;
-    border: 1px solid #2c2c2e;
-}
-
-/* Campos de entrada personalizados (Modo Oscuro) */
-.form-control-custom {
-    background-color: #2c2c2e !important;
-    border: 1px solid #3a3a3c !important;
-    color: #ffffff !important;
-    border-radius: 8px;
-    padding: 8px 12px;
-}
-
-.form-control-custom:focus {
-    border-color: #00e676 !important;
-    box-shadow: 0 0 8px rgba(0, 230, 118, 0.2);
-}
-
-/* Botón Eliminar Perfil (Círculo Rojo) */
-.btn-delete {
-    background-color: #ff3b30;
-    color: white;
-    border: none;
+.dot {
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s;
-    text-decoration: none;
+    background: #555;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-.btn-delete:hover {
-    background-color: #d32f2f;
-    transform: scale(1.1);
-    color: white;
-}
-
-/* Botones de acción */
-.btn-save {
-    background-color: #00e676;
-    color: #000000;
-    font-weight: 600;
-    padding: 10px 30px;
-    border-radius: 8px;
-    border: none;
-    transition: background-color 0.2s;
-}
-
-.btn-save:hover {
-    background-color: #00c853;
-}
-
-.btn-return {
-    background-color: #ffffff;
-    color: #000000;
-    font-weight: 500;
-    padding: 8px 25px;
-    border-radius: 20px;
-    text-decoration: none;
-    display: inline-block;
-    transition: opacity 0.2s;
-}
-
-.btn-return:hover {
-    opacity: 0.9;
-    color: #000000;
-}
-
-/* Ventanas Modales */
-.modal-content-dark {
-    background-color: #121212;
-    color: white;
-    border: 1px solid #2c2c2e;
-}
-
-/* Contenedor con barra de desplazamiento interna */
-.scrollable-panel {
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 5px;
-}
-
-/* Personalización del scrollbar en navegadores Webkit (Chrome/Safari) */
-.scrollable-panel::-webkit-scrollbar {
-    width: 6px;
-}
-
-.scrollable-panel::-webkit-scrollbar-track {
-    background: #121212;
-}
-
-.scrollable-panel::-webkit-scrollbar-thumb {
-    background: #2c2c2e;
-    border-radius: 10px;
+.dot.active {
+    background: #d4af37; /* Color dorado */
 }

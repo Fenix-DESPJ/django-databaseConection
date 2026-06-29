@@ -499,3 +499,85 @@ document.querySelectorAll('.toggle-password').forEach(button => {
         }
     });
 });
+
+/* Carruseles y mas estilo*/
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Carrusel de Inicio (Fade)
+    const images = document.querySelectorAll('.carrusel-container img');
+    let currentIndex = 0;
+    setInterval(() => {
+        images[currentIndex].classList.remove('active');
+        currentIndex = (currentIndex + 1) % images.length;
+        images[currentIndex].classList.add('active');
+    }, 4000);
+
+    // 2. Carrusel de Barberos (Slider)
+    const track = document.querySelector('.barbers-track');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let scrollAmount = 0;
+
+    nextBtn.addEventListener('click', () => {
+        track.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+
+    prevBtn.addEventListener('click', () => {
+        track.scrollBy({ left: -300, behavior: 'smooth' });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const track = document.querySelector('.barbers-track');
+    const cards = document.querySelectorAll('.barber-card');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const dotsContainer = document.getElementById('carouselDots');
+    
+    // Configuración: 3 visibles
+    const itemsPerView = 3;
+    const totalGroups = Math.ceil(cards.length / itemsPerView);
+    let currentGroup = 0;
+
+    // 1. Crear solo los puntos necesarios (según grupos)
+    for (let i = 0; i < totalGroups; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+            currentGroup = i;
+            updateCarousel();
+        });
+        dotsContainer.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    // 2. Función maestra para mover el scroll
+    function updateCarousel() {
+        const cardWidth = cards[0].offsetWidth + 20; // Ancho + gap
+        track.scrollTo({
+            left: currentGroup * (cardWidth * itemsPerView),
+            behavior: 'smooth'
+        });
+
+        // Actualizar estados visuales de los dots
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentGroup);
+        });
+    }
+
+    // 3. Botones con limitadores
+    nextBtn.addEventListener('click', () => {
+        if (currentGroup < totalGroups - 1) {
+            currentGroup++;
+            updateCarousel();
+        }
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentGroup > 0) {
+            currentGroup--;
+            updateCarousel();
+        }
+    });
+});
