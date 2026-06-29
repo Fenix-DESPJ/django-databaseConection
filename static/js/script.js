@@ -46,6 +46,21 @@ function inicializarModuloReservas() {
 
   let mesOffset = 0;
 
+  // --- NUEVA LÓGICA: Auto-seleccionar servicio desde URL ---
+  const urlParams = new URLSearchParams(window.location.search);
+  const servicioId = urlParams.get('servicio_id');
+
+  if (servicioId && selectServicio) {
+    // Intentamos asignar el ID al select
+    selectServicio.value = servicioId;
+    
+    // Verificamos si el valor existía (por si el ID en la URL no coincide con ninguno en el select)
+    if (selectServicio.value === servicioId) {
+        // Disparamos el evento para que se actualice el resumen y la UI
+        selectServicio.dispatchEvent(new Event('change'));
+    }
+  }
+
   // --- INICIALIZACIÓN DE MODALES Y TOASTS (BOOTSTRAP) ---
   pseModal = new bootstrap.Modal(document.getElementById("pseModal"));
   cardModal = new bootstrap.Modal(document.getElementById("cardModal"));
