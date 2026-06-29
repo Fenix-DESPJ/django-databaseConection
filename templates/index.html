@@ -12,7 +12,7 @@
           En M&A Barber Shop combinamos tradición, elegancia e innovación para ofrecer una experiencia de barbería organizada, cómoda y profesional.
         </p>
         <div class="d-flex gap-3 flex-wrap">
-          <a href="{% url 'crear_reserva' %}" class="btn btn-dorado" onclick="gestionarReserva(event)">Agendar cita</a>
+          <a href="{% if user.is_authenticated %}{% url 'crear_reserva' %}{% else %}{% url 'agenda' %}{% endif %}" class="btn btn-dorado">Agendar cita</a>
           <a href="{% url 'servicios' %}" class="btn btn-borde">Ver servicios</a>
         </div>
       </div>
