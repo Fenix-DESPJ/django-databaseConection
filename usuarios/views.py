@@ -15,6 +15,7 @@ from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.db import connection
 from django.conf import settings
 import os
+from datetime import timedelta
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente
@@ -79,7 +80,7 @@ def iniciar_sesion(request):
                 # Redirección basada en rol
                 rol_final = int(rol_actual_id)
                 if rol_final == 1:
-                    return redirect('home')
+                    return redirect('dashboard_admin')
                 elif rol_final == 2:
                     return redirect('panel_barbero')
                 else:
@@ -458,3 +459,52 @@ def gestionar_foto_perfil(request):
             messages.success(request, "Foto eliminada.")
             
     return redirect('perfil_usuario')
+
+@login_required
+def dashboard_admin(request):
+    # Verificación estricta de seguridad 
+    usuario_rol = request.session.get('usuario_rol_id')
+    if usuario_rol != 1:  # ID 1 asignado para Administrador
+        messages.error(request, "Acceso denegado. No tienes permisos de administrador.")
+        return redirect('home')
+
+    hoy = timezone.now().date()
+    inicio_mes = hoy.replace(day=1)
+
+    # --- KPI 1: CITAS PARA HOY ---
+    total_citas_hoy = Cita.objects.filter(idagendafk__fecha=hoy).count()
+
+    # --- KPI 2: CLIENTES ACTIVOS ---
+    total_clientes = Cliente.objects.count()
+
+    # --- KPI 3: INGRESOS DEL MES (Servicios completados en el mes actual) ---
+    ingresos_mes_dict = Cita.objects.filter(
+        idagendafk__fecha__gte=inicio_mes,
+        idagendafk__fecha__lte=hoy,
+        observaciones__icontains='Completado'
+    ).aggregate(total=Sum('idserviciofk__precioservicio'))
+    
+    ingresos_mes = ingresos_mes_dict['total'] if ingresos_mes_dict['total'] is not None else 0.0
+
+    # --- KPI 4: BARBEROS EN TURNO HOY ---
+    # Contamos cuántos barberos únicos tienen franjas horarias registradas para el día de hoy
+    barberos_hoy = Agenda.objects.filter(fecha=hoy).values('idbarberofk').distinct().count()
+    total_barberos = Barbero.objects.count()
+    barberos_turno_string = f"{barberos_hoy} / {total_barberos}"
+
+    # --- TABLA: PRÓXIMAS CITAS DEL DÍA ---
+    # Traemos las citas de hoy ordenadas por su hora de inicio (filtrando las no completadas primero si se desea)
+    proximas_citas = Cita.objects.filter(
+        idagendafk__fecha=hoy
+    ).select_related('idclientefk__idusuariofk', 'idbarberofk__idusuariofk', 'idserviciofk', 'idagendafk').order_by('idagendafk__horainicio')[:10]
+
+    context = {
+        'total_citas_hoy': total_citas_hoy,
+        'total_clientes': total_clientes,
+        'ingresos_mes': ingresos_mes,
+        'barberos_turno': barberos_turno_string,
+        'proximas_citas': proximas_citas,
+    }
+
+    return render(request, 'dashboard_admin.html', context)
+

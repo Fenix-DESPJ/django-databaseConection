@@ -18,4 +18,7 @@ urlpatterns = [
     # Rutas del Panel de Administración para perfiles
     path('dashboard/perfiles/', views.editar_perfiles_admin, name='editar_perfiles'),
     path('dashboard/perfiles/eliminar/<int:usuario_id>/', views.eliminar_perfil, name='eliminar_perfil'),
+    
+    #Ruta propia del Dashboard de Administrador 
+    path('dashboard/', views.dashboard_admin, name='dashboard_admin'),
 ]
