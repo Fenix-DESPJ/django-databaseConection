@@ -2,9 +2,20 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from .models import Servicio
+from .models import Servicio, Cita
+import pandas as pd
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from django.db.models import Sum, Count
 from usuarios.models import Usuario
+from django.apps import apps
+import json
+from django.db.models import F
+from django.http import FileResponse
+from fpdf import FPDF
 import os
+
 
 def index(request):
     return render(request, 'index.html')
@@ -168,3 +179,107 @@ def lista_servicios(request):
         'servicios': servicios,
         'es_admin': es_admin(request.user) # <--- Aquí calculas si es admin
     })
+
+#reportes servicios
+@login_required
+def reportes_admin(request):
+    # 1. Ingresos totales
+    ingresos_totales = Cita.objects.aggregate(total=Sum('idserviciofk__precio'))['total'] or 0
+    
+    # 2. Total de reservas
+    total_reservas = Cita.objects.count()
+    
+    # 3. Servicio más vendido
+    servicio_top_obj = Cita.objects.values('idserviciofk__nombreservicio') \
+                                   .annotate(total=Count('idcita')) \
+                                   .order_by('-total').first()
+    servicio_top = servicio_top_obj['idserviciofk__nombreservicio'] if servicio_top_obj else "N/A"
+    
+    # 4. Top 5 Servicios para la lista lateral
+    top_servicios = Cita.objects.values('idserviciofk__nombreservicio') \
+                                .annotate(total=Count('idcita')) \
+                                .order_by('-total')[:5]
+
+    # 5. NUEVO: Agrupación para la gráfica de barras por Barbero
+    datos_barberos = Cita.objects.values('idbarberofk__idusuariofk__nombre') \
+                             .annotate(total_ingreso=Sum('idserviciofk__precio')) \
+                             .order_by('-total_ingreso')
+
+    # Ahora, el diccionario SÍ tendrá la llave 'nombre_barbero'
+    nombres_barberos = [item['idbarberofk__idusuariofk__nombre'] or "Sin Nombre" for item in datos_barberos]
+    totales_barberos = [float(item['total_ingreso'] or 0) for item in datos_barberos]
+
+    Barbero = apps.get_model('servicios', 'Barbero') # Ajusta 'servicios' si tu app se llama diferente
+
+    context = {
+        'ingresos_totales': ingresos_totales,
+        'total_reservas': total_reservas,
+        'servicio_top': servicio_top,
+        'top_servicios': top_servicios,
+        # Convertimos a JSON para que el template no sufra con los tipos de datos
+        'nombres_barberos': json.dumps(nombres_barberos),
+        'totales_barberos': json.dumps(totales_barberos),
+    }
+    return render(request, 'reportes.html', context)
+
+@login_required
+def descargar_reporte_excel(request):
+    datos = Cita.objects.all().values(
+        'idcita', 'fecha', 'horainicio', 
+        'idserviciofk__nombreservicio', 'idserviciofk__precio'
+    )
+    df = pd.DataFrame(list(datos))
+    
+    # --- CORRECCIÓN AQUÍ ---
+    # Convertimos la columna fecha a string para que no dé error en Excel
+    if 'fecha' in df.columns:
+        df['fecha'] = df['fecha'].astype(str)
+    
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename="reporte_citas.xlsx"'
+    df.to_excel(response, index=False)
+    return response
+
+@login_required
+def descargar_reporte_pdf(request):
+    # 1. Obtener datos
+    datos = Cita.objects.all().values(
+        'idcita', 'fecha', 'idserviciofk__nombreservicio', 'idserviciofk__precio'
+    )
+    
+    # 2. Crear PDF
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "Reporte de Citas - BarberShop", ln=True, align='C')
+    pdf.ln(10)
+    
+    # Encabezados
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(20, 10, "ID", 1)
+    pdf.cell(40, 10, "Fecha", 1)
+    pdf.cell(80, 10, "Servicio", 1)
+    pdf.cell(30, 10, "Precio", 1)
+    pdf.ln()
+    
+    # Datos
+    pdf.set_font("Arial", '', 12)
+    for cita in datos:
+        pdf.cell(20, 10, str(cita.get('idcita', '')), 1)
+        pdf.cell(40, 10, str(cita.get('fecha', '')), 1)
+        pdf.cell(80, 10, str(cita.get('idserviciofk__nombreservicio', '')), 1)
+        pdf.cell(30, 10, str(cita.get('idserviciofk__precio', '')), 1)
+        pdf.ln()
+
+    # 3. Guardar en archivo temporal (evita problemas de buffer)
+    ruta_temp = "temp_reporte.pdf"
+    pdf.output(ruta_temp)
+    
+    # 4. Enviar archivo al usuario
+    response = FileResponse(open(ruta_temp, 'rb'), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporte_citas.pdf"'
+    
+    # Nota: Aquí no borramos el archivo inmediatamente para asegurar la descarga
+    return response

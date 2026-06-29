@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="container-fluid py-5" style="max-width: 1200px;">
+    
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="titulo-servicios">Reportes Administrativos</h2>
+            <p class="text-white-50">Resumen de rendimiento y ventas del negocio.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'descargar_reporte_excel' %}" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Descargar Excel
+            </a>
+            <a href="{% url 'descargar_reporte_pdf' %}" class="btn btn-danger">
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card bg-dark text-white p-4 border-warning">
+                <h5>Ingresos Totales</h5>
+                <h2 class="text-warning">$ {{ ingresos_totales|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white p-4 border-info">
+                <h5>Reservas Completadas</h5>
+                <h2 class="text-info">{{ total_reservas }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white p-4 border-success">
+                <h5>Servicio Top</h5>
+                <h2 class="text-success">{{ servicio_top }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card bg-dark p-4">
+                <h5 class="text-white mb-4">Evolución de Ingresos</h5>
+                <div style="height: 300px;">
+                    <canvas id="graficoIngresos"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card bg-dark p-4">
+                <h5 class="text-white mb-4">Servicios más vendidos</h5>
+                <ul class="list-group list-group-flush bg-transparent">
+                    {% for s in top_servicios %}
+                    <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                        {{ s.idserviciofk__nombreservicio }}
+                        <span class="badge bg-warning text-dark">{{ s.total }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="datos-reporte" 
+        data-nombres='{{ nombres_barberos|safe }}' 
+        data-totales='{{ totales_barberos|safe }}'
+        style="display: none;">
+    </div>
+
+</section>
+{% endblock %}

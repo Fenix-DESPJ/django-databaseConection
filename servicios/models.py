@@ -12,6 +12,29 @@ import os
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
+
+class Barbero(models.Model):
+    idbarbero = models.AutoField(db_column='idBarbero', primary_key=True)
+    idusuariofk = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='idUsuarioFk')
+    especialidad = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'barbero'
+
+class Cliente(models.Model):
+    idcliente = models.AutoField(db_column='idCliente', primary_key=True)
+    # Ajusta los campos según tu tabla 'cliente' real
+    class Meta:
+        managed = False
+        db_table = 'cliente'
+
+class Agenda(models.Model):
+    idagenda = models.AutoField(db_column='idAgenda', primary_key=True)
+    class Meta:
+        managed = False
+        db_table = 'agenda'
+
 class Servicio(models.Model):
     idservicio = models.AutoField(db_column='idServicio', primary_key=True)
     nombreservicio = models.CharField(db_column='nombreServicio', max_length=60)
@@ -38,18 +61,20 @@ class Pago(models.Model):
         managed = False
         db_table = 'pago'
 
+# Ahora, tu clase Cita ya no dará error porque los modelos existen
 class Cita(models.Model):
     idcita = models.AutoField(db_column='idCita', primary_key=True)
-    # Ajusta los campos según los que tengas en tu base de datos real
+    idbarberofk = models.ForeignKey(Barbero, on_delete=models.DO_NOTHING, db_column='idBarberoFk')
+    idclientefk = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING, db_column='idClienteFk')
+    idserviciofk = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING, db_column='idServicioFk')
+    idagendafk = models.ForeignKey(Agenda, on_delete=models.DO_NOTHING, db_column='idAgendaFk', null=True, blank=True)
+    idpagofk = models.ForeignKey(Pago, on_delete=models.DO_NOTHING, db_column='idPagoFk', null=True, blank=True)
     fecha = models.DateField()
     horainicio = models.TimeField(db_column='horaInicio')
-    idserviciofk = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING, db_column='idServicioFk')
-    # ... otros campos que tenga tu tabla cita en MySQL ...
 
     class Meta:
         managed = False
         db_table = 'cita'
-
 
 class Usuario(models.Model):
     idusuario = models.AutoField(db_column='idUsuario', primary_key=True)

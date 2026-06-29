@@ -395,3 +395,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+/* js reportes admin */
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Verificamos que Chart esté cargado
+    if (typeof Chart === 'undefined') {
+        console.error("Chart.js no se ha cargado. Revisa tu etiqueta <script> en base.html");
+        return;
+    }
+
+    const el = document.getElementById('datos-reporte');
+    const canvas = document.getElementById('graficoIngresos');
+
+    if (el && canvas) {
+        try {
+            const nombres = JSON.parse(el.dataset.nombres);
+            const totales = JSON.parse(el.dataset.totales);
+
+            const ctx = canvas.getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: nombres,
+                    datasets: [{
+                        label: 'Ingresos ($)',
+                        data: totales,
+                        backgroundColor: '#ffc107',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#ffffff' } },
+                        x: { ticks: { color: '#ffffff' } }
+                    }
+                }
+            });
+        } catch (e) {
+            console.error("Error al procesar los datos de la gráfica:", e);
+        }
+    } else {
+        console.error("No se encontró el contenedor de datos o el canvas.");
+    }
+});
