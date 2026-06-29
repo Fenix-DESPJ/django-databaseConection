@@ -32,6 +32,7 @@ def iniciar_sesion(request):
         if rol_formulario:
             rol_formulario = str(rol_formulario).lower().strip()
         
+        # Mapeo de roles
         rol_esperado_id = None
         if rol_formulario in ['admin', 'administrador']:
             rol_esperado_id = 1  
@@ -40,52 +41,54 @@ def iniciar_sesion(request):
         elif rol_formulario == 'cliente':
             rol_esperado_id = 3  
 
-        print(f"\n--- [DEBUG LOGIN] ---")
-        print(f"Texto recibido del HTML: '{rol_formulario}' -> ID esperado: {rol_esperado_id}")
-
+        # Autenticación con Django Auth
         user = authenticate(request, username=usuario_input, password=contrasena_input)
         
         if user is not None:
             try:
+                # Buscamos al usuario en la tabla MySQL
                 usuario_manual = Usuario.objects.get(correo=user.email)
                 
+                # Obtención segura del ID del rol
                 try:
                     rol_actual_id = usuario_manual.idrolfk.idrol
                 except Exception:
                     rol_actual_id = usuario_manual.idrolfk_id 
-
-                print(f"Usuario encontrado en MySQL: {usuario_manual.nombre}")
-                print(f"Rol ID real en la Base de Datos: {rol_actual_id}")
                 
+                # Validación de rol
                 if rol_actual_id != rol_esperado_id:
-                    print(f"BLOQUEO: Roles no coinciden (DB: {rol_actual_id} vs Form: {rol_esperado_id})")
                     messages.error(request, "El usuario no corresponde al rol seleccionado.")
                     return redirect('iniciar_sesion')
 
+                # Login exitoso
                 auth_login(request, user)
                 
+                # Guardado en sesión
                 request.session['sesion_iniciada'] = True
                 request.session['usuario_nombre'] = user.first_name if user.first_name else user.username
                 request.session['usuario_rol_id'] = int(rol_actual_id)
                 
-                rol_final = int(rol_actual_id)
+                # --- INTEGRACIÓN DE FOTO DE PERFIL ---
+                # Usamos .url para obtener la ruta completa (ej: /media/perfiles/foto.jpg)
+                if usuario_manual.foto_perfil:
+                    request.session['usuario_foto'] = usuario_manual.foto_perfil.url
+                else:
+                    request.session['usuario_foto'] = None
+                # -------------------------------------
                 
+                # Redirección basada en rol
+                rol_final = int(rol_actual_id)
                 if rol_final == 1:
-                    print("Redirigiendo a panel de Administrador...")
                     return redirect('home')
                 elif rol_final == 2:
-                    print("¡¡REDIRECCIÓN BARBERO DETECTADA!! Enviando a panel_barbero...")
                     return redirect('panel_barbero')
                 else:
-                    print("Redirigiendo a Home de Clientes...")
                     return redirect('home')
 
             except Usuario.DoesNotExist:
-                print(f"ERROR: {user.email} está en auth_user pero no en la tabla Usuario de MySQL.")
                 messages.error(request, "Tu cuenta no está vinculada correctamente a la barbería.")
                 return redirect('iniciar_sesion')
         else:
-            print("ERROR: Credenciales incorrectas en auth_user.")
             messages.error(request, "El correo o la contraseña son incorrectos.")
             return redirect('iniciar_sesion')
             
@@ -439,7 +442,8 @@ def gestionar_foto_perfil(request):
             # AQUÍ ES DONDE ESTABA EL ERROR: 
             # Ahora que el campo existe en el modelo, lo asignamos así:
             usuario.foto_perfil = nombre_archivo
-            usuario.save() # Esto funcionará porque el campo ya existe en el modelo
+            usuario.save()
+            request.session['usuario_foto'] = usuario.foto_perfil.url
             
             messages.success(request, "Foto actualizada.")
 
