@@ -13,6 +13,7 @@ urlpatterns = [
     path('cambiar-contrasena/<str:token>/', views.cambiar_contrasena, name='cambiar_contrasena'),
     path('perfil/', views.perfil_usuario, name='perfil_usuario'),
     path('perfil/guardar/', views.guardar_perfil, name='guardar_perfil'),
+    path('perfil/foto/', views.gestionar_foto_perfil, name='gestionar_foto_perfil'),
 
     # Rutas del Panel de Administración para perfiles
     path('dashboard/perfiles/', views.editar_perfiles_admin, name='editar_perfiles'),

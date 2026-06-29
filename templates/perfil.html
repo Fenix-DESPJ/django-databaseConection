@@ -40,14 +40,18 @@
                     
                     <div class="d-flex align-items-center mb-4">
                         <div class="position-relative me-4">
-                            <div class="rounded-circle border border-warning d-flex align-items-center justify-content-center bg-secondary" style="width: 80px; height: 80px;">
-                                <i class="bi bi-person-fill text-light fs-1"></i>
+                            <div class="rounded-circle border border-warning d-flex align-items-center justify-content-center bg-secondary overflow-hidden" style="width: 80px; height: 80px;">
+                                {% if usuario.foto_perfil %}
+                                    <img src="{{ MEDIA_URL }}{{ usuario.foto_perfil }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                    <i class="bi bi-person-fill text-light fs-1"></i>
+                                {% endif %}
                             </div>
                         </div>
                         <div>
                             <h6 class="mb-1 fw-bold">Foto de Perfil</h6>
                             <p class="text-white small mb-2">Formatos admitidos: JPG, PNG o WEBP. Tamaño máximo: 2 MB.</p>
-                            <button type="button" class="btn btn-outline-warning btn-sm text-uppercase fw-bold py-1">Cambiar Foto</button>
+                            <button type="button" class="btn btn-outline-warning btn-sm text-uppercase fw-bold py-1" data-bs-toggle="modal" data-bs-target="#modalFoto">Cambiar Foto</button>
                         </div>
                     </div>
 
@@ -129,6 +133,32 @@
 
         </div>
     </form>
+</div>
+
+<div class="modal fade" id="modalFoto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white border-secondary">
+      <form method="POST" action="{% url 'gestionar_foto_perfil' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Gestionar Foto</h5>
+        </div>
+        <div class="modal-body text-center">
+          {% if usuario.imagen_perfil %}
+            <img src="{{ MEDIA_URL }}{{ usuario.imagen_perfil }}" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+          {% else %}
+            <i class="bi bi-person-circle display-1"></i>
+          {% endif %}
+          <input type="file" name="nueva_foto" class="form-control bg-dark text-white border-secondary mt-3" accept="image/*">
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="accion" value="borrar" class="btn btn-danger">Borrar</button>
+          <button type="submit" name="accion" value="cambiar" class="btn btn-warning">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

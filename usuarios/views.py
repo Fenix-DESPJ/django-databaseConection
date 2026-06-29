@@ -10,8 +10,11 @@ from django.contrib import messages
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.urls import reverse
+from django.core.files.storage import FileSystemStorage
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.db import connection
+from django.conf import settings
+import os
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente
@@ -257,22 +260,17 @@ def cambiar_contrasena(request, token):
 
     return render(request, 'cambiar_contrasena.html')
 
-def perfil_usuario(request):
-    return render(request, 'perfil.html')
-
-
 @login_required
 def perfil_usuario(request):
     try:
-        # Buscamos al usuario en tu tabla manual mediante el correo de Django
+        # Recuperamos al usuario de tu tabla manual
         usuario_manual = Usuario.objects.get(correo=request.user.email)
     except Usuario.DoesNotExist:
-        messages.error(request, "No se encontraron datos registrados para este usuario.")
+        messages.error(request, "No se encontraron datos registrados.")
         return redirect('home')
         
-    # Enviamos 'usuario' para que pinte los datos correctamente en el HTML
+    # Pasamos el objeto al template
     return render(request, 'perfil.html', {'usuario': usuario_manual})
-
 
 @login_required
 def guardar_perfil(request):
@@ -419,3 +417,40 @@ def eliminar_perfil(request, usuario_id):
     
     messages.success(request, f"Se ha eliminado a {nombre_eliminado} de forma permanente.")
     return redirect('editar_perfiles')
+
+@login_required
+def gestionar_foto_perfil(request):
+    if request.method == 'POST':
+        usuario = Usuario.objects.get(correo=request.user.email)
+        accion = request.POST.get('accion')
+
+        if accion == 'cambiar' and 'nueva_foto' in request.FILES:
+            archivo = request.FILES['nueva_foto']
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+            
+            # Nombre del archivo
+            nombre_archivo = f"perfiles/usuario_{usuario.idusuario}_{archivo.name}"
+            
+            # Guardado físico
+            if fs.exists(nombre_archivo):
+                fs.delete(nombre_archivo)
+            fs.save(nombre_archivo, archivo)
+            
+            # AQUÍ ES DONDE ESTABA EL ERROR: 
+            # Ahora que el campo existe en el modelo, lo asignamos así:
+            usuario.foto_perfil = nombre_archivo
+            usuario.save() # Esto funcionará porque el campo ya existe en el modelo
+            
+            messages.success(request, "Foto actualizada.")
+
+        elif accion == 'borrar':
+            if usuario.foto_perfil:
+                ruta_fisica = os.path.join(settings.MEDIA_ROOT, str(usuario.foto_perfil))
+                if os.path.exists(ruta_fisica):
+                    os.remove(ruta_fisica)
+            
+            usuario.foto_perfil = None
+            usuario.save()
+            messages.success(request, "Foto eliminada.")
+            
+    return redirect('perfil_usuario')

@@ -23,7 +23,7 @@ class Usuario(models.Model):
     numcelular = models.CharField(db_column='numCelular', max_length=15)
     fechanacimiento = models.DateField(db_column='fechaNacimiento') 
     idrolfk = models.ForeignKey(Rol, on_delete=models.DO_NOTHING, db_column='idRolFk')
-
+    foto_perfil = models.ImageField(upload_to='perfiles/', null=True, blank=True, db_column='foto_perfil')
     class Meta:
         managed = False 
         db_table = 'usuario'
