@@ -2537,3 +2537,83 @@ select.form-control-custom {
 .dot.active {
     background: #d4af37; /* Color dorado */
 }
+/*Dashboard admin*/
+
+.dashboard-container {
+    padding: 2rem 0;
+    color: var(--texto-principal);
+}
+
+/* --- Tarjetas KPI --- */
+.kpi-card {
+    background: var(--negro-tarjeta);
+    border: 1px solid var(--gris-profundo);
+    padding: 1.5rem;
+    border-radius: var(--radio-borde);
+    transition: all 0.4s ease;
+}
+
+.kpi-card:hover {
+    border-color: var(--dorado);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+.kpi-icon-box {
+    width: 50px;
+    height: 50px;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--dorado);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+/* --- Paneles Principales --- */
+.panel-bg {
+    background: var(--negro-tarjeta);
+    border: 1px solid var(--gris-profundo);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+}
+
+/* --- Tabla Personalizada --- */
+.custom-dashboard-table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.custom-dashboard-table tbody tr {
+    background: var(--negro);
+    transition: background 0.3s;
+}
+
+.custom-dashboard-table tbody tr:hover {
+    background: var(--gris-profundo);
+}
+
+/* --- Botones de Acción Rápida --- */
+.quick-link-btn {
+    display: block;
+    padding: 1rem;
+    background: var(--negro);
+    color: var(--texto-secundario);
+    text-decoration: none;
+    border-radius: var(--radio-borde);
+    border: 1px solid var(--gris-profundo);
+    transition: all 0.3s ease;
+}
+
+.quick-link-btn:hover {
+    background: var(--dorado);
+    color: var(--negro);
+    font-weight: 600;
+    padding-left: 1.5rem;
+}
+
+/* --- Extras --- */
+.text-gold { color: var(--dorado); }
+.custom-progress-bg { background-color: var(--dorado); }
+.background-accent-box { background: var(--negro); border: 1px solid var(--gris-profundo); }
