@@ -131,48 +131,4 @@
     </form>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-        // Buscamos las alertas de Django con la clase 'alert'
-        const alerts = document.querySelectorAll('.alert');
-        
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                // Validación segura: si Bootstrap JS está disponible, lo usa
-                if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
-                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                    bsAlert.close();
-                } else {
-                    // Si no, lo desvanece con CSS puro para no romper nada
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = "0";
-                    setTimeout(() => alert.remove(), 500);
-                }
-            }, 3000); 
-        });
-    });
-</script>
-
-<script>
-    document.querySelectorAll('.toggle-password').forEach(button => {
-        button.addEventListener('click', function() {
-            // Buscamos el input que está justo antes del contenedor del ojo
-            const input = this.parentElement.querySelector('input');
-            const icon = this.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                // Cambia el icono al ojo abierto
-                icon.classList.remove('bi-eye-slash');
-                icon.classList.add('bi-eye');
-            } else {
-                input.type = 'password';
-                // Cambia el icono de vuelta al ojo cerrado
-                icon.classList.remove('bi-eye');
-                icon.classList.add('bi-eye-slash');
-            }
-        });
-    });
-</script>
-
 {% endblock %}
