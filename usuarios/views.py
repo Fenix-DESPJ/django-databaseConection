@@ -167,26 +167,36 @@ def panel_barbero(request):
     try:
         usuario_manual = Usuario.objects.get(correo=request.user.email)
         if usuario_manual.idrolfk_id != 2:
-            print(f"DEBUG PANEL: Acceso denegado para {usuario_manual.nombre}. Rol actual: {usuario_manual.idrolfk_id}")
+            print(f"DEBUG PANEL: Acceso denegado para {usuario_manual.nombreUsuario}. Rol actual: {usuario_manual.idrolfk_id}")
             return redirect('home')
         
+        # Intentamos buscar usando el objeto de usuario_manual
+        # Nota: Si se queja de 'idusuariofk', puedes cambiarlo por 'idusuario' según tu models.py
         barbero_perfil = Barbero.objects.get(idusuariofk=usuario_manual)
         
     except (Usuario.DoesNotExist, Barbero.DoesNotExist):
-        print("DEBUG PANEL: El usuario o perfil de barbero no existe.")
+        print("DEBUG PANEL: El usuario o perfil de barbero no existe en la tabla operativa.")
+        messages.error(request, "Tu perfil de barbero no está completamente configurado en la base de datos.")
         return redirect('home')
 
     hoy = timezone.now().date()
+    
+    # DEBUG: Vamos a imprimir en la terminal si este barbero tiene citas registradas a nivel general
+    todas_mis_citas = Cita.objects.filter(idbarberofk=barbero_perfil.idbarbero)
+    print(f"--- DEBUG BARBERO: Citas totales encontradas en la BD para este barbero: {todas_mis_citas.count()} ---")
+
+    # Consulta filtrando por la fecha de hoy usando el ID primario operativo
     citas_hoy = Cita.objects.filter(
-        idbarberofk=barbero_perfil, 
+        idbarberofk=barbero_perfil.idbarbero, 
         idagendafk__fecha=hoy
-    ).order_by('idagendafk__horainicio')
+    ).order_by('idagendafk__horaInicio') # Asegúrate si horaInicio lleva la I mayúscula en tu modelo
 
     total_citas = citas_hoy.count()
     completadas = citas_hoy.filter(observaciones__icontains='Completado').count()
     citas_efectivas = citas_hoy.filter(observaciones__icontains='Completado')
 
-    producido_dict = citas_efectivas.aggregate(total=Sum('idserviciofk__precioservicio'))
+    # Ajustamos el campo al que hace el Sum (precioservicio o precio según tu models.py)
+    producido_dict = citas_efectivas.aggregate(total=Sum('idserviciofk__precio'))
     producido_total = producido_dict['total'] if producido_dict['total'] is not None else 0.0
     comision_estimada = float(producido_total) * 0.50
     
@@ -508,3 +518,22 @@ def dashboard_admin(request):
 
     return render(request, 'dashboard_admin.html', context)
 
+@login_required
+def ver_todas_citas_admin(request):
+    # Verificación de seguridad estricta para el Administrador
+    usuario_rol = request.session.get('usuario_rol_id')
+    if usuario_rol != 1:
+        messages.error(request, "Acceso denegado. No tienes permisos de administrador.")
+        return redirect('home')
+
+    # Traemos absolutamente todas las citas del sistema ordenadas por fecha y hora descendente
+    # (las más recientes arriba) utilizando select_related para evitar lentitud de base de datos
+    todas_citas = Cita.objects.select_related(
+        'idclientefk__idusuariofk', 
+        'idbarberofk__idusuariofk', 
+        'idserviciofk', 
+        'idagendafk'
+    ).order_by('-idagendafk__fecha', '-idagendafk__horainicio')
+
+    return render(request, 'citas_admin.html', {'citas': todas_citas})
+    

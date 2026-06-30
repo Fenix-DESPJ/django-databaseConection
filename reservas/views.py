@@ -22,7 +22,7 @@ def crear_reserva(request):
         fecha_reserva = request.POST.get('fecha')
         hora_reserva = request.POST.get('hora')
         servicio_id = request.POST.get('servicio')
-        barbero_id = request.POST.get('barbero')
+        usuario_barbero_id = request.POST.get('barbero')  # ID de usuario que viene del select HTML
         metodo_pago = request.POST.get('metodo_pago')
         # Capturamos las observaciones enviadas por el usuario de forma limpia
         observaciones = request.POST.get('observaciones', '').strip()
@@ -32,7 +32,7 @@ def crear_reserva(request):
             observaciones = "Sin observaciones o notas especiales"
 
         # Validamos los campos obligatorios
-        if not all([fecha_reserva, hora_reserva, servicio_id, barbero_id, metodo_pago]):
+        if not all([fecha_reserva, hora_reserva, servicio_id, usuario_barbero_id, metodo_pago]):
             messages.error(request, "Por favor completa todos los campos.")
             return redirect('crear_reserva')
             
@@ -44,35 +44,41 @@ def crear_reserva(request):
                 hora_objeto = datetime.strptime(hora_reserva, '%H:%M').time()
                 servicio = Servicio.objects.get(idservicio=servicio_id)
                 
+                # Bloque de consultas SQL nativas con el cursor
                 with connection.cursor() as cursor:
-                    # 2. Buscar ID del cliente real (si no existe en la tabla cliente, se crea)
+                    # =======================================================
+                    # 2. Buscar el idCliente REAL en la tabla cliente
+                    # =======================================================
                     cursor.execute("SELECT idCliente FROM cliente WHERE idUsuarioFk = %s", [usuario_actual.idusuario])
                     fila_cliente = cursor.fetchone()
                     
                     if not fila_cliente:
+                        # Si por alguna razón este usuario no tiene fila en la tabla cliente, la creamos en caliente
                         cursor.execute(
-                            "INSERT INTO cliente (idUsuarioFk, nombre, correo) VALUES (%s, %s, %s)",
-                            [usuario_actual.idusuario, user_sistema.get_full_name() or user_sistema.username, user_sistema.email]
+                            "INSERT INTO cliente (idUsuarioFk, direccion, contactoEmergencia) VALUES (%s, %s, %s)",
+                            [usuario_actual.idusuario, 'Registrado desde la Web', 'No asignado']
                         )
                         cursor.execute("SELECT LAST_INSERT_ID()")
                         id_cliente_real = cursor.fetchone()[0]
                     else:
-                        id_cliente_real = fila_cliente[0]
-                    
-                    # 3. Buscar el barbero por id
-                    cursor.execute("SELECT idBarbero FROM barbero WHERE idBarbero = %s", [barbero_id])
+                        id_cliente_real = fila_cliente[0] 
+                
+                    # =======================================================
+                    # 3. CORREGIDO: Buscar usando 'idUsuarioFk' y 'especialidad'
+                    # =======================================================
+                    cursor.execute("SELECT idBarbero FROM barbero WHERE idUsuarioFk = %s", [usuario_barbero_id])
                     fila_barbero = cursor.fetchone()
-
-                # Si el usuario con rol 2 no tiene fila en la tabla barbero, la creamos
-                if not fila_barbero:
-                    with connection.cursor() as cursor:
+                    
+                    if not fila_barbero:
+                        # Si no se encuentra en la tabla operativa, lo vinculamos con los campos correctos
                         cursor.execute(
-                            "INSERT INTO barbero (idBarbero, especialidad) VALUES (%s, %s)",
-                            [barbero_id, 'General']
+                            "INSERT INTO barbero (idUsuarioFk, especialidad) VALUES (%s, %s)",
+                            [usuario_barbero_id, 'General']
                         )
-                        id_barbero_real = barbero_id
-                else:
-                    id_barbero_real = fila_barbero[0]
+                        cursor.execute("SELECT LAST_INSERT_ID()")
+                        id_barbero_real = cursor.fetchone()[0]
+                    else:
+                        id_barbero_real = fila_barbero[0]  # Capturamos el ID dinámico real
 
                 # 4. Guardar Pago usando el ORM de Django
                 nuevo_pago = Pago.objects.create(
@@ -85,7 +91,7 @@ def crear_reserva(request):
                 
                 # 5. Insertar Agenda y Cita
                 with connection.cursor() as cursor:
-                    # Insertar en la tabla Agenda
+                    # Insertar en la tabla Agenda con la llave foránea real del barbero
                     cursor.execute(
                         "INSERT INTO agenda (idBarberoFk, fecha, horaInicio) VALUES (%s, %s, %s)",
                         [id_barbero_real, fecha_reserva, hora_objeto]
@@ -94,18 +100,18 @@ def crear_reserva(request):
                     cursor.execute("SELECT LAST_INSERT_ID()")
                     id_agenda_creada = cursor.fetchone()[0]
 
-                    # Insertar en la tabla Cita con la estructura exacta que me diste
+                    # Insertar en la tabla Cita apuntando a las columnas de la BD
                     cursor.execute(
                         """INSERT INTO cita (fecha, horaInicio, idServicioFk, idPagoFk, 
-                           idClienteFk, idBarberoFk, idAgendaFk, observaciones) 
+                           idBarberoFk, idClienteFk, idAgendaFk, observaciones) 
                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
                         [
                             fecha_reserva, 
                             hora_objeto, 
                             servicio_id, 
                             nuevo_pago.idpago, 
-                            id_cliente_real, 
-                            id_barbero_real, 
+                            id_barbero_real,  # ID dinámico correspondiente al barbero seleccionado
+                            id_cliente_real,  
                             id_agenda_creada, 
                             observaciones
                         ]
