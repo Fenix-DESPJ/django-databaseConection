@@ -6,39 +6,41 @@
     
     <div class="welcome-section mb-4">
         <h2>Bienvenido de nuevo, <span class="text-gold">{{ request.user.first_name }}</span></h2>
-        <p class="text-muted">Gestiona tu agenda de hoy y revisa tus ganancias en tiempo real.</p>
+        <p class="text-muted">Gestiona tus próximas citas agendadas y revisa tus ganancias en tiempo real.</p>
     </div>
 
     <div class="row g-4 mb-5">
         <div class="col-md-4">
             <div class="stats-card">
-                <p class="stats-label">Citas de Hoy</p>
+                <p class="stats-label">Próximas Citas (Agenda)</p>
                 <p class="stats-value">{{ total_citas }}</p>
-                <span class="stats-sub text-success">{{ completadas }} Completadas</span>
+                <span class="stats-sub text-success">{{ completadas }} Históricas Completadas</span>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stats-card highlight-card">
-                <p class="stats-label">Producido Total (Hoy)</p>
+                <p class="stats-label">Producido Histórico</p>
                 <p class="stats-value">${{ producido_total }}</p>
-                <span class="stats-sub text-light">Valor total de servicios</span>
+                <span class="stats-sub text-light">Valor acumulado de servicios realizados</span>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stats-card">
                 <p class="stats-label">Tu Comisión (Est.)</p>
                 <p class="stats-value text-gold">${{ comision_estimada }}</p>
+                <span class="stats-sub text-muted">Correspondiente al 50%</span>
             </div>
         </div>
     </div>
 
     <div class="appointments-section p-4 style-card" style="background: #1d1d1d; border-radius: 15px; border: 1px solid #444;">
-        <h3 class="text-gold mb-4 h5"><i class="bi bi-calendar3"></i> Tu Agenda para Hoy</h3>
+        <h3 class="text-gold mb-4 h5"><i class="bi bi-calendar3"></i> Tu Agenda de Trabajo Próxima</h3>
         
         <div class="table-responsive">
             <table class="table table-dark table-hover align-middle mb-0" style="background: transparent;">
                 <thead>
                     <tr class="text-gold" style="border-bottom: 2px solid var(--dorado, #ffc600);">
+                        <th>Fecha</th>
                         <th>Hora</th>
                         <th>Cliente</th>
                         <th>Servicio</th>
@@ -50,9 +52,11 @@
                 <tbody>
                     {% for cita in citas %}
                         <tr>
+                            <td class="text-light font-monospace">{{ cita.idagendafk.fecha|date:"d / M / Y" }}</td>
+                            
                             <td class="fw-bold text-white">{{ cita.idagendafk.horainicio|time:"g:i a" }}</td>
                             
-                            <td>{{ cita.idclientefk.idusuariofk.nombre }}</td>
+                            <td>{{ cita.idclientefk.idusuariofk.nombreUsuario }}</td>
                             
                             <td><span class="badge bg-secondary">{{ cita.idserviciofk.nombreservicio }}</span></td>
                             
@@ -78,8 +82,8 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                No tienes citas agendadas para el día de hoy.
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No tienes citas agendadas de hoy en adelante.
                             </td>
                         </tr>
                     {% endfor %}

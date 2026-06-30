@@ -167,41 +167,37 @@ def panel_barbero(request):
     try:
         usuario_manual = Usuario.objects.get(correo=request.user.email)
         if usuario_manual.idrolfk_id != 2:
-            print(f"DEBUG PANEL: Acceso denegado para {usuario_manual.nombreUsuario}. Rol actual: {usuario_manual.idrolfk_id}")
             return redirect('home')
         
-        # Intentamos buscar usando el objeto de usuario_manual
-        # Nota: Si se queja de 'idusuariofk', puedes cambiarlo por 'idusuario' según tu models.py
         barbero_perfil = Barbero.objects.get(idusuariofk=usuario_manual)
         
     except (Usuario.DoesNotExist, Barbero.DoesNotExist):
-        print("DEBUG PANEL: El usuario o perfil de barbero no existe en la tabla operativa.")
-        messages.error(request, "Tu perfil de barbero no está completamente configurado en la base de datos.")
+        messages.error(request, "Tu perfil de barbero no está configurado.")
         return redirect('home')
 
     hoy = timezone.now().date()
-    
-    # DEBUG: Vamos a imprimir en la terminal si este barbero tiene citas registradas a nivel general
-    todas_mis_citas = Cita.objects.filter(idbarberofk=barbero_perfil.idbarbero)
-    print(f"--- DEBUG BARBERO: Citas totales encontradas en la BD para este barbero: {todas_mis_citas.count()} ---")
 
-    # Consulta filtrando por la fecha de hoy usando el ID primario operativo
-    citas_hoy = Cita.objects.filter(
+    # MODIFICADO: __gte=hoy hace que muestre las citas de HOY en adelante (mañana, pasado mañana, etc.)
+    citas_proximas = Cita.objects.filter(
         idbarberofk=barbero_perfil.idbarbero, 
-        idagendafk__fecha=hoy
-    ).order_by('idagendafk__horaInicio') # Asegúrate si horaInicio lleva la I mayúscula en tu modelo
+        idagendafk__fecha__gte=hoy
+    ).order_by('idagendafk__fecha', 'idagendafk__horainicio')
 
-    total_citas = citas_hoy.count()
-    completadas = citas_hoy.filter(observaciones__icontains='Completado').count()
-    citas_efectivas = citas_hoy.filter(observaciones__icontains='Completado')
+    total_citas = citas_proximas.count()
+    
+    # Las estadísticas de completadas y ganancias las seguimos midiendo sobre las que ya marcó como Completadas
+    citas_efectivas = Cita.objects.filter(
+        idbarberofk=barbero_perfil.idbarbero,
+        observaciones__icontains='Completado'
+    )
+    completadas = citas_efectivas.count()
 
-    # Ajustamos el campo al que hace el Sum (precioservicio o precio según tu models.py)
-    producido_dict = citas_efectivas.aggregate(total=Sum('idserviciofk__precio'))
+    producido_dict = citas_efectivas.aggregate(total=Sum('idserviciofk__precioservicio'))
     producido_total = producido_dict['total'] if producido_dict['total'] is not None else 0.0
     comision_estimada = float(producido_total) * 0.50
     
     context = {
-        'citas': citas_hoy,
+        'citas': citas_proximas,  # Enviamos las citas de hoy y del futuro
         'total_citas': total_citas,
         'completadas': completadas,
         'producido_total': producido_total,
