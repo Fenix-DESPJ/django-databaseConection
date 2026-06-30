@@ -17,108 +17,28 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark py-3 fixed-top">
         <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-            <div id="logo-container" class="d-flex align-items-center">
-                {% if request.session.sesion_iniciada and request.session.usuario_foto %}
-                    {# Usamos la ruta que guardamos en la sesión al hacer login #}
-                    <img src="{{ request.session.usuario_foto }}" 
-                        alt="Perfil" 
-                        class="logo me-2"
-                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                {% else %}
-                    {# Logo por defecto si no hay sesión o no hay foto #}
-                    <img src="{% static 'img/logo.jpeg' %}" 
-                        alt="Logo M&A" 
-                        class="logo me-2"
-                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                {% endif %}
-            </div>
-                
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <div id="logo-container" class="d-flex align-items-center">
+                    {% if request.session.sesion_iniciada and request.session.usuario_foto %}
+                        <img src="{{ request.session.usuario_foto }}" alt="Perfil" class="logo me-2" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'img/logo.jpeg' %}" alt="Logo M&A" class="logo me-2" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    {% endif %}
+                </div>
                 <div class="brand-text">
                     <span class="brand-title">M&A Barber Shop</span>
                     <small class="brand-role" id="brand-role">
-                        {% if request.session.sesion_iniciada %}
-                            {{ request.session.usuario_nombre }}
-                        {% else %}
-                            Cliente
-                        {% endif %}
+                        {% if request.session.sesion_iniciada %}{{ request.session.usuario_nombre }}{% else %}Cliente{% endif %}
                     </small>
                 </div>
             </a>
 
-            
-            <div class="d-flex align-items-center ms-auto">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
             <div class="collapse navbar-collapse" id="menu">
                 <ul class="navbar-nav align-items-center ms-auto">
-                    
-                    {% if request.session.sesion_iniciada %}
-                        
-                        {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'dashboard_admin' %}">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'reportes_admin' %}">Reportes</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
-                        
-                        {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>
-                        
-                        {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'crear_reserva' %}">Agendar</a></li>
-                        {% endif %}
-
-                        <li class="nav-item" id="auth-links">
-                            <a class="nav-link" href="{% url 'cerrar_sesion' %}">
-                                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-                            </a>
-                        </li>
-
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'agenda' %}">Agendar</a></li>
-                        
-                        <li class="nav-item" id="auth-links">
-                            <a class="nav-link" href="{% url 'iniciar_sesion' %}">Iniciar sesión</a>
-                            <a class="nav-link" href="{% url 'registrarse' %}">Registrarse</a>
-                        </li>
-                    {% endif %}
-
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <main id="main-content" style="padding-top: 80px;">
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <footer class="footer-mya py-4 bg-black border-top border-secondary">
-    <div class="container">
-        <div class="row gy-3 align-items-center">
-            
-            <div class="col-md-4 text-center text-md-start">
-                <a href="{% if request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}{% url 'panel_barbero' %}{% else %}{% url 'home' %}{% endif %}" 
-                   class="footer-brand text-gold fs-3 text-decoration-none">
-                    M&A
-                </a>
-            </div>
-
-            <div class="col-md-4 text-center">
-                <ul class="nav justify-content-center">
-                    
                     {% if request.session.sesion_iniciada %}
                         
                         {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
@@ -129,37 +49,119 @@
                         
                         {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}"></a></li>
+                            <!-- Enlace de perfil añadido para el barbero -->
+                            <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
                         
                         {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'crear_reserva' %}">Agendar</a></li>
                         {% endif %}
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cerrar_sesion' %}">
+                                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                            </a>
+                        </li>
 
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'agenda' %}">Agendar</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">Agendar</a></li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'iniciar_sesion' %}">Iniciar sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'registrarse' %}">Registrarse</a>
+                        </li>
                     {% endif %}
-
                 </ul>
             </div>
+        </div>
+    </nav>
 
-            <div class="col-md-4 text-center text-md-end text-white small">
-                &copy; 2026 M&A Barber Shop.
+    <main id="main-content" style="padding-top: 80px;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-mya py-4 bg-black border-top border-secondary">
+        <div class="container">
+            <div class="row gy-3 align-items-center">
+                
+                <div class="col-md-4 text-center text-md-start">
+                    <a href="{% if request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}{% url 'panel_barbero' %}{% else %}{% url 'home' %}{% endif %}" 
+                    class="footer-brand text-gold fs-3 text-decoration-none">
+                        M&A
+                    </a>
+                </div>
+
+                <div class="col-md-4 text-center">
+                    <ul class="nav justify-content-center">
+                        {% if request.session.sesion_iniciada %}
+                            {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'dashboard_admin' %}">Dashboard</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'reportes_admin' %}">Reportes</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                            
+                            {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
+                            
+                            {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'crear_reserva' %}">Agendar</a></li>
+                            {% endif %}
+                        
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">Agendar</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="col-md-4 text-center text-md-end text-white small">
+                    &copy; 2026 M&A Barber Shop.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Combinado (Autenticación) -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="authModalLabel">Acceso restringido</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Para agendar un servicio, necesitas tener una cuenta activa.</p>
+            </div>
+            <div class="modal-footer border-secondary justify-content-center">
+                <a href="{% url 'iniciar_sesion' %}" class="btn btn-warning">Iniciar Sesión</a>
+                <a href="{% url 'registrarse' %}" class="btn btn-outline-light">Registrarse</a>
+            </div>
             </div>
         </div>
     </div>
-</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>
-
 </html>
