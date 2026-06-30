@@ -314,14 +314,11 @@ function inicializarModuloReservas() {
 let modoActual = null; // 'editar', 'borrar', o null
 
 function cambiarModo(nuevoModo) {
-    console.log("Cambiando a modo:", nuevoModo);
-  // Si el usuario presiona el mismo botón que ya está activo, cancelamos todo
     if (modoActual === nuevoModo) {
         desactivarModos();
         return;
     }
 
-    // Si no, activamos el nuevo modo y desactivamos el anterior
     desactivarModos();
     modoActual = nuevoModo;
 
@@ -331,12 +328,26 @@ function cambiarModo(nuevoModo) {
 
     if (modoActual === 'editar') {
         btnEditar.innerText = "Cancelar Edición";
-        tarjetas.forEach(c => c.classList.add('border-editar'));
+        tarjetas.forEach(c => {
+            c.classList.add('border-editar');
+            c.style.cursor = "pointer";
+            c.onclick = function() {
+                // Aquí llamamos a tu función que ya tienes lista
+                abrirModalEditar(
+                    this.getAttribute('data-id'),
+                    this.getAttribute('data-nombre'),
+                    this.getAttribute('data-precio'),
+                    this.getAttribute('data-duracion'),
+                    this.getAttribute('data-tipo')
+                );
+            };
+        });
     } 
     else if (modoActual === 'borrar') {
         btnBorrar.innerText = "Cancelar Borrado";
         tarjetas.forEach(c => {
             c.classList.add('border-borrar');
+            c.style.cursor = "pointer";
             c.onclick = function() {
                 const id = this.getAttribute('data-id');
                 if(confirm('¿Seguro que deseas eliminar este servicio?')) {
@@ -350,48 +361,74 @@ function cambiarModo(nuevoModo) {
 
 function desactivarModos() {
     modoActual = null;
-    document.getElementById('btn-editar-toggle').innerText = "Editar Servicio";
-    document.querySelector('.btn-danger').innerText = "Borrar Servicio";
     
-    document.querySelectorAll('.card-precio').forEach(c => {
+    // Resetear botones
+    const btnEditar = document.getElementById('btn-editar-toggle');
+    const btnBorrar = document.querySelector('.btn-danger');
+    if (btnEditar) btnEditar.innerText = "Editar Servicio";
+    if (btnBorrar) btnBorrar.innerText = "Borrar Servicio";
+    
+    // Resetear tarjetas
+    const tarjetas = document.querySelectorAll('.card-precio');
+    tarjetas.forEach(c => {
         c.classList.remove('border-editar', 'border-borrar');
-        c.onclick = null; // Esto es vital para borrar los clics de borrado
+        c.style.cursor = "default";
+        c.onclick = null; // ¡IMPORTANTE! Esto mata cualquier evento anterior
     });
 }
 
 // Para editar, necesitamos que al hacer clic la tarjeta siempre intente abrir el modal
-// pero solo si estamos en modo editar.
+// Variable global para evitar recrear la instancia
+let bsModalInstance = null;
+
 function abrirModalEditar(id, nombre, precio, duracion, tipo) {
-    // 1. Obtener referencia al modal y elementos
-    const modal = document.getElementById('modalServicio');
+    const modalElement = document.getElementById('modalServicio');
     const form = document.getElementById('formServicio');
     const titulo = document.getElementById('modalServicioLabel');
     
-    // 2. Cambiar título y acción del formulario
+    // 1. Configurar datos
     titulo.innerText = "Editar Servicio: " + nombre;
-    
-    // Usamos el data-editar-base que ya tienes en el HTML (reemplazando el 0 por el id real)
     const urlBase = document.getElementById('url-data').getAttribute('data-editar-base');
     form.action = urlBase.replace('0', id);
     
-    // 3. Llenar los campos del formulario
-    form.querySelector('[name="nombreservicio"]').value = nombre;
-    form.querySelector('[name="precio"]').value = precio;
-    form.querySelector('[name="duracion"]').value = duracion;
-    form.querySelector('[name="tiposervicio"]').value = tipo;
+    // 2. Llenar campos de forma segura
+    const campos = {
+        'nombreservicio': nombre,
+        'precio': precio,
+        'duracion': duracion,
+        'tiposervicio': tipo
+    };
+
+    Object.keys(campos).forEach(key => {
+        const input = form.querySelector(`[name="${key}"]`);
+        if (input) input.value = campos[key];
+    });
     
-    // 4. Mostrar el modal
-    const bsModal = new bootstrap.Modal(modal);
+    // 3. Obtener o crear la instancia localmente (Sin variables globales)
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    
+    // 4. Asegurar que el modal se mueva al final del body (SOLUCIÓN AL BLOQUEO)
+    // Esto evita que el modal esté atrapado dentro de divs con overflow: hidden
+    document.body.appendChild(modalElement);
+    
     bsModal.show();
 }
 
 function prepararModalCrear() {
+    const modalElement = document.getElementById('modalServicio');
     const form = document.getElementById('formServicio');
     const titulo = document.getElementById('modalServicioLabel');
     
     titulo.innerText = "Nuevo Servicio";
     form.action = document.getElementById('url-data').getAttribute('data-crear');
-    form.reset(); // Limpiar campos
+    form.reset();
+    
+    // IMPORTANTE: Aseguramos que el modal esté al final del body
+    document.body.appendChild(modalElement);
+    
+    // Instanciamos y mostramos
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    bsModal.show();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -581,3 +618,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+// Este script soluciona el bloqueo permanentemente
+document.addEventListener('click', function (e) {
+    // Si el usuario hace clic en el fondo gris
+    if (e.target.classList.contains('modal-backdrop')) {
+        // Buscamos el modal visible
+        const modal = document.querySelector('.modal.show');
+        if (modal) {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) bsModal.hide();
+        }
+    }
+});
+
+// Limpieza total al cerrar cualquier modal
+document.addEventListener('hidden.bs.modal', function () {
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('padding-right');
+});
+
+function manejarReserva(event) {
+    const boton = event.currentTarget;
+    const tieneSesion = boton.getAttribute('data-sesion') === 'true';
+    const urlReserva = boton.getAttribute('data-url-reserva');
+
+    if (!tieneSesion) {
+        // Prevenir que navegue a la URL
+        event.preventDefault();
+        
+        // Mostrar el modal de autenticación (el que tienes en base.html)
+        const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+        authModal.show();
+    } else {
+        // Si tiene sesión, procedemos a la reserva normalmente
+        window.location.href = urlReserva;
+    }
+}

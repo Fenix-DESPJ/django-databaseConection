@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from functools import wraps
 from .models import Servicio, Cita
 import pandas as pd
 from django.http import HttpResponse
@@ -16,6 +18,14 @@ from django.http import FileResponse
 from fpdf import FPDF
 import os
 
+def admin_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        # Usamos tu función es_admin existente
+        if not es_admin(request.user):
+            raise PermissionDenied
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 def index(request):
     return render(request, 'index.html')
@@ -107,6 +117,7 @@ def es_admin(user):
 
 # 1. Crear Servicio
 @login_required
+@admin_required
 def crear_servicio(request):
     # Validación de Admin
     usuario_db = Usuario.objects.filter(correo=request.user.email).first()
@@ -139,6 +150,7 @@ def crear_servicio(request):
 
 # 2. Editar Servicio
 @login_required
+@admin_required
 def editar_servicio(request, pk):
     if not es_admin(request.user):
         raise PermissionDenied
@@ -163,6 +175,7 @@ def editar_servicio(request, pk):
     
 # 3. Eliminar Servicio
 @login_required
+@admin_required
 def eliminar_servicio(request, pk):
     # Verificación de seguridad robusta
     if not es_admin(request.user):

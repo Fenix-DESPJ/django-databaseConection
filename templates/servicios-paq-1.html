@@ -42,8 +42,7 @@
             data-nombre="{{ p.nombreservicio|escapejs }}" 
             data-precio="{{ p.precio }}" 
             data-duracion="{{ p.duracion }}" 
-            data-tipo="{{ p.tiposervicio }}"
-            onclick="abrirModalEditar('{{ p.pk }}', '{{ p.nombreservicio|escapejs }}', '{{ p.precio }}', '{{ p.duracion }}', '{{ p.tiposervicio }}')">
+            data-tipo="{{ p.tiposervicio }}">
             
             <img src="{{ MEDIA_URL }}{{ p.imagen }}" alt="{{ p.nombreservicio }}" class="card-precio-img">
             
@@ -56,8 +55,12 @@
                 <div class="text-end">
                     <span class="d-block fw-bold mb-1">$ {{ p.precio|floatformat:0 }}</span>
                     <a href="{% url 'crear_reserva' %}?servicio_id={{p.pk}}" 
-                    class="btn btn-dark btn-sm btn-servicio-reservar" 
-                    onclick="event.stopPropagation()">Reservar</a>
+                        class="btn btn-dark btn-sm btn-servicio-reservar" 
+                        data-url-reserva="{% url 'crear_reserva' %}?servicio_id={{p.pk}}"
+                        data-sesion="{{ request.session.sesion_iniciada|yesno:'true,false' }}"
+                        onclick="manejarReserva(event)">
+                        Reservar
+                    </a>
                 </div>
             </div>
         </div>
