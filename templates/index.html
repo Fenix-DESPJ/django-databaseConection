@@ -12,7 +12,11 @@
           En M&A Barber Shop combinamos tradición, elegancia e innovación para ofrecer una experiencia de barbería organizada, cómoda y profesional.
         </p>
         <div class="d-flex gap-3 flex-wrap">
-          <a href="{% if user.is_authenticated %}{% url 'crear_reserva' %}{% else %}{% url 'agenda' %}{% endif %}" class="btn btn-dorado">Agendar cita</a>
+          {% if request.session.sesion_iniciada %}
+            <a href="{% url 'crear_reserva' %}" class="btn btn-dorado">Agendar cita</a>
+          {% else %}
+            <a href="#" class="btn btn-dorado" data-bs-toggle="modal" data-bs-target="#authModal">Agendar cita</a>
+          {% endif %}
           <a href="{% url 'servicios' %}" class="btn btn-borde">Ver servicios</a>
         </div>
       </div>
@@ -164,7 +168,11 @@
   <div class="container text-center">
     <h2>¿Listo para renovar tu estilo?</h2>
     <p>Agenda tu cita y vive la experiencia M&A Barber Shop.</p>
-    <a href="{% if user.is_authenticated %}{% url 'crear_reserva' %}{% else %}{% url 'agenda' %}{% endif %}" class="btn btn-dorado">Reservar ahora</a>
+    {% if request.session.sesion_iniciada %}
+      <a href="{% url 'crear_reserva' %}" class="btn btn-dorado">Reservar ahora</a>
+    {% else %}
+      <a href="#" class="btn btn-dorado" data-bs-toggle="modal" data-bs-target="#authModal">Agendar cita</a>
+    {% endif %}
   </div>
 </section>
 {% endblock %}
