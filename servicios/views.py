@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from functools import wraps
 from .models import Servicio, Cita
 import pandas as pd
+from django.contrib import messages
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
@@ -13,6 +14,7 @@ from django.db.models import Sum, Count
 from usuarios.models import Usuario
 from django.apps import apps
 import json
+from django.db import IntegrityError
 from django.db.models import F
 from django.http import FileResponse
 from fpdf import FPDF
@@ -176,15 +178,20 @@ def editar_servicio(request, pk):
 # 3. Eliminar Servicio
 @login_required
 @admin_required
-def eliminar_servicio(request, pk):
-    # Verificación de seguridad robusta
+def eliminar_servicio(request, pk): # Asegúrate de que aquí diga 'pk'
     if not es_admin(request.user):
-        print("DEBUG: Acceso denegado en eliminar_servicio")
         raise PermissionDenied
         
     servicio = get_object_or_404(Servicio, pk=pk)
-    servicio.delete()
-    return redirect('servicios_ind')
+    
+    # Validar dependencias antes de borrar
+    if servicio.cita_set.exists():
+        messages.error(request, "No se puede eliminar el servicio porque tiene citas programadas.")
+    else:
+        servicio.delete()
+        messages.success(request, "Servicio eliminado correctamente.")
+        
+    return redirect('servicios_ind') # O el nombre de tu URL de listado
 
 def lista_servicios(request):
     servicios = Servicio.objects.all()
