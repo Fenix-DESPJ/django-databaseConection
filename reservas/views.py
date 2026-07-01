@@ -146,9 +146,10 @@ def mis_citas_view(request):
 
     citas = []
     try:
+       # ... código anterior igual ...
         with connection.cursor() as cursor:
             if es_admin:
-                # Consulta para el Administrador: Cruzamos idBarberoFk directamente con idUsuario
+                # Consulta para el Administrador CORREGIDA pasando por la tabla barbero
                 cursor.execute("""
                     SELECT 
                         c.idCita, 
@@ -160,13 +161,14 @@ def mis_citas_view(request):
                         c.observaciones
                     FROM cita c
                     LEFT JOIN servicio s ON c.idServicioFk = s.idServicio
-                    LEFT JOIN usuario u_barbero ON c.idBarberoFk = u_barbero.idUsuario -- <-- CORREGIDO: Cruce directo
+                    LEFT JOIN barbero b ON c.idBarberoFk = b.idBarbero -- 1. Buscamos el registro del barbero
+                    LEFT JOIN usuario u_barbero ON b.idUsuarioFk = u_barbero.idUsuario -- 2. Obtenemos su nombre real
                     LEFT JOIN cliente cl ON c.idClienteFk = cl.idCliente
                     LEFT JOIN usuario u_cliente ON cl.idUsuarioFk = u_cliente.idUsuario
                     ORDER BY c.fecha DESC, c.horaInicio DESC
                 """)
             else:
-                # Consulta para el Cliente: Cruzamos idBarberoFk directamente con idUsuario
+                # Consulta para el Cliente CORREGIDA pasando por la tabla barbero
                 cursor.execute("""
                     SELECT 
                         c.idCita, 
@@ -178,7 +180,8 @@ def mis_citas_view(request):
                         c.observaciones
                     FROM cita c
                     LEFT JOIN servicio s ON c.idServicioFk = s.idServicio
-                    LEFT JOIN usuario u_barbero ON c.idBarberoFk = u_barbero.idUsuario -- <-- CORREGIDO: Cruce directo
+                    LEFT JOIN barbero b ON c.idBarberoFk = b.idBarbero -- 1. Buscamos el registro del barbero
+                    LEFT JOIN usuario u_barbero ON b.idUsuarioFk = u_barbero.idUsuario -- 2. Obtenemos su nombre real
                     LEFT JOIN cliente cl ON c.idClienteFk = cl.idCliente
                     LEFT JOIN usuario u_cliente ON cl.idUsuarioFk = u_cliente.idUsuario
                     WHERE cl.idUsuarioFk = %s
@@ -186,6 +189,7 @@ def mis_citas_view(request):
                 """, [usuario_actual.idusuario])
             
             filas = cursor.fetchall()
+
             for f in filas:
                 citas.append({
                     'idCita': f[0],
