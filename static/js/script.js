@@ -1,5 +1,22 @@
 // --- VARIABLES GLOBALMENTE DECLARADAS PARA MODALES BOOTSTRAP ---
-let pseModal, cardModal, successModal, reservationToast;
+let pseModal, cardModal, reservationToast;
+
+// --- ESTADO DE DISPONIBILIDAD (viene del backend: días habilitados por el admin,
+//     horas configuradas y horas ya ocupadas por barbero/fecha) ---
+let disponibilidad = { horas_disponibles: [], dias_habilitados: [], horas_ocupadas: [] };
+
+async function cargarDisponibilidad(barberoId, fechaStr) {
+  let url = `/reservas/disponibilidad/?`;
+  if (barberoId) url += `barbero=${barberoId}&`;
+  if (fechaStr) url += `fecha=${fechaStr}`;
+  try {
+    const resp = await fetch(url);
+    disponibilidad = await resp.json();
+  } catch (e) {
+    console.error("Error al cargar disponibilidad:", e);
+  }
+  return disponibilidad;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   // Inicialización del módulo si la vista de reservas está activa en el DOM
@@ -8,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function inicializarModuloReservas() {
+async function inicializarModuloReservas() {
   // --- SELECTORES DEL DOM ---
   const formReservas = document.getElementById("formReservas");
   const calendarDays = document.getElementById("calendarDays");
@@ -46,29 +63,48 @@ function inicializarModuloReservas() {
 
   let mesOffset = 0;
 
+  // --- CARGA INICIAL DE DISPONIBILIDAD (días habilitados por el admin) ---
+  // Al inicio aún no hay fecha seleccionada, así que pasamos null.
+  await cargarDisponibilidad(selectBarbero ? selectBarbero.value : null, null);
+  actualizarEstadoBarberos();
+  renderizarCalendario();
+  renderizarHoras();
+
   // --- NUEVA LÓGICA: Auto-seleccionar servicio desde URL ---
   const urlParams = new URLSearchParams(window.location.search);
   const servicioId = urlParams.get('servicio_id');
 
   if (servicioId && selectServicio) {
-    // Intentamos asignar el ID al select
     selectServicio.value = servicioId;
-    
-    // Verificamos si el valor existía (por si el ID en la URL no coincide con ninguno en el select)
     if (selectServicio.value === servicioId) {
-        // Disparamos el evento para que se actualice el resumen y la UI
-        selectServicio.dispatchEvent(new Event('change'));
+      selectServicio.dispatchEvent(new Event('change'));
     }
   }
 
   // --- INICIALIZACIÓN DE MODALES Y TOASTS (BOOTSTRAP) ---
   pseModal = new bootstrap.Modal(document.getElementById("pseModal"));
   cardModal = new bootstrap.Modal(document.getElementById("cardModal"));
-  successModal = new bootstrap.Modal(document.getElementById("successModal"));
-  
+
   const toastEl = document.getElementById("reservationToast");
   if (toastEl) {
     reservationToast = new bootstrap.Toast(toastEl, { delay: 3000 });
+  }
+
+  // --- NAVEGACIÓN DE MES (registrada UNA sola vez, no en cada render) ---
+  if (prevMonth) {
+    prevMonth.addEventListener("click", () => {
+      if (prevMonth.disabled) return;
+      mesOffset--;
+      renderizarCalendario();
+    });
+  }
+
+  if (nextMonth) {
+    nextMonth.addEventListener("click", () => {
+      if (nextMonth.disabled) return;
+      mesOffset++;
+      renderizarCalendario();
+    });
   }
 
   // --- ESCUCHADORES DE SELECTS (SINCRO CON EL RESUMEN) ---
@@ -79,7 +115,14 @@ function inicializarModuloReservas() {
 
   if (selectBarbero) {
     actualizarTextoBarbero();
-    selectBarbero.addEventListener("change", actualizarTextoBarbero);
+    selectBarbero.addEventListener("change", async () => {
+      actualizarTextoBarbero();
+      // Si ya hay fecha seleccionada, refrescamos las horas ocupadas de ESTE barbero en esa fecha
+      if (estadoReserva.fecha) {
+        await cargarDisponibilidad(selectBarbero.value, estadoReserva.fecha);
+        renderizarHoras();
+      }
+    });
   }
 
   function actualizarTextoServicio() {
@@ -102,7 +145,7 @@ function inicializarModuloReservas() {
     option.addEventListener("click", (e) => {
       e.preventDefault();
       const metodo = option.getAttribute("data-method");
-      
+
       estadoReserva.metodoPago = metodo;
       if (inputMetodoPago) inputMetodoPago.value = metodo;
 
@@ -118,7 +161,6 @@ function inicializarModuloReservas() {
       inputMetodoPago.value = "PSE";
       if (selectedMethodDisplay) selectedMethodDisplay.textContent = "PSE";
       if (summaryPayment) summaryPayment.textContent = "PSE";
-      if (reservationToast) reservationToast.show();
     });
   }
 
@@ -128,20 +170,21 @@ function inicializarModuloReservas() {
       inputMetodoPago.value = "Tarjeta de Crédito";
       if (selectedMethodDisplay) selectedMethodDisplay.textContent = "Tarjeta de Crédito";
       if (summaryPayment) summaryPayment.textContent = "Tarjeta de Crédito";
-      if (reservationToast) reservationToast.show();
     });
   }
 
   // --- RENDERIZACIÓN DINÁMICA DEL CALENDARIO ---
   function renderizarCalendario() {
     const fechaBase = new Date();
+    fechaBase.setDate(1); // evita bugs de "overflow" de día al cambiar de mes
+    fechaBase.setHours(0, 0, 0, 0);
     fechaBase.setMonth(fechaBase.getMonth() + mesOffset);
 
     const nombreMes = fechaBase.toLocaleDateString("es-ES", {
       month: "long",
       year: "numeric",
     });
-    
+
     if (currentMonthYear) {
       currentMonthYear.textContent = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
     }
@@ -155,65 +198,80 @@ function inicializarModuloReservas() {
 
     for (let i = 0; i < offset; i++) {
       const divVacio = document.createElement("div");
-      divVacio.classList.add("day", "empty"); 
+      divVacio.classList.add("day", "empty");
       calendarDays.appendChild(divVacio);
     }
 
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
-    
-    const fechaLimite = new Date();
-    fechaLimite.setDate(hoy.getDate() + 30);
-    fechaLimite.setHours(0, 0, 0, 0);
 
-    const listadoHoras = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+    // --- Límite máximo de reserva = un mes desde hoy ---
+    const fechaMaxima = new Date(hoy);
+    fechaMaxima.setMonth(fechaMaxima.getMonth() + 1);
 
     for (let dia = 1; dia <= diasEnMes; dia++) {
       const fechaIteradaObj = new Date(fechaBase.getFullYear(), fechaBase.getMonth(), dia);
-      
-      const horasDisponibles = listadoHoras.filter(hora => {
-        const [h, m] = hora.split(":").map(Number);
-        const horaCita = new Date(fechaIteradaObj);
-        horaCita.setHours(h, m, 0, 0);
-        
-        const esHoy = fechaIteradaObj.toDateString() === hoy.toDateString();
-        const unaHoraEnMs = 60 * 60 * 1000;
-        
-        return !(esHoy && (horaCita - new Date() < unaHoraEnMs));
-      }).length;
-
-      const btonDia = document.createElement("button");
-      btonDia.type = "button";
-      btonDia.classList.add("day"); 
-      btonDia.textContent = dia;
-
-      if (fechaIteradaObj < hoy || fechaIteradaObj > fechaLimite || horasDisponibles === 0) {
-        btonDia.classList.add("disabled");
-        btonDia.disabled = true;
-      }
 
       const mesFormateado = String(fechaBase.getMonth() + 1).padStart(2, '0');
       const diaFormateado = String(dia).padStart(2, '0');
       const fechaIterada = `${fechaBase.getFullYear()}-${mesFormateado}-${diaFormateado}`;
-      
+
+      const btonDia = document.createElement("button");
+      btonDia.type = "button";
+      btonDia.classList.add("day");
+      btonDia.textContent = dia;
+
+      const estaHabilitado = disponibilidad.dias_habilitados.includes(fechaIterada);
+      const fueraDeRango = fechaIteradaObj < hoy || fechaIteradaObj > fechaMaxima;
+
+      if (fueraDeRango || !estaHabilitado) {
+        btonDia.classList.add("disabled");
+        btonDia.disabled = true;
+        btonDia.title = fueraDeRango
+          ? "Fuera del rango permitido para reservar (hoy hasta un mes después)"
+          : "Día no habilitado por el administrador";
+      }
+
       if (estadoReserva.fecha === fechaIterada) {
         btonDia.classList.add("selected");
       }
 
       if (!btonDia.disabled) {
-        btonDia.addEventListener("click", () => {
+        btonDia.addEventListener("click", async () => {
           document.querySelectorAll(".day").forEach(b => b.classList.remove("selected"));
           btonDia.classList.add("selected");
-          
+
           estadoReserva.fecha = fechaIterada;
           if (inputFecha) inputFecha.value = fechaIterada;
           if (summaryDate) summaryDate.textContent = fechaIterada;
 
+          await cargarDisponibilidad(selectBarbero ? selectBarbero.value : null, fechaIterada);
           renderizarHoras();
         });
       }
 
       calendarDays.appendChild(btonDia);
+    }
+
+    actualizarBotonesNavegacionMes(fechaBase, hoy, fechaMaxima);
+  }
+
+  // Solo actualiza el estado disabled de las flechas; NO registra listeners aquí
+  function actualizarBotonesNavegacionMes(fechaBase, hoy, fechaMaxima) {
+    const inicioMesVisible = new Date(fechaBase.getFullYear(), fechaBase.getMonth(), 1);
+
+    if (prevMonth) {
+      const inicioMesHoy = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+      const puedeRetroceder = inicioMesVisible > inicioMesHoy;
+      prevMonth.disabled = !puedeRetroceder;
+      prevMonth.classList.toggle("disabled", !puedeRetroceder);
+    }
+
+    if (nextMonth) {
+      const inicioMesMax = new Date(fechaMaxima.getFullYear(), fechaMaxima.getMonth(), 1);
+      const puedeAvanzar = inicioMesVisible < inicioMesMax;
+      nextMonth.disabled = !puedeAvanzar;
+      nextMonth.classList.toggle("disabled", !puedeAvanzar);
     }
   }
 
@@ -222,46 +280,63 @@ function inicializarModuloReservas() {
     if (!hoursGrid) return;
     hoursGrid.innerHTML = "";
 
-    const listadoHoras = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+    const listadoHoras = (disponibilidad.horas_disponibles && disponibilidad.horas_disponibles.length)
+        ? disponibilidad.horas_disponibles
+        : ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+
+    const ocupadas = disponibilidad.horas_ocupadas || [];
     const ahora = new Date();
-    const fechaSeleccionada = new Date(estadoReserva.fecha + "T00:00:00");
-    const esHoy = fechaSeleccionada.toDateString() === ahora.toDateString();
+    const fechaSeleccionada = estadoReserva.fecha ? new Date(estadoReserva.fecha + "T00:00:00") : null;
+    const esHoy = fechaSeleccionada && fechaSeleccionada.toDateString() === ahora.toDateString();
 
     listadoHoras.forEach(hora => {
       const [h, m] = hora.split(":").map(Number);
-      const horaCita = new Date(fechaSeleccionada);
-      horaCita.setHours(h, m, 0, 0);
-
       const btonHora = document.createElement("button");
       btonHora.type = "button";
       btonHora.classList.add("hour-btn");
       btonHora.textContent = hora;
 
-      if (esHoy && (horaCita - ahora < 3600000)) {
+      let bloqueadaPorHoraActual = false;
+      if (esHoy) {
+        const horaCita = new Date(fechaSeleccionada);
+        horaCita.setHours(h, m, 0, 0);
+        bloqueadaPorHoraActual = (horaCita - ahora) < 3600000; // menos de 1 hora de anticipación
+      }
+
+      if (ocupadas.includes(hora)) {
+        btonHora.classList.add("disabled");
+        btonHora.disabled = true;
+        btonHora.title = "Ese barbero ya tiene una cita a esta hora";
+      } else if (bloqueadaPorHoraActual) {
         btonHora.classList.add("disabled");
         btonHora.disabled = true;
       } else {
-        if (estadoReserva.hora === hora) {
-          btonHora.classList.add("selected");
-        }
-
+        if (estadoReserva.hora === hora) btonHora.classList.add("selected");
         btonHora.addEventListener("click", () => {
           document.querySelectorAll(".hour-btn").forEach(b => b.classList.remove("selected"));
           btonHora.classList.add("selected");
-          
           estadoReserva.hora = hora;
           if (inputHora) inputHora.value = hora;
           if (summaryHour) summaryHour.textContent = hora;
         });
       }
-
       hoursGrid.appendChild(btonHora);
     });
   }
 
-  // --- FLUJO DE CONTROL: BOTÓN FINAL DE RESERVA ---
+  // --- ENVÍO REAL DE LA RESERVA: recarga solo en caso de error, para refrescar disponibilidad ---
+  const errorModalEl = document.getElementById("errorReservaModal");
+  if (errorModalEl) {
+    errorModalEl.addEventListener("hidden.bs.modal", () => {
+      if (errorModalEl.dataset.debeRecargar === "true") {
+        window.location.reload();
+      }
+    });
+  }
+
+  // --- FLUJO DE CONTROL: BOTÓN FINAL DE RESERVA (validación + envío + resultado) ---
   if (btnReservar) {
-    btnReservar.addEventListener("click", () => {
+    btnReservar.addEventListener("click", async () => {
       if (!selectServicio || !selectServicio.value) {
         alert("Por favor, selecciona un servicio.");
         return;
@@ -283,31 +358,68 @@ function inicializarModuloReservas() {
         return;
       }
 
-      if (successModal) {
-        successModal.show();
+      // Evita doble click mientras se procesa
+      btnReservar.disabled = true;
+      const textoOriginal = btnReservar.innerHTML;
+      btnReservar.innerHTML = "Procesando...";
+
+      const formData = new FormData(formReservas);
+      try {
+        const resp = await fetch(formReservas.action || window.location.href, {
+          method: "POST",
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+          body: formData
+        });
+        const data = await resp.json();
+
+        if (data.ok) {
+          // --- ÉXITO: solo el toast ---
+          if (reservationToast) reservationToast.show();
+          setTimeout(() => {
+            window.location.href = data.redirect;
+          }, 1800);
+        } else {
+          // --- ERROR: solo el modal ---
+          document.getElementById("errorReservaMensaje").textContent = data.error;
+          errorModalEl.dataset.debeRecargar = "true";
+          new bootstrap.Modal(errorModalEl).show();
+          btnReservar.disabled = false;
+          btnReservar.innerHTML = textoOriginal;
+        }
+      } catch (err) {
+        document.getElementById("errorReservaMensaje").textContent = "Error de conexión, intenta de nuevo.";
+        errorModalEl.dataset.debeRecargar = "false";
+        new bootstrap.Modal(errorModalEl).show();
+        btnReservar.disabled = false;
+        btnReservar.innerHTML = textoOriginal;
       }
     });
   }
 
-  // Capturar el envío del Formulario Real desde el Modal de éxito
-  const btnVerMisReservas = document.getElementById("btnVerMisReservas");
-  if (btnVerMisReservas) {
-    btnVerMisReservas.addEventListener("click", () => {
-      successModal.hide();
-      if (formReservas) {
-        formReservas.submit(); // Dispara el POST nativo hacia Django
+  // --- Deshabilitar barberos con agenda completa o desactivados por el admin ese día ---
+  function actualizarEstadoBarberos() {
+    if (!disponibilidad.barberos_estado || !selectBarbero) return;
+
+    disponibilidad.barberos_estado.forEach(b => {
+      const opcion = selectBarbero.querySelector(`option[value="${b.id}"]`);
+      if (!opcion) return;
+
+      if (!b.disponible) {
+        opcion.disabled = true;
+        opcion.textContent = opcion.textContent.replace(/ \(No disponible.*\)$/, '');
+        opcion.textContent += b.motivo === 'admin' ? " (No disponible este día)" : " (Agenda completa)";
+        if (selectBarbero.value === String(b.id)) {
+          selectBarbero.value = "";
+          estadoReserva.hora = "";
+          if (inputHora) inputHora.value = "";
+          actualizarTextoBarbero();
+        }
+      } else {
+        opcion.disabled = false;
+        opcion.textContent = opcion.textContent.replace(/ \((No disponible este día|Agenda completa)\)$/, '');
       }
     });
   }
-
-  if (prevMonth) {
-    prevMonth.addEventListener("click", () => { mesOffset--; renderizarCalendario(); });
-  }
-  if (nextMonth) {
-    nextMonth.addEventListener("click", () => { mesOffset++; renderizarCalendario(); });
-  }
-
-  renderizarCalendario();
 }
 
 /* Estado Centralizado */
@@ -332,7 +444,6 @@ function cambiarModo(nuevoModo) {
             c.classList.add('border-editar');
             c.style.cursor = "pointer";
             c.onclick = function() {
-                // Aquí llamamos a tu función que ya tienes lista
                 abrirModalEditar(
                     this.getAttribute('data-id'),
                     this.getAttribute('data-nombre'),
@@ -342,7 +453,7 @@ function cambiarModo(nuevoModo) {
                 );
             };
         });
-    } 
+    }
     else if (modoActual === 'borrar') {
         btnBorrar.innerText = "Cancelar Borrado";
         tarjetas.forEach(c => {
@@ -361,37 +472,31 @@ function cambiarModo(nuevoModo) {
 
 function desactivarModos() {
     modoActual = null;
-    
-    // Resetear botones
+
     const btnEditar = document.getElementById('btn-editar-toggle');
     const btnBorrar = document.querySelector('.btn-danger');
     if (btnEditar) btnEditar.innerText = "Editar Servicio";
     if (btnBorrar) btnBorrar.innerText = "Borrar Servicio";
-    
-    // Resetear tarjetas
+
     const tarjetas = document.querySelectorAll('.card-precio');
     tarjetas.forEach(c => {
         c.classList.remove('border-editar', 'border-borrar');
         c.style.cursor = "default";
-        c.onclick = null; // ¡IMPORTANTE! Esto mata cualquier evento anterior
+        c.onclick = null;
     });
 }
 
-// Para editar, necesitamos que al hacer clic la tarjeta siempre intente abrir el modal
-// Variable global para evitar recrear la instancia
 let bsModalInstance = null;
 
 function abrirModalEditar(id, nombre, precio, duracion, tipo) {
     const modalElement = document.getElementById('modalServicio');
     const form = document.getElementById('formServicio');
     const titulo = document.getElementById('modalServicioLabel');
-    
-    // 1. Configurar datos
+
     titulo.innerText = "Editar Servicio: " + nombre;
     const urlBase = document.getElementById('url-data').getAttribute('data-editar-base');
     form.action = urlBase.replace('0', id);
-    
-    // 2. Llenar campos de forma segura
+
     const campos = {
         'nombreservicio': nombre,
         'precio': precio,
@@ -403,14 +508,9 @@ function abrirModalEditar(id, nombre, precio, duracion, tipo) {
         const input = form.querySelector(`[name="${key}"]`);
         if (input) input.value = campos[key];
     });
-    
-    // 3. Obtener o crear la instancia localmente (Sin variables globales)
+
     const bsModal = bootstrap.Modal.getOrCreateInstance(modalElement);
-    
-    // 4. Asegurar que el modal se mueva al final del body (SOLUCIÓN AL BLOQUEO)
-    // Esto evita que el modal esté atrapado dentro de divs con overflow: hidden
     document.body.appendChild(modalElement);
-    
     bsModal.show();
 }
 
@@ -418,15 +518,13 @@ function prepararModalCrear() {
     const modalElement = document.getElementById('modalServicio');
     const form = document.getElementById('formServicio');
     const titulo = document.getElementById('modalServicioLabel');
-    
+
     titulo.innerText = "Nuevo Servicio";
     form.action = document.getElementById('url-data').getAttribute('data-crear');
     form.reset();
-    
-    // IMPORTANTE: Aseguramos que el modal esté al final del body
+
     document.body.appendChild(modalElement);
-    
-    // Instanciamos y mostramos
+
     const bsModal = bootstrap.Modal.getOrCreateInstance(modalElement);
     bsModal.show();
 }
@@ -436,12 +534,11 @@ document.addEventListener('DOMContentLoaded', () => {
         card.addEventListener('click', function() {
             if (modoActual === 'editar') {
                 const id = this.getAttribute('data-id');
-                // Buscamos los datos en la tarjeta (asegúrate de tenerlos en data-atributos)
                 const nombre = this.getAttribute('data-nombre');
                 const precio = this.getAttribute('data-precio');
                 const duracion = this.getAttribute('data-duracion');
                 const tipo = this.getAttribute('data-tipo');
-                
+
                 abrirModalEditar(id, nombre, precio, duracion, tipo);
             }
         });
@@ -450,7 +547,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* js reportes admin */
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Verificamos que Chart esté cargado
     if (typeof Chart === 'undefined') {
         console.error("Chart.js no se ha cargado. Revisa tu etiqueta <script> en base.html");
         return;
@@ -465,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const totales = JSON.parse(el.dataset.totales);
 
             const ctx = canvas.getContext('2d');
-            
+
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -494,43 +590,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 document.addEventListener("DOMContentLoaded", function() {
-    // Buscamos las alertas de Django con la clase 'alert'
     const alerts = document.querySelectorAll('.alert');
-        
+
     alerts.forEach(function(alert) {
         setTimeout(function() {
-            // Validación segura: si Bootstrap JS está disponible, lo usa
             if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
                 const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
                 bsAlert.close();
             } else {
-                // Si no, lo desvanece con CSS puro para no romper nada
                 alert.style.transition = "opacity 0.5s ease";
                 alert.style.opacity = "0";
                 setTimeout(() => alert.remove(), 500);
             }
-        }, 3000); 
+        }, 3000);
     });
 });
 
-
-
 document.querySelectorAll('.toggle-password').forEach(button => {
     button.addEventListener('click', function() {
-        // Buscamos el input que está justo antes del contenedor del ojo
         const input = this.parentElement.querySelector('input');
         const icon = this.querySelector('i');
-        
+
         if (input.type === 'password') {
             input.type = 'text';
-            // Cambia el icono al ojo abierto
             icon.classList.remove('bi-eye-slash');
             icon.classList.add('bi-eye');
         } else {
             input.type = 'password';
-            // Cambia el icono de vuelta al ojo cerrado
             icon.classList.remove('bi-eye');
             icon.classList.add('bi-eye-slash');
         }
@@ -539,28 +626,29 @@ document.querySelectorAll('.toggle-password').forEach(button => {
 
 /* Carruseles y mas estilo*/
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Carrusel de Inicio (Fade)
     const images = document.querySelectorAll('.carrusel-container img');
     let currentIndex = 0;
-    setInterval(() => {
-        images[currentIndex].classList.remove('active');
-        currentIndex = (currentIndex + 1) % images.length;
-        images[currentIndex].classList.add('active');
-    }, 4000);
+    if (images.length) {
+        setInterval(() => {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }, 4000);
+    }
 
-    // 2. Carrusel de Barberos (Slider)
     const track = document.querySelector('.barbers-track');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-    let scrollAmount = 0;
 
-    nextBtn.addEventListener('click', () => {
-        track.scrollBy({ left: 300, behavior: 'smooth' });
-    });
+    if (track && prevBtn && nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            track.scrollBy({ left: 300, behavior: 'smooth' });
+        });
 
-    prevBtn.addEventListener('click', () => {
-        track.scrollBy({ left: -300, behavior: 'smooth' });
-    });
+        prevBtn.addEventListener('click', () => {
+            track.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+    }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -569,13 +657,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextBtn = document.getElementById('nextBtn');
     const prevBtn = document.getElementById('prevBtn');
     const dotsContainer = document.getElementById('carouselDots');
-    
-    // Configuración: 3 visibles
+
+    if (!track || !cards.length || !nextBtn || !prevBtn || !dotsContainer) return;
+
     const itemsPerView = 3;
     const totalGroups = Math.ceil(cards.length / itemsPerView);
     let currentGroup = 0;
 
-    // 1. Crear solo los puntos necesarios (según grupos)
     for (let i = 0; i < totalGroups; i++) {
         const dot = document.createElement('div');
         dot.classList.add('dot');
@@ -589,21 +677,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dots = document.querySelectorAll('.dot');
 
-    // 2. Función maestra para mover el scroll
     function updateCarousel() {
-        const cardWidth = cards[0].offsetWidth + 20; // Ancho + gap
+        const cardWidth = cards[0].offsetWidth + 20;
         track.scrollTo({
             left: currentGroup * (cardWidth * itemsPerView),
             behavior: 'smooth'
         });
 
-        // Actualizar estados visuales de los dots
         dots.forEach((dot, index) => {
             dot.classList.toggle('active', index === currentGroup);
         });
     }
 
-    // 3. Botones con limitadores
     nextBtn.addEventListener('click', () => {
         if (currentGroup < totalGroups - 1) {
             currentGroup++;
@@ -621,9 +706,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Este script soluciona el bloqueo permanentemente
 document.addEventListener('click', function (e) {
-    // Si el usuario hace clic en el fondo gris
     if (e.target.classList.contains('modal-backdrop')) {
-        // Buscamos el modal visible
         const modal = document.querySelector('.modal.show');
         if (modal) {
             const bsModal = bootstrap.Modal.getInstance(modal);
@@ -649,16 +732,41 @@ function manejarReserva(event) {
     const urlReserva = boton.getAttribute('data-url-reserva');
 
     if (!tieneSesion) {
-        // Prevenir que navegue a la URL
         event.preventDefault();
-        
-        // Mostrar el modal de autenticación (el que tienes en base.html)
         const authModal = new bootstrap.Modal(document.getElementById('authModal'));
         authModal.show();
     } else {
-        // Si tiene sesión, procedemos a la reserva normalmente
         window.location.href = urlReserva;
     }
 }
 
-  
+/* --- Restricciones de tipo de dato en inputs (letras / números) --- */
+document.addEventListener("DOMContentLoaded", () => {
+    // Solo letras, tildes, ñ y espacios (nombres, apellidos, etc.)
+    document.querySelectorAll('[data-solo="letras"]').forEach(input => {
+        input.addEventListener("input", () => {
+            input.value = input.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, "");
+        });
+        input.addEventListener("paste", (e) => {
+            const texto = (e.clipboardData || window.clipboardData).getData("text");
+            if (/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/.test(texto)) {
+                e.preventDefault();
+                input.value += texto.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, "");
+            }
+        });
+    });
+
+    // Solo dígitos (teléfono, cédula, etc.)
+    document.querySelectorAll('[data-solo="numeros"]').forEach(input => {
+        input.addEventListener("input", () => {
+            input.value = input.value.replace(/[^0-9]/g, "");
+        });
+        input.addEventListener("paste", (e) => {
+            const texto = (e.clipboardData || window.clipboardData).getData("text");
+            if (/[^0-9]/.test(texto)) {
+                e.preventDefault();
+                input.value += texto.replace(/[^0-9]/g, "");
+            }
+        });
+    });
+});

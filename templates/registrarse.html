@@ -27,11 +27,23 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresa tu nombre" required>
+                        <input type="text" class="form-control" id="nombre" name="nombre"
+                               placeholder="Ingresa tu nombre"
+                               data-solo="letras"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
+                               title="Solo se permiten letras y espacios"
+                               maxlength="50"
+                               required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="apellido" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Ingresa tu apellido" required>
+                        <input type="text" class="form-control" id="apellido" name="apellido"
+                               placeholder="Ingresa tu apellido"
+                               data-solo="letras"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
+                               title="Solo se permiten letras y espacios"
+                               maxlength="50"
+                               required>
                     </div>
                 </div>
 
@@ -47,22 +59,36 @@
 
                 <div class="mb-3">
                     <label for="telefono" class="form-label">Teléfono</label>
-                    <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Ingresa tu número de teléfono" required>
+                    <input type="tel" class="form-control" id="telefono" name="telefono"
+                           placeholder="Ingresa tu número de teléfono"
+                           data-solo="numeros"
+                           inputmode="numeric"
+                           pattern="[0-9]{7,10}"
+                           title="Solo números, entre 7 y 10 dígitos"
+                           maxlength="10"
+                           required>
                 </div>
 
                 <div class="mb-3">
                     <label for="cedula" class="form-label">Cédula</label>
-                    <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ingresa tu numero de cedula" required>
+                    <input type="text" class="form-control" id="cedula" name="cedula"
+                           placeholder="Ingresa tu numero de cedula"
+                           data-solo="numeros"
+                           inputmode="numeric"
+                           pattern="[0-9]{6,10}"
+                           title="Solo números, entre 6 y 10 dígitos"
+                           maxlength="10"
+                           required>
                 </div>
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Crea una contraseña" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Crea una contraseña" minlength="8" required>
                 </div>
 
                 <div class="mb-4">
                     <label for="confirmar-password" class="form-label">Confirmar contraseña</label>
-                    <input type="password" class="form-control" id="confirmar-password" name="confirmar_password" placeholder="Confirma tu contraseña" required>
+                    <input type="password" class="form-control" id="confirmar-password" name="confirmar_password" placeholder="Confirma tu contraseña" minlength="8" required>
                 </div>
 
                 <button type="submit" class="btn-registro">

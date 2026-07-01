@@ -12,7 +12,13 @@ from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 from django.db.models import Sum, Count
 from usuarios.models import Usuario
+from usuarios.models import Usuario as UsuarioModel  # si ya tienes Usuario importado arriba, omite esta línea
+from negocio.models import BarberoDiaHabilitado
 from django.apps import apps
+# reservas/views.py
+from datetime import datetime, timedelta, date
+from django.http import JsonResponse
+from negocio.models import ConfiguracionHorario, DiaHabilitado
 import json
 from django.db import IntegrityError
 from django.db.models import F
@@ -303,3 +309,73 @@ def descargar_reporte_pdf(request):
     
     # Nota: Aquí no borramos el archivo inmediatamente para asegurar la descarga
     return response
+
+def disponibilidad_ajax(request):
+    barbero_id = request.GET.get('barbero')   # idUsuario del barbero
+    fecha_str = request.GET.get('fecha')
+
+    config = ConfiguracionHorario.objects.first()
+    apertura = config.hora_apertura if config else datetime.strptime('08:00', '%H:%M').time()
+    cierre = config.hora_cierre if config else datetime.strptime('18:00', '%H:%M').time()
+    intervalo = config.intervalo_minutos if config else 30
+
+    horas = []
+    cursor_t = datetime.combine(date.today(), apertura)
+    fin_t = datetime.combine(date.today(), cierre)
+    while cursor_t < fin_t:
+        horas.append(cursor_t.strftime('%H:%M'))
+        cursor_t += timedelta(minutes=intervalo)
+
+    hoy = date.today()
+    dias_habilitados_qs = DiaHabilitado.objects.filter(fecha__gte=hoy, habilitado=True).values_list('fecha', flat=True)
+    dias_habilitados = [f.isoformat() for f in dias_habilitados_qs]
+
+    data = {
+        'horas_disponibles': horas,
+        'dias_habilitados': dias_habilitados,
+    }
+
+    def _calcular_ocupadas(citas_qs):
+        """Bloquea todos los slots que ocupa cada cita según la DURACIÓN de su servicio."""
+        ocupadas = set()
+        for c in citas_qs:
+            duracion = c.idserviciofk.duracion if c.idserviciofk else intervalo
+            ini = datetime.combine(date.today(), c.horainicio)
+            fin = ini + timedelta(minutes=duracion)
+            cur = ini
+            while cur < fin:
+                ocupadas.add(cur.strftime('%H:%M'))
+                cur += timedelta(minutes=intervalo)
+        return ocupadas
+
+    # --- Horas ocupadas de UN barbero específico en una fecha (para pintar la grilla de horas) ---
+    if barbero_id and fecha_str:
+        citas_dia = Cita.objects.filter(
+            idbarberofk__idusuariofk=barbero_id, fecha=fecha_str
+        ).select_related('idserviciofk')
+        data['horas_ocupadas'] = sorted(_calcular_ocupadas(citas_dia))
+
+    # --- Estado de TODOS los barberos en una fecha (para deshabilitar el select) ---
+    if fecha_str:
+        deshabilitados_admin = set(
+            BarberoDiaHabilitado.objects.filter(fecha=fecha_str, habilitado=False)
+            .values_list('idusuariofk', flat=True)
+        )
+        barberos_estado = []
+        for b in Usuario.objects.filter(idrolfk=2):
+            if b.idusuario in deshabilitados_admin:
+                barberos_estado.append({'id': b.idusuario, 'disponible': False, 'motivo': 'admin'})
+                continue
+            citas_b = Cita.objects.filter(
+                idbarberofk__idusuariofk=b.idusuario, fecha=fecha_str
+            ).select_related('idserviciofk')
+            ocupadas_b = _calcular_ocupadas(citas_b)
+            libres = [h for h in horas if h not in ocupadas_b]
+            barberos_estado.append({
+                'id': b.idusuario,
+                'disponible': len(libres) > 0,
+                'motivo': None if len(libres) > 0 else 'agenda_completa'
+            })
+        data['barberos_estado'] = barberos_estado
+
+    return JsonResponse(data)

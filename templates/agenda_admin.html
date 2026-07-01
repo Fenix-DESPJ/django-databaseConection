@@ -1,0 +1,401 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container my-5">
+
+    <!-- =========================
+         TÍTULO
+    ========================== -->
+    <div class="agenda-header">
+        <h2>Gestión de <span class="text-gold">Agenda</span></h2>
+        <p class="text-white-50">
+            Activa los días disponibles para reservas y define tu horario de atención.
+        </p>
+    </div>
+
+    <!-- =========================
+         MENSAJES
+    ========================== -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show">
+                {{ message }}
+                <button class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row g-4">
+
+        <!-- ======================================================
+             COLUMNA IZQUIERDA
+        ======================================================= -->
+
+        <div class="col-lg-8">
+
+            <!-- =========================
+                 CALENDARIO
+            ========================== -->
+
+            <div class="agenda-card mb-4">
+
+                <div class="agenda-calendar-header">
+
+                    <a class="agenda-nav-btn"
+                       href="?anio={{ anio_anterior }}&mes={{ mes_anterior }}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+
+                    <h4>{{ nombre_mes }} {{ anio }}</h4>
+
+                    <a class="agenda-nav-btn"
+                       href="?anio={{ anio_siguiente }}&mes={{ mes_siguiente }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                </div>
+
+                <div class="agenda-weekdays">
+                    <span>L</span>
+                    <span>M</span>
+                    <span>X</span>
+                    <span>J</span>
+                    <span>V</span>
+                    <span>S</span>
+                    <span>D</span>
+                </div>
+
+                <div class="agenda-days">
+
+                    {% for semana in calendario_semanas %}
+                        {% for dia in semana %}
+
+                            <div class="agenda-day-cell">
+
+                                {% if dia %}
+
+                                <form method="POST">
+                                    {% csrf_token %}
+
+                                    <input type="hidden" name="accion" value="toggle_dia">
+                                    <input type="hidden" name="fecha" value="{{ dia.fecha|date:'Y-m-d' }}">
+                                    <input type="hidden" name="anio" value="{{ anio }}">
+                                    <input type="hidden" name="mes" value="{{ mes }}">
+
+                                    <button
+                                        type="submit"
+                                        class="agenda-day
+                                        {% if dia.habilitado %}agenda-day-habilitado{% endif %}
+                                        {% if dia.pasado %}agenda-day-pasado{% endif %}
+                                        {% if dia.hoy %}agenda-day-hoy{% endif %}"
+                                        {% if dia.pasado %}disabled{% endif %}>
+
+                                        {{ dia.numero }}
+
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+                    {% endfor %}
+
+                </div>
+
+                <div class="agenda-legend">
+
+                    <span>
+                        <span class="dot" style="background:#ffc600;"></span>
+                        Habilitado
+                    </span>
+
+                    <span>
+                        <span class="dot" style="background:#262626;border:1px solid #3a3a3a;"></span>
+                        Deshabilitado
+                    </span>
+
+                    <span>
+                        <span class="dot" style="background:#1a1a1a;"></span>
+                        Día pasado
+                    </span>
+
+                    <span class="agenda-stat ms-auto">
+                        {{ total_habilitados_mes }} día(s) habilitado(s) este mes
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- =========================
+                 SEGUNDA FILA
+            ========================== -->
+
+            <div class="row g-4">
+
+                <!-- =========================
+                     DISPONIBILIDAD BARBEROS
+                ========================== -->
+
+                <div class="col-md-6">
+
+                    <div class="agenda-card h-100">
+
+                        <h5 class="text-gold mb-3">
+                            Disponibilidad de barberos
+                        </h5>
+
+                        <form method="GET" class="mb-4">
+
+                            <label class="form-label text-white small">
+                                Selecciona el día
+                            </label>
+
+                            <input
+                                type="date"
+                                class="form-control custom-input"
+                                name="fecha_gestion"
+                                value="{{ fecha_gestion|date:'Y-m-d' }}"
+                                onchange="this.form.submit()">
+
+                            <input type="hidden" name="anio" value="{{ anio }}">
+                            <input type="hidden" name="mes" value="{{ mes }}">
+
+                        </form>
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="accion"
+                                   value="guardar_barberos_dia">
+
+                            <input type="hidden"
+                                   name="fecha_gestion"
+                                   value="{{ fecha_gestion|date:'Y-m-d' }}">
+
+                            <div class="d-flex flex-column gap-2 mb-4">
+
+                                {% for b in barberos_lista %}
+
+                                    <label class="d-flex align-items-center gap-2 text-white">
+
+                                        <input
+                                            type="checkbox"
+                                            name="barberos_activos"
+                                            value="{{ b.id }}"
+                                            {% if b.activo %}checked{% endif %}>
+
+                                        {{ b.nombre }}
+
+                                    </label>
+
+                                {% endfor %}
+
+                            </div>
+
+                            <button class="btn btn-reserve w-100">
+                                Guardar disponibilidad
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <!-- =========================
+                     PATRÓN RÁPIDO
+                ========================== -->
+
+                <div class="col-md-6">
+
+                    <div class="agenda-card h-100">
+
+                        <h5 class="text-gold mb-3">
+                            Aplicar patrón rápido
+                        </h5>
+
+                        <form method="POST"
+                              class="d-grid gap-2">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="accion"
+                                   value="aplicar_patron">
+
+                            <input type="hidden"
+                                   name="anio"
+                                   value="{{ anio }}">
+
+                            <input type="hidden"
+                                   name="mes"
+                                   value="{{ mes }}">
+
+                            <button
+                                class="patron-btn"
+                                name="patron"
+                                value="todos">
+
+                                Todos los días
+
+                            </button>
+
+                            <button
+                                class="patron-btn"
+                                name="patron"
+                                value="lv">
+
+                                Lunes a viernes
+
+                            </button>
+
+                            <button
+                                class="patron-btn"
+                                name="patron"
+                                value="ls">
+
+                                Lunes a sábado
+
+                            </button>
+
+                        </form>
+
+                        <hr class="border-secondary my-4">
+
+                        <p class="small text-white-50">
+
+                            Si prefieres una configuración personalizada,
+                            simplemente haz clic sobre los días del calendario
+                            para activarlos o desactivarlos.
+
+                        </p>
+
+                        <form
+                            method="POST"
+                            onsubmit="return confirm('¿Seguro que deseas limpiar la agenda? Esto deshabilitará todos los días desde hoy en adelante.');">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="accion"
+                                   value="limpiar_agenda">
+
+                            <button
+                                type="submit"
+                                class="btn-limpiar-agenda w-100">
+
+                                <i class="bi bi-trash3"></i>
+
+                                Limpiar agenda
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ======================================================
+             COLUMNA DERECHA
+        ======================================================= -->
+
+        <div class="col-lg-4">
+
+            <div class="agenda-card agenda-sticky">
+
+                <h5 class="text-gold mb-4">
+                    Horario y reglas
+                </h5>
+
+                <form method="POST" class="d-flex flex-column gap-3">
+
+                    {% csrf_token %}
+
+                    <input type="hidden"
+                           name="accion"
+                           value="guardar_horario">
+
+                    <div>
+
+                        <label class="form-label text-white small">
+                            Hora de apertura
+                        </label>
+
+                        <input
+                            type="time"
+                            class="form-control custom-input"
+                            name="hora_apertura"
+                            value="{{ config.hora_apertura|time:'H:i' }}">
+
+                    </div>
+
+                    <div>
+
+                        <label class="form-label text-white small">
+                            Hora de cierre
+                        </label>
+
+                        <input
+                            type="time"
+                            class="form-control custom-input"
+                            name="hora_cierre"
+                            value="{{ config.hora_cierre|time:'H:i' }}">
+
+                    </div>
+
+                    <div>
+
+                        <label class="form-label text-white small">
+                            Intervalo entre citas (min)
+                        </label>
+
+                        <input
+                            type="number"
+                            step="5"
+                            class="form-control custom-input"
+                            name="intervalo_minutos"
+                            value="{{ config.intervalo_minutos }}">
+
+                    </div>
+
+                    <div>
+
+                        <label class="form-label text-white small">
+                            Límite de citas por cliente / mes
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control custom-input"
+                            name="limite_citas_mensuales"
+                            value="{{ config.limite_citas_mensuales }}">
+
+                    </div>
+
+                    <button class="btn btn-reserve mt-2">
+                        Guardar cambios
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -184,15 +184,14 @@
     </div>
 </div>
 
-<div class="modal fade" id="successModal">
+<div class="modal fade" id="errorReservaModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content custom-modal">
             <div class="modal-body text-center">
-                <i class="bi bi-check-circle-fill success-icon"></i>
-                <h3>Reserva realizada exitosamente</h3>
-                <button type="submit" form="formReservas" class="btn btn-reserve mt-3" id="btnVerMisReservas">
-                    Ver mis reservas
-                </button>
+                <i class="bi bi-x-circle-fill" style="font-size:3rem;color:#dc3545;"></i>
+                <h5 class="mt-3">No se pudo agendar</h5>
+                <p id="errorReservaMensaje" class="text-white-50"></p>
+                <button type="button" class="btn btn-outline-light mt-2" data-bs-dismiss="modal">Entendido</button>
             </div>
         </div>
     </div>

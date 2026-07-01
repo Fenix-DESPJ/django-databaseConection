@@ -33,3 +33,36 @@ class Agenda(models.Model):
     class Meta:
         managed = False
         db_table = 'agenda'
+
+class ConfiguracionHorario(models.Model):
+    """Fila única con el horario general del negocio."""
+    hora_apertura = models.TimeField(default='08:00')
+    hora_cierre = models.TimeField(default='18:00')
+    intervalo_minutos = models.PositiveIntegerField(default=30)  # granularidad de los slots
+    limite_citas_mensuales = models.PositiveIntegerField(default=3)  # <-- editable aquí
+
+    class Meta:
+        db_table = 'configuracion_horario'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1  # patrón singleton, siempre una sola fila
+        super().save(*args, **kwargs)
+
+
+class DiaHabilitado(models.Model):
+    """Días específicos que el admin habilita para reservar. Si no existe fila -> NO reservable."""
+    fecha = models.DateField(unique=True)
+    habilitado = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'dia_habilitado'
+
+class BarberoDiaHabilitado(models.Model):
+    """Permite al admin desactivar un barbero puntual en un día específico (ej: falta, vacaciones)."""
+    idusuariofk = models.IntegerField()  # id de Usuario (el barbero)
+    fecha = models.DateField()
+    habilitado = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'barbero_dia_habilitado'
+        unique_together = ('idusuariofk', 'fecha')

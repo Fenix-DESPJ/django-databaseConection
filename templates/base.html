@@ -46,6 +46,7 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'reportes_admin' %}">Reportes</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'gestionar_agenda_admin' %}">Agenda</a></li>
                         
                         {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>

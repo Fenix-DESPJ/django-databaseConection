@@ -12,10 +12,11 @@ urlpatterns = [
     path('servicio/eliminar/<int:pk>/', views.eliminar_servicio, name='eliminar_servicio'),
 
     # --- NUEVAS RUTAS DE REPORTES ---
+    path('reservas/disponibilidad/', views.disponibilidad_ajax, name='disponibilidad_ajax'),
     path('admin/reportes/', views.reportes_admin, name='reportes_admin'), 
     path('admin/reportes/excel/', views.descargar_reporte_excel, name='descargar_reporte_excel'),
     path('admin/reportes/pdf/', views.descargar_reporte_pdf, name='descargar_reporte_pdf'),]
-
+    
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

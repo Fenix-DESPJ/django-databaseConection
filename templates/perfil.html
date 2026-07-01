@@ -58,11 +58,25 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="inputNombre" class="form-label text-white small text-uppercase fw-bold mb-1">Nombre Completo</label>
-                            <input type="text" id="inputNombre" name="nombre" class="form-control bg-transparent text-light border-secondary py-2" value="{{ usuario.nombre }}">
+                            <input type="text" id="inputNombre" name="nombre"
+                                   class="form-control bg-transparent text-light border-secondary py-2"
+                                   value="{{ usuario.nombre }}"
+                                   data-solo="letras"
+                                   pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
+                                   title="Solo se permiten letras y espacios"
+                                   maxlength="50">
                         </div>
                         <div class="col-md-6">
                             <label for="inputTelefono" class="form-label text-white small text-uppercase fw-bold mb-1">Teléfono de Contacto</label>
-                            <input type="tel" id="inputTelefono" name="telefono" class="form-control bg-transparent text-light border-secondary py-2" value="{{ usuario.numcelular }}" placeholder="3xxxxxxxxx">
+                            <input type="tel" id="inputTelefono" name="telefono"
+                                   class="form-control bg-transparent text-light border-secondary py-2"
+                                   value="{{ usuario.numcelular }}"
+                                   placeholder="3xxxxxxxxx"
+                                   data-solo="numeros"
+                                   inputmode="numeric"
+                                   pattern="[0-9]{7,10}"
+                                   title="Solo números, entre 7 y 10 dígitos"
+                                   maxlength="10">
                         </div>
                         <div class="col-12">
                             <label for="inputCorreo" class="form-label text-white small text-uppercase fw-bold mb-1">Correo Electrónico</label>
@@ -88,7 +102,7 @@
                         <div class="col-md-6">
                             <label for="inputPasswordNueva" class="form-label text-white small text-uppercase fw-bold mb-1">Nueva Contraseña</label>
                             <div class="input-group">
-                                <input type="password" id="inputPasswordNueva" name="password_nueva" class="form-control bg-transparent text-light border-secondary py-2" placeholder="Mínimo 8 caracteres">
+                                <input type="password" id="inputPasswordNueva" name="password_nueva" class="form-control bg-transparent text-light border-secondary py-2" placeholder="Mínimo 8 caracteres" minlength="8">
                                 <span class="input-group-text bg-transparent border-secondary text-white toggle-password" style="cursor: pointer;">
                                     <i class="bi bi-eye-slash"></i>
                                 </span>
@@ -97,7 +111,7 @@
                         <div class="col-md-6">
                             <label for="inputPasswordConfirmar" class="form-label text-white small text-uppercase fw-bold mb-1">Confirmar Nueva Contraseña</label>
                             <div class="input-group">
-                                <input type="password" id="inputPasswordConfirmar" name="password_confirmar" class="form-control bg-transparent text-light border-secondary py-2" placeholder="Repite tu nueva contraseña">
+                                <input type="password" id="inputPasswordConfirmar" name="password_confirmar" class="form-control bg-transparent text-light border-secondary py-2" placeholder="Repite tu nueva contraseña" minlength="8">
                                 <span class="input-group-text bg-transparent border-secondary text-white toggle-password" style="cursor: pointer;">
                                     <i class="bi bi-eye-slash"></i>
                                 </span>
