@@ -660,3 +660,5 @@ function manejarReserva(event) {
         window.location.href = urlReserva;
     }
 }
+
+  

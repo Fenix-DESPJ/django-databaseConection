@@ -24,27 +24,22 @@ def crear_reserva(request):
         servicio_id = request.POST.get('servicio')
         usuario_barbero_id = request.POST.get('barbero')  # ID de usuario que viene del select HTML
         metodo_pago = request.POST.get('metodo_pago')
-        # Capturamos las observaciones enviadas por el usuario de forma limpia
         observaciones = request.POST.get('observaciones', '').strip()
         
-        # Si el usuario dejó el campo vacío, le ponemos un texto por defecto para la BD
         if not observaciones:
             observaciones = "Sin observaciones o notas especiales"
 
-        # Validamos los campos obligatorios
         if not all([fecha_reserva, hora_reserva, servicio_id, usuario_barbero_id, metodo_pago]):
             messages.error(request, "Por favor completa todos los campos.")
             return redirect('crear_reserva')
             
         try:
             with transaction.atomic():
-                # 1. Obtener datos del usuario logueado en Django
                 user_sistema = request.user
                 usuario_actual = Usuario.objects.get(correo=user_sistema.email)
                 hora_objeto = datetime.strptime(hora_reserva, '%H:%M').time()
                 servicio = Servicio.objects.get(idservicio=servicio_id)
                 
-                # Bloque de consultas SQL nativas con el cursor
                 with connection.cursor() as cursor:
                     # =======================================================
                     # 2. Buscar el idCliente REAL en la tabla cliente
@@ -53,7 +48,6 @@ def crear_reserva(request):
                     fila_cliente = cursor.fetchone()
                     
                     if not fila_cliente:
-                        # Si por alguna razón este usuario no tiene fila en la tabla cliente, la creamos en caliente
                         cursor.execute(
                             "INSERT INTO cliente (idUsuarioFk, direccion, contactoEmergencia) VALUES (%s, %s, %s)",
                             [usuario_actual.idusuario, 'Registrado desde la Web', 'No asignado']
@@ -70,7 +64,6 @@ def crear_reserva(request):
                     fila_barbero = cursor.fetchone()
                     
                     if not fila_barbero:
-                        # Si no se encuentra en la tabla operativa, lo vinculamos con los campos correctos
                         cursor.execute(
                             "INSERT INTO barbero (idUsuarioFk, especialidad) VALUES (%s, %s)",
                             [usuario_barbero_id, 'General']
@@ -78,7 +71,20 @@ def crear_reserva(request):
                         cursor.execute("SELECT LAST_INSERT_ID()")
                         id_barbero_real = cursor.fetchone()[0]
                     else:
-                        id_barbero_real = fila_barbero[0]  # Capturamos el ID dinámico real
+                        id_barbero_real = fila_barbero[0]
+
+                    # =======================================================
+                    # NUEVA RESTRICCIÓN: Validar si el barbero está disponible
+                    # =======================================================
+                    cursor.execute(
+                        "SELECT COUNT(*) FROM cita WHERE idBarberoFk = %s AND fecha = %s AND horaInicio = %s",
+                        [id_barbero_real, fecha_reserva, hora_objeto]
+                    )
+                    cita_existente = cursor.fetchone()[0]
+
+                    if cita_existente > 0:
+                        messages.error(request, "Lo sentimos, el barbero ya está ocupado en la fecha y hora seleccionadas.")
+                        return redirect('crear_reserva')
 
                 # 4. Guardar Pago usando el ORM de Django
                 nuevo_pago = Pago.objects.create(
@@ -91,7 +97,6 @@ def crear_reserva(request):
                 
                 # 5. Insertar Agenda y Cita
                 with connection.cursor() as cursor:
-                    # Insertar en la tabla Agenda con la llave foránea real del barbero
                     cursor.execute(
                         "INSERT INTO agenda (idBarberoFk, fecha, horaInicio) VALUES (%s, %s, %s)",
                         [id_barbero_real, fecha_reserva, hora_objeto]
@@ -100,7 +105,6 @@ def crear_reserva(request):
                     cursor.execute("SELECT LAST_INSERT_ID()")
                     id_agenda_creada = cursor.fetchone()[0]
 
-                    # Insertar en la tabla Cita apuntando a las columnas de la BD
                     cursor.execute(
                         """INSERT INTO cita (fecha, horaInicio, idServicioFk, idPagoFk, 
                            idBarberoFk, idClienteFk, idAgendaFk, observaciones) 
@@ -110,7 +114,7 @@ def crear_reserva(request):
                             hora_objeto, 
                             servicio_id, 
                             nuevo_pago.idpago, 
-                            id_barbero_real,  # ID dinámico correspondiente al barbero seleccionado
+                            id_barbero_real,  
                             id_cliente_real,  
                             id_agenda_creada, 
                             observaciones
