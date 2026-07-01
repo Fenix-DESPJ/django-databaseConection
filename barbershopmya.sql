@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 30-06-2026 a las 03:46:07
+-- Servidor: 127.0.0.1:3307
+-- Tiempo de generación: 01-07-2026 a las 17:18:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -237,7 +237,7 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-06-18 15:06:02.585858', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
 (5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-06-30 01:32:21.733661', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-06-30 01:27:36.650317', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-01 14:50:42.952305', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
 (7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-06-30 01:45:41.282185', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423');
 
 -- --------------------------------------------------------
@@ -482,6 +482,7 @@ CREATE TABLE `django_session` (
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
+('fs60l91w68xadajzglyqlv4pe04469xt', '.eJxVj0tuhDAQRO_Sa4TAQ2PMcvZzBqtx28EJcUv-rKLcfcQIaZLte6VS1Q9YanW3rfhsI8MKM3R_2Ubuy6dT8CelD-mdpJrj1p-R_rKlfwj7435l_xXsVHZYQQ_LYMIt6M0YDqwDjXpQPLs5EPtFL0obdIpRTzjhoIJBRDJqnEZGZxA6KL5ESTam6CIxwVpz8x200ihHsUm-t-zPoZQivHmW4_VsfKMgVWBN7Th-n7NLVn0:1wewGw:CvaDz1aJKTprf-JR-t2Mri9MgzR-tQk2MeTDj6l93Vo', '2026-07-15 14:50:42.956166'),
 ('m37qj12g713d43akpcxqc7w88eyn2nfc', '.eJxVj8EOwiAQRP9lz01DsVtKj979BrJlwaIVEign47-bmibqdd7LZOYJhuq2mFpcNoFhggGa32wme3dxB3yjeE2tTXHLYW53pT1oaS-J3Xo-3L-ChcoCEygxCu1PXs1as2flqVNC8mAHT-xGNUql0UpG1WOPQnqNiKRl13eMViM0UFwJKZoQgw3EBNOWq2uglko5JBPTY85uH0oxwDfPaf08615vPTxO-Q:1wcP6q:8ftjTcLXAH0O328CfgWTbOaEmnp2-JGPNN2SPfBuSNs', '2026-07-08 15:01:48.007467'),
 ('nwdypz3bo5cldbh48xevs2wc2ybwpo8d', '.eJxVj8tuwyAQRX8lYp3YBAM2WWbfb0ADDDWpAxaPdlH132tXidpu7z3njuaTaGh11q1g1sGRCxnJ8W9mwL5h3At3g_iaOptizcF0O9I92tK9JIfL9cH-G5ihzJtNBUolheHeSD4wkDB4joJKK8aJgZ-4o6gmCcCZH5F5qpSRZ6BC2ZF52EYLlpCiDjHYAA7IpeaGR9JKgxySjuluMm6n7BIwVjw4PKwbYXb3CeW0_Lw5_EY-1bRZ_R1dgH7F7MOCpX_WjGp25oJxPp5urVUj5vn0zrsPNCv5-gbonWwJ:1weNXh:Ii3-hNesC2KJd1f4BbeVzMxNKB9djlTXuYBoiKTH1pE', '2026-07-14 01:45:41.287793'),
 ('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562');
@@ -567,24 +568,22 @@ CREATE TABLE `servicio` (
 INSERT INTO `servicio` (`idServicio`, `nombreServicio`, `duracion`, `precio`, `tipoServicio`, `imagen`) VALUES
 (1, 'Corte Tradicional', 35, 13.00, 'Individual', 'servicios/corte-tradicional.webp'),
 (2, 'Perfilado Barba', 25, 8.00, 'Individual', 'servicios/perfilado-barba.jpeg'),
-(3, 'Combo', 60, 18.00, 'Paquete', 'servicios/paquete1.jpg'),
-(4, 'Facial', 30, 15.00, 'Paquete', 'servicios/servicios-limpieza1.jpg'),
-(5, 'Fade', 45, 14.00, 'Individual', 'servicios/fade.jpg'),
+(3, 'Combo', 60, 18.00, 'Paquete', 'servicios/servicios-cejas.png'),
+(4, 'Facial', 30, 15.00, 'Paquete', 'servicios/paquete6.jpg'),
+(5, 'Fade', 45, 14.00, 'Individual', 'servicios/fade_NZa6aAE.jpg'),
 (6, 'Tinte', 60, 25.00, 'Paquete', 'servicios/tinte-cabello.jpg'),
 (7, 'Líneas', 15, 5.00, 'Paquete', 'servicios/diseño-lineas.jpeg'),
 (8, 'Lavado', 10, 5.00, 'Individual', 'servicios/servicios-lavado.avif'),
-(9, 'Cejas', 15, 4.00, 'Individual', 'servicios/servicios-cejas.png'),
+(9, 'Cejas', 15, 4.00, 'Individual', 'servicios/cejas.jpg'),
 (10, 'Mascarilla', 20, 10.00, 'Individual', 'servicios/servicios-mascarilla.jpg'),
-(11, 'Corte Clásico + Cejas', 45, 20.00, 'Paquete', 'servicios/paquete1.jpg'),
+(11, 'Corte Clásico + Cejas', 45, 20.00, 'Paquete', 'servicios/paquete2.jpg'),
 (12, 'Perfil Perfecto', 50, 22.00, 'Paquete', 'servicios/paquete2.jpg'),
-(13, 'Barba + Cejas', 40, 18.00, 'Paquete', 'servicios/paquete3.jpg'),
-(14, 'Corte personalizado', 60, 26.00, 'Paquete', 'servicios/paquete4.jpeg'),
+(14, 'Corte personalizado', 60, 26.00, 'Paquete', 'servicios/paquete3.jpg'),
 (15, 'Look Completo', 70, 28.00, 'Paquete', 'servicios/paquete5.jpg'),
-(16, 'Combo de limpieza facial', 80, 30.00, 'Paquete', 'servicios/paquete6.jpg'),
-(17, 'Imagen Ejecutiva', 90, 32.00, 'Paquete', 'servicios/paquete7.jpeg'),
-(18, 'Cambio de Imagen', 90, 35.00, 'Paquete', 'servicios/paquete8.jpg'),
-(19, 'Experiencia Premium', 140, 60.00, 'Paquete', 'servicios/paquete9.jpeg'),
-(21, 'Cejassss', 15, 500.00, 'Individual', 'servicios/logo.jpeg');
+(16, 'Combo de limpieza facial', 80, 30.00, 'Paquete', 'servicios/servicios-limpieza1.jpg'),
+(17, 'Imagen Ejecutiva', 90, 32.00, 'Paquete', 'servicios/paquete4.jpeg'),
+(18, 'Cambio de Imagen', 90, 35.00, 'Paquete', 'servicios/paquete7.jpeg'),
+(19, 'Experiencia Premium', 140, 60.00, 'Paquete', 'servicios/hidratacion-capilar.jpg');
 
 -- --------------------------------------------------------
 
