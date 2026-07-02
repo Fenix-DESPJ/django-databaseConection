@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 02, 2026 at 12:03 AM
+-- Generation Time: Jul 02, 2026 at 03:12 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -107,7 +107,10 @@ INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`, `horaFin
 (10, 2, '2026-03-24', '10:00:00', '14:00:00'),
 (11, 11, '2026-06-24', '08:00:00', NULL),
 (12, 11, '2026-06-25', '09:00:00', NULL),
-(14, 11, '2026-06-30', '08:00:00', NULL);
+(14, 11, '2026-06-30', '08:00:00', NULL),
+(25, 11, '2026-07-02', '08:00:00', NULL),
+(26, 11, '2026-07-02', '09:00:00', NULL),
+(28, 11, '2026-07-09', '08:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -217,7 +220,43 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (65, 'Can add barbero dia habilitado', 17, 'add_barberodiahabilitado'),
 (66, 'Can change barbero dia habilitado', 17, 'change_barberodiahabilitado'),
 (67, 'Can delete barbero dia habilitado', 17, 'delete_barberodiahabilitado'),
-(68, 'Can view barbero dia habilitado', 17, 'view_barberodiahabilitado');
+(68, 'Can view barbero dia habilitado', 17, 'view_barberodiahabilitado'),
+(69, 'Can add cita', 18, 'add_cita'),
+(70, 'Can change cita', 18, 'change_cita'),
+(71, 'Can delete cita', 18, 'delete_cita'),
+(72, 'Can view cita', 18, 'view_cita'),
+(73, 'Can add cliente', 19, 'add_cliente'),
+(74, 'Can change cliente', 19, 'change_cliente'),
+(75, 'Can delete cliente', 19, 'delete_cliente'),
+(76, 'Can view cliente', 19, 'view_cliente'),
+(77, 'Can add servicio', 20, 'add_servicio'),
+(78, 'Can change servicio', 20, 'change_servicio'),
+(79, 'Can delete servicio', 20, 'delete_servicio'),
+(80, 'Can view servicio', 20, 'view_servicio'),
+(81, 'Can add perfil usuario', 21, 'add_perfilusuario'),
+(82, 'Can change perfil usuario', 21, 'change_perfilusuario'),
+(83, 'Can delete perfil usuario', 21, 'delete_perfilusuario'),
+(84, 'Can view perfil usuario', 21, 'view_perfilusuario'),
+(85, 'Can add notificacion', 22, 'add_notificacion'),
+(86, 'Can change notificacion', 22, 'change_notificacion'),
+(87, 'Can delete notificacion', 22, 'delete_notificacion'),
+(88, 'Can view notificacion', 22, 'view_notificacion'),
+(89, 'Can add agenda', 23, 'add_agenda'),
+(90, 'Can change agenda', 23, 'change_agenda'),
+(91, 'Can delete agenda', 23, 'delete_agenda'),
+(92, 'Can view agenda', 23, 'view_agenda'),
+(93, 'Can add barbero', 24, 'add_barbero'),
+(94, 'Can change barbero', 24, 'change_barbero'),
+(95, 'Can delete barbero', 24, 'delete_barbero'),
+(96, 'Can view barbero', 24, 'view_barbero'),
+(97, 'Can add cliente', 25, 'add_cliente'),
+(98, 'Can change cliente', 25, 'change_cliente'),
+(99, 'Can delete cliente', 25, 'delete_cliente'),
+(100, 'Can view cliente', 25, 'view_cliente'),
+(101, 'Can add usuario', 26, 'add_usuario'),
+(102, 'Can change usuario', 26, 'change_usuario'),
+(103, 'Can delete usuario', 26, 'delete_usuario'),
+(104, 'Can view usuario', 26, 'view_usuario');
 
 -- --------------------------------------------------------
 
@@ -248,9 +287,9 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (2, 'pbkdf2_sha256$600000$cOmiRYMYpYxwbGXzoqxcHg$BxVF3vH9nwY4PJxNTWbMhNODYw/kxa2C+UgD1uAMsWw=', '2026-06-18 14:09:14.566411', 0, 'ivan@gmail.com', 'Ivancito', 'Cepeda', 'ivan@gmail.com', 0, 1, '2026-06-18 13:04:14.605021'),
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-07-01 21:22:19.485609', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
-(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-06-30 01:32:21.733661', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-01 21:19:55.946741', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
-(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-01 21:20:19.031483', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423');
+(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-07-02 01:10:44.193504', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-02 01:08:46.579588', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-02 00:53:05.879020', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423');
 
 -- --------------------------------------------------------
 
@@ -329,7 +368,7 @@ CREATE TABLE `barbero_dia_habilitado` (
 INSERT INTO `barbero_dia_habilitado` (`id`, `idusuariofk`, `fecha`, `habilitado`) VALUES
 (1, 2, '2026-07-31', 1),
 (2, 3, '2026-07-31', 1),
-(3, 17, '2026-07-31', 0),
+(3, 17, '2026-07-31', 1),
 (4, 21, '2026-07-31', 1);
 
 -- --------------------------------------------------------
@@ -376,7 +415,10 @@ INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idA
 (26, 8, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
 (27, 10, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
 (28, 11, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(29, 12, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1);
+(29, 12, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
+(40, 11, 11, 1, 25, '2026-07-02', '08:00:00', 'Completado - Servicio realizado', 30),
+(41, 11, 14, 2, 26, '2026-07-02', '09:00:00', 'Completado - Servicio realizado', 31),
+(43, 11, 14, 18, 28, '2026-07-09', '08:00:00', 'uwu', 33);
 
 -- --------------------------------------------------------
 
@@ -525,11 +567,20 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (15, 'negocio', 'configuracionhorario'),
 (16, 'negocio', 'diahabilitado'),
 (14, 'reservas', 'cita'),
+(23, 'servicios', 'agenda'),
+(24, 'servicios', 'barbero'),
 (11, 'servicios', 'cita'),
+(25, 'servicios', 'cliente'),
 (12, 'servicios', 'pago'),
 (13, 'servicios', 'servicio'),
+(26, 'servicios', 'usuario'),
 (6, 'sessions', 'session'),
+(18, 'usuarios', 'cita'),
+(19, 'usuarios', 'cliente'),
+(22, 'usuarios', 'notificacion'),
+(21, 'usuarios', 'perfilusuario'),
 (7, 'usuarios', 'rol'),
+(20, 'usuarios', 'servicio'),
 (8, 'usuarios', 'usuario');
 
 -- --------------------------------------------------------
@@ -573,7 +624,9 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (21, 'usuarios', '0001_initial', '2026-06-11 01:44:07.709572'),
 (22, 'reservas', '0001_initial', '2026-06-17 06:01:38.666630'),
 (23, 'negocio', '0002_configuracionhorario_diahabilitado', '2026-07-01 20:24:05.686588'),
-(24, 'negocio', '0003_alter_configuracionhorario_id_alter_diahabilitado_id_and_more', '2026-07-01 20:59:29.749683');
+(24, 'negocio', '0003_alter_configuracionhorario_id_alter_diahabilitado_id_and_more', '2026-07-01 20:59:29.749683'),
+(25, 'usuarios', '0002_cita_cliente_servicio_perfilusuario_notificacion', '2026-07-02 00:38:56.875506'),
+(26, 'servicios', '0002_agenda_barbero_cliente_usuario', '2026-07-02 00:52:25.138123');
 
 -- --------------------------------------------------------
 
@@ -593,12 +646,38 @@ CREATE TABLE `django_session` (
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
-('dnzmbzy4h8cl6mr0wadlvqs6e4nlfkpn', '.eJxVj0GKAyEQRa8y1LppjGbS6G6yDOQMUpbltImxQNtVyN2HDIHMbN97fPh38Di21Y_OzecIDvYw_WUB6cr1KeIF67fMJHVrOczPZH7ZPp8lcjm-2n8DK_YVHChOe9TKWLVoSkGZZdkRpqQtJmsXdVCB9I4ZEyskslHbdCBLZD5tNGxhgs49S_W5ZsoYEdzWBk8w-sCWxVe5hcbg4IQ37h9fgQu2KPAumpTfj-aNkmwCro5SHj_K91uV:1wf2Nv:bOIvFpQ0juYocmy8OhHWPxanTKCcFaqwUCS6DoS6Ni4', '2026-07-15 21:22:19.488828'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
 ('fs60l91w68xadajzglyqlv4pe04469xt', '.eJxVj0tuhDAQRO_Sa4TAQ2PMcvZzBqtx28EJcUv-rKLcfcQIaZLte6VS1Q9YanW3rfhsI8MKM3R_2Ubuy6dT8CelD-mdpJrj1p-R_rKlfwj7435l_xXsVHZYQQ_LYMIt6M0YDqwDjXpQPLs5EPtFL0obdIpRTzjhoIJBRDJqnEZGZxA6KL5ESTam6CIxwVpz8x200ihHsUm-t-zPoZQivHmW4_VsfKMgVWBN7Th-n7NLVn0:1wewGw:CvaDz1aJKTprf-JR-t2Mri9MgzR-tQk2MeTDj6l93Vo', '2026-07-15 14:50:42.956166'),
 ('m37qj12g713d43akpcxqc7w88eyn2nfc', '.eJxVj8EOwiAQRP9lz01DsVtKj979BrJlwaIVEign47-bmibqdd7LZOYJhuq2mFpcNoFhggGa32wme3dxB3yjeE2tTXHLYW53pT1oaS-J3Xo-3L-ChcoCEygxCu1PXs1as2flqVNC8mAHT-xGNUql0UpG1WOPQnqNiKRl13eMViM0UFwJKZoQgw3EBNOWq2uglko5JBPTY85uH0oxwDfPaf08615vPTxO-Q:1wcP6q:8ftjTcLXAH0O328CfgWTbOaEmnp2-JGPNN2SPfBuSNs', '2026-07-08 15:01:48.007467'),
 ('nwdypz3bo5cldbh48xevs2wc2ybwpo8d', '.eJxVj8tuwyAQRX8lYp3YBAM2WWbfb0ADDDWpAxaPdlH132tXidpu7z3njuaTaGh11q1g1sGRCxnJ8W9mwL5h3At3g_iaOptizcF0O9I92tK9JIfL9cH-G5ihzJtNBUolheHeSD4wkDB4joJKK8aJgZ-4o6gmCcCZH5F5qpSRZ6BC2ZF52EYLlpCiDjHYAA7IpeaGR9JKgxySjuluMm6n7BIwVjw4PKwbYXb3CeW0_Lw5_EY-1bRZ_R1dgH7F7MOCpX_WjGp25oJxPp5urVUj5vn0zrsPNCv5-gbonWwJ:1weNXh:Ii3-hNesC2KJd1f4BbeVzMxNKB9djlTXuYBoiKTH1pE', '2026-07-14 01:45:41.287793'),
 ('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notificacion`
+--
+
+CREATE TABLE `notificacion` (
+  `idnotificacion` int(11) NOT NULL,
+  `tipo` varchar(30) NOT NULL,
+  `mensaje` varchar(255) NOT NULL,
+  `leida` tinyint(1) NOT NULL,
+  `fechacreacion` datetime(6) NOT NULL,
+  `idUsuarioFk` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notificacion`
+--
+
+INSERT INTO `notificacion` (`idnotificacion`, `tipo`, `mensaje`, `leida`, `fechacreacion`, `idUsuarioFk`) VALUES
+(1, 'reserva_creada', 'Tu cita de Cambio de Imagen quedó reservada para el 03/07/2026 a las 10:30 con JUAN MANUEL RESTREPO.', 1, '2026-07-02 00:41:09.674877', 20),
+(2, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Cambio de Imagen para el 03/07/2026 a las 10:30.', 1, '2026-07-02 00:41:09.678897', 17),
+(3, 'reserva_creada', 'Tu cita de Cambio de Imagen quedó reservada para el 09/07/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 1, '2026-07-02 00:44:33.900077', 20),
+(4, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Cambio de Imagen para el 09/07/2026 a las 08:00.', 1, '2026-07-02 00:44:33.901494', 17),
+(5, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Perfilado Barba).', 0, '2026-07-02 01:08:36.272015', 1),
+(6, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Perfilado Barba).', 1, '2026-07-02 01:08:36.274949', 19);
 
 -- --------------------------------------------------------
 
@@ -647,7 +726,11 @@ INSERT INTO `pago` (`idPago`, `metodoPago`, `montoTotal`, `fechaPago`, `estadoPa
 (26, 'Efectivo', 13.00, '2026-07-01 20:47:33', 'PENDIENTE', 'FAC49482'),
 (27, 'Efectivo', 13.00, '2026-07-01 21:43:43', 'PENDIENTE', 'FAC41236'),
 (28, 'Efectivo', 28.00, '2026-07-01 21:52:40', 'PENDIENTE', 'FAC18986'),
-(29, 'Efectivo', 35.00, '2026-07-01 21:53:05', 'PENDIENTE', 'FAC24588');
+(29, 'Efectivo', 35.00, '2026-07-01 21:53:05', 'PENDIENTE', 'FAC24588'),
+(30, 'Efectivo', 13.00, '2026-07-01 23:57:38', 'PENDIENTE', 'FAC50955'),
+(31, 'PSE', 8.00, '2026-07-01 23:58:53', 'PAGADO', 'FAC29513'),
+(32, 'Efectivo', 35.00, '2026-07-02 00:41:09', 'PENDIENTE', 'FAC63556'),
+(33, 'Efectivo', 35.00, '2026-07-02 00:44:33', 'PENDIENTE', 'FAC22379');
 
 -- --------------------------------------------------------
 
@@ -696,14 +779,14 @@ INSERT INTO `servicio` (`idServicio`, `nombreServicio`, `duracion`, `precio`, `t
 (5, 'Fade', 45, 14.00, 'Individual', 'servicios/fade_NZa6aAE.jpg'),
 (6, 'Tinte', 60, 25.00, 'Paquete', 'servicios/tinte-cabello.jpg'),
 (7, 'Líneas', 15, 5.00, 'Paquete', 'servicios/diseño-lineas.jpeg'),
-(8, 'Lavado', 10, 5.00, 'Individual', 'servicios/servicios-lavado.avif'),
+(8, 'Lavado cabello', 10, 5.00, 'Individual', 'servicios/servicios-lavado.avif'),
 (9, 'Cejas', 15, 4.00, 'Individual', 'servicios/cejas.jpg'),
 (10, 'Mascarilla', 20, 10.00, 'Individual', 'servicios/servicios-mascarilla.jpg'),
 (11, 'Corte Clásico + Cejas', 45, 20.00, 'Paquete', 'servicios/paquete2.jpg'),
 (12, 'Perfil Perfecto', 50, 22.00, 'Paquete', 'servicios/paquete2.jpg'),
 (14, 'Corte personalizado', 60, 26.00, 'Paquete', 'servicios/paquete3.jpg'),
 (15, 'Look Completo', 70, 28.00, 'Paquete', 'servicios/paquete5.jpg'),
-(16, 'Combo de limpieza facial', 80, 30.00, 'Paquete', 'servicios/servicios-limpieza1.jpg'),
+(16, 'Combo de limpieza facial', 80, 30.00, 'Paquete', 'servicios/servicios-lavado_PIldRFy.avif'),
 (17, 'Imagen Ejecutiva', 90, 32.00, 'Paquete', 'servicios/paquete4.jpeg'),
 (18, 'Cambio de Imagen', 90, 35.00, 'Paquete', 'servicios/paquete7.jpeg'),
 (19, 'Experiencia Premium', 140, 60.00, 'Paquete', 'servicios/hidratacion-capilar.jpg');
@@ -825,6 +908,19 @@ CREATE TRIGGER `FormatearNombreUsuario` BEFORE INSERT ON `usuario` FOR EACH ROW 
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `usuarios_perfilusuario`
+--
+
+CREATE TABLE `usuarios_perfilusuario` (
+  `id` bigint(20) NOT NULL,
+  `rol` varchar(20) NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1019,6 +1115,13 @@ ALTER TABLE `django_session`
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
 
 --
+-- Indexes for table `notificacion`
+--
+ALTER TABLE `notificacion`
+  ADD PRIMARY KEY (`idnotificacion`),
+  ADD KEY `notificacion_idUsuarioFk_b84fac34_fk_usuario_idUsuario` (`idUsuarioFk`);
+
+--
 -- Indexes for table `pago`
 --
 ALTER TABLE `pago`
@@ -1046,6 +1149,13 @@ ALTER TABLE `usuario`
   ADD KEY `fk_usuario_rol` (`idRolFk`);
 
 --
+-- Indexes for table `usuarios_perfilusuario`
+--
+ALTER TABLE `usuarios_perfilusuario`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1053,7 +1163,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT for table `agenda`
 --
 ALTER TABLE `agenda`
-  MODIFY `idAgenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `idAgenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `auth_group`
@@ -1071,7 +1181,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
@@ -1107,7 +1217,7 @@ ALTER TABLE `barbero_dia_habilitado`
 -- AUTO_INCREMENT for table `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `cliente`
@@ -1137,19 +1247,25 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT for table `notificacion`
+--
+ALTER TABLE `notificacion`
+  MODIFY `idnotificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `rol`
@@ -1161,13 +1277,19 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT for table `servicio`
 --
 ALTER TABLE `servicio`
-  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
   MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `usuarios_perfilusuario`
+--
+ALTER TABLE `usuarios_perfilusuario`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -1236,10 +1358,22 @@ ALTER TABLE `django_admin_log`
   ADD CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 --
+-- Constraints for table `notificacion`
+--
+ALTER TABLE `notificacion`
+  ADD CONSTRAINT `notificacion_idUsuarioFk_b84fac34_fk_usuario_idUsuario` FOREIGN KEY (`idUsuarioFk`) REFERENCES `usuario` (`idUsuario`);
+
+--
 -- Constraints for table `usuario`
 --
 ALTER TABLE `usuario`
   ADD CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`idRolFk`) REFERENCES `rol` (`idRol`);
+
+--
+-- Constraints for table `usuarios_perfilusuario`
+--
+ALTER TABLE `usuarios_perfilusuario`
+  ADD CONSTRAINT `usuarios_perfilusuario_user_id_f03197c5_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

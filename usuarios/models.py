@@ -77,3 +77,24 @@ class Cita(models.Model):
     class Meta:
         managed = False
         db_table = 'cita'
+
+class Notificacion(models.Model):
+    idnotificacion = models.AutoField(primary_key=True)
+    idusuariofk = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        db_column='idUsuarioFk',
+        related_name='notificaciones'
+    )
+    # Tipos usados: 'reserva_creada' (cliente), 'nueva_cita' (barbero), 'cita_confirmada' (admin)
+    tipo = models.CharField(max_length=30, default='info')
+    mensaje = models.CharField(max_length=255)
+    leida = models.BooleanField(default=False)
+    fechacreacion = models.DateTimeField(auto_now_add=True)
+ 
+    class Meta:
+        db_table = 'notificacion'
+        ordering = ['-fechacreacion']
+ 
+    def __str__(self):
+        return f"[{self.tipo}] {self.mensaje[:40]}"

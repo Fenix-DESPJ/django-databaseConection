@@ -14,6 +14,8 @@ urlpatterns = [
     path('perfil/', views.perfil_usuario, name='perfil_usuario'),
     path('perfil/guardar/', views.guardar_perfil, name='guardar_perfil'),
     path('perfil/foto/', views.gestionar_foto_perfil, name='gestionar_foto_perfil'),
+    path('notificaciones/lista/', views.listar_notificaciones, name='listar_notificaciones'),
+    path('notificaciones/marcar-leidas/', views.marcar_notificaciones_leidas, name='marcar_notificaciones_leidas'),
 
     # Rutas del Panel de Administración para perfiles
     path('dashboard/perfiles/', views.editar_perfiles_admin, name='editar_perfiles'),

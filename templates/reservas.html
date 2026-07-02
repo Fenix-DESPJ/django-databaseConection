@@ -128,7 +128,8 @@
                 <h3 class="text-gold text-center mb-4">Pago por PSE</h3>
                 <div class="mb-3">
                     <label class="custom-label">Nombre completo</label>
-                    <input type="text" class="form-control custom-input" placeholder="Ingresa tu nombre">
+                    <input type="text" class="form-control custom-input" placeholder="Ingresa tu nombre"
+                           data-solo="letras" maxlength="60">
                 </div>
                 <div class="mb-3">
                     <label class="custom-label">Correo electrónico</label>
@@ -164,16 +165,23 @@
                 <h3 class="text-gold mb-4">Pago con Tarjeta</h3>
                 <div class="row g-3">
                     <div class="col-md-12">
-                        <input type="text" class="form-control custom-input" placeholder="Número de tarjeta">
+                        <input type="text" class="form-control custom-input" id="cardNumero"
+                               placeholder="Número de tarjeta" data-solo="tarjeta"
+                               inputmode="numeric" maxlength="19">
                     </div>
                     <div class="col-md-12">
-                        <input type="text" class="form-control custom-input" placeholder="Nombre del titular">
+                        <input type="text" class="form-control custom-input" id="cardTitular"
+                               placeholder="Nombre del titular" data-solo="letras" maxlength="60">
                     </div>
                     <div class="col-md-6">
-                        <input type="text" class="form-control custom-input" placeholder="MM/AA">
+                        <input type="text" class="form-control custom-input" id="cardExpiry"
+                               placeholder="MM/AA" data-solo="expiry"
+                               inputmode="numeric" maxlength="5">
                     </div>
                     <div class="col-md-6">
-                        <input type="text" class="form-control custom-input" placeholder="CVV">
+                        <input type="text" class="form-control custom-input" id="cardCVV"
+                               placeholder="CVV" data-solo="numeros"
+                               inputmode="numeric" maxlength="4">
                     </div>
                     <div class="col-md-12">
                         <button type="button" class="btn btn-reserve mt-4 w-100" id="btnPagarCard" data-bs-dismiss="modal">Pagar Ahora</button>

@@ -24,7 +24,8 @@
             </div>
 
         <div class="row table-header px-3 d-none d-md-flex">
-            <div class="col-md-3">Nombre Completo</div>
+            <div class="col-md-1 text-center">Foto</div>
+            <div class="col-md-2">Nombre Completo</div>
             <div class="col-md-3">Correo Electrónico</div>
             <div class="col-md-2">Número de contacto</div>
             <div class="col-md-3">Asignar Rol</div>
@@ -36,8 +37,18 @@
             <div class="scrollable-panel">
                 {% for usuario in usuarios %}
                 <input type="hidden" name="usuario_id" value="{{ usuario.idusuario }}">
-                <div class="row profile-row mx-0">
-                    <div class="col-md-3 mb-2 mb-md-0">
+                <div class="row profile-row mx-0 align-items-center">
+                    <div class="col-md-1 mb-2 mb-md-0 text-center">
+                        {% if usuario.foto_perfil %}
+                            <img src="{{ usuario.foto_perfil.url }}"
+                                 alt="{{ usuario.nombre }}"
+                                 class="rounded-circle"
+                                 style="width: 45px; height: 45px; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
+                        {% else %}
+                            <i class="bi bi-person-circle" style="font-size: 45px; color: rgba(255,255,255,0.3);"></i>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2 mb-2 mb-md-0">
                         <input type="text" class="form-control form-control-custom" value="{{ usuario.nombre }}" readonly disabled>
                     </div>
                     <div class="col-md-3 mb-2 mb-md-0">

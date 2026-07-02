@@ -14,11 +14,12 @@ from django.core.files.storage import FileSystemStorage
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.db import connection
 from django.conf import settings
+from django.http import JsonResponse
 import os
 from datetime import timedelta
 
 # Importación de tus modelos manuales
-from .models import Usuario, Rol, Cita, Servicio, Cliente
+from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion
 from negocio.models import Barbero, Agenda
 
 # =========================================================================
@@ -211,6 +212,29 @@ def completar_cita(request, cita_id):
     cita = get_object_or_404(Cita, idcita=cita_id)
     cita.observaciones = "Completado - Servicio realizado"
     cita.save()
+
+    # =====================================================================
+    # NUEVO: Notificar a TODOS los administradores que el barbero confirmó
+    # =====================================================================
+    try:
+        barbero_usuario = cita.idbarberofk.idusuariofk
+        cliente_usuario = cita.idclientefk.idusuariofk
+
+        mensaje = (
+            f"El barbero {barbero_usuario.nombre} confirmó exitosamente la cita de "
+            f"{cliente_usuario.nombre} ({cita.idserviciofk.nombreservicio if cita.idserviciofk else 'servicio'})."
+        )
+
+        admins = Usuario.objects.filter(idrolfk_id=1)
+        for admin in admins:
+            Notificacion.objects.create(
+                idusuariofk=admin,
+                tipo='cita_confirmada',
+                mensaje=mensaje
+            )
+    except Exception as e:
+        print(f"DEBUG: No se pudo crear la notificación de confirmación: {e}")
+
     return redirect('panel_barbero')
 
 
@@ -532,4 +556,45 @@ def ver_todas_citas_admin(request):
     ).order_by('-idagendafk__fecha', '-idagendafk__horainicio')
 
     return render(request, 'citas_admin.html', {'citas': todas_citas})
-    
+
+
+# =========================================================================
+# 7. VISTAS: SISTEMA DE NOTIFICACIONES (Campanita)
+# =========================================================================
+
+@login_required
+def listar_notificaciones(request):
+    """
+    Devuelve en JSON las notificaciones del usuario logueado (máx. 20 más recientes)
+    y el conteo de no leídas. Cada usuario SOLO ve las suyas.
+    """
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+    except Usuario.DoesNotExist:
+        return JsonResponse({'notificaciones': [], 'no_leidas': 0})
+
+    notifs = Notificacion.objects.filter(idusuariofk=usuario)[:20]
+
+    data = [{
+        'id': n.idnotificacion,
+        'tipo': n.tipo,
+        'mensaje': n.mensaje,
+        'leida': n.leida,
+        'fecha': n.fechacreacion.strftime('%d/%m/%Y %H:%M'),
+    } for n in notifs]
+
+    no_leidas = Notificacion.objects.filter(idusuariofk=usuario, leida=False).count()
+
+    return JsonResponse({'notificaciones': data, 'no_leidas': no_leidas})
+
+
+@login_required
+def marcar_notificaciones_leidas(request):
+    """Marca como leídas todas las notificaciones del usuario logueado."""
+    if request.method == 'POST':
+        try:
+            usuario = Usuario.objects.get(correo=request.user.email)
+            Notificacion.objects.filter(idusuariofk=usuario, leida=False).update(leida=True)
+        except Usuario.DoesNotExist:
+            pass
+    return JsonResponse({'ok': True})

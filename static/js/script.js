@@ -740,9 +740,9 @@ function manejarReserva(event) {
     }
 }
 
-/* --- Restricciones de tipo de dato en inputs (letras / números) --- */
+/* --- Restricciones de tipo de dato en inputs (letras / números / tarjeta / expiry) --- */
 document.addEventListener("DOMContentLoaded", () => {
-    // Solo letras, tildes, ñ y espacios (nombres, apellidos, etc.)
+    // Solo letras, tildes, ñ y espacios (nombres, apellidos, titular de tarjeta, etc.)
     document.querySelectorAll('[data-solo="letras"]').forEach(input => {
         input.addEventListener("input", () => {
             input.value = input.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, "");
@@ -756,7 +756,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Solo dígitos (teléfono, cédula, etc.)
+    // Solo dígitos (teléfono, cédula, CVV, etc.)
     document.querySelectorAll('[data-solo="numeros"]').forEach(input => {
         input.addEventListener("input", () => {
             input.value = input.value.replace(/[^0-9]/g, "");
@@ -769,4 +769,196 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+
+    // Número de tarjeta: solo dígitos, agrupados de 4 en 4 con espacio, máx 16 dígitos
+    document.querySelectorAll('[data-solo="tarjeta"]').forEach(input => {
+        input.addEventListener("input", () => {
+            let valor = input.value.replace(/[^0-9]/g, "").slice(0, 16);
+            valor = valor.replace(/(.{4})/g, "$1 ").trim();
+            input.value = valor;
+        });
+        input.addEventListener("paste", (e) => {
+            const texto = (e.clipboardData || window.clipboardData).getData("text");
+            if (/[^0-9\s]/.test(texto)) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Fecha de expiración de tarjeta: solo dígitos, formato automático MM/AA
+    document.querySelectorAll('[data-solo="expiry"]').forEach(input => {
+        input.addEventListener("input", () => {
+            let valor = input.value.replace(/[^0-9]/g, "").slice(0, 4);
+
+            // Autocorrección del mes: si el primer dígito es > 1, asumimos que quiso escribir 0X
+            if (valor.length === 1 && parseInt(valor[0], 10) > 1) {
+                valor = "0" + valor;
+            }
+            // Limita el mes a 01-12
+            if (valor.length >= 2) {
+                let mes = parseInt(valor.slice(0, 2), 10);
+                if (mes > 12) valor = "12" + valor.slice(2);
+                if (mes === 0) valor = "01" + valor.slice(2);
+            }
+
+            if (valor.length >= 3) {
+                valor = valor.slice(0, 2) + "/" + valor.slice(2);
+            }
+            input.value = valor;
+        });
+        input.addEventListener("paste", (e) => {
+            const texto = (e.clipboardData || window.clipboardData).getData("text");
+            if (/[^0-9/]/.test(texto)) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+
+/* ============================================================
+   SISTEMA DE NOTIFICACIONES (Campanita) — por perfil individual
+   ============================================================
+   - Cliente: ve la confirmación de SU propia reserva.
+   - Barbero: ve cuando un cliente le agenda un servicio a ÉL.
+   - Admin: ve cuando un barbero confirma una cita exitosamente.
+   Cada usuario solo ve lo que el backend le devuelve filtrado por
+   su propio idUsuario (ver views.listar_notificaciones), así que
+   nunca se mezclan notificaciones entre perfiles distintos.
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+    const panel = document.getElementById("notificaciones-panel");
+    const lista = document.getElementById("lista-notificaciones");
+
+    const botones = [
+        document.getElementById("btnNotifDesktop"),
+        document.getElementById("btnNotifMobile")
+    ].filter(Boolean);
+
+    const badges = [
+        document.getElementById("badgeNotifDesktop"),
+        document.getElementById("badgeNotifMobile")
+    ].filter(Boolean);
+
+    // Si no hay sesión iniciada, estos elementos no existen: no hacemos nada.
+    if (!panel || botones.length === 0) return;
+
+    const URL_LISTAR = panel.dataset.urlListar;
+    const URL_MARCAR = panel.dataset.urlMarcar;
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function actualizarBadges(cantidad) {
+        badges.forEach(b => {
+            if (cantidad > 0) {
+                b.textContent = cantidad > 9 ? "9+" : cantidad;
+                b.classList.remove("d-none");
+            } else {
+                b.classList.add("d-none");
+            }
+        });
+    }
+
+    function iconoPorTipo(tipo) {
+        switch (tipo) {
+            case "reserva_creada": return "bi-calendar-check-fill";   // Cliente
+            case "nueva_cita": return "bi-scissors";                 // Barbero
+            case "cita_confirmada": return "bi-patch-check-fill";    // Admin
+            default: return "bi-info-circle-fill";
+        }
+    }
+
+    async function cargarNotificaciones() {
+        try {
+            const resp = await fetch(URL_LISTAR, { headers: { "X-Requested-With": "XMLHttpRequest" } });
+            const data = await resp.json();
+
+            lista.innerHTML = "";
+
+            if (!data.notificaciones || data.notificaciones.length === 0) {
+                lista.innerHTML = `<div class="text-center text-muted py-3" style="font-size:0.85rem;">
+                    No tienes notificaciones por ahora.
+                </div>`;
+            } else {
+                data.notificaciones.forEach(n => {
+                    const item = document.createElement("div");
+                    item.classList.add("notification-item");
+                    if (!n.leida) {
+                        item.style.borderLeftColor = "#ffc600";
+                    }
+                    item.innerHTML = `
+                        <strong><i class="bi ${iconoPorTipo(n.tipo)} me-2"></i>${n.mensaje}</strong>
+                        <small>${n.fecha}</small>
+                    `;
+                    lista.appendChild(item);
+                });
+            }
+
+            actualizarBadges(data.no_leidas || 0);
+        } catch (e) {
+            console.error("Error al cargar notificaciones:", e);
+        }
+    }
+
+    async function marcarComoLeidas() {
+        try {
+            await fetch(URL_MARCAR, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
+            });
+            actualizarBadges(0);
+        } catch (e) {
+            console.error("Error al marcar notificaciones como leídas:", e);
+        }
+    }
+
+    function togglePanel() {
+        const abierto = panel.classList.contains("active");
+        if (abierto) {
+            panel.classList.remove("active");
+        } else {
+            panel.classList.add("active");
+            cargarNotificaciones().then(() => {
+                // Se marcan como leídas un momento después de abrir el panel
+                setTimeout(marcarComoLeidas, 1500);
+            });
+        }
+    }
+
+    botones.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            togglePanel();
+        });
+    });
+
+    // Cierra el panel si el usuario hace clic fuera de él
+    document.addEventListener("click", (e) => {
+        if (
+            panel.classList.contains("active") &&
+            !panel.contains(e.target) &&
+            !botones.includes(e.target)
+        ) {
+            panel.classList.remove("active");
+        }
+    });
+
+    // Carga inicial silenciosa del contador (sin abrir el panel) + refresco automático
+    cargarNotificaciones();
+    setInterval(cargarNotificaciones, 30000); // cada 30 segundos
 });

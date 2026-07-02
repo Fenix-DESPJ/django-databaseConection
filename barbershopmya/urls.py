@@ -39,7 +39,7 @@ urlpatterns = [
     path('servicios-ind/', views.servicios_ind, name='servicios_ind'), # Acceso directo
     path('servicios/', include('servicios.urls')), # Resto de rutas
     path('gestionar-agenda/', gestionar_agenda_admin, name='gestionar_agenda_admin'),
-    path('reservas/disponibilidad/', servicios_views.disponibilidad_ajax, name='disponibilidad_ajax')
+    path('reservas/disponibilidad/', servicios_views.disponibilidad_ajax, name='disponibilidad_ajax'),
 ]
 
 # 5. Configuración de archivos estáticos (esto siempre va al final)

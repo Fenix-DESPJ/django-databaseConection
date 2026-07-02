@@ -686,11 +686,6 @@ h1, h2, h3, h4 {
     display: none !important;
 }
 
-/* Asegura que d-none oculte completamente */
-.d-none {
-    display: none !important;
-}
-
 /* Fuerza el diseño de fila para el contenedor de botones de auth en escritorio */
 @media (min-width: 992px) {
     #auth-links {

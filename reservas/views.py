@@ -5,7 +5,7 @@ from django.db import connection, transaction
 import random
 from datetime import datetime, timedelta, date
 from servicios.models import Servicio, Pago
-from usuarios.models import Usuario
+from usuarios.models import Usuario, Notificacion
 from .models import Cita
 from django.http import JsonResponse
 from django.urls import reverse
@@ -185,6 +185,32 @@ def crear_reserva(request):
                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
                         [fecha_reserva, hora_objeto, servicio_id, nuevo_pago.idpago,
                          id_barbero_real, id_cliente_real, id_agenda_creada, observaciones]
+                    )
+
+                # =============================================================
+                # NUEVO: Notificaciones individuales por perfil
+                # =============================================================
+                fecha_legible = fecha_obj.strftime('%d/%m/%Y')
+
+                # 1) Notificación para el CLIENTE (confirmación de su propia reserva)
+                Notificacion.objects.create(
+                    idusuariofk=usuario_actual,
+                    tipo='reserva_creada',
+                    mensaje=(
+                        f"Tu cita de {servicio.nombreservicio} quedó reservada para el "
+                        f"{fecha_legible} a las {hora_reserva} con {nombre_barbero}."
+                    )
+                )
+
+                # 2) Notificación para el BARBERO (nuevo servicio agendado)
+                if nombre_barbero_obj:
+                    Notificacion.objects.create(
+                        idusuariofk=nombre_barbero_obj,
+                        tipo='nueva_cita',
+                        mensaje=(
+                            f"{usuario_actual.nombre} agendó el servicio de {servicio.nombreservicio} "
+                            f"para el {fecha_legible} a las {hora_reserva}."
+                        )
                     )
 
             if _es_ajax(request):

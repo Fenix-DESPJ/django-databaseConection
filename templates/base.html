@@ -33,11 +33,28 @@
                 </div>
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <!-- ==================================================================
+                 CAMPANITA MÓVIL + BOTÓN HAMBURGUESA
+                 Van juntos en un mismo contenedor flex para que la campana quede
+                 SIEMPRE al lado del botón hamburguesa (nunca dentro del menú
+                 colapsable), y solo se ve en pantallas pequeñas (d-lg-none).
+                 ================================================================== -->
+            <div class="d-flex align-items-center order-lg-2 gap-2">
+                {% if request.session.sesion_iniciada %}
+                <div id="mobile-bell-container" class="d-lg-none">
+                    <button class="notification-btn" id="btnNotifMobile" type="button" title="Notificaciones">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="notification-badge d-none" id="badgeNotifMobile">0</span>
+                    </button>
+                </div>
+                {% endif %}
 
-            <div class="collapse navbar-collapse" id="menu">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse order-lg-1" id="menu">
                 <ul class="navbar-nav align-items-center ms-auto">
                     {% if request.session.sesion_iniciada %}
                         
@@ -69,6 +86,14 @@
                             </a>
                         </li>
 
+                        <!-- Campana de escritorio: visible solo en lg+, a la DERECHA de "Cerrar sesión" -->
+                        <li class="nav-item d-none d-lg-flex align-items-center ms-2">
+                            <button class="notification-btn" id="btnNotifDesktop" type="button" title="Notificaciones">
+                                <i class="bi bi-bell-fill"></i>
+                                <span class="notification-badge d-none" id="badgeNotifDesktop">0</span>
+                            </button>
+                        </li>
+
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
@@ -85,6 +110,20 @@
                     {% endif %}
                 </ul>
             </div>
+
+            <!-- Panel desplegable de notificaciones (compartido por ambas campanas) -->
+            {% if request.session.sesion_iniciada %}
+            <div id="notificaciones-panel"
+                 data-url-listar="{% url 'listar_notificaciones' %}"
+                 data-url-marcar="{% url 'marcar_notificaciones_leidas' %}">
+                <h6><i class="bi bi-bell-fill me-2"></i>Notificaciones</h6>
+                <div id="lista-notificaciones">
+                    <div class="text-center text-muted py-3" style="font-size:0.85rem;">
+                        Cargando notificaciones...
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </nav>
 
