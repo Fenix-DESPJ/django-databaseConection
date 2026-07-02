@@ -15,6 +15,7 @@ from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.db import connection
 from django.conf import settings
 from django.http import JsonResponse
+from django.db import transaction, connection  # agrega estos imports si no están
 import os
 from datetime import timedelta
 
@@ -410,45 +411,65 @@ def eliminar_perfil(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
     nombre_eliminado = usuario.nombre
     correo_eliminado = usuario.correo
-    
-    # 1. Verificar si tiene un perfil de cliente asociado
+
     cliente_perfil = Cliente.objects.filter(idusuariofk=usuario).first()
-    
+    barberos_perfil = list(Barbero.objects.filter(idusuariofk=usuario))  # puede haber más de uno
+
+    # --- 1. Citas pendientes como CLIENTE ---
     if cliente_perfil:
-        # 2. Buscar si el cliente tiene citas pendientes
-        citas_pendientes = Cita.objects.filter(idclientefk=cliente_perfil).exclude(observaciones__icontains='Completado')
-        
-        if citas_pendientes.exists():
-            num_citas = citas_pendientes.count()
+        citas_pendientes_cliente = Cita.objects.filter(
+            idclientefk=cliente_perfil
+        ).exclude(observaciones__icontains='Completado')
+
+        if citas_pendientes_cliente.exists():
+            num_citas = citas_pendientes_cliente.count()
             messages.error(
-                request, 
-                f"No se puede eliminar a '{nombre_eliminado}' porque tiene {num_citas} cita(s) pendiente(s). "
-                f"Por favor, completa o cancela sus citas antes de remover su cuenta."
+                request,
+                f"No se puede eliminar a '{nombre_eliminado}' porque tiene {num_citas} cita(s) agendada(s) "
+                f"como cliente. Completa o cancela esas citas antes de eliminar su cuenta."
             )
             return redirect('editar_perfiles')
-        
-        # 3. Limpiar historial de citas del cliente
-        Cita.objects.filter(idclientefk=cliente_perfil).delete()
 
-    # 4. Si es un barbero, limpiamos sus citas
-    barbero_perfil = Barbero.objects.filter(idusuariofk=usuario).first()
-    if barbero_perfil:
-        Cita.objects.filter(idbarberofk=barbero_perfil).delete()
+    # --- 2. Citas pendientes como BARBERO (revisando TODAS sus filas de barbero) ---
+    if barberos_perfil:
+        citas_pendientes_barbero = Cita.objects.filter(
+            idbarberofk__in=barberos_perfil
+        ).exclude(observaciones__icontains='Completado')
 
-    # 5. Borramos de Cliente y Barbero (estas tablas sí existen físicamente)
-    Cliente.objects.filter(idusuariofk=usuario).delete()
-    Barbero.objects.filter(idusuariofk=usuario).delete()
-    
-    # =========================================================================
-    # SOLUCIÓN DEFINITIVA: SQL PURO TOTAL PARA PASAR DE LARGO DEL ORM
-    # =========================================================================
-    with connection.cursor() as cursor:
-        # Borrado directo en tu tabla operativa 'usuario' de MySQL
-        cursor.execute("DELETE FROM usuario WHERE idUsuario = %s", [usuario_id])
-        
-        # Borrado directo en la tabla de autenticación de Django 'auth_user'
-        cursor.execute("DELETE FROM auth_user WHERE username = %s", [correo_eliminado])
-    
+        if citas_pendientes_barbero.exists():
+            num_citas = citas_pendientes_barbero.count()
+            messages.error(
+                request,
+                f"No se puede eliminar a '{nombre_eliminado}' porque tiene {num_citas} cita(s) agendada(s) "
+                f"como barbero. Completa o cancela esas citas antes de eliminar su cuenta."
+            )
+            return redirect('editar_perfiles')
+
+    try:
+        with transaction.atomic():
+            if cliente_perfil:
+                Cita.objects.filter(idclientefk=cliente_perfil).delete()
+
+            if barberos_perfil:
+                Cita.objects.filter(idbarberofk__in=barberos_perfil).delete()
+                Agenda.objects.filter(idbarberofk__in=barberos_perfil).delete()
+
+            Cliente.objects.filter(idusuariofk=usuario).delete()
+            Barbero.objects.filter(idusuariofk=usuario).delete()
+
+            usuario.delete()
+
+            with connection.cursor() as cursor:
+                cursor.execute("DELETE FROM auth_user WHERE username = %s", [correo_eliminado])
+
+    except Exception as e:
+        messages.error(
+            request,
+            f"No se pudo eliminar a '{nombre_eliminado}'. Es posible que aún tenga información "
+            f"relacionada en el sistema. Detalle técnico: {e}"
+        )
+        return redirect('editar_perfiles')
+
     messages.success(request, f"Se ha eliminado a {nombre_eliminado} de forma permanente.")
     return redirect('editar_perfiles')
 

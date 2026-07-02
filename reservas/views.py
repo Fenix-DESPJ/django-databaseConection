@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.contrib import messages
-from django.db import connection, transaction
+from django.db import transaction
 import random
 from datetime import datetime, timedelta, date
 from servicios.models import Servicio, Pago
-from usuarios.models import Usuario, Notificacion
+from usuarios.models import Usuario, Notificacion, Cliente
+from negocio.models import Barbero, Agenda
 from .models import Cita
 from django.http import JsonResponse
 from django.urls import reverse
@@ -56,7 +57,6 @@ def crear_reserva(request):
             try:
                 fecha_maxima = hoy.replace(month=hoy.month + 1)
             except ValueError:
-                # cubre meses con menos días (ej. 31 ene -> no existe 31 feb)
                 fecha_maxima = (hoy.replace(day=1, month=hoy.month + 2) - timedelta(days=1))
 
         if not (hoy <= fecha_obj <= fecha_maxima):
@@ -87,81 +87,71 @@ def crear_reserva(request):
                 nombre_barbero_obj = Usuario.objects.filter(idusuario=usuario_barbero_id).first()
                 nombre_barbero = nombre_barbero_obj.nombre if nombre_barbero_obj else "seleccionado"
 
-                with connection.cursor() as cursor:
-                    cursor.execute("SELECT idCliente FROM cliente WHERE idUsuarioFk = %s", [usuario_actual.idusuario])
-                    fila_cliente = cursor.fetchone()
+                # --- Cliente: obtener o crear (igual que el INSERT original) ---
+                cliente = Cliente.objects.filter(idusuariofk=usuario_actual).first()
+                if not cliente:
+                    cliente = Cliente.objects.create(
+                        idusuariofk=usuario_actual,
+                        direccion='Registrado desde la Web',
+                        contactoemergencia='No asignado',
+                    )
 
-                    if not fila_cliente:
-                        cursor.execute(
-                            "INSERT INTO cliente (idUsuarioFk, direccion, contactoEmergencia) VALUES (%s, %s, %s)",
-                            [usuario_actual.idusuario, 'Registrado desde la Web', 'No asignado']
-                        )
-                        cursor.execute("SELECT LAST_INSERT_ID()")
-                        id_cliente_real = cursor.fetchone()[0]
-                    else:
-                        id_cliente_real = fila_cliente[0]
+                # --- 3. El cliente ya tiene una cita ESE MISMO DÍA (con cualquier barbero) ---
+                cita_mismo_dia = Cita.objects.filter(idclientefk=cliente, fecha=fecha_obj).exists()
+                if cita_mismo_dia:
+                    return _responder_error(
+                        request,
+                        "Ya tienes una cita agendada para ese día. Solo puedes reservar una cita por día."
+                    )
 
-                    # --- 3. El cliente ya tiene una cita ESE MISMO DÍA (con cualquier barbero) ---
-                    cita_mismo_dia = Cita.objects.filter(idclientefk=id_cliente_real, fecha=fecha_obj).exists()
-                    if cita_mismo_dia:
+                # --- 4. Límite mensual de citas pendientes ---
+                config = ConfiguracionHorario.objects.first()
+                limite = config.limite_citas_mensuales if config else 3
+                inicio_mes = fecha_obj.replace(day=1)
+                if inicio_mes.month == 12:
+                    fin_mes = inicio_mes.replace(year=inicio_mes.year + 1, month=1)
+                else:
+                    fin_mes = inicio_mes.replace(month=inicio_mes.month + 1)
+
+                citas_pendientes_mes = Cita.objects.filter(
+                    idclientefk=cliente,
+                    fecha__gte=inicio_mes,
+                    fecha__lt=fin_mes
+                ).exclude(observaciones__icontains='Completado').count()
+
+                if citas_pendientes_mes >= limite:
+                    return _responder_error(
+                        request,
+                        f"Ya tienes {limite} citas pendientes este mes. Debes esperar la confirmación "
+                        f"del barbero en alguna de tus citas antes de agendar otra."
+                    )
+
+                # --- Barbero: obtener o crear (igual que el INSERT original) ---
+                barbero = Barbero.objects.filter(idusuariofk_id=usuario_barbero_id).first()
+                if not barbero:
+                    barbero = Barbero.objects.create(
+                        idusuariofk_id=usuario_barbero_id,
+                        especialidad='General',
+                    )
+
+                # --- 5. Choque de horario POR DURACIÓN del servicio ---
+                nueva_inicio = datetime.combine(fecha_obj, hora_objeto)
+                nueva_fin = nueva_inicio + timedelta(minutes=servicio.duracion or 30)
+
+                citas_barbero_dia = Cita.objects.filter(
+                    idbarberofk=barbero, fecha=fecha_obj
+                ).select_related('idserviciofk')
+
+                for c in citas_barbero_dia:
+                    existente_inicio = datetime.combine(fecha_obj, c.horainicio)
+                    existente_dur = c.idserviciofk.duracion if c.idserviciofk else 30
+                    existente_fin = existente_inicio + timedelta(minutes=existente_dur)
+                    if nueva_inicio < existente_fin and existente_inicio < nueva_fin:
                         return _responder_error(
                             request,
-                            "Ya tienes una cita agendada para ese día. Solo puedes reservar una cita por día."
+                            f'El barbero "{nombre_barbero}" ya ha sido reservado por otro cliente en ese horario. '
+                            f'Por favor selecciona otra hora.'
                         )
-
-                    # --- 4. Límite mensual de citas pendientes ---
-                    config = ConfiguracionHorario.objects.first()
-                    limite = config.limite_citas_mensuales if config else 3
-                    inicio_mes = fecha_obj.replace(day=1)
-                    if inicio_mes.month == 12:
-                        fin_mes = inicio_mes.replace(year=inicio_mes.year + 1, month=1)
-                    else:
-                        fin_mes = inicio_mes.replace(month=inicio_mes.month + 1)
-
-                    citas_pendientes_mes = Cita.objects.filter(
-                        idclientefk=id_cliente_real,
-                        fecha__gte=inicio_mes,
-                        fecha__lt=fin_mes
-                    ).exclude(observaciones__icontains='Completado').count()
-
-                    if citas_pendientes_mes >= limite:
-                        return _responder_error(
-                            request,
-                            f"Ya tienes {limite} citas pendientes este mes. Debes esperar la confirmación "
-                            f"del barbero en alguna de tus citas antes de agendar otra."
-                        )
-
-                    cursor.execute("SELECT idBarbero FROM barbero WHERE idUsuarioFk = %s", [usuario_barbero_id])
-                    fila_barbero = cursor.fetchone()
-
-                    if not fila_barbero:
-                        cursor.execute(
-                            "INSERT INTO barbero (idUsuarioFk, especialidad) VALUES (%s, %s)",
-                            [usuario_barbero_id, 'General']
-                        )
-                        cursor.execute("SELECT LAST_INSERT_ID()")
-                        id_barbero_real = cursor.fetchone()[0]
-                    else:
-                        id_barbero_real = fila_barbero[0]
-
-                    # --- 5. Choque de horario POR DURACIÓN del servicio (no solo hora exacta) ---
-                    nueva_inicio = datetime.combine(fecha_obj, hora_objeto)
-                    nueva_fin = nueva_inicio + timedelta(minutes=servicio.duracion or 30)
-
-                    citas_barbero_dia = Cita.objects.filter(
-                        idbarberofk=id_barbero_real, fecha=fecha_obj
-                    ).select_related('idserviciofk')
-
-                    for c in citas_barbero_dia:
-                        existente_inicio = datetime.combine(fecha_obj, c.horainicio)
-                        existente_dur = c.idserviciofk.duracion if c.idserviciofk else 30
-                        existente_fin = existente_inicio + timedelta(minutes=existente_dur)
-                        if nueva_inicio < existente_fin and existente_inicio < nueva_fin:
-                            return _responder_error(
-                                request,
-                                f'El barbero "{nombre_barbero}" ya ha sido reservado por otro cliente en ese horario. '
-                                f'Por favor selecciona otra hora.'
-                            )
 
                 nuevo_pago = Pago.objects.create(
                     metodopago=metodo_pago,
@@ -171,28 +161,28 @@ def crear_reserva(request):
                     codigofactura=f"FAC{random.randint(10000, 99999)}"
                 )
 
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "INSERT INTO agenda (idBarberoFk, fecha, horaInicio) VALUES (%s, %s, %s)",
-                        [id_barbero_real, fecha_reserva, hora_objeto]
-                    )
-                    cursor.execute("SELECT LAST_INSERT_ID()")
-                    id_agenda_creada = cursor.fetchone()[0]
+                agenda_creada = Agenda.objects.create(
+                    idbarberofk=barbero,
+                    fecha=fecha_obj,
+                    horainicio=hora_objeto,
+                )
 
-                    cursor.execute(
-                        """INSERT INTO cita (fecha, horaInicio, idServicioFk, idPagoFk,
-                           idBarberoFk, idClienteFk, idAgendaFk, observaciones)
-                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                        [fecha_reserva, hora_objeto, servicio_id, nuevo_pago.idpago,
-                         id_barbero_real, id_cliente_real, id_agenda_creada, observaciones]
-                    )
+                Cita.objects.create(
+                    fecha=fecha_obj,
+                    horainicio=hora_objeto,
+                    idserviciofk=servicio,
+                    idpagofk=nuevo_pago,
+                    idbarberofk=barbero,
+                    idclientefk=cliente,
+                    idagendafk=agenda_creada,
+                    observaciones=observaciones,
+                )
 
                 # =============================================================
-                # NUEVO: Notificaciones individuales por perfil
+                # Notificaciones individuales por perfil
                 # =============================================================
                 fecha_legible = fecha_obj.strftime('%d/%m/%Y')
 
-                # 1) Notificación para el CLIENTE (confirmación de su propia reserva)
                 Notificacion.objects.create(
                     idusuariofk=usuario_actual,
                     tipo='reserva_creada',
@@ -202,7 +192,6 @@ def crear_reserva(request):
                     )
                 )
 
-                # 2) Notificación para el BARBERO (nuevo servicio agendado)
                 if nombre_barbero_obj:
                     Notificacion.objects.create(
                         idusuariofk=nombre_barbero_obj,
@@ -226,7 +215,6 @@ def crear_reserva(request):
         'barberos': Usuario.objects.filter(idrolfk=2)
     })
 
-
 def mis_citas_view(request):
     if not request.user.is_authenticated:
         messages.error(request, "Debes iniciar sesión para ver tus citas.")
@@ -238,57 +226,33 @@ def mis_citas_view(request):
 
     citas = []
     try:
-        with connection.cursor() as cursor:
-            if es_admin:
-                cursor.execute("""
-                    SELECT
-                        c.idCita,
-                        c.fecha,
-                        c.horaInicio,
-                        s.nombreServicio,
-                        u_barbero.nombre AS nombre_barbero,
-                        u_cliente.nombre AS nombre_cliente,
-                        c.observaciones
-                    FROM cita c
-                    LEFT JOIN servicio s ON c.idServicioFk = s.idServicio
-                    LEFT JOIN barbero b ON c.idBarberoFk = b.idBarbero
-                    LEFT JOIN usuario u_barbero ON b.idUsuarioFk = u_barbero.idUsuario
-                    LEFT JOIN cliente cl ON c.idClienteFk = cl.idCliente
-                    LEFT JOIN usuario u_cliente ON cl.idUsuarioFk = u_cliente.idUsuario
-                    ORDER BY c.fecha DESC, c.horaInicio DESC
-                """)
-            else:
-                cursor.execute("""
-                    SELECT
-                        c.idCita,
-                        c.fecha,
-                        c.horaInicio,
-                        s.nombreServicio,
-                        u_barbero.nombre AS nombre_barbero,
-                        u_cliente.nombre AS nombre_cliente,
-                        c.observaciones
-                    FROM cita c
-                    LEFT JOIN servicio s ON c.idServicioFk = s.idServicio
-                    LEFT JOIN barbero b ON c.idBarberoFk = b.idBarbero
-                    LEFT JOIN usuario u_barbero ON b.idUsuarioFk = u_barbero.idUsuario
-                    LEFT JOIN cliente cl ON c.idClienteFk = cl.idCliente
-                    LEFT JOIN usuario u_cliente ON cl.idUsuarioFk = u_cliente.idUsuario
-                    WHERE cl.idUsuarioFk = %s
-                    ORDER BY c.fecha DESC, c.horaInicio DESC
-                """, [usuario_actual.idusuario])
+        qs = Cita.objects.select_related(
+            'idserviciofk',
+            'idbarberofk__idusuariofk',
+            'idclientefk__idusuariofk',
+        ).order_by('-fecha', '-horainicio')
 
-            filas = cursor.fetchall()
+        if not es_admin:
+            qs = qs.filter(idclientefk__idusuariofk=usuario_actual)
 
-            for f in filas:
-                citas.append({
-                    'idCita': f[0],
-                    'fecha': f[1],
-                    'horainicio': f[2],
-                    'servicio_nombre': f[3] if f[3] else "No asignado",
-                    'barbero_nombre': f[4] if f[4] else "No asignado",
-                    'cliente_nombre': f[5] if f[5] else "Cliente General",
-                    'observaciones': f[6] if f[6] else "",
-                })
+        for c in qs:
+            barbero_nombre = "No asignado"
+            if c.idbarberofk and c.idbarberofk.idusuariofk:
+                barbero_nombre = c.idbarberofk.idusuariofk.nombre
+
+            cliente_nombre = "Cliente General"
+            if c.idclientefk and c.idclientefk.idusuariofk:
+                cliente_nombre = c.idclientefk.idusuariofk.nombre
+
+            citas.append({
+                'idCita': c.idCita,
+                'fecha': c.fecha,
+                'horainicio': c.horainicio,
+                'servicio_nombre': c.idserviciofk.nombreservicio if c.idserviciofk else "No asignado",
+                'barbero_nombre': barbero_nombre,
+                'cliente_nombre': cliente_nombre,
+                'observaciones': c.observaciones if c.observaciones else "",
+            })
     except Exception as e:
         print("======= ERROR CRÍTICO AL TRAER CITAS =======")
         print(str(e))
@@ -310,20 +274,16 @@ def cancelar_cita_cliente(request, id_cita):
 
     try:
         with transaction.atomic():
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT idcliente FROM cliente WHERE idusuariofk = %s", [usuario_actual.idusuario])
-                fila_cliente = cursor.fetchone()
-
-            if not fila_cliente:
+            cliente = Cliente.objects.filter(idusuariofk=usuario_actual).first()
+            if not cliente:
                 raise Exception("Cliente no encontrado.")
 
-            cita = Cita.objects.get(idCita=id_cita, idclientefk=fila_cliente[0])
-            id_agenda = cita.idagendafk
+            cita = Cita.objects.get(idCita=id_cita, idclientefk=cliente)
+            agenda = cita.idagendafk
 
-            with connection.cursor() as cursor:
-                cursor.execute("DELETE FROM cita WHERE idCita = %s", [id_cita])
-                if id_agenda:
-                    cursor.execute("DELETE FROM agenda WHERE idAgenda = %s", [id_agenda])
+            cita.delete()
+            if agenda:
+                agenda.delete()
 
         messages.success(request, "Tu reserva ha sido cancelada exitosamente.")
     except Cita.DoesNotExist:
@@ -345,12 +305,11 @@ def cancelar_cita_admin(request, id_cita):
     try:
         with transaction.atomic():
             cita = Cita.objects.get(idCita=id_cita)
-            id_agenda = cita.idagendafk
+            agenda = cita.idagendafk
 
-            with connection.cursor() as cursor:
-                cursor.execute("DELETE FROM cita WHERE idCita = %s", [id_cita])
-                if id_agenda:
-                    cursor.execute("DELETE FROM agenda WHERE idAgenda = %s", [id_agenda])
+            cita.delete()
+            if agenda:
+                agenda.delete()
 
         messages.success(request, f"La cita #{id_cita} ha sido cancelada por el Administrador.")
     except Cita.DoesNotExist:

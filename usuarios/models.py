@@ -35,11 +35,14 @@ class Usuario(models.Model):
 class Cliente(models.Model):
     idcliente = models.AutoField(db_column='idCliente', primary_key=True)
     idusuariofk = models.ForeignKey(Usuario, on_delete=models.DO_NOTHING, db_column='idUsuarioFk', related_name='perfil_cliente')
+    direccion = models.CharField(max_length=100, blank=True, null=True)
+    fecharegistro = models.DateField(db_column='fechaRegistro', blank=True, null=True)
+    contactoemergencia = models.CharField(db_column='contactoEmergencia', max_length=100)
 
     class Meta:
         managed = False
         db_table = 'cliente'
-
+        
 
 class Servicio(models.Model):
     idservicio = models.AutoField(db_column='idServicio', primary_key=True)
