@@ -79,7 +79,15 @@
         <p class="text-white">No hay servicios disponibles en este momento.</p>
         {% endfor %}
     </div>
-    <div class="d-flex justify-content-center align-items-center gap-3 mt-5">
+
+    <!-- NUEVO: Botón Regresar, debajo de la grilla de servicios -->
+    <div class="d-flex justify-content-start mt-4 mb-2">
+        <a href="javascript:history.back()" class="btn btn-outline-light px-4">
+            <i class="bi bi-arrow-left"></i> Regresar
+        </a>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
     
         {% if servicios.has_previous %}
             <a href="?page={{ servicios.previous_page_number }}" class="btn btn-outline-secondary px-4">Anterior</a>

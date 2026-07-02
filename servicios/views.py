@@ -25,6 +25,8 @@ from django.db.models import F
 from django.http import FileResponse
 from fpdf import FPDF
 import os
+from django.conf import settings  # <-- NUEVO: necesario para localizar MEDIA_ROOT
+
 
 def admin_required(view_func):
     @wraps(view_func)
@@ -34,6 +36,33 @@ def admin_required(view_func):
             raise PermissionDenied
         return view_func(request, *args, **kwargs)
     return _wrapped_view
+
+
+# =========================================================================
+# NUEVO: Helper para borrar físicamente la imagen de un servicio en media/servicios
+# =========================================================================
+def _eliminar_imagen_servicio(campo_imagen):
+    """
+    Borra el archivo físico asociado a un ImageField de Servicio,
+    ubicado dentro de MEDIA_ROOT/servicios/. Nunca borra 'default.jpg',
+    ya que es la imagen genérica compartida por servicios sin foto propia.
+    """
+    if not campo_imagen:
+        return
+
+    nombre_archivo = str(campo_imagen)
+
+    if not nombre_archivo or nombre_archivo == 'default.jpg' or nombre_archivo.endswith('/default.jpg'):
+        return
+
+    ruta_fisica = os.path.join(settings.MEDIA_ROOT, nombre_archivo)
+
+    if os.path.isfile(ruta_fisica):
+        try:
+            os.remove(ruta_fisica)
+        except OSError as e:
+            print(f"DEBUG: No se pudo eliminar la imagen anterior del servicio: {e}")
+
 
 def index(request):
     return render(request, 'index.html')
@@ -123,6 +152,7 @@ def es_admin(user):
     # 1 es el ID del rol de administrador en tu tabla 'rol'
     return perfil is not None and perfil.idrolfk_id == 1
 
+
 # 1. Crear Servicio
 @login_required
 @admin_required
@@ -152,9 +182,13 @@ def crear_servicio(request):
             imagen=imagen if imagen else 'default.jpg' 
         )
         
+        # --- NUEVO: redirección según el tipo de servicio recién creado ---
+        if tipo == 'Paquete':
+            return redirect('servicios_paq_1')
         return redirect('servicios_ind')
         
     return render(request, 'crear_servicio.html')
+
 
 # 2. Editar Servicio
 @login_required
@@ -169,18 +203,25 @@ def editar_servicio(request, pk):
         servicio.nombreservicio = request.POST.get('nombreservicio')
         servicio.precio = request.POST.get('precio')
         servicio.duracion = request.POST.get('duracion')
-        servicio.tiposervicio = request.POST.get('tiposervicio')
+        nuevo_tipo = request.POST.get('tiposervicio')
+        servicio.tiposervicio = nuevo_tipo
 
         if request.FILES.get('imagen'):
-            # (Tu lógica de borrado de imagen vieja aquí)
+            # --- NUEVO: borramos la foto física anterior antes de asignar la nueva ---
+            _eliminar_imagen_servicio(servicio.imagen)
             servicio.imagen = request.FILES['imagen']
 
         servicio.save()
-        return redirect('servicios_ind') # <--- Esto es lo que necesitas
+
+        # --- NUEVO: redirección según el tipo de servicio YA actualizado ---
+        if nuevo_tipo == 'Paquete':
+            return redirect('servicios_paq_1')
+        return redirect('servicios_ind')
 
     # Si alguien entra por GET a la URL de editar, redirígelo a la lista
     return redirect('servicios_ind')
-    
+
+
 # 3. Eliminar Servicio
 @login_required
 @admin_required
@@ -189,15 +230,22 @@ def eliminar_servicio(request, pk): # Asegúrate de que aquí diga 'pk'
         raise PermissionDenied
         
     servicio = get_object_or_404(Servicio, pk=pk)
+    tipo_original = servicio.tiposervicio  # --- NUEVO: lo guardamos antes de borrar el registro
     
     # Validar dependencias antes de borrar
     if servicio.cita_set.exists():
         messages.error(request, "No se puede eliminar el servicio porque tiene citas programadas.")
     else:
+        # --- NUEVO: borramos la foto física antes de borrar el registro de la BD ---
+        _eliminar_imagen_servicio(servicio.imagen)
         servicio.delete()
         messages.success(request, "Servicio eliminado correctamente.")
         
-    return redirect('servicios_ind') # O el nombre de tu URL de listado
+    # --- NUEVO: redirección según el tipo del servicio eliminado ---
+    if tipo_original == 'Paquete':
+        return redirect('servicios_paq_1')
+    return redirect('servicios_ind')
+
 
 def lista_servicios(request):
     servicios = Servicio.objects.all()
