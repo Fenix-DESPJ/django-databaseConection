@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- ============================================================= -->
+<!-- MODAL DE PRIVACIDAD (bloquea la interacción hasta aceptar)     -->
+<!-- ============================================================= -->
+<div class="privacidad-overlay" id="privacidadOverlay">
+    <div class="privacidad-modal">
+        <h4><i class="bi bi-shield-lock"></i> Aviso de Privacidad</h4>
+        <p class="text-white-50 small">
+            Antes de continuar, es importante que sepas cómo tratamos tu imagen:
+        </p>
+        <ul>
+            <li>Tu foto (de cámara o archivo) se usa <strong>únicamente</strong> para analizar la forma de tu rostro.</li>
+            <li>La imagen <strong>NO se almacena de forma permanente</strong> en nuestros servidores.</li>
+            <li>El archivo se elimina automáticamente <strong>inmediatamente después</strong> de obtener el resultado.</li>
+            <li>No se comparte con terceros ni se usa con otro fin distinto al análisis.</li>
+        </ul>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-light btn-sm">No acepto</a>
+            <button type="button" class="btn btn-warning text-dark fw-bold btn-sm" id="btnAceptarPrivacidad">
+                Acepto y continuar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- CONTENIDO PRINCIPAL (deshabilitado hasta aceptar el aviso)     -->
+<!-- ============================================================= -->
+<div class="analisis-container">
+    <div class="analisis-card">
+        <h3 class="text-gold text-center mb-4">Análisis de Forma de Rostro</h3>
+
+        {% csrf_token %}
+
+        <div id="contenidoAnalisis"data-url-analizar="{% url 'analizar_rostro_ajax' %}"data-foto-perfil="{% if request.session.usuario_foto %}{{ request.session.usuario_foto }}{% endif %}"style="opacity:0.3; pointer-events:none;">
+
+            <div class="d-flex justify-content-center flex-wrap mb-3">
+                <button type="button" class="btn-opcion" id="btnUsarCamara"><i class="bi bi-camera"></i> Usar cámara</button>
+                <button type="button" class="btn-opcion" id="btnUsarArchivo"><i class="bi bi-upload"></i> Subir imagen</button>
+                <button type="button" class="btn-opcion" id="btnUsarPerfil"><i class="bi bi-person-circle"></i> Usar foto de perfil</button>
+            </div>
+
+            <input type="file" id="inputArchivo" accept="image/png, image/jpeg, image/webp" class="d-none">
+
+            <div id="zonaCamara" class="text-center d-none">
+                <video id="videoCamara" class="video-preview" autoplay playsinline></video>
+                <canvas id="canvasCaptura" class="d-none"></canvas>
+                <div class="mt-3">
+                    <button type="button" class="btn btn-warning text-dark fw-bold" id="btnCapturar">
+                        <i class="bi bi-camera-fill"></i> Capturar foto
+                    </button>
+                </div>
+            </div>
+
+            <div id="zonaPreview" class="text-center d-none mt-3">
+                <img id="imgPreview" class="video-preview" alt="Vista previa">
+                <div class="mt-3 d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-warning text-dark fw-bold" id="btnAnalizar">
+                        Analizar rostro
+                    </button>
+                    <button type="button" class="btn btn-outline-light" id="btnReintentar">
+                        Cambiar imagen
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center spinner-analisis" id="spinnerAnalisis">
+                <div class="spinner-border text-warning mt-3" role="status"></div>
+                <p class="text-white-50 small mt-2">Analizando tu rostro, esto puede tardar unos segundos...</p>
+            </div>
+
+            <div class="error-box" id="errorBox"></div>
+
+            <div class="resultado-box" id="resultadoBox">
+                <h5>Forma detectada</h5>
+                <span id="formaDetectada"></span>
+                <p id="recomendacionTexto"></p>
+
+                <div class="metricas-chips" id="metricasChips"></div>
+
+                <p class="aviso-eliminada">
+                    <i class="bi bi-shield-check"></i>La imagen utilizada para este análisis ya fue eliminada del servidor.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}?v=3">
+
+{% endblock %}

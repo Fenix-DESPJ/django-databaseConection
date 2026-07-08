@@ -962,3 +962,192 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarNotificaciones();
     setInterval(cargarNotificaciones, 30000); // cada 30 segundos
 });
+
+/* ============================================================
+analisis_rostro.html: script.js para análisis de rostro
+============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+    const overlay = document.getElementById("privacidadOverlay");
+    const contenido = document.getElementById("contenidoAnalisis");
+    const btnAceptar = document.getElementById("btnAceptarPrivacidad");
+
+    const btnUsarCamara = document.getElementById("btnUsarCamara");
+    const btnUsarArchivo = document.getElementById("btnUsarArchivo");
+    const btnUsarPerfil = document.getElementById("btnUsarPerfil");
+    const inputArchivo = document.getElementById("inputArchivo");
+
+    const zonaCamara = document.getElementById("zonaCamara");
+    const videoCamara = document.getElementById("videoCamara");
+    const canvasCaptura = document.getElementById("canvasCaptura");
+    const btnCapturar = document.getElementById("btnCapturar");
+
+    const zonaPreview = document.getElementById("zonaPreview");
+    const imgPreview = document.getElementById("imgPreview");
+    const btnAnalizar = document.getElementById("btnAnalizar");
+    const btnReintentar = document.getElementById("btnReintentar");
+
+    const spinnerAnalisis = document.getElementById("spinnerAnalisis");
+    const errorBox = document.getElementById("errorBox");
+    const resultadoBox = document.getElementById("resultadoBox");
+    const formaDetectada = document.getElementById("formaDetectada");
+    const recomendacionTexto = document.getElementById("recomendacionTexto");
+    const metricasChips = document.getElementById("metricasChips");
+
+    let streamCamara = null;
+    let blobCapturado = null;
+    let usarPerfilSeleccionado = false;
+
+    // --- Lee la URL real inyectada por Django vía data-attribute (NO {% url %} aquí) ---
+    function obtenerUrlAnalizar() {
+        return contenido.dataset.urlAnalizar;
+    }
+
+    // --- Lee el token CSRF real desde el input que Django ya renderizó en el HTML ---
+    function obtenerCSRFToken() {
+        const input = document.querySelector('[name=csrfmiddlewaretoken]');
+        return input ? input.value : '';
+    }
+
+    // --- Lee la URL de la foto de perfil desde data-attribute (evita {% if %} en el JS) ---
+    function obtenerUrlFotoPerfil() {
+        return contenido.dataset.fotoPerfil || '';
+    }
+
+    // --- Aceptar aviso de privacidad ---
+    btnAceptar.addEventListener("click", () => {
+        overlay.remove();
+        contenido.style.opacity = "1";
+        contenido.style.pointerEvents = "auto";
+    });
+
+    function resetearVistas() {
+        zonaCamara.classList.add("d-none");
+        zonaPreview.classList.add("d-none");
+        errorBox.classList.remove("visible");
+        resultadoBox.classList.remove("visible");
+        usarPerfilSeleccionado = false;
+        blobCapturado = null;
+        if (streamCamara) {
+            streamCamara.getTracks().forEach(t => t.stop());
+            streamCamara = null;
+        }
+    }
+
+    // --- Opción: usar cámara ---
+    btnUsarCamara.addEventListener("click", async () => {
+        resetearVistas();
+        try {
+            streamCamara = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoCamara.srcObject = streamCamara;
+            zonaCamara.classList.remove("d-none");
+        } catch (err) {
+            errorBox.textContent = "No se pudo acceder a la cámara. Verifica los permisos del navegador.";
+            errorBox.classList.add("visible");
+        }
+    });
+
+    btnCapturar.addEventListener("click", () => {
+        canvasCaptura.width = videoCamara.videoWidth;
+        canvasCaptura.height = videoCamara.videoHeight;
+        canvasCaptura.getContext("2d").drawImage(videoCamara, 0, 0);
+
+        canvasCaptura.toBlob((blob) => {
+            blobCapturado = blob;
+            imgPreview.src = URL.createObjectURL(blob);
+            zonaCamara.classList.add("d-none");
+            zonaPreview.classList.remove("d-none");
+            if (streamCamara) {
+                streamCamara.getTracks().forEach(t => t.stop());
+                streamCamara = null;
+            }
+        }, "image/jpeg", 0.92);
+    });
+
+    // --- Opción: subir archivo ---
+    btnUsarArchivo.addEventListener("click", () => {
+        resetearVistas();
+        inputArchivo.click();
+    });
+
+    inputArchivo.addEventListener("change", () => {
+        const archivo = inputArchivo.files[0];
+        if (!archivo) return;
+        blobCapturado = archivo;
+        imgPreview.src = URL.createObjectURL(archivo);
+        zonaPreview.classList.remove("d-none");
+    });
+
+    // --- Opción: usar foto de perfil ---
+    btnUsarPerfil.addEventListener("click", () => {
+        resetearVistas();
+        const urlFoto = obtenerUrlFotoPerfil();
+
+        if (!urlFoto) {
+            errorBox.textContent = "No tienes una foto de perfil registrada. Usa la cámara o sube una imagen.";
+            errorBox.classList.add("visible");
+            return;
+        }
+
+        usarPerfilSeleccionado = true;
+        imgPreview.src = urlFoto;
+        zonaPreview.classList.remove("d-none");
+    });
+
+    btnReintentar.addEventListener("click", resetearVistas);
+
+    // --- Enviar al backend para análisis ---
+    btnAnalizar.addEventListener("click", async () => {
+        errorBox.classList.remove("visible");
+        resultadoBox.classList.remove("visible");
+        spinnerAnalisis.classList.add("visible");
+        zonaPreview.classList.add("d-none");
+
+        const formData = new FormData();
+        if (usarPerfilSeleccionado) {
+            formData.append("usar_perfil", "true");
+        } else {
+            if (!blobCapturado) {
+                spinnerAnalisis.classList.remove("visible");
+                errorBox.textContent = "No se detectó ninguna imagen para analizar.";
+                errorBox.classList.add("visible");
+                zonaPreview.classList.remove("d-none");
+                return;
+            }
+            formData.append("imagen", blobCapturado, "captura.jpg");
+        }
+
+        try {
+            const resp = await fetch(obtenerUrlAnalizar(), {
+                method: "POST",
+                headers: { "X-CSRFToken": obtenerCSRFToken() },
+                body: formData
+            });
+            const data = await resp.json();
+            spinnerAnalisis.classList.remove("visible");
+
+            if (data.ok) {
+                formaDetectada.textContent = data.forma;
+                recomendacionTexto.textContent = data.recomendacion;
+
+                if (metricasChips) {
+                    const m = data.metricas;
+                    metricasChips.innerHTML =
+                        `Largo/Ancho: <span class="metrica-valor">${m.ratio_largo_ancho}</span> &nbsp;·&nbsp; ` +
+                        `Mandíbula/Pómulo: <span class="metrica-valor">${m.ratio_mandibula_pomulo}</span> &nbsp;·&nbsp; ` +
+                        `Frente/Pómulo: <span class="metrica-valor">${m.ratio_frente_pomulo}</span>`;
+                }
+
+                resultadoBox.classList.add("visible");
+            } else {
+                errorBox.textContent = data.error;
+                errorBox.classList.add("visible");
+                zonaPreview.classList.remove("d-none");
+            }
+        } catch (err) {
+            spinnerAnalisis.classList.remove("visible");
+            errorBox.textContent = "Error de conexión. Intenta nuevamente.";
+            errorBox.classList.add("visible");
+            zonaPreview.classList.remove("d-none");
+        }
+    });
+});

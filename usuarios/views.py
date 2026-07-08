@@ -6,6 +6,8 @@ from django.db.models import Sum
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models import Q
 from django.core.mail import send_mail
@@ -17,11 +19,14 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.db import transaction, connection  # agrega estos imports si no están
 import os
+import uuid
+import tempfile
 from datetime import timedelta
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion
 from negocio.models import Barbero, Agenda
+from .utils import analizar_forma_rostro, RostroNoDetectadoError, RECOMENDACIONES_POR_FORMA
 
 # =========================================================================
 # 1. VISTA: INICIAR SESIÓN
@@ -619,3 +624,130 @@ def marcar_notificaciones_leidas(request):
         except Usuario.DoesNotExist:
             pass
     return JsonResponse({'ok': True})
+
+# =========================================================================
+# 8. VISTA: ANALIZAR FORMA DE ROSTRO
+# =========================================================================
+
+def analisis_rostro_view(request):
+    """Solo renderiza la página con el modal de privacidad. No procesa nada."""
+    return render(request, 'analisis_rostro.html')
+
+
+@login_required
+@require_POST
+def analizar_rostro_ajax(request):
+    """
+    Recibe:
+      - 'imagen' (archivo, desde cámara o input file) O
+      - 'usar_perfil' = 'true' (usa la foto de perfil del usuario)
+    Analiza la forma del rostro y ELIMINA el archivo temporal inmediatamente
+    después del análisis, ocurra o no un error (bloque try/finally).
+    """
+    usar_perfil = request.POST.get('usar_perfil') == 'true'
+    ruta_temporal = None
+    es_archivo_temporal_propio = False  # True si nosotros creamos el archivo (y por tanto debemos borrarlo)
+
+    try:
+        # =========================================================
+        # CASO 1: El usuario quiere usar su foto de perfil
+        # =========================================================
+        if usar_perfil:
+            try:
+                usuario_actual = Usuario.objects.get(correo=request.user.email)
+            except Usuario.DoesNotExist:
+                return JsonResponse({
+                    'ok': False,
+                    'error': 'No encontramos tu perfil registrado. Intenta con la cámara en su lugar.'
+                }, status=404)
+
+            # Validación 1: ¿el campo tiene algo asignado en la BD?
+            if not usuario_actual.foto_perfil:
+                return JsonResponse({
+                    'ok': False,
+                    'error': 'Aún no tienes una foto de perfil registrada. Usa la cámara o sube una imagen para continuar.'
+                }, status=400)
+
+            # Validación 2: ¿el archivo REALMENTE existe en la carpeta media?
+            ruta_fisica_perfil = os.path.join(settings.MEDIA_ROOT, str(usuario_actual.foto_perfil))
+            if not os.path.exists(ruta_fisica_perfil):
+                return JsonResponse({
+                    'ok': False,
+                    'error': 'Tu foto de perfil no se encuentra disponible en el servidor. Por favor usa la cámara o sube una nueva imagen.'
+                }, status=404)
+
+            # No copiamos ni borramos la foto de perfil original: solo la LEEMOS para analizar.
+            ruta_temporal = ruta_fisica_perfil
+            es_archivo_temporal_propio = False  # NUNCA borramos la foto de perfil real del usuario
+
+        # =========================================================
+        # CASO 2: El usuario sube/captura una imagen nueva (cámara o archivo)
+        # =========================================================
+        else:
+            archivo = request.FILES.get('imagen')
+            if not archivo:
+                return JsonResponse({
+                    'ok': False,
+                    'error': 'No se recibió ninguna imagen. Captura una foto o selecciona un archivo.'
+                }, status=400)
+
+            extensiones_validas = ('.jpg', '.jpeg', '.png', '.webp')
+            nombre_original = archivo.name.lower()
+            if not nombre_original.endswith(extensiones_validas):
+                return JsonResponse({
+                    'ok': False,
+                    'error': 'Formato de imagen no soportado. Usa JPG, PNG o WEBP.'
+                }, status=400)
+
+            # Límite de tamaño (5 MB) para evitar abuso
+            if archivo.size > 5 * 1024 * 1024:
+                return JsonResponse({
+                    'ok': False,
+                    'error': 'La imagen es demasiado pesada (máximo 5MB).'
+                }, status=400)
+
+            # Guardamos en un directorio temporal del sistema operativo, NO en /media,
+            # con un nombre único para evitar colisiones y no dejar rastro permanente.
+            carpeta_temporal = tempfile.gettempdir()
+            extension = os.path.splitext(nombre_original)[1]
+            nombre_temporal = f"analisis_rostro_{uuid.uuid4().hex}{extension}"
+            ruta_temporal = os.path.join(carpeta_temporal, nombre_temporal)
+
+            with open(ruta_temporal, 'wb+') as destino:
+                for chunk in archivo.chunks():
+                    destino.write(chunk)
+
+            es_archivo_temporal_propio = True
+
+        # =========================================================
+        # ANÁLISIS (común para ambos casos)
+        # =========================================================
+        resultado = analizar_forma_rostro(ruta_temporal)
+        forma_detectada = resultado['forma']
+
+        return JsonResponse({
+            'ok': True,
+            'forma': forma_detectada,
+            'metricas': resultado['metricas'],
+            'recomendacion': RECOMENDACIONES_POR_FORMA.get(forma_detectada, ''),
+        })
+
+    except RostroNoDetectadoError as e:
+        return JsonResponse({'ok': False, 'error': str(e)}, status=422)
+
+    except Exception as e:
+        return JsonResponse({
+            'ok': False,
+            'error': f'Ocurrió un problema al procesar la imagen: {e}'
+        }, status=500)
+
+    finally:
+        # =========================================================
+        # LIMPIEZA OBLIGATORIA: borramos el archivo temporal
+        # SIEMPRE, haya éxito o error, salvo que sea la foto de perfil real.
+        # =========================================================
+        if ruta_temporal and es_archivo_temporal_propio and os.path.exists(ruta_temporal):
+            try:
+                os.remove(ruta_temporal)
+            except OSError:
+                pass  # Si por algún motivo no se pudo borrar, no rompemos la respuesta al usuario

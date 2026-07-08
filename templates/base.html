@@ -76,6 +76,7 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'analisis_rostro' %}">Recomendación de Corte</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'mis_citas' %}">Mis Citas</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'crear_reserva' %}">Agendar</a></li>
                         {% endif %}
@@ -150,7 +151,8 @@
                                 <li class="nav-item"><a class="nav-link" href="{% url 'reportes_admin' %}">Reportes</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
-                            
+                                <li class="nav-item"><a class="nav-link" href="{% url 'gestionar_agenda_admin' %}">Agenda</a></li>
+                        
                             {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
                                 <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
@@ -160,9 +162,10 @@
                                 <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'analisis_rostro' %}">Recomendación de corte</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'mis_citas' %}">Mis Citas</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'crear_reserva' %}">Agendar</a></li>
-                                
-
                             {% endif %}
                         
                         {% else %}

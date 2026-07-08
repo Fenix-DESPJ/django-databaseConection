@@ -20,7 +20,9 @@ urlpatterns = [
     # Rutas del Panel de Administración para perfiles
     path('dashboard/perfiles/', views.editar_perfiles_admin, name='editar_perfiles'),
     path('dashboard/perfiles/eliminar/<int:usuario_id>/', views.eliminar_perfil, name='eliminar_perfil'),
-    
+    path('analisis-rostro/', views.analisis_rostro_view, name='analisis_rostro'),
+    path('analisis-rostro/procesar/', views.analizar_rostro_ajax, name='analizar_rostro_ajax'),
+
     #Ruta propia del Dashboard de Administrador
     path('admin-dashboard/', views.dashboard_admin, name='dashboard_admin'),
     path('usuarios/admin-dashboard/todas-citas/', views.ver_todas_citas_admin, name='ver_todas_citas_admin'),
