@@ -1,3 +1,31 @@
+# Entornos virtuales (es muy importante tener tanto venv como .venv)
+venv/
+.venv/
+env/
+
+# Python cache
 __pycache__/
 *.pyc
-venv/
+*.pyo
+*.pyd
+
+# Base de datos local de Django (no subas tu DB de desarrollo)
+db.sqlite3
+db.sqlite3-journal
+
+# Carpetas de archivos subidos por usuarios (Media)
+media/
+
+# Archivos de configuración de entorno (donde guardas contraseñas y SECRET_KEY)
+.env
+.secrets/
+
+# Archivos de IDEs (por si usas VS Code o PyCharm)
+.vscode/
+.idea/
+.DS_Store
+
+# Archivos de migración de base de datos (Opcional: 
+# Si quieres mantener el control de versiones de los cambios en la DB,
+# comenta la siguiente línea, pero si solo estás empezando, es mejor ignorarlos)
+# migrations/__pycache__/
