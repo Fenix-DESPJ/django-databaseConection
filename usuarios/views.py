@@ -24,7 +24,7 @@ import tempfile
 from datetime import timedelta
 
 # Importación de tus modelos manuales
-from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion
+from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion
 from negocio.models import Barbero, Agenda
 from .utils import analizar_forma_rostro, RostroNoDetectadoError, RECOMENDACIONES_POR_FORMA
 
@@ -164,7 +164,11 @@ def registrarse(request):
 # 4. VISTA: HOME / INDEX
 # =========================================================================
 def home(request):
-    return render(request, 'index.html')
+    mejores_calificaciones = Calificacion.objects.filter(
+        calificacion__gte=4
+    ).select_related('idclientefk__idusuariofk').order_by('-fechacreacion')[:12]
+
+    return render(request, 'index.html', {'calificaciones': mejores_calificaciones})
 
 # =========================================================================
 # 5. VISTAS: PANEL DE BARBERO Y CITAS
@@ -751,3 +755,80 @@ def analizar_rostro_ajax(request):
                 os.remove(ruta_temporal)
             except OSError:
                 pass  # Si por algún motivo no se pudo borrar, no rompemos la respuesta al usuario
+            
+# =========================================================================
+# 9. VISTAS: SISTEMA DE CALIFICACIONES Y RESEÑAS
+# =========================================================================
+
+@login_required
+def verificar_calificacion_pendiente(request):
+    """
+    Se llama vía AJAX en cada carga de página (igual que el panel de
+    notificaciones). Revisa si el cliente tiene una cita Finalizada
+    que todavía no calificó.
+    """
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+        cliente = Cliente.objects.get(idusuariofk=usuario)
+    except (Usuario.DoesNotExist, Cliente.DoesNotExist):
+        return JsonResponse({'pendiente': False})
+
+    cita_pendiente = Cita.objects.filter(
+        idclientefk=cliente,
+        observaciones__icontains='Completado',
+        calificacion__isnull=True  # gracias al related_name del OneToOne
+    ).select_related(
+        'idserviciofk', 'idbarberofk__idusuariofk'
+    ).order_by('-idagendafk__fecha').first()
+
+    if not cita_pendiente:
+        return JsonResponse({'pendiente': False})
+
+    return JsonResponse({
+        'pendiente': True,
+        'cita_id': cita_pendiente.idcita,
+        'servicio': cita_pendiente.idserviciofk.nombreservicio if cita_pendiente.idserviciofk else 'tu servicio',
+        'barbero': cita_pendiente.idbarberofk.idusuariofk.nombre if cita_pendiente.idbarberofk else '',
+    })
+
+
+@login_required
+@require_POST
+def guardar_calificacion(request):
+    """Recibe la calificación vía Fetch/AJAX y la guarda en la BD."""
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+        cliente = Cliente.objects.get(idusuariofk=usuario)
+    except (Usuario.DoesNotExist, Cliente.DoesNotExist):
+        return JsonResponse({'ok': False, 'error': 'No se encontró tu perfil de cliente.'}, status=404)
+
+    cita_id = request.POST.get('cita_id')
+    estrellas = request.POST.get('calificacion')
+    comentario = (request.POST.get('comentario') or '').strip()
+
+    if not cita_id or not estrellas:
+        return JsonResponse({'ok': False, 'error': 'Falta la cita o la calificación en estrellas.'}, status=400)
+
+    try:
+        estrellas = int(estrellas)
+        if estrellas < 1 or estrellas > 5:
+            raise ValueError
+    except ValueError:
+        return JsonResponse({'ok': False, 'error': 'La calificación debe ser un número entre 1 y 5.'}, status=400)
+
+    cita = get_object_or_404(Cita, idcita=cita_id, idclientefk=cliente)
+
+    if 'Completado' not in (cita.observaciones or ''):
+        return JsonResponse({'ok': False, 'error': 'Esta cita todavía no ha sido finalizada.'}, status=400)
+
+    if Calificacion.objects.filter(idcitafk=cita).exists():
+        return JsonResponse({'ok': False, 'error': 'Ya calificaste esta cita.'}, status=400)
+
+    Calificacion.objects.create(
+        idcitafk=cita,
+        idclientefk=cliente,
+        calificacion=estrellas,
+        comentario=comentario if comentario else None
+    )
+
+    return JsonResponse({'ok': True, 'mensaje': '¡Gracias por tu calificación!'})

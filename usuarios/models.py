@@ -101,3 +101,32 @@ class Notificacion(models.Model):
  
     def __str__(self):
         return f"[{self.tipo}] {self.mensaje[:40]}"
+    
+class Calificacion(models.Model):
+    idcalificacion = models.AutoField(primary_key=True)
+
+    # OneToOne: garantiza automáticamente "una calificación por cita"
+    idcitafk = models.OneToOneField(
+        'Cita',
+        on_delete=models.CASCADE,
+        db_column='idCitaFk',
+        related_name='calificacion'   # permite: cita.calificacion / Cita.objects.filter(calificacion__isnull=True)
+    )
+    idclientefk = models.ForeignKey(
+        'Cliente',
+        on_delete=models.CASCADE,
+        db_column='idClienteFk',
+        related_name='calificaciones'
+    )
+    calificacion = models.PositiveSmallIntegerField(
+        choices=[(i, f"{i} estrella{'s' if i > 1 else ''}") for i in range(1, 6)]
+    )
+    comentario = models.TextField(blank=True, null=True)  # 100% opcional
+    fechacreacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'calificacion'
+        ordering = ['-fechacreacion']
+
+    def __str__(self):
+        return f"{self.calificacion}★ - Cita #{self.idcitafk_id}"

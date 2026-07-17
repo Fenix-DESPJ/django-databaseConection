@@ -1151,3 +1151,143 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+/* ============================================================
+   SISTEMA DE CALIFICACIONES Y RESEÑAS
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+    const dataDiv = document.getElementById("calificacion-data");
+    if (!dataDiv) return; // No hay sesión iniciada
+
+    const URL_VERIFICAR = dataDiv.dataset.urlVerificar;
+    const URL_GUARDAR = dataDiv.dataset.urlGuardar;
+
+    const modalEl = document.getElementById("calificacionModal");
+    const modalCalificacion = new bootstrap.Modal(modalEl);
+
+    const inputCitaId = document.getElementById("calificacionCitaId");
+    const spanServicio = document.getElementById("calificacionServicio");
+    const spanBarbero = document.getElementById("calificacionBarbero");
+    const contenedorEstrellas = document.getElementById("estrellasCalificacion");
+    const estrellas = contenedorEstrellas.querySelectorAll("i");
+    const inputValor = document.getElementById("calificacionValor");
+    const textareaComentario = document.getElementById("calificacionComentario");
+    const divError = document.getElementById("calificacionError");
+    const form = document.getElementById("formCalificacion");
+    const btnEnviar = document.getElementById("btnEnviarCalificacion");
+    const btnOmitir = document.getElementById("btnOmitirCalificacion");
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function pintarEstrellas(valor) {
+        estrellas.forEach(estrella => {
+            const v = parseInt(estrella.dataset.valor, 10);
+            estrella.classList.toggle("bi-star-fill", v <= valor);
+            estrella.classList.toggle("bi-star", v > valor);
+            estrella.classList.toggle("activa", v <= valor);
+        });
+    }
+
+    estrellas.forEach(estrella => {
+        estrella.addEventListener("click", () => {
+            const valor = parseInt(estrella.dataset.valor, 10);
+            inputValor.value = valor;
+            pintarEstrellas(valor);
+            divError.style.display = "none";
+        });
+        estrella.addEventListener("mouseenter", () => {
+            pintarEstrellas(parseInt(estrella.dataset.valor, 10));
+        });
+    });
+    contenedorEstrellas.addEventListener("mouseleave", () => {
+        pintarEstrellas(parseInt(inputValor.value || 0, 10));
+    });
+
+    async function verificarCalificacionPendiente() {
+        try {
+            const resp = await fetch(URL_VERIFICAR, { headers: { "X-Requested-With": "XMLHttpRequest" } });
+            const data = await resp.json();
+
+            if (data.pendiente) {
+                inputCitaId.value = data.cita_id;
+                spanServicio.textContent = data.servicio;
+                spanBarbero.textContent = data.barbero;
+                inputValor.value = "";
+                pintarEstrellas(0);
+                textareaComentario.value = "";
+                divError.style.display = "none";
+
+                // Delay corto para no chocar con otros modales al cargar la página
+                setTimeout(() => modalCalificacion.show(), 800);
+            }
+        } catch (e) {
+            console.error("Error al verificar calificación pendiente:", e);
+        }
+    }
+    verificarCalificacionPendiente();
+
+    if (btnOmitir) {
+        btnOmitir.addEventListener("click", () => modalCalificacion.hide());
+    }
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!inputValor.value) {
+            divError.textContent = "Por favor selecciona una calificación en estrellas.";
+            divError.style.display = "block";
+            return;
+        }
+
+        btnEnviar.disabled = true;
+        const textoOriginal = btnEnviar.innerHTML;
+        btnEnviar.innerHTML = "Enviando...";
+
+        const formData = new FormData(form);
+
+        try {
+            const resp = await fetch(URL_GUARDAR, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: formData
+            });
+            const data = await resp.json();
+
+            if (data.ok) {
+                modalEl.querySelector(".modal-body").innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle-fill text-gold" style="font-size:3rem;"></i>
+                        <p class="text-white fs-5 mt-3 mb-0">${data.mensaje}</p>
+                    </div>`;
+                modalEl.querySelector(".modal-footer").style.display = "none";
+                setTimeout(() => modalCalificacion.hide(), 1800);
+            } else {
+                divError.textContent = data.error || "Ocurrió un error al enviar tu calificación.";
+                divError.style.display = "block";
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = textoOriginal;
+            }
+        } catch (err) {
+            divError.textContent = "Error de conexión, intenta de nuevo.";
+            divError.style.display = "block";
+            btnEnviar.disabled = false;
+            btnEnviar.innerHTML = textoOriginal;
+        }
+    });
+});

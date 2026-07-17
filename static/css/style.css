@@ -3300,3 +3300,35 @@ body.modal-open {
 .error-box.visible { display: block; }
 .spinner-analisis { display: none; }
 .spinner-analisis.visible { display: block; }
+
+/* --- Estrellas de calificación (modal) --- */
+.estrellas-calificacion {
+    font-size: 2.2rem;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+.estrellas-calificacion i {
+    color: #555;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+.estrellas-calificacion i.activa,
+.estrellas-calificacion i:hover {
+    color: var(--dorado);
+}
+.estrellas-calificacion i:hover { transform: scale(1.15); }
+
+/* --- Carrusel de opiniones (index) --- */
+.resena-card {
+    background: #1c1c1c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 1.8rem;
+    height: 100%;
+    color: #fff;
+}
+.resena-estrellas i { color: var(--dorado); font-size: 1rem; }
+.resena-comentario { color: rgba(255,255,255,0.75); font-style: italic; min-height: 60px; }
+.resena-cliente { font-weight: bold; color: var(--dorado); margin-top: 0.8rem; }
+.resena-fecha { font-size: 0.8rem; color: rgba(255,255,255,0.4); }

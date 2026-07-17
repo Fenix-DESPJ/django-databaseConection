@@ -125,6 +125,57 @@
   </div>
 </section>
 
+<section id="resenas" class="section-padding resenas-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-eyebrow">Lo que dicen nuestros clientes</p>
+      <h2 class="text-uppercase fw-bold text-white title-options">Opiniones</h2>
+      <div class="sub-bar"></div>
+    </div>
+
+    {% if calificaciones %}
+    <div id="carruselResenas" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        {% for c in calificaciones %}
+          {% if forloop.counter0|divisibleby:3 %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <div class="row g-4">
+          {% endif %}
+
+          <div class="col-md-4">
+            <div class="resena-card">
+              <div class="resena-estrellas mb-2">
+                {% for i in "12345" %}
+                  <i class="bi {% if forloop.counter <= c.calificacion %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                {% endfor %}
+              </div>
+              <p class="resena-comentario">
+                {% if c.comentario %}"{{ c.comentario }}"{% else %}Cliente satisfecho con el servicio.{% endif %}
+              </p>
+              <p class="resena-cliente mb-0">{{ c.idclientefk.idusuariofk.nombre }}</p>
+              <p class="resena-fecha">{{ c.fechacreacion|date:"d/m/Y" }}</p>
+            </div>
+          </div>
+
+          {% if forloop.counter|divisibleby:3 or forloop.last %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carruselResenas" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carruselResenas" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+    {% else %}
+      <p class="text-white-50 text-center">Aún no hay opiniones publicadas.</p>
+    {% endif %}
+  </div>
+</section>
+
 <section id="contacto" class="mya-contact-section py-5">
   <div class="container py-5">
     <div class="section-header text-center mb-5">
