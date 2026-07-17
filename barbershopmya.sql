@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-07-2026 a las 16:50:49
+-- Tiempo de generación: 17-07-2026 a las 21:40:31
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -256,7 +256,11 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (101, 'Can add usuario', 26, 'add_usuario'),
 (102, 'Can change usuario', 26, 'change_usuario'),
 (103, 'Can delete usuario', 26, 'delete_usuario'),
-(104, 'Can view usuario', 26, 'view_usuario');
+(104, 'Can view usuario', 26, 'view_usuario'),
+(105, 'Can add calificacion', 27, 'add_calificacion'),
+(106, 'Can change calificacion', 27, 'change_calificacion'),
+(107, 'Can delete calificacion', 27, 'delete_calificacion'),
+(108, 'Can view calificacion', 27, 'view_calificacion');
 
 -- --------------------------------------------------------
 
@@ -370,6 +374,21 @@ INSERT INTO `barbero_dia_habilitado` (`id`, `idusuariofk`, `fecha`, `habilitado`
 (2, 3, '2026-07-31', 1),
 (3, 17, '2026-07-31', 1),
 (4, 21, '2026-07-31', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `calificacion`
+--
+
+CREATE TABLE `calificacion` (
+  `idcalificacion` int(11) NOT NULL,
+  `calificacion` smallint(5) UNSIGNED NOT NULL CHECK (`calificacion` >= 0),
+  `comentario` longtext DEFAULT NULL,
+  `fechacreacion` datetime(6) NOT NULL,
+  `idCitaFk` int(11) NOT NULL,
+  `idClienteFk` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -575,6 +594,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (13, 'servicios', 'servicio'),
 (26, 'servicios', 'usuario'),
 (6, 'sessions', 'session'),
+(27, 'usuarios', 'calificacion'),
 (18, 'usuarios', 'cita'),
 (19, 'usuarios', 'cliente'),
 (22, 'usuarios', 'notificacion'),
@@ -626,7 +646,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (23, 'negocio', '0002_configuracionhorario_diahabilitado', '2026-07-01 20:24:05.686588'),
 (24, 'negocio', '0003_alter_configuracionhorario_id_alter_diahabilitado_id_and_more', '2026-07-01 20:59:29.749683'),
 (25, 'usuarios', '0002_cita_cliente_servicio_perfilusuario_notificacion', '2026-07-02 00:38:56.875506'),
-(26, 'servicios', '0002_agenda_barbero_cliente_usuario', '2026-07-02 00:52:25.138123');
+(26, 'servicios', '0002_agenda_barbero_cliente_usuario', '2026-07-02 00:52:25.138123'),
+(27, 'usuarios', '0003_calificacion', '2026-07-17 19:38:38.253486');
 
 -- --------------------------------------------------------
 
@@ -1056,6 +1077,14 @@ ALTER TABLE `barbero_dia_habilitado`
   ADD UNIQUE KEY `barbero_dia_habilitado_idusuariofk_fecha_12b490a9_uniq` (`idusuariofk`,`fecha`);
 
 --
+-- Indices de la tabla `calificacion`
+--
+ALTER TABLE `calificacion`
+  ADD PRIMARY KEY (`idcalificacion`),
+  ADD UNIQUE KEY `idCitaFk` (`idCitaFk`),
+  ADD KEY `calificacion_idClienteFk_95e3eed3_fk_cliente_idCliente` (`idClienteFk`);
+
+--
 -- Indices de la tabla `cita`
 --
 ALTER TABLE `cita`
@@ -1182,7 +1211,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT de la tabla `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user`
@@ -1213,6 +1242,12 @@ ALTER TABLE `barbero`
 --
 ALTER TABLE `barbero_dia_habilitado`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `calificacion`
+--
+ALTER TABLE `calificacion`
+  MODIFY `idcalificacion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
@@ -1248,13 +1283,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `notificacion`
@@ -1334,6 +1369,13 @@ ALTER TABLE `auth_user_user_permissions`
 --
 ALTER TABLE `barbero`
   ADD CONSTRAINT `fk_barbero_usuario` FOREIGN KEY (`idUsuarioFk`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `calificacion`
+--
+ALTER TABLE `calificacion`
+  ADD CONSTRAINT `calificacion_idCitaFk_13262db1_fk_cita_idCita` FOREIGN KEY (`idCitaFk`) REFERENCES `cita` (`idCita`),
+  ADD CONSTRAINT `calificacion_idClienteFk_95e3eed3_fk_cliente_idCliente` FOREIGN KEY (`idClienteFk`) REFERENCES `cliente` (`idCliente`);
 
 --
 -- Filtros para la tabla `cita`
