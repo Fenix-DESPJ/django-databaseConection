@@ -21,12 +21,125 @@ from django.db import transaction, connection  # agrega estos imports si no est�
 import os
 import uuid
 import tempfile
-from datetime import timedelta
+from datetime import timedelta, date
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion
 from negocio.models import Barbero, Agenda
 from .utils import analizar_forma_rostro, RostroNoDetectadoError, RECOMENDACIONES_POR_FORMA
+
+
+# =========================================================================
+# REGLAS DE NEGOCIO QUE ANTES ERAN TRIGGERS DE MYSQL
+# =========================================================================
+# Reemplazan:
+#   - FormatearNombreUsuario          (BEFORE INSERT)
+#   - DespuesInsertarUsuarioClasificarRol (AFTER INSERT)
+#   - DespuesActualizarUsuarioCambioRol   (AFTER UPDATE)
+#   - AntesEliminarUsuario            (BEFORE DELETE)
+# Ahora todo ocurre explícitamente desde las views, en orden y dentro
+# de transacciones cuando corresponde.
+# =========================================================================
+
+ID_ROL_ADMIN = 1
+ID_ROL_BARBERO = 2
+ID_ROL_CLIENTE = 3
+
+
+def formatear_nombre(nombre):
+    """Antes: trigger FormatearNombreUsuario (BEFORE INSERT)."""
+    return (nombre or '').strip().upper()
+
+
+def clasificar_rol_nuevo_usuario(usuario):
+    """
+    Antes: trigger DespuesInsertarUsuarioClasificarRol (AFTER INSERT).
+    Se llama justo después de crear un Usuario nuevo.
+    """
+    if usuario.idrolfk_id == ID_ROL_BARBERO:
+        Barbero.objects.get_or_create(
+            idusuariofk=usuario,
+            defaults={'especialidad': 'Por asignar'}
+        )
+    elif usuario.idrolfk_id == ID_ROL_CLIENTE:
+        Cliente.objects.get_or_create(
+            idusuariofk=usuario,
+            defaults={
+                'direccion': 'Registrado desde la Web',
+                'fecharegistro': date.today(),
+                'contactoemergencia': 'No asignado',
+            }
+        )
+
+
+def sincronizar_cambio_rol(usuario, rol_anterior_id, rol_nuevo_id):
+    """
+    Antes: trigger DespuesActualizarUsuarioCambioRol (AFTER UPDATE).
+    Se llama cuando el rol de un usuario cambió (rol_anterior_id != rol_nuevo_id).
+    """
+    if rol_anterior_id == rol_nuevo_id:
+        return
+
+    if rol_nuevo_id == ID_ROL_BARBERO:
+        # Antes de borrar el perfil de Cliente, hay que vaciar sus citas/agendas
+        for cliente in Cliente.objects.filter(idusuariofk=usuario):
+            _cascada_borrar_cliente(cliente)
+        Barbero.objects.get_or_create(
+            idusuariofk=usuario,
+            defaults={'especialidad': 'Por asignar'}
+        )
+
+    elif rol_nuevo_id == ID_ROL_CLIENTE:
+        # Antes de borrar el perfil de Barbero, hay que vaciar sus citas/agendas
+        for barbero in Barbero.objects.filter(idusuariofk=usuario):
+            _cascada_borrar_barbero(barbero)
+        Cliente.objects.get_or_create(
+            idusuariofk=usuario,
+            defaults={
+                'direccion': 'Cambio de Rol desde Panel',
+                'fecharegistro': date.today(),
+                'contactoemergencia': 'No asignado',
+            }
+        )
+
+    else:  # pasó a Admin u otro rol operativo
+        for cliente in Cliente.objects.filter(idusuariofk=usuario):
+            _cascada_borrar_cliente(cliente)
+        for barbero in Barbero.objects.filter(idusuariofk=usuario):
+            _cascada_borrar_barbero(barbero)
+
+def validar_eliminacion_usuario(usuario):
+    """
+    Antes: trigger AntesEliminarUsuario (BEFORE DELETE).
+    Devuelve None si se puede borrar, o un mensaje de error si no.
+    """
+    if usuario.idrolfk_id == ID_ROL_ADMIN:
+        return "No se puede eliminar al Administrador principal."
+    return None
+
+def _cascada_borrar_cliente(cliente):
+    """
+    Borra las citas de un Cliente y las filas de Agenda que esas citas ocupaban,
+    y finalmente borra al Cliente. Nunca toca 'Servicio' (solo se borra la Cita
+    que lo referenciaba). Calificacion se borra sola por CASCADE al borrar Cita.
+    """
+    citas = Cita.objects.filter(idclientefk=cliente)
+    agendas_ids = list(
+        citas.exclude(idagendafk__isnull=True).values_list('idagendafk', flat=True)
+    )
+    citas.delete()
+    Agenda.objects.filter(idagenda__in=agendas_ids).delete()
+    cliente.delete()
+
+
+def _cascada_borrar_barbero(barbero):
+    """
+    Borra las citas de un Barbero y las Agendas asociadas a ese barbero,
+    y finalmente borra al Barbero.
+    """
+    Cita.objects.filter(idbarberofk=barbero).delete()
+    Agenda.objects.filter(idbarberofk=barbero).delete()
+    barbero.delete()
 
 # =========================================================================
 # 1. VISTA: INICIAR SESIÓN
@@ -132,15 +245,22 @@ def registrarse(request):
             
             rol_cliente = Rol.objects.get(idrol=3)
 
+            # Antes: trigger FormatearNombreUsuario (BEFORE INSERT)
+            nombre_completo = formatear_nombre(f"{nombre} {apellido}")
+
             nuevo_usuario_manual = Usuario.objects.create(
                 cedula=cedula,
-                nombre=f"{nombre} {apellido}",
+                nombre=nombre_completo,
                 correo=correo,
                 contrasena=make_password(password),  
                 numcelular=telefono,
                 fechanacimiento=fecha,
                 idrolfk=rol_cliente
             )
+
+            # Antes: trigger DespuesInsertarUsuarioClasificarRol (AFTER INSERT)
+            # Crea la fila en Cliente (antes dependía 100% del trigger)
+            clasificar_rol_nuevo_usuario(nuevo_usuario_manual)
 
             nuevo_usuario_django = User.objects.create_user(
                 username=correo,
@@ -188,7 +308,6 @@ def panel_barbero(request):
 
     hoy = timezone.now().date()
 
-    # MODIFICADO: __gte=hoy hace que muestre las citas de HOY en adelante (mañana, pasado mañana, etc.)
     citas_proximas = Cita.objects.filter(
         idbarberofk=barbero_perfil.idbarbero, 
         idagendafk__fecha__gte=hoy
@@ -196,7 +315,6 @@ def panel_barbero(request):
 
     total_citas = citas_proximas.count()
     
-    # Las estadísticas de completadas y ganancias las seguimos midiendo sobre las que ya marcó como Completadas
     citas_efectivas = Cita.objects.filter(
         idbarberofk=barbero_perfil.idbarbero,
         observaciones__icontains='Completado'
@@ -208,7 +326,7 @@ def panel_barbero(request):
     comision_estimada = float(producido_total) * 0.50
     
     context = {
-        'citas': citas_proximas,  # Enviamos las citas de hoy y del futuro
+        'citas': citas_proximas,
         'total_citas': total_citas,
         'completadas': completadas,
         'producido_total': producido_total,
@@ -223,9 +341,6 @@ def completar_cita(request, cita_id):
     cita.observaciones = "Completado - Servicio realizado"
     cita.save()
 
-    # =====================================================================
-    # NUEVO: Notificar a TODOS los administradores que el barbero confirmó
-    # =====================================================================
     try:
         barbero_usuario = cita.idbarberofk.idusuariofk
         cliente_usuario = cita.idclientefk.idusuariofk
@@ -307,13 +422,11 @@ def cambiar_contrasena(request, token):
 @login_required
 def perfil_usuario(request):
     try:
-        # Recuperamos al usuario de tu tabla manual
         usuario_manual = Usuario.objects.get(correo=request.user.email)
     except Usuario.DoesNotExist:
         messages.error(request, "No se encontraron datos registrados.")
         return redirect('home')
         
-    # Pasamos el objeto al template
     return render(request, 'perfil.html', {'usuario': usuario_manual})
 
 @login_required
@@ -330,13 +443,9 @@ def guardar_perfil(request):
             try:
                 usuario_manual = Usuario.objects.get(correo=request.user.email)
                 
-                # 1. Actualizar en la base de datos
                 usuario_manual.nombre = nombre
                 usuario_manual.numcelular = telefono
                 
-                # ========================================================
-                # 2. ¡AQUÍ ESTÁ EL TRUCO! Actualizamos la sesión del navegador
-                # ========================================================
                 request.session['usuario_nombre'] = nombre
                 
                 if password_nueva and password_nueva.strip() != "":
@@ -365,48 +474,55 @@ def editar_perfiles_admin(request):
 
     rol_barbero = get_object_or_404(Rol, pk=ID_ROL_BARBERO)
     rol_cliente = get_object_or_404(Rol, pk=ID_ROL_CLIENTE)
-    
-    # PROCESAR GUARDAR CAMBIOS (SE MANTEIENE)
+
     if request.method == 'POST' and 'guardar_cambios' in request.POST:
         usuarios_ids = request.POST.getlist('usuario_id')
-        
+        errores = []
+
         for u_id in usuarios_ids:
             usuario = get_object_or_404(Usuario, pk=u_id)
-            
+
             nuevo_correo = request.POST.get(f'correo_{u_id}')
             nuevo_celular = request.POST.get(f'celular_{u_id}')
             nuevo_rol_id = request.POST.get(f'rol_{u_id}')
-            
-            if nuevo_correo: 
-                antiguo_correo = usuario.correo
-                usuario.correo = nuevo_correo
-            if nuevo_celular: 
-                usuario.numcelular = nuevo_celular
-            
-            if nuevo_correo and antiguo_correo != nuevo_correo:
-                User.objects.filter(username=antiguo_correo).update(username=nuevo_correo, email=nuevo_correo)
-            
-            if nuevo_rol_id:
-                rol_final_id = int(nuevo_rol_id)
-                
-                if usuario.idrolfk_id == ID_ROL_CLIENTE and rol_final_id == ID_ROL_BARBERO:
-                    usuario.idrolfk = rol_barbero
-                    Barbero.objects.get_or_create(idusuariofk=usuario)
-                    Cliente.objects.filter(idusuariofk=usuario).delete()
-                
-                elif usuario.idrolfk_id == ID_ROL_BARBERO and rol_final_id == ID_ROL_CLIENTE:
-                    usuario.idrolfk = rol_cliente
-                    Cliente.objects.get_or_create(idusuariofk=usuario)
-                    Barbero.objects.filter(idusuariofk=usuario).delete()
-            
-            usuario.save()
-            
-        messages.success(request, "¡Los perfiles se actualizaron correctamente!")
+
+            rol_anterior_id = usuario.idrolfk_id
+
+            try:
+                with transaction.atomic():
+                    if nuevo_correo:
+                        antiguo_correo = usuario.correo
+                        usuario.correo = nuevo_correo
+                    if nuevo_celular:
+                        usuario.numcelular = nuevo_celular
+
+                    if nuevo_correo and antiguo_correo != nuevo_correo:
+                        User.objects.filter(username=antiguo_correo).update(
+                            username=nuevo_correo, email=nuevo_correo
+                        )
+
+                    if nuevo_rol_id:
+                        usuario.idrolfk_id = int(nuevo_rol_id)
+
+                    usuario.save()
+
+                    # Antes: trigger DespuesActualizarUsuarioCambioRol (AFTER UPDATE)
+                    if nuevo_rol_id:
+                        sincronizar_cambio_rol(usuario, rol_anterior_id, int(nuevo_rol_id))
+
+            except Exception as e:
+                errores.append(f"{usuario.nombre}: {e}")
+
+        if errores:
+            messages.error(
+                request,
+                "Algunos perfiles no se pudieron actualizar: " + " | ".join(errores)
+            )
+        else:
+            messages.success(request, "¡Los perfiles se actualizaron correctamente!")
+
         return redirect('editar_perfiles')
 
-    # EL BLOQUE DE 'agregar_barbero' HA SIDO REMOVIDO DE AQUÍ
-
-    # OBTENER DATOS PARA EL TEMPLATE
     usuarios = Usuario.objects.filter(idrolfk_id__in=[ID_ROL_BARBERO, ID_ROL_CLIENTE]).order_by('nombre')
     roles_disponibles = Rol.objects.filter(idrol__in=[ID_ROL_BARBERO, ID_ROL_CLIENTE])
 
@@ -415,58 +531,25 @@ def editar_perfiles_admin(request):
         'roles_disponibles': roles_disponibles
     })
 
-
 def eliminar_perfil(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
+
+    error_bloqueo = validar_eliminacion_usuario(usuario)
+    if error_bloqueo:
+        messages.error(request, error_bloqueo)
+        return redirect('editar_perfiles')
+
     nombre_eliminado = usuario.nombre
     correo_eliminado = usuario.correo
 
-    cliente_perfil = Cliente.objects.filter(idusuariofk=usuario).first()
-    barberos_perfil = list(Barbero.objects.filter(idusuariofk=usuario))  # puede haber más de uno
-
-    # --- 1. Citas pendientes como CLIENTE ---
-    if cliente_perfil:
-        citas_pendientes_cliente = Cita.objects.filter(
-            idclientefk=cliente_perfil
-        ).exclude(observaciones__icontains='Completado')
-
-        if citas_pendientes_cliente.exists():
-            num_citas = citas_pendientes_cliente.count()
-            messages.error(
-                request,
-                f"No se puede eliminar a '{nombre_eliminado}' porque tiene {num_citas} cita(s) agendada(s) "
-                f"como cliente. Completa o cancela esas citas antes de eliminar su cuenta."
-            )
-            return redirect('editar_perfiles')
-
-    # --- 2. Citas pendientes como BARBERO (revisando TODAS sus filas de barbero) ---
-    if barberos_perfil:
-        citas_pendientes_barbero = Cita.objects.filter(
-            idbarberofk__in=barberos_perfil
-        ).exclude(observaciones__icontains='Completado')
-
-        if citas_pendientes_barbero.exists():
-            num_citas = citas_pendientes_barbero.count()
-            messages.error(
-                request,
-                f"No se puede eliminar a '{nombre_eliminado}' porque tiene {num_citas} cita(s) agendada(s) "
-                f"como barbero. Completa o cancela esas citas antes de eliminar su cuenta."
-            )
-            return redirect('editar_perfiles')
-
     try:
         with transaction.atomic():
-            if cliente_perfil:
-                Cita.objects.filter(idclientefk=cliente_perfil).delete()
+            for cliente in Cliente.objects.filter(idusuariofk=usuario):
+                _cascada_borrar_cliente(cliente)
+            for barbero in Barbero.objects.filter(idusuariofk=usuario):
+                _cascada_borrar_barbero(barbero)
 
-            if barberos_perfil:
-                Cita.objects.filter(idbarberofk__in=barberos_perfil).delete()
-                Agenda.objects.filter(idbarberofk__in=barberos_perfil).delete()
-
-            Cliente.objects.filter(idusuariofk=usuario).delete()
-            Barbero.objects.filter(idusuariofk=usuario).delete()
-
-            usuario.delete()
+            usuario.delete()  # Notificacion se borra sola (on_delete=CASCADE)
 
             with connection.cursor() as cursor:
                 cursor.execute("DELETE FROM auth_user WHERE username = %s", [correo_eliminado])
@@ -474,12 +557,11 @@ def eliminar_perfil(request, usuario_id):
     except Exception as e:
         messages.error(
             request,
-            f"No se pudo eliminar a '{nombre_eliminado}'. Es posible que aún tenga información "
-            f"relacionada en el sistema. Detalle técnico: {e}"
+            f"No se pudo eliminar a '{nombre_eliminado}'. Detalle técnico: {e}"
         )
         return redirect('editar_perfiles')
 
-    messages.success(request, f"Se ha eliminado a {nombre_eliminado} de forma permanente.")
+    messages.success(request, f"Se ha eliminado a {nombre_eliminado} de forma permanente, junto con sus citas, agendas y calificaciones asociadas.")
     return redirect('editar_perfiles')
 
 @login_required
@@ -492,16 +574,12 @@ def gestionar_foto_perfil(request):
             archivo = request.FILES['nueva_foto']
             fs = FileSystemStorage(location=settings.MEDIA_ROOT)
             
-            # Nombre del archivo
             nombre_archivo = f"perfiles/usuario_{usuario.idusuario}_{archivo.name}"
             
-            # Guardado físico
             if fs.exists(nombre_archivo):
                 fs.delete(nombre_archivo)
             fs.save(nombre_archivo, archivo)
             
-            # AQUÍ ES DONDE ESTABA EL ERROR: 
-            # Ahora que el campo existe en el modelo, lo asignamos así:
             usuario.foto_perfil = nombre_archivo
             usuario.save()
             request.session['usuario_foto'] = usuario.foto_perfil.url
@@ -522,22 +600,18 @@ def gestionar_foto_perfil(request):
 
 @login_required
 def dashboard_admin(request):
-    # Verificación estricta de seguridad 
     usuario_rol = request.session.get('usuario_rol_id')
-    if usuario_rol != 1:  # ID 1 asignado para Administrador
+    if usuario_rol != 1:
         messages.error(request, "Acceso denegado. No tienes permisos de administrador.")
         return redirect('home')
 
     hoy = timezone.now().date()
     inicio_mes = hoy.replace(day=1)
 
-    # --- KPI 1: CITAS PARA HOY ---
     total_citas_hoy = Cita.objects.filter(idagendafk__fecha=hoy).count()
 
-    # --- KPI 2: CLIENTES ACTIVOS ---
     total_clientes = Cliente.objects.count()
 
-    # --- KPI 3: INGRESOS DEL MES (Servicios completados en el mes actual) ---
     ingresos_mes_dict = Cita.objects.filter(
         idagendafk__fecha__gte=inicio_mes,
         idagendafk__fecha__lte=hoy,
@@ -546,14 +620,10 @@ def dashboard_admin(request):
     
     ingresos_mes = ingresos_mes_dict['total'] if ingresos_mes_dict['total'] is not None else 0.0
 
-    # --- KPI 4: BARBEROS EN TURNO HOY ---
-    # Contamos cuántos barberos únicos tienen franjas horarias registradas para el día de hoy
     barberos_hoy = Agenda.objects.filter(fecha=hoy).values('idbarberofk').distinct().count()
     total_barberos = Barbero.objects.count()
     barberos_turno_string = f"{barberos_hoy} / {total_barberos}"
 
-    # --- TABLA: PRÓXIMAS CITAS DEL DÍA ---
-    # Traemos las citas de hoy ordenadas por su hora de inicio (filtrando las no completadas primero si se desea)
     proximas_citas = Cita.objects.filter(
         idagendafk__fecha=hoy
     ).select_related('idclientefk__idusuariofk', 'idbarberofk__idusuariofk', 'idserviciofk', 'idagendafk').order_by('idagendafk__horainicio')[:10]
@@ -570,14 +640,11 @@ def dashboard_admin(request):
 
 @login_required
 def ver_todas_citas_admin(request):
-    # Verificación de seguridad estricta para el Administrador
     usuario_rol = request.session.get('usuario_rol_id')
     if usuario_rol != 1:
         messages.error(request, "Acceso denegado. No tienes permisos de administrador.")
         return redirect('home')
 
-    # Traemos absolutamente todas las citas del sistema ordenadas por fecha y hora descendente
-    # (las más recientes arriba) utilizando select_related para evitar lentitud de base de datos
     todas_citas = Cita.objects.select_related(
         'idclientefk__idusuariofk', 
         'idbarberofk__idusuariofk', 
@@ -594,10 +661,6 @@ def ver_todas_citas_admin(request):
 
 @login_required
 def listar_notificaciones(request):
-    """
-    Devuelve en JSON las notificaciones del usuario logueado (máx. 20 más recientes)
-    y el conteo de no leídas. Cada usuario SOLO ve las suyas.
-    """
     try:
         usuario = Usuario.objects.get(correo=request.user.email)
     except Usuario.DoesNotExist:
@@ -620,7 +683,6 @@ def listar_notificaciones(request):
 
 @login_required
 def marcar_notificaciones_leidas(request):
-    """Marca como leídas todas las notificaciones del usuario logueado."""
     if request.method == 'POST':
         try:
             usuario = Usuario.objects.get(correo=request.user.email)
@@ -634,28 +696,17 @@ def marcar_notificaciones_leidas(request):
 # =========================================================================
 
 def analisis_rostro_view(request):
-    """Solo renderiza la página con el modal de privacidad. No procesa nada."""
     return render(request, 'analisis_rostro.html')
 
 
 @login_required
 @require_POST
 def analizar_rostro_ajax(request):
-    """
-    Recibe:
-      - 'imagen' (archivo, desde cámara o input file) O
-      - 'usar_perfil' = 'true' (usa la foto de perfil del usuario)
-    Analiza la forma del rostro y ELIMINA el archivo temporal inmediatamente
-    después del análisis, ocurra o no un error (bloque try/finally).
-    """
     usar_perfil = request.POST.get('usar_perfil') == 'true'
     ruta_temporal = None
-    es_archivo_temporal_propio = False  # True si nosotros creamos el archivo (y por tanto debemos borrarlo)
+    es_archivo_temporal_propio = False
 
     try:
-        # =========================================================
-        # CASO 1: El usuario quiere usar su foto de perfil
-        # =========================================================
         if usar_perfil:
             try:
                 usuario_actual = Usuario.objects.get(correo=request.user.email)
@@ -665,14 +716,12 @@ def analizar_rostro_ajax(request):
                     'error': 'No encontramos tu perfil registrado. Intenta con la cámara en su lugar.'
                 }, status=404)
 
-            # Validación 1: ¿el campo tiene algo asignado en la BD?
             if not usuario_actual.foto_perfil:
                 return JsonResponse({
                     'ok': False,
                     'error': 'Aún no tienes una foto de perfil registrada. Usa la cámara o sube una imagen para continuar.'
                 }, status=400)
 
-            # Validación 2: ¿el archivo REALMENTE existe en la carpeta media?
             ruta_fisica_perfil = os.path.join(settings.MEDIA_ROOT, str(usuario_actual.foto_perfil))
             if not os.path.exists(ruta_fisica_perfil):
                 return JsonResponse({
@@ -680,13 +729,9 @@ def analizar_rostro_ajax(request):
                     'error': 'Tu foto de perfil no se encuentra disponible en el servidor. Por favor usa la cámara o sube una nueva imagen.'
                 }, status=404)
 
-            # No copiamos ni borramos la foto de perfil original: solo la LEEMOS para analizar.
             ruta_temporal = ruta_fisica_perfil
-            es_archivo_temporal_propio = False  # NUNCA borramos la foto de perfil real del usuario
+            es_archivo_temporal_propio = False
 
-        # =========================================================
-        # CASO 2: El usuario sube/captura una imagen nueva (cámara o archivo)
-        # =========================================================
         else:
             archivo = request.FILES.get('imagen')
             if not archivo:
@@ -703,15 +748,12 @@ def analizar_rostro_ajax(request):
                     'error': 'Formato de imagen no soportado. Usa JPG, PNG o WEBP.'
                 }, status=400)
 
-            # Límite de tamaño (5 MB) para evitar abuso
             if archivo.size > 5 * 1024 * 1024:
                 return JsonResponse({
                     'ok': False,
                     'error': 'La imagen es demasiado pesada (máximo 5MB).'
                 }, status=400)
 
-            # Guardamos en un directorio temporal del sistema operativo, NO en /media,
-            # con un nombre único para evitar colisiones y no dejar rastro permanente.
             carpeta_temporal = tempfile.gettempdir()
             extension = os.path.splitext(nombre_original)[1]
             nombre_temporal = f"analisis_rostro_{uuid.uuid4().hex}{extension}"
@@ -723,9 +765,6 @@ def analizar_rostro_ajax(request):
 
             es_archivo_temporal_propio = True
 
-        # =========================================================
-        # ANÁLISIS (común para ambos casos)
-        # =========================================================
         resultado = analizar_forma_rostro(ruta_temporal)
         forma_detectada = resultado['forma']
 
@@ -746,15 +785,11 @@ def analizar_rostro_ajax(request):
         }, status=500)
 
     finally:
-        # =========================================================
-        # LIMPIEZA OBLIGATORIA: borramos el archivo temporal
-        # SIEMPRE, haya éxito o error, salvo que sea la foto de perfil real.
-        # =========================================================
         if ruta_temporal and es_archivo_temporal_propio and os.path.exists(ruta_temporal):
             try:
                 os.remove(ruta_temporal)
             except OSError:
-                pass  # Si por algún motivo no se pudo borrar, no rompemos la respuesta al usuario
+                pass
             
 # =========================================================================
 # 9. VISTAS: SISTEMA DE CALIFICACIONES Y RESEÑAS
@@ -762,11 +797,6 @@ def analizar_rostro_ajax(request):
 
 @login_required
 def verificar_calificacion_pendiente(request):
-    """
-    Se llama vía AJAX en cada carga de página (igual que el panel de
-    notificaciones). Revisa si el cliente tiene una cita Finalizada
-    que todavía no calificó.
-    """
     try:
         usuario = Usuario.objects.get(correo=request.user.email)
         cliente = Cliente.objects.get(idusuariofk=usuario)
@@ -776,7 +806,8 @@ def verificar_calificacion_pendiente(request):
     cita_pendiente = Cita.objects.filter(
         idclientefk=cliente,
         observaciones__icontains='Completado',
-        calificacion__isnull=True  # gracias al related_name del OneToOne
+        calificacion__isnull=True,
+        calificacion_omitida=False,
     ).select_related(
         'idserviciofk', 'idbarberofk__idusuariofk'
     ).order_by('-idagendafk__fecha').first()
@@ -795,7 +826,6 @@ def verificar_calificacion_pendiente(request):
 @login_required
 @require_POST
 def guardar_calificacion(request):
-    """Recibe la calificación vía Fetch/AJAX y la guarda en la BD."""
     try:
         usuario = Usuario.objects.get(correo=request.user.email)
         cliente = Cliente.objects.get(idusuariofk=usuario)
@@ -832,3 +862,26 @@ def guardar_calificacion(request):
     )
 
     return JsonResponse({'ok': True, 'mensaje': '¡Gracias por tu calificación!'})
+
+@login_required
+@require_POST
+def omitir_calificacion(request):
+    """Marca una cita puntual como 'no quiero calificar'."""
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+        cliente = Cliente.objects.get(idusuariofk=usuario)
+    except (Usuario.DoesNotExist, Cliente.DoesNotExist):
+        return JsonResponse({'ok': False, 'error': 'No se encontró tu perfil de cliente.'}, status=404)
+
+    cita_id = request.POST.get('cita_id')
+    if not cita_id:
+        return JsonResponse({'ok': False, 'error': 'Falta el identificador de la cita.'}, status=400)
+
+    cita = get_object_or_404(Cita, idcita=cita_id, idclientefk=cliente)
+
+    # Si ya la calificó, no hace falta marcarla como omitida (evita pisar datos por gusto)
+    if not Calificacion.objects.filter(idcitafk=cita).exists():
+        cita.calificacion_omitida = True
+        cita.save(update_fields=['calificacion_omitida'])
+
+    return JsonResponse({'ok': True})

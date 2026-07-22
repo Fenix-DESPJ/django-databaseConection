@@ -76,6 +76,7 @@ class Cita(models.Model):
     idserviciofk = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING, db_column='idServicioFk')
     idagendafk = models.ForeignKey('negocio.Agenda', on_delete=models.DO_NOTHING, db_column='idAgendaFk')
     observaciones = models.TextField(db_column='observaciones', blank=True, null=True)
+    calificacion_omitida = models.BooleanField(db_column='calificacionOmitida', default=False)
 
     class Meta:
         managed = False

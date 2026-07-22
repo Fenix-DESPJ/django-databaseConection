@@ -1434,6 +1434,17 @@ h5 {
     text-align: center;
 }
 
+.agenda-day.agenda-day-incapacidad {
+    background: linear-gradient(145deg, #ff6b35, #c9451a) !important;
+    border-color: #ff6b35 !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(255, 107, 53, 0.35) !important;
+}
+
+.agenda-day.agenda-day-incapacidad.agenda-day-hoy::after {
+    background: #fff;
+}
+
 .agenda-page .weekdays span {
     color: #fff;
     font-weight: 700;
