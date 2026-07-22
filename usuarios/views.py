@@ -806,7 +806,8 @@ def verificar_calificacion_pendiente(request):
     cita_pendiente = Cita.objects.filter(
         idclientefk=cliente,
         observaciones__icontains='Completado',
-        calificacion__isnull=True
+        calificacion__isnull=True,
+        calificacion_omitida=False,
     ).select_related(
         'idserviciofk', 'idbarberofk__idusuariofk'
     ).order_by('-idagendafk__fecha').first()
@@ -861,3 +862,26 @@ def guardar_calificacion(request):
     )
 
     return JsonResponse({'ok': True, 'mensaje': '¡Gracias por tu calificación!'})
+
+@login_required
+@require_POST
+def omitir_calificacion(request):
+    """Marca una cita puntual como 'no quiero calificar'."""
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+        cliente = Cliente.objects.get(idusuariofk=usuario)
+    except (Usuario.DoesNotExist, Cliente.DoesNotExist):
+        return JsonResponse({'ok': False, 'error': 'No se encontró tu perfil de cliente.'}, status=404)
+
+    cita_id = request.POST.get('cita_id')
+    if not cita_id:
+        return JsonResponse({'ok': False, 'error': 'Falta el identificador de la cita.'}, status=400)
+
+    cita = get_object_or_404(Cita, idcita=cita_id, idclientefk=cliente)
+
+    # Si ya la calificó, no hace falta marcarla como omitida (evita pisar datos por gusto)
+    if not Calificacion.objects.filter(idcitafk=cita).exists():
+        cita.calificacion_omitida = True
+        cita.save(update_fields=['calificacion_omitida'])
+
+    return JsonResponse({'ok': True})

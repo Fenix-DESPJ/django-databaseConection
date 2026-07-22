@@ -18,6 +18,7 @@ urlpatterns = [
     path('notificaciones/marcar-leidas/', views.marcar_notificaciones_leidas, name='marcar_notificaciones_leidas'),
     path('calificacion/pendiente/', views.verificar_calificacion_pendiente, name='verificar_calificacion_pendiente'),
     path('calificacion/guardar/', views.guardar_calificacion, name='guardar_calificacion'),
+    path('calificacion/omitir/', views.omitir_calificacion, name='omitir_calificacion'),
 
     # Rutas del Panel de Administración para perfiles
     path('dashboard/perfiles/', views.editar_perfiles_admin, name='editar_perfiles'),
