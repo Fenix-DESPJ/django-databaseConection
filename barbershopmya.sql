@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-07-2026 a las 17:20:13
+-- Tiempo de generación: 22-07-2026 a las 17:40:16
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
@@ -95,12 +95,10 @@ CREATE TABLE `agenda` (
 --
 
 INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`, `horaFin`) VALUES
-(1, 1, '2026-03-20', '09:00:00', '13:00:00'),
 (3, 1, '2026-03-21', '09:00:00', '13:00:00'),
 (4, 2, '2026-03-21', '15:00:00', '19:00:00'),
 (5, 1, '2026-03-22', '09:00:00', '13:00:00'),
 (6, 2, '2026-03-22', '10:00:00', '14:00:00'),
-(7, 1, '2026-03-23', '09:00:00', '13:00:00'),
 (9, 1, '2026-03-24', '09:00:00', '13:00:00'),
 (10, 2, '2026-03-24', '10:00:00', '14:00:00'),
 (11, 11, '2026-06-24', '08:00:00', NULL),
@@ -418,37 +416,24 @@ CREATE TABLE `cita` (
   `fecha` date DEFAULT NULL,
   `horaInicio` time DEFAULT NULL,
   `observaciones` varchar(150) DEFAULT NULL,
-  `idPagoFk` int(11) DEFAULT NULL
+  `idPagoFk` int(11) DEFAULT NULL,
+  `calificacionOmitida` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `cita`
 --
 
-INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idAgendaFk`, `fecha`, `horaInicio`, `observaciones`, `idPagoFk`) VALUES
-(1, 1, 1, 1, 1, '2026-03-20', '09:30:00', NULL, NULL),
-(3, 1, 3, 5, 3, '2026-03-21', '10:15:00', NULL, NULL),
-(4, 2, 4, 2, 4, '2026-03-21', '15:30:00', NULL, NULL),
-(5, 1, 5, 4, 5, '2026-03-22', '09:00:00', NULL, NULL),
-(6, 2, 6, 1, 6, '2026-03-22', '12:00:00', NULL, NULL),
-(7, 1, 7, 6, 7, '2026-03-23', '11:30:00', NULL, NULL),
-(9, 1, 9, 8, 9, '2026-03-24', '09:00:00', NULL, NULL),
-(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL),
-(18, 1, 1, 1, NULL, '2026-06-29', '10:00:00', NULL, NULL),
-(19, 13, 1, 1, 1, '2026-06-28', '14:00:00', NULL, 1),
-(20, 3, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(21, 5, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(22, 7, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(23, 9, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(24, 4, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(25, 6, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(26, 8, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(27, 10, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(28, 11, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(29, 12, 1, 1, 1, '2026-06-28', '09:00:00', NULL, 1),
-(40, 11, 11, 1, 25, '2026-07-02', '08:00:00', 'Completado - Servicio realizado', 30),
-(41, 11, 14, 2, 26, '2026-07-02', '09:00:00', 'Completado - Servicio realizado', 31),
-(43, 11, 14, 18, 28, '2026-07-09', '08:00:00', 'uwu', 33);
+INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idAgendaFk`, `fecha`, `horaInicio`, `observaciones`, `idPagoFk`, `calificacionOmitida`) VALUES
+(3, 1, 3, 5, 3, '2026-03-21', '10:15:00', NULL, NULL, 0),
+(4, 2, 4, 2, 4, '2026-03-21', '15:30:00', NULL, NULL, 0),
+(5, 1, 5, 4, 5, '2026-03-22', '09:00:00', NULL, NULL, 0),
+(6, 2, 6, 1, 6, '2026-03-22', '12:00:00', NULL, NULL, 0),
+(9, 1, 9, 8, 9, '2026-03-24', '09:00:00', NULL, NULL, 0),
+(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL, 0),
+(40, 11, 11, 1, 25, '2026-07-02', '08:00:00', 'Completado - Servicio realizado', 30, 0),
+(41, 11, 14, 2, 26, '2026-07-02', '09:00:00', 'Completado - Servicio realizado', 31, 0),
+(43, 11, 14, 18, 28, '2026-07-09', '08:00:00', 'uwu', 33, 0);
 
 -- --------------------------------------------------------
 
@@ -469,12 +454,10 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`, `contactoEmergencia`) VALUES
-(1, 4, 'Av. Amazonas', '2026-01-10', 'Maria-099'),
 (3, 7, 'Condado', '2026-01-15', 'Ana-097'),
 (4, 8, 'La Floresta', '2026-01-20', 'Luis-096'),
 (5, 9, 'Quitumbe', '2026-01-25', 'Rosa-095'),
 (6, 10, 'Cumbayá', '2026-01-28', 'Felipe-094'),
-(7, 4, 'Av. Amazonas', '2026-02-01', 'Elena-093'),
 (9, 7, 'Condado', '2026-02-10', 'Jose-098'),
 (10, 8, 'La Floresta', '2026-02-15', 'Ana-097'),
 (11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado'),
@@ -849,7 +832,6 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (1, '1723456789', 'ANDRÉS MENDOZA', 'a.mendoza@mya.com', '0998765432', NULL, NULL, 1, NULL),
 (2, '1755842100', 'MATEO ALVEAR', 'mateo.barber@mya.com', '0984455667', NULL, NULL, 2, ''),
 (3, '1004556772', 'LUIS SIMBAÑA', 'luis.barber@mya.com', '0977889900', NULL, NULL, 2, ''),
-(4, '0503441288', 'CARLOS PÉREZ', 'carlitos@gmail.com', '0912233445', NULL, NULL, 3, ''),
 (5, '1711223344', 'JUAN RODRÍGUEZ', 'juan.rod@outlook.com', '0955667788', NULL, NULL, 3, ''),
 (7, '0988776655', 'DIEGO FERNÁNDEZ', 'diego.fer@gmail.com', '0922446688', NULL, NULL, 3, ''),
 (8, '1788990011', 'ROBERTO GÓMEZ', 'roberto@gmail.com', '0933557799', NULL, NULL, 3, ''),
@@ -1177,7 +1159,7 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT de la tabla `barbero`
 --
 ALTER TABLE `barbero`
-  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `barbero_dia_habilitado`
@@ -1201,7 +1183,7 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion_horario`
