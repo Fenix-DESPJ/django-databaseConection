@@ -3338,63 +3338,84 @@ body.modal-open {
     padding: 1.8rem;
     height: 100%;
     color: #fff;
+    transition: border-color 0.45s ease, box-shadow 0.45s ease;
+    box-sizing: border-box;
 }
 .resena-estrellas i { color: var(--dorado); font-size: 1rem; }
 .resena-comentario { color: rgba(255,255,255,0.75); font-style: italic; min-height: 60px; }
 .resena-cliente { font-weight: bold; color: var(--dorado); margin-top: 0.8rem; }
 .resena-fecha { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
 
-/* --- Carrusel de opiniones: wrapper (loop infinito, tarjeta central destacada) --- */
+/* --- Carrusel de opiniones: wrapper (varias tarjetas a la vista, deslizando) --- */
 .resenas-carousel-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
   width: 100%;
-  /* Espacio lateral para las flechas + espacio vertical para que la tarjeta
-     central no se recorte al escalarse */
-  padding: 50px 90px;
+  /* Espacio lateral para las flechas */
+  padding: 0 90px;
   box-sizing: border-box;
+}
+
+/* "Ventana" visible del carrusel: recorta a los lados (para que no se vean
+   tarjetas fuera de rango) pero deja colchón vertical y de sobra a los
+   costados para que el brillo/escala de la tarjeta central JAMÁS se corte,
+   pase lo que pase durante la transición. */
+.resenas-viewport {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding: 80px 40px;
+  margin: -80px -40px;
 }
 
 .resenas-track {
   display: flex;
   align-items: stretch;
-  justify-content: center;
   gap: 24px;
-  width: 100%;
-  /* overflow visible a propósito: nada debe recortar la tarjeta central
-     cuando crece con el scale() */
-  overflow: visible;
+  will-change: transform;
+  transition: transform 0.55s cubic-bezier(.25,.8,.3,1);
 }
 
 /* Slots (contienen cada tarjeta de reseña) */
 .resena-slot {
-  flex: 0 1 340px;
-  transition: transform 0.35s ease, opacity 0.35s ease, box-shadow 0.35s ease;
-  opacity: 0.55;
-  transform: scale(0.92);
+  flex: 0 0 300px;
+  width: 300px;
+  transition: transform 0.55s cubic-bezier(.25,.8,.3,1), opacity 0.45s ease;
+  opacity: 0.3;
+  transform: scale(0.82);
+  pointer-events: none;
 }
 
 .resena-slot .resena-card {
   height: 100%;
 }
 
-/* Tarjeta central: escala + brillo dorado */
-.resena-slot-center {
+/* Vecinas inmediatas: un poco más visibles */
+.resena-slot[data-distancia="1"],
+.resena-slot[data-distancia="-1"] {
+  opacity: 0.65;
+  transform: scale(0.9);
+}
+
+/* Tarjeta central: escala + brillo dorado. El borde/box-shadow nunca se
+   recorta porque .resenas-viewport tiene colchón de sobra en todas
+   direcciones (ver arriba). */
+.resena-slot[data-distancia="0"] {
   opacity: 1;
-  transform: scale(1.08);
+  transform: scale(1.14);
   z-index: 2;
+  pointer-events: auto;
 }
 
-.resena-slot-center .resena-card {
-  border-color: rgba(255, 198, 0, 0.55);
-  box-shadow: 0 0 45px rgba(255, 198, 0, 0.35), 0 20px 40px rgba(0, 0, 0, 0.4);
+.resena-slot[data-distancia="0"] .resena-card {
+  border-color: rgba(255, 198, 0, 0.65);
+  box-shadow: 0 0 45px rgba(255, 198, 0, 0.4), 0 20px 40px rgba(0, 0, 0, 0.45);
 }
 
-/* Estado breve durante el cambio de reseña (transición suave del contenido) */
-.resenas-track.is-changing .resena-slot {
+/* Tarjetas fuera del rango visible: se desvanecen sin quedar "flotando" */
+.resena-slot[data-distancia="oculto"] {
   opacity: 0;
 }
 
@@ -3435,12 +3456,24 @@ body.modal-open {
 .resenas-arrow-prev { left: 10px; }
 .resenas-arrow-next { right: 10px; }
 
-/* Responsive: en pantallas chicas solo se ve la tarjeta central */
+/* Responsive: menos tarjetas visibles a los lados en pantallas chicas */
 @media (max-width: 991px) {
-  .resenas-carousel-wrapper { padding: 40px 60px; }
-  .resena-slot-prev,
-  .resena-slot-next {
-    display: none;
+  .resenas-carousel-wrapper { padding: 0 55px; }
+  .resenas-viewport { padding: 70px 30px; margin: -70px -30px; }
+  .resena-slot { flex-basis: 240px; width: 240px; }
+  .resena-slot[data-distancia="2"],
+  .resena-slot[data-distancia="-2"] {
+    opacity: 0;
   }
-  .resena-slot-center { flex-basis: 100%; }
+}
+
+@media (max-width: 575px) {
+  .resenas-carousel-wrapper { padding: 0 45px; }
+  .resenas-viewport { padding: 55px 15px; margin: -55px -15px; }
+  .resena-slot { flex-basis: 210px; width: 210px; }
+  .resena-slot[data-distancia="1"],
+  .resena-slot[data-distancia="-1"] {
+    opacity: 0.3;
+    transform: scale(0.82);
+  }
 }
