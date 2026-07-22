@@ -87,6 +87,7 @@
                                         type="submit"
                                         class="agenda-day
                                         {% if dia.habilitado %}agenda-day-habilitado{% endif %}
+                                        {% if dia.con_incapacidad %}agenda-day-incapacidad{% endif %}
                                         {% if dia.pasado %}agenda-day-pasado{% endif %}
                                         {% if dia.hoy %}agenda-day-hoy{% endif %}"
                                         {% if dia.pasado %}disabled{% endif %}>
@@ -116,6 +117,11 @@
                     <span>
                         <span class="dot" style="background:#262626;border:1px solid #3a3a3a;"></span>
                         Deshabilitado
+                    </span>
+
+                    <span>
+                        <span class="dot" style="background:#ff6b35;"></span>
+                        Día con barbero(s) no disponible(s)
                     </span>
 
                     <span>
