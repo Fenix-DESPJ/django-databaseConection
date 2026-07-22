@@ -3343,3 +3343,104 @@ body.modal-open {
 .resena-comentario { color: rgba(255,255,255,0.75); font-style: italic; min-height: 60px; }
 .resena-cliente { font-weight: bold; color: var(--dorado); margin-top: 0.8rem; }
 .resena-fecha { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+/* --- Carrusel de opiniones: wrapper (loop infinito, tarjeta central destacada) --- */
+.resenas-carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  /* Espacio lateral para las flechas + espacio vertical para que la tarjeta
+     central no se recorte al escalarse */
+  padding: 50px 90px;
+  box-sizing: border-box;
+}
+
+.resenas-track {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  /* overflow visible a propósito: nada debe recortar la tarjeta central
+     cuando crece con el scale() */
+  overflow: visible;
+}
+
+/* Slots (contienen cada tarjeta de reseña) */
+.resena-slot {
+  flex: 0 1 340px;
+  transition: transform 0.35s ease, opacity 0.35s ease, box-shadow 0.35s ease;
+  opacity: 0.55;
+  transform: scale(0.92);
+}
+
+.resena-slot .resena-card {
+  height: 100%;
+}
+
+/* Tarjeta central: escala + brillo dorado */
+.resena-slot-center {
+  opacity: 1;
+  transform: scale(1.08);
+  z-index: 2;
+}
+
+.resena-slot-center .resena-card {
+  border-color: rgba(255, 198, 0, 0.55);
+  box-shadow: 0 0 45px rgba(255, 198, 0, 0.35), 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Estado breve durante el cambio de reseña (transición suave del contenido) */
+.resenas-track.is-changing .resena-slot {
+  opacity: 0;
+}
+
+/* FLECHAS del carrusel de reseñas: doradas y fuera del contenido */
+.resenas-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: transparent;
+  border: 2px solid var(--dorado);
+  color: var(--dorado);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.resenas-arrow:hover {
+  background-color: var(--dorado);
+  color: #1c1c1c;
+  box-shadow: 0 0 20px rgba(255, 198, 0, 0.5);
+}
+
+.resenas-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+  background-color: transparent;
+  color: var(--dorado);
+}
+
+.resenas-arrow-prev { left: 10px; }
+.resenas-arrow-next { right: 10px; }
+
+/* Responsive: en pantallas chicas solo se ve la tarjeta central */
+@media (max-width: 991px) {
+  .resenas-carousel-wrapper { padding: 40px 60px; }
+  .resena-slot-prev,
+  .resena-slot-next {
+    display: none;
+  }
+  .resena-slot-center { flex-basis: 100%; }
+}

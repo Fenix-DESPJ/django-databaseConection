@@ -49,13 +49,18 @@
                 class="card h-100 premium-card text-white border border-secondary border-opacity-25 shadow position-relative transition-all hover-glow">
 
                 <!-- Header de la Reserva -->
-                <div
-                    class="card-header bg-transparent border-bottom border-secondary border-opacity-25 d-flex justify-content-between align-items-center py-3 px-4">
+                <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 d-flex justify-content-between align-items-center py-3 px-4">
                     <span class="text-white-50 fw-mono small">#ID {{ cita.idCita }}</span>
-                    <span
-                        class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 border border-warning border-opacity-25 fw-semibold sub-badge">
-                        <i class="bi bi-scissors me-1"></i> {{ cita.servicio_nombre }}
-                    </span>
+                    <div>
+                        {% if cita.es_completada %}
+                            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 border border-success border-opacity-25 fw-semibold sub-badge me-1">
+                                <i class="bi bi-check-circle me-1"></i> Completada
+                            </span>
+                        {% endif %}
+                        <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 border border-warning border-opacity-25 fw-semibold sub-badge">
+                            <i class="bi bi-scissors me-1"></i> {{ cita.servicio_nombre }}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Datos del Turno -->
@@ -107,17 +112,24 @@
                 <!-- Botón de Acción Inferior -->
                 <div class="card-footer bg-transparent border-0 p-4 pt-0">
                     {% if es_admin %}
-                    <button type="button"
-                        class="btn btn-danger w-100 btn-sm py-2 fw-bold shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-1"
-                        data-bs-toggle="modal" data-bs-target="#deleteModalAdmin{{ cita.idCita }}">
-                        <i class="bi bi-x-circle"></i> Cancelar Reserva (Admin)
-                    </button>
+                        <button type="button"
+                            class="btn btn-danger w-100 btn-sm py-2 fw-bold shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-1"
+                            data-bs-toggle="modal" data-bs-target="#deleteModalAdmin{{ cita.idCita }}">
+                            <i class="bi bi-x-circle"></i> Cancelar Reserva (Admin)
+                        </button>
                     {% else %}
-                    <button type="button"
-                        class="btn btn-outline-danger w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 transition-all"
-                        data-bs-toggle="modal" data-bs-target="#deleteModalCliente{{ cita.idCita }}">
-                        <i class="bi bi-trash"></i> Cancelar Cita
-                    </button>
+                        {% if cita.es_completada %}
+                            <button type="button" class="btn btn-secondary w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 opacity-50" disabled>
+                                <i class="bi bi-check-all"></i> Cita Completada
+                            </button>
+                        {% else %}
+
+                            <button type="button"
+                                class="btn btn-outline-danger w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 transition-all"
+                                data-bs-toggle="modal" data-bs-target="#deleteModalCliente{{ cita.idCita }}">
+                                <i class="bi bi-trash"></i> Cancelar Cita
+                            </button>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
