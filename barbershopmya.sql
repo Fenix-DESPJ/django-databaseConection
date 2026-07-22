@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-07-2026 a las 21:40:31
+-- Tiempo de generación: 22-07-2026 a las 17:20:13
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -96,13 +96,11 @@ CREATE TABLE `agenda` (
 
 INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`, `horaFin`) VALUES
 (1, 1, '2026-03-20', '09:00:00', '13:00:00'),
-(2, 2, '2026-03-20', '10:00:00', '14:00:00'),
 (3, 1, '2026-03-21', '09:00:00', '13:00:00'),
 (4, 2, '2026-03-21', '15:00:00', '19:00:00'),
 (5, 1, '2026-03-22', '09:00:00', '13:00:00'),
 (6, 2, '2026-03-22', '10:00:00', '14:00:00'),
 (7, 1, '2026-03-23', '09:00:00', '13:00:00'),
-(8, 2, '2026-03-23', '10:00:00', '14:00:00'),
 (9, 1, '2026-03-24', '09:00:00', '13:00:00'),
 (10, 2, '2026-03-24', '10:00:00', '14:00:00'),
 (11, 11, '2026-06-24', '08:00:00', NULL),
@@ -290,9 +288,9 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (1, 'pbkdf2_sha256$600000$nPIoL97ZaGfrpLKKKn3GZL$7luiGVpO7Eyar3il5EumDiA+Rj1gbKCQJ8qJgF+FeMs=', NULL, 0, 'ivancito@gmail.com', 'Ivan ', 'Cepeda', 'ivancito@gmail.com', 0, 1, '2026-06-18 12:54:47.350764'),
 (2, 'pbkdf2_sha256$600000$cOmiRYMYpYxwbGXzoqxcHg$BxVF3vH9nwY4PJxNTWbMhNODYw/kxa2C+UgD1uAMsWw=', '2026-06-18 14:09:14.566411', 0, 'ivan@gmail.com', 'Ivancito', 'Cepeda', 'ivan@gmail.com', 0, 1, '2026-06-18 13:04:14.605021'),
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
-(4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-07-01 21:22:19.485609', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
+(4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-07-22 12:29:21.310279', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
 (5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-07-02 01:10:44.193504', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-17 14:32:38.927712', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-22 14:28:04.856462', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
 (7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-17 14:10:45.193790', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423');
 
 -- --------------------------------------------------------
@@ -373,7 +371,15 @@ INSERT INTO `barbero_dia_habilitado` (`id`, `idusuariofk`, `fecha`, `habilitado`
 (1, 2, '2026-07-31', 1),
 (2, 3, '2026-07-31', 1),
 (3, 17, '2026-07-31', 1),
-(4, 21, '2026-07-31', 1);
+(4, 21, '2026-07-31', 1),
+(5, 2, '2026-07-23', 1),
+(6, 3, '2026-07-23', 1),
+(7, 17, '2026-07-23', 1),
+(8, 21, '2026-07-23', 1),
+(9, 2, '2026-07-25', 1),
+(10, 3, '2026-07-25', 1),
+(11, 17, '2026-07-25', 1),
+(12, 21, '2026-07-25', 1);
 
 -- --------------------------------------------------------
 
@@ -389,6 +395,13 @@ CREATE TABLE `calificacion` (
   `idCitaFk` int(11) NOT NULL,
   `idClienteFk` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `calificacion`
+--
+
+INSERT INTO `calificacion` (`idcalificacion`, `calificacion`, `comentario`, `fechacreacion`, `idCitaFk`, `idClienteFk`) VALUES
+(1, 5, 'corte extupendo como nuestro presidente ABELARDO DE LA  ESPRIELLA', '2026-07-22 12:30:02.083867', 40, 11);
 
 -- --------------------------------------------------------
 
@@ -414,13 +427,11 @@ CREATE TABLE `cita` (
 
 INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idAgendaFk`, `fecha`, `horaInicio`, `observaciones`, `idPagoFk`) VALUES
 (1, 1, 1, 1, 1, '2026-03-20', '09:30:00', NULL, NULL),
-(2, 2, 2, 3, 2, '2026-03-20', '11:00:00', NULL, NULL),
 (3, 1, 3, 5, 3, '2026-03-21', '10:15:00', NULL, NULL),
 (4, 2, 4, 2, 4, '2026-03-21', '15:30:00', NULL, NULL),
 (5, 1, 5, 4, 5, '2026-03-22', '09:00:00', NULL, NULL),
 (6, 2, 6, 1, 6, '2026-03-22', '12:00:00', NULL, NULL),
 (7, 1, 7, 6, 7, '2026-03-23', '11:30:00', NULL, NULL),
-(8, 2, 8, 7, 8, '2026-03-23', '12:00:00', NULL, NULL),
 (9, 1, 9, 8, 9, '2026-03-24', '09:00:00', NULL, NULL),
 (10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL),
 (18, 1, 1, 1, NULL, '2026-06-29', '10:00:00', NULL, NULL),
@@ -459,13 +470,11 @@ CREATE TABLE `cliente` (
 
 INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`, `contactoEmergencia`) VALUES
 (1, 4, 'Av. Amazonas', '2026-01-10', 'Maria-099'),
-(2, 6, 'Calle Larga', '2026-01-12', 'Jose-098'),
 (3, 7, 'Condado', '2026-01-15', 'Ana-097'),
 (4, 8, 'La Floresta', '2026-01-20', 'Luis-096'),
 (5, 9, 'Quitumbe', '2026-01-25', 'Rosa-095'),
 (6, 10, 'Cumbayá', '2026-01-28', 'Felipe-094'),
 (7, 4, 'Av. Amazonas', '2026-02-01', 'Elena-093'),
-(8, 6, 'Calle Larga', '2026-02-05', 'Maria-099'),
 (9, 7, 'Condado', '2026-02-10', 'Jose-098'),
 (10, 8, 'La Floresta', '2026-02-15', 'Ana-097'),
 (11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado'),
@@ -666,6 +675,7 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('3i8hqj5a439xu8rb79kfnqrtmc7o1gzq', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wmXvY:VsS7Bovr4kQ63O-Zk7GJkVZEVSMHkAfrpnd-1xz4AVU', '2026-08-05 14:28:04.859625'),
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
 ('avgczg5y3i4uccct4edfx4nl1tkahju3', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wkjcF:Al9k-Y9_En4MSelWtg-nU6I69OtmZKAmhrEZ6ceu208', '2026-07-31 14:32:39.014945'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
@@ -837,93 +847,25 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCelular`, `contrasena`, `fechaNacimiento`, `idRolFk`, `foto_perfil`) VALUES
 (1, '1723456789', 'ANDRÉS MENDOZA', 'a.mendoza@mya.com', '0998765432', NULL, NULL, 1, NULL),
-(2, '1755842100', 'MATEO ALVEAR', 'mateo.barber@mya.com', '0984455667', NULL, NULL, 2, NULL),
-(3, '1004556772', 'LUIS SIMBAÑA', 'luis.barber@mya.com', '0977889900', NULL, NULL, 2, NULL),
-(4, '0503441288', 'CARLOS PÉREZ', 'carlitos@gmail.com', '0912233445', NULL, NULL, 3, NULL),
-(5, '1711223344', 'JUAN RODRÍGUEZ', 'juan.rod@outlook.com', '0955667788', NULL, NULL, 3, NULL),
-(6, '1204885991', 'ANA GARCÍA', 'ana.garcia@hotmail.com', '0966112233', NULL, NULL, 3, NULL),
+(2, '1755842100', 'MATEO ALVEAR', 'mateo.barber@mya.com', '0984455667', NULL, NULL, 2, ''),
+(3, '1004556772', 'LUIS SIMBAÑA', 'luis.barber@mya.com', '0977889900', NULL, NULL, 2, ''),
+(4, '0503441288', 'CARLOS PÉREZ', 'carlitos@gmail.com', '0912233445', NULL, NULL, 3, ''),
+(5, '1711223344', 'JUAN RODRÍGUEZ', 'juan.rod@outlook.com', '0955667788', NULL, NULL, 3, ''),
 (7, '0988776655', 'DIEGO FERNÁNDEZ', 'diego.fer@gmail.com', '0922446688', NULL, NULL, 3, ''),
-(8, '1788990011', 'ROBERTO GÓMEZ', 'roberto@gmail.com', '0933557799', NULL, NULL, 3, NULL),
-(9, '1744556611', 'LUCÍA TORRES', 'lucia@gmail.com', '0944668800', NULL, NULL, 3, NULL),
-(10, '1722334455', 'PEDRO SALAS', 'pedro@gmail.com', '0955779911', NULL, NULL, 3, NULL),
-(13, '1111111111', 'SAMUEL LINARES', 'samueluwu@gmail.com', '3333333333', 'samuel', '2026-06-24', 3, NULL),
-(14, '2222222', 'JIMENA  HERNÁNDEZ', 'jimena@gmail.com', '3239343409', 'jimena123', '2008-03-24', 3, NULL),
-(16, '1122334455', 'JAMES ABELARDO DIAZ URIBE', 'derecha@gmail.com', '3216579435', 'pbkdf2_sha256$600000$mm9X4dXuc8FX83wY4CvHAu$S3tiZPZarh+2ysTwOTmcLIW8ibjLCUfdKjQ9LMU0Owg=', '1988-04-20', 3, NULL),
+(8, '1788990011', 'ROBERTO GÓMEZ', 'roberto@gmail.com', '0933557799', NULL, NULL, 3, ''),
+(9, '1744556611', 'LUCÍA TORRES', 'lucia@gmail.com', '0944668800', NULL, NULL, 3, ''),
+(10, '1722334455', 'PEDRO SALAS', 'pedro@gmail.com', '0955779911', NULL, NULL, 3, ''),
+(13, '1111111111', 'SAMUEL LINARES', 'samueluwu@gmail.com', '3333333333', 'samuel', '2026-06-24', 3, ''),
+(14, '2222222', 'JIMENA  HERNÁNDEZ', 'jimena@gmail.com', '3239343409', 'jimena123', '2008-03-24', 3, ''),
+(16, '1122334455', 'JAMES ABELARDO DIAZ URIBE', 'derecha@gmail.com', '3216579435', 'pbkdf2_sha256$600000$mm9X4dXuc8FX83wY4CvHAu$S3tiZPZarh+2ysTwOTmcLIW8ibjLCUfdKjQ9LMU0Owg=', '1988-04-20', 3, ''),
 (17, '35919743', 'JUAN MANUEL RESTREPO', 'restrepo123@gmail.com', '3427685463', 'pbkdf2_sha256$600000$Ui57A5R99oF2FSYuJdWQWu$S3PjXGv17+nJfSOMUXEDj8z/TdGK8/4B6gqwgKLTQA0=', '1989-08-12', 2, 'perfiles/usuario_17_descarga.webp'),
 (19, '4444444444', 'DANI JORDIWILDE', 'dani@gmail.com', '22222222222', 'pbkdf2_sha256$600000$ud3U9yK19LvNUYSFpWdxuA$wSPZm1V3A8E2of2uJ9oX39DgBkfzwf3u/vM/rHVvTh0=', '2026-06-16', 1, NULL),
 (20, '1111222333', 'CLIENTE UWU', 'cliente@gmail.com', '3334445555', 'pbkdf2_sha256$600000$A8DpsiokPP0k1bHK7pPT96$v8G4lzCykQndKOJ2OJKPRj2YtCb3dCyOKAZmLlVPaHI=', '2026-06-25', 3, 'perfiles/usuario_20_21452447-juutb5hh-v4.webp'),
-(21, '1111111112', 'NUEVO BARBERO', 'barbero.nuevo@mya.com', '0999999999', NULL, NULL, 2, NULL);
+(21, '1111111112', 'NUEVO BARBERO', 'barbero.nuevo@mya.com', '0999999999', NULL, NULL, 2, '');
 
 --
 -- Disparadores `usuario`
 --
-DELIMITER $$
-CREATE TRIGGER `AntesEliminarUsuario` BEFORE DELETE ON `usuario` FOR EACH ROW BEGIN
-    IF OLD.idRolFk = 1 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede eliminar al Administrador principal';
-    END IF;
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `DespuesActualizarUsuarioCambioRol` AFTER UPDATE ON `usuario` FOR EACH ROW BEGIN
-    -- VALIDAR SI REALMENTE CAMBIÓ EL ROL
-    IF OLD.idRolFk != NEW.idRolFk THEN
-        
-        -- ================================================
-        -- CASO A: EL NUEVO ROL ES BARBERO (Rol 2)
-        -- ================================================
-        IF NEW.idRolFk = 2 THEN
-            -- 1. Borrar de la tabla del rol anterior (Cliente)
-            DELETE FROM cliente WHERE idUsuarioFk = NEW.idUsuario;
-            
-            -- 2. Insertar en la nueva tabla (Barbero) si no existe ya
-            IF NOT EXISTS (SELECT 1 FROM barbero WHERE idUsuarioFk = NEW.idUsuario) THEN
-                INSERT INTO barbero (idUsuarioFk, especialidad) 
-                VALUES (NEW.idUsuario, 'Por asignar');
-            END IF;
-
-        -- ================================================
-        -- CASO B: EL NUEVO ROL ES CLIENTE (Rol 3)
-        -- ================================================
-        ELSEIF NEW.idRolFk = 3 THEN
-            -- 1. Borrar de la tabla del rol anterior (Barbero)
-            DELETE FROM barbero WHERE idUsuarioFk = NEW.idUsuario;
-            
-            -- 2. Insertar en la nueva tabla (Cliente) si no existe ya
-            IF NOT EXISTS (SELECT 1 FROM cliente WHERE idUsuarioFk = NEW.idUsuario) THEN
-                INSERT INTO cliente (idUsuarioFk, direccion, fechaRegistro, contactoEmergencia) 
-                VALUES (NEW.idUsuario, 'Cambio de Rol desde Panel', CURDATE(), 'No asignado');
-            END IF;
-
-        -- ================================================
-        -- CASO C: PASÓ A SER ADMIN (Rol 1) u OTRO
-        -- ================================================
-        ELSE
-            -- Si pasa a ser Admin, lo removemos de ambas tablas operativas
-            DELETE FROM barbero WHERE idUsuarioFk = NEW.idUsuario;
-            DELETE FROM cliente WHERE idUsuarioFk = NEW.idUsuario;
-        END IF;
-        
-    END IF;
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `DespuesInsertarUsuarioClasificarRol` AFTER INSERT ON `usuario` FOR EACH ROW BEGIN
-    -- Si es Barbero (Rol 2)
-    IF NEW.idRolFk = 2 THEN
-        INSERT INTO barbero (idUsuarioFk, especialidad) 
-        VALUES (NEW.idUsuario, 'Por asignar');
-        
-    -- Si es Cliente (Rol 3)
-    ELSEIF NEW.idRolFk = 3 THEN
-        INSERT INTO cliente (idUsuarioFk, direccion, fechaRegistro, contactoEmergencia) 
-        VALUES (NEW.idUsuario, 'Registrado desde la Web', CURDATE(), 'No asignado');
-    END IF;
-END
-$$
-DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `FormatearNombreUsuario` BEFORE INSERT ON `usuario` FOR EACH ROW BEGIN
     SET NEW.nombre = UPPER(NEW.nombre);
@@ -1235,19 +1177,19 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT de la tabla `barbero`
 --
 ALTER TABLE `barbero`
-  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `barbero_dia_habilitado`
 --
 ALTER TABLE `barbero_dia_habilitado`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `calificacion`
 --
 ALTER TABLE `calificacion`
-  MODIFY `idcalificacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcalificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
@@ -1259,7 +1201,7 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion_horario`
