@@ -1245,6 +1245,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const URL_VERIFICAR = dataDiv.dataset.urlVerificar;
     const URL_GUARDAR = dataDiv.dataset.urlGuardar;
+    const URL_OMITIR = dataDiv.dataset.urlOmitir;
 
     const modalEl = document.getElementById("calificacionModal");
     const modalCalificacion = new bootstrap.Modal(modalEl);
@@ -1260,6 +1261,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formCalificacion");
     const btnEnviar = document.getElementById("btnEnviarCalificacion");
     const btnOmitir = document.getElementById("btnOmitirCalificacion");
+
+    let calificacionEnviada = false; // true solo cuando el POST a guardar_calificacion fue exitoso
 
     function getCookie(name) {
         let cookieValue = null;
@@ -1313,8 +1316,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 pintarEstrellas(0);
                 textareaComentario.value = "";
                 divError.style.display = "none";
+                calificacionEnviada = false;
 
-                // Delay corto para no chocar con otros modales al cargar la página
                 setTimeout(() => modalCalificacion.show(), 800);
             }
         } catch (e) {
@@ -1322,6 +1325,30 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
     verificarCalificacionPendiente();
+
+    async function registrarOmision() {
+        const citaId = inputCitaId.value;
+        if (!citaId) return;
+
+        try {
+            await fetch(URL_OMITIR, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: new URLSearchParams({ cita_id: citaId })
+            });
+        } catch (e) {
+            console.error("No se pudo registrar la omisión de la calificación:", e);
+        }
+    }
+
+    // Se dispara SIEMPRE que el modal se oculte: X, backdrop, Esc, botón Omitir, o hide() por JS
+    modalEl.addEventListener("hide.bs.modal", () => {
+        if (calificacionEnviada) return; // si ya calificó, no hay nada que "omitir"
+        registrarOmision();
+    });
 
     if (btnOmitir) {
         btnOmitir.addEventListener("click", () => modalCalificacion.hide());
@@ -1354,6 +1381,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await resp.json();
 
             if (data.ok) {
+                calificacionEnviada = true; // evita que hide.bs.modal la registre como omitida
                 modalEl.querySelector(".modal-body").innerHTML = `
                     <div class="text-center py-4">
                         <i class="bi bi-check-circle-fill text-gold" style="font-size:3rem;"></i>
