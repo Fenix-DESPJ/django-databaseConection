@@ -244,6 +244,9 @@ def mis_citas_view(request):
             if c.idclientefk and c.idclientefk.idusuariofk:
                 cliente_nombre = c.idclientefk.idusuariofk.nombre
 
+            observaciones_texto = c.observaciones if c.observaciones else ""
+            es_completada = "Completado" in observaciones_texto
+
             citas.append({
                 'idCita': c.idCita,
                 'fecha': c.fecha,
@@ -251,7 +254,8 @@ def mis_citas_view(request):
                 'servicio_nombre': c.idserviciofk.nombreservicio if c.idserviciofk else "No asignado",
                 'barbero_nombre': barbero_nombre,
                 'cliente_nombre': cliente_nombre,
-                'observaciones': c.observaciones if c.observaciones else "",
+                'observaciones': observaciones_texto,
+                'es_completada': es_completada,
             })
     except Exception as e:
         print("======= ERROR CRÍTICO AL TRAER CITAS =======")
@@ -279,6 +283,11 @@ def cancelar_cita_cliente(request, id_cita):
                 raise Exception("Cliente no encontrado.")
 
             cita = Cita.objects.get(idCita=id_cita, idclientefk=cliente)
+
+            if cita.observaciones and "Completado" in cita.observaciones:
+                messages.error(request, "No puedes cancelar una cita que ya fue completada por el barbero")
+                return redirect('mis_citas')
+            
             agenda = cita.idagendafk
 
             cita.delete()
