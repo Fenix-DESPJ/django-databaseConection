@@ -960,6 +960,7 @@ document.addEventListener("DOMContentLoaded", () => {
             case "reserva_creada": return "bi-calendar-check-fill";   // Cliente
             case "nueva_cita": return "bi-scissors";                 // Barbero
             case "cita_confirmada": return "bi-patch-check-fill";    // Admin
+            case "cita_cancelada_admin": return "bi-exclamation-triangle-fill text-warning"; //Cancelación por Admin
             default: return "bi-info-circle-fill";
         }
     }
