@@ -244,6 +244,9 @@ def mis_citas_view(request):
             if c.idclientefk and c.idclientefk.idusuariofk:
                 cliente_nombre = c.idclientefk.idusuariofk.nombre
 
+            observaciones_texto = c.observaciones if c.observaciones else ""
+            es_completada = "Completado" in observaciones_texto
+
             citas.append({
                 'idCita': c.idCita,
                 'fecha': c.fecha,
@@ -251,7 +254,8 @@ def mis_citas_view(request):
                 'servicio_nombre': c.idserviciofk.nombreservicio if c.idserviciofk else "No asignado",
                 'barbero_nombre': barbero_nombre,
                 'cliente_nombre': cliente_nombre,
-                'observaciones': c.observaciones if c.observaciones else "",
+                'observaciones': observaciones_texto,
+                'es_completada': es_completada,
             })
     except Exception as e:
         print("======= ERROR CRÍTICO AL TRAER CITAS =======")
@@ -279,6 +283,11 @@ def cancelar_cita_cliente(request, id_cita):
                 raise Exception("Cliente no encontrado.")
 
             cita = Cita.objects.get(idCita=id_cita, idclientefk=cliente)
+
+            if cita.observaciones and "Completado" in cita.observaciones:
+                messages.error(request, "No puedes cancelar una cita que ya fue completada por el barbero")
+                return redirect('mis_citas')
+            
             agenda = cita.idagendafk
 
             cita.delete()
@@ -298,23 +307,75 @@ def cancelar_cita_admin(request, id_cita):
     user_sistema = request.user
     usuario_actual = Usuario.objects.get(correo=user_sistema.email)
 
+    # Validar permisos de Administrador
     if not (usuario_actual.idrolfk_id == 1 or user_sistema.is_staff):
         messages.error(request, "No tienes permisos de administrador para realizar esta acción.")
         return redirect('mis_citas')
 
     try:
         with transaction.atomic():
-            cita = Cita.objects.get(idCita=id_cita)
-            agenda = cita.idagendafk
+            # Traemos la cita con sus relaciones para construir un buen mensaje
+            cita = Cita.objects.select_related(
+                'idclientefk__idusuariofk',
+                'idbarberofk__idusuariofk',
+                'idserviciofk',
+                'idagendafk'
+            ).get(idCita=id_cita)
 
+            # Extraemos los datos antes de borrar la cita
+            cliente_usuario = cita.idclientefk.idusuariofk if cita.idclientefk else None
+            barbero_nombre = cita.idbarberofk.idusuariofk.nombre if (cita.idbarberofk and cita.idbarberofk.idusuariofk) else "el barbero asignado"
+            servicio_nombre = cita.idserviciofk.nombreservicio if cita.idserviciofk else "tu servicio"
+            fecha_str = cita.fecha.strftime('%d/%m/%Y') if cita.fecha else ""
+            hora_str = cita.horainicio.strftime('%H:%M') if cita.horainicio else ""
+
+            # 1. Crear la notificación para el cliente si existe el usuario
+            if cliente_usuario:
+                Notificacion.objects.create(
+                    idusuariofk=cliente_usuario,
+                    tipo='cita_cancelada_admin',
+                    mensaje=(
+                        f"Tu cita de {servicio_nombre} para el {fecha_str} a las {hora_str} "
+                        f"ha sido cancelada debido a que {barbero_nombre} no se encuentra disponible. "
+                        f"Por favor ingresa al sistema y vuelve a reservar en otro horario o con otro barbero."
+                    )
+                )
+
+            # 2. Borrar la agenda y la cita para liberar el espacio en el sistema
+            agenda = cita.idagendafk
             cita.delete()
             if agenda:
                 agenda.delete()
 
-        messages.success(request, f"La cita #{id_cita} ha sido cancelada por el Administrador.")
+        messages.success(request, f"La cita #{id_cita} fue cancelada y se le notificó al cliente correctamente.")
     except Cita.DoesNotExist:
         messages.error(request, "La cita especificada no existe.")
     except Exception as e:
-        messages.error(request, f"Error administrativo: {e}")
+        messages.error(request, f"Error al cancelar la cita: {e}")
 
-    return redirect('mis_citas')
+    return redirect('ver_todas_citas_admin')
+
+def ver_todas_citas_admin(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "Debes iniciar sesión para realizar esta acción.")
+        return redirect('login')
+
+    user_sistema = request.user
+    usuario_actual = Usuario.objects.get(correo=user_sistema.email)
+
+    # Validar permisos de Administrador
+    if not (usuario_actual.idrolfk_id == 1 or user_sistema.is_staff):
+        messages.error(request, "No tienes permisos de administrador para acceder a esta sección.")
+        return redirect('mis_citas')
+
+    # Consulta optimizada con select_related
+    citas = Cita.objects.select_related(
+        'idserviciofk',
+        'idbarberofk__idusuariofk',
+        'idclientefk__idusuariofk',
+        'idagendafk'
+    ).order_by('-fecha', '-horainicio')
+
+    return render(request, 'ver_citas_admin.html', {
+        'citas': citas
+    })

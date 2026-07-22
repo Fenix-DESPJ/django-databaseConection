@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    
+    <!-- Encabezado y botón de retorno al Dashboard -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="main-title text-start mb-1">Gestión Global de Citas</h1>
+            <p class="text-white mb-0">Administra, filtra y gestiona todas las reservas del sistema.</p>
+        </div>
+        <div>
+            <a href="{% url 'dashboard_admin' %}" class="btn btn-outline-light btn-sm px-3">
+                <i class="bi bi-arrow-left me-1"></i> Volver al Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla Operativa de Citas -->
+    <div class="panel-bg">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle custom-dashboard-table">
+                <thead>
+                    <tr>
+                        <th># Cita</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Cliente / Contacto</th>
+                        <th>Barbero</th>
+                        <th>Servicio</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas %}
+                    <tr>
+                        <td class="fw-bold text-gold">#{{ cita.idCita }}</td>
+                        <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                        <td>{{ cita.horainicio|time:"P" }}</td>
+                        <td>
+                            <div class="fw-bold text-white">
+                                {% if cita.idclientefk and cita.idclientefk.idusuariofk %}
+                                    {{ cita.idclientefk.idusuariofk.nombre }}
+                                {% else %}
+                                    Cliente General
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">
+                                {% if cita.idclientefk and cita.idclientefk.idusuariofk %}
+                                    {{ cita.idclientefk.idusuariofk.numcelular }}
+                                {% endif %}
+                            </small>
+                        </td>
+                        <td>
+                            {% if cita.idbarberofk and cita.idbarberofk.idusuariofk %}
+                                {{ cita.idbarberofk.idusuariofk.nombre }}
+                            {% else %}
+                                No asignado
+                            {% endif %}
+                        </td>
+                        <td>{{ cita.idserviciofk.nombreservicio }}</td>
+                        <td>
+                            {% if "Completado" in cita.observaciones %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Completado</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark font-weight-bold"><i class="bi bi-clock me-1"></i>En Espera</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if "Completado" not in cita.observaciones %}
+                                <a href="{% url 'cancelar_cita_admin' cita.idCita %}" 
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('¿Estás seguro de cancelar la Cita #{{ cita.idCita }}? Se enviará una notificación automática al cliente notificándole la indisponibilidad del barbero.');">
+                                    <i class="bi bi-x-circle me-1"></i> Cancelar Cita
+                                </a>
+                            {% else %}
+                                <small class="text-muted"><i class="bi bi-lock-fill me-1"></i> Finalizada</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-5">
+                            <i class="bi bi-calendar-x display-4 d-block mb-2"></i>
+                            No hay citas registradas en el sistema.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

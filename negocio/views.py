@@ -107,6 +107,13 @@ def gestionar_agenda_admin(request):
         DiaHabilitado.objects.filter(habilitado=True).values_list('fecha', flat=True)
     )
 
+    # NUEVO: fechas del mes visible donde AL MENOS un barbero está deshabilitado
+    fechas_con_incapacidad = set(
+        BarberoDiaHabilitado.objects.filter(
+            habilitado=False, fecha__year=anio, fecha__month=mes
+        ).values_list('fecha', flat=True)
+    )
+
     calendario_semanas = []
     for semana in semanas:
         fila = []
@@ -121,6 +128,7 @@ def gestionar_agenda_admin(request):
                     'habilitado': fecha_actual in dias_habilitados_bd,
                     'pasado': fecha_actual < hoy,
                     'hoy': fecha_actual == hoy,
+                    'con_incapacidad': fecha_actual in fechas_con_incapacidad,  # NUEVO
                 })
         calendario_semanas.append(fila)
 
