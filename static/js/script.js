@@ -624,6 +624,90 @@ document.querySelectorAll('.toggle-password').forEach(button => {
     });
 });
 
+/* --- Carrusel de reseñas/opiniones: loop infinito, sin autoplay --- */
+document.addEventListener("DOMContentLoaded", () => {
+    const dataScript = document.getElementById('resenas-data');
+    const slotPrev = document.getElementById('resenaSlotPrev');
+    const slotCenter = document.getElementById('resenaSlotCenter');
+    const slotNext = document.getElementById('resenaSlotNext');
+    const track = document.getElementById('resenasTrack');
+    const prevBtn = document.getElementById('resenaPrevBtn');
+    const nextBtn = document.getElementById('resenaNextBtn');
+
+    if (!dataScript || !slotPrev || !slotCenter || !slotNext || !track || !prevBtn || !nextBtn) {
+        return; // No hay sección de reseñas en esta página (o no hay opiniones aún)
+    }
+
+    let resenas = [];
+    try {
+        resenas = JSON.parse(dataScript.textContent);
+    } catch (e) {
+        console.error('No se pudieron leer las reseñas:', e);
+        return;
+    }
+
+    const total = resenas.length;
+    if (!total) return;
+
+    let currentIndex = 0;
+
+    // Índice circular: siempre cae dentro de [0, total-1], sin importar el offset
+    function indiceCircular(offset) {
+        return ((currentIndex + offset) % total + total) % total;
+    }
+
+    function renderEstrellas(cantidad) {
+        let html = '';
+        for (let i = 1; i <= 5; i++) {
+            html += `<i class="bi ${i <= cantidad ? 'bi-star-fill' : 'bi-star'}"></i>`;
+        }
+        return html;
+    }
+
+    function renderTarjeta(slotEl, resena) {
+        slotEl.innerHTML = `
+            <div class="resena-card">
+                <div class="resena-estrellas mb-2">${renderEstrellas(resena.estrellas)}</div>
+                <p class="resena-comentario">"${resena.comentario}"</p>
+                <p class="resena-cliente mb-0">${resena.cliente}</p>
+                <p class="resena-fecha">${resena.fecha}</p>
+            </div>
+        `;
+    }
+
+    function pintarCarrusel() {
+        // Con 1 o 2 reseñas no tiene sentido mostrar prev/next duplicados
+        slotPrev.style.visibility = total > 2 ? 'visible' : 'hidden';
+        slotNext.style.visibility = total > 2 ? 'visible' : 'hidden';
+        prevBtn.disabled = total <= 1;
+        nextBtn.disabled = total <= 1;
+
+        renderTarjeta(slotPrev, resenas[indiceCircular(-1)]);
+        renderTarjeta(slotCenter, resenas[indiceCircular(0)]);
+        renderTarjeta(slotNext, resenas[indiceCircular(1)]);
+    }
+
+    function irA(offset) {
+        if (total <= 1) return;
+        currentIndex = indiceCircular(offset);
+
+        // Pequeño fundido para que el cambio de tarjeta se sienta fluido,
+        // en vez de un salto brusco de contenido
+        track.classList.add('is-changing');
+        window.setTimeout(() => {
+            pintarCarrusel();
+            track.classList.remove('is-changing');
+        }, 180);
+    }
+
+    prevBtn.addEventListener('click', () => irA(-1));
+    nextBtn.addEventListener('click', () => irA(1));
+
+    // Render inicial. Ningún setInterval/autoplay: el movimiento solo
+    // ocurre cuando el usuario hace clic en las flechas.
+    pintarCarrusel();
+});
+
 /* Carruseles y mas estilo*/
 document.addEventListener("DOMContentLoaded", () => {
     const images = document.querySelectorAll('.carrusel-container img');
