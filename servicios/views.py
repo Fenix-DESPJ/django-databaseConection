@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 from django.db.models import Sum, Count
 from usuarios.models import Usuario
-from usuarios.models import Usuario as UsuarioModel  # si ya tienes Usuario importado arriba, omite esta línea
+from usuarios.models import Usuario as UsuarioModel  
 from negocio.models import BarberoDiaHabilitado
 from django.apps import apps
 # reservas/views.py

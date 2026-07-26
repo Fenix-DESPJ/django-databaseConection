@@ -373,28 +373,45 @@ def olvide_contrasena(request):
             token = signer.sign(usuario.idusuario) 
             link = request.build_absolute_uri(reverse('cambiar_contrasena', args=[token]))
             
+            # Asunto y cuerpo redactados para M&A Barbería
+            asunto = 'Recuperación de Contraseña - M&A Barbería'
+            mensaje = (
+                f"Hola {usuario.nombre},\n\n"
+                f"Has solicitado restablecer tu contraseña para ingresar a M&A Barbería.\n"
+                f"Haz clic en el siguiente enlace para crear una nueva contraseña:\n\n"
+                f"{link}\n\n"
+                f"Este enlace es válido únicamente durante 1 hora.\n"
+                f"Si no solicitaste este cambio, puedes ignorar este mensaje."
+            )
+            
             send_mail(
-                'Recuperación de contraseña',
-                f'Hola {usuario.nombre}, haz clic aquí para cambiar tu contraseña: {link}',
-                'tu-barberia@email.com',
-                [usuario.correo],
+                subject=asunto,
+                message=mensaje,
+                from_email=settings.DEFAULT_FROM_EMAIL,  # <--- Usa el correo configurado en settings
+                recipient_list=[usuario.correo],
                 fail_silently=False,
             )
             return render(request, 'mensaje_enviado.html')
+        else:
+            # Si el correo no existe, mostramos mensaje para no dejar la pantalla en blanco
+            messages.error(request, "El correo electrónico ingresado no se encuentra registrado.")
+            return render(request, 'olvide_contrasena.html')
             
     return render(request, 'olvide_contrasena.html')
 
 
 def cambiar_contrasena(request, token):
     signer = TimestampSigner()
+    
     try:
+        # max_age=3600 valida que el token no tenga más de 1 hora (3600 segundos)
         id_usuario = signer.unsign(token, max_age=3600)
         usuario = Usuario.objects.get(pk=id_usuario)
     except SignatureExpired:
-        messages.error(request, "El enlace ha expirado. Solicita uno nuevo.")
+        messages.error(request, "El enlace ha expirado. Por favor, solicita uno nuevo.")
         return redirect('olvide_contrasena')
     except (BadSignature, Usuario.DoesNotExist):
-        messages.error(request, "El enlace no es válido.")
+        messages.error(request, "El enlace de recuperación no es válido o está corrupto.")
         return redirect('iniciar_sesion')
 
     if request.method == 'POST':
@@ -402,9 +419,11 @@ def cambiar_contrasena(request, token):
         confirmar = request.POST.get('confirmar')
         
         if nueva_pass == confirmar:
+            # Actualiza la contraseña en tu modelo personalizado
             usuario.contrasena = make_password(nueva_pass)
             usuario.save()
             
+            # Sincroniza con el modelo nativo de Django (si aplica en tu sistema)
             try:
                 user_auth = User.objects.get(username=usuario.correo) 
                 user_auth.set_password(nueva_pass)
@@ -412,7 +431,7 @@ def cambiar_contrasena(request, token):
             except User.DoesNotExist:
                 pass
 
-            messages.success(request, "Contraseña actualizada correctamente. Ya puedes iniciar sesión.")
+            messages.success(request, "¡Tu contraseña se ha actualizado correctamente! Ya puedes iniciar sesión.")
             return redirect('iniciar_sesion')
         else:
             messages.error(request, "Las contraseñas no coinciden. Inténtalo de nuevo.")

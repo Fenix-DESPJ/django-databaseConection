@@ -29,3 +29,6 @@ media/
 # Si quieres mantener el control de versiones de los cambios en la DB,
 # comenta la siguiente línea, pero si solo estás empezando, es mejor ignorarlos)
 # migrations/__pycache__/
+
+# Archivos de entorno y credenciales
+.env
