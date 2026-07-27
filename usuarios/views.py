@@ -243,6 +243,12 @@ def registrarse(request):
             telefono = request.POST.get('telefono')
             fecha = request.POST.get('fecha')
             
+            # --- Validación: el correo no debe estar ya registrado ---
+            if Usuario.objects.filter(correo__iexact=correo).exists() or \
+                User.objects.filter(email__iexact=correo).exists():
+                messages.error(request, "Ese correo ya está registrado. Intenta iniciar sesión o usa otro correo.")
+                return render(request, 'registrarse.html', {'error': "Ese correo ya está registrado."})
+            
             rol_cliente = Rol.objects.get(idrol=3)
 
             # Antes: trigger FormatearNombreUsuario (BEFORE INSERT)

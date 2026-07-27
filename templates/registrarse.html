@@ -21,6 +21,13 @@
                 Crea tu cuenta para agendar y gestionar tus citas.
             </p>
 
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'danger' }}{% endif %}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
             <form id="registro-form" method="POST" action="{% url 'registrarse' %}">
                 {% csrf_token %}
                 
