@@ -1,0 +1,389 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-padding editar-index-section">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <p class="section-eyebrow">Panel de administración</p>
+      <h2 class="text-uppercase fw-bold text-white title-options">Editar contenido del Inicio</h2>
+      <div class="sub-bar"></div>
+      <p class="text-white-50 mb-0" style="max-width:560px; margin:0 auto;">
+        Estos textos e imágenes se reflejan directamente en la portada pública.
+        Las opiniones de clientes y los botones de acción no se editan aquí:
+        se generan automáticamente.
+      </p>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert-mya {% if message.tags == 'error' %}alert-mya-error{% else %}alert-mya-ok{% endif %} mb-4">
+          <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %} me-2"></i>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <!-- ============================= HERO ============================= -->
+      <div class="editar-card mb-4">
+        <div class="editar-card-header">
+          <i class="bi bi-flag-fill"></i>
+          <div>
+            <h5>Sección Hero</h5>
+            <span>Lo primero que ve cualquier visitante al entrar</span>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label-custom">Etiqueta pequeña</label>
+            <input type="text" class="form-control form-control-custom" name="hero_etiqueta"
+                   value="{{ contenido.hero_etiqueta }}" maxlength="60">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Título principal</label>
+            <input type="text" class="form-control form-control-custom" name="hero_titulo"
+                   value="{{ contenido.hero_titulo }}" maxlength="150">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label-custom">Descripción</label>
+            <textarea class="form-control form-control-custom" name="hero_descripcion"
+                      rows="3">{{ contenido.hero_descripcion }}</textarea>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">Título de la tarjeta flotante</label>
+            <input type="text" class="form-control form-control-custom" name="hero_tarjeta_titulo"
+                   value="{{ contenido.hero_tarjeta_titulo }}" maxlength="60">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Texto de la tarjeta flotante</label>
+            <input type="text" class="form-control form-control-custom" name="hero_tarjeta_texto"
+                   value="{{ contenido.hero_tarjeta_texto }}" maxlength="100">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label-custom d-block mb-3">Imágenes del carrusel del hero</label>
+            <div class="row g-3">
+
+              <div class="col-md-4">
+                <div class="imagen-upload-box">
+                  {% if contenido.hero_imagen_1 %}
+                    <img src="{{ contenido.hero_imagen_1.url }}" alt="Hero 1" class="imagen-preview" id="preview-hero-1">
+                  {% else %}
+                    <div class="imagen-preview imagen-vacia" id="preview-hero-1"><i class="bi bi-image"></i></div>
+                  {% endif %}
+                  <label class="btn-subir-imagen">
+                    <i class="bi bi-upload me-1"></i> Cambiar
+                    <input type="file" name="hero_imagen_1" accept="image/*" class="d-none"
+                           onchange="previsualizarImagen(this, 'preview-hero-1')">
+                  </label>
+                  <span class="imagen-caption">Imagen 1</span>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="imagen-upload-box">
+                  {% if contenido.hero_imagen_2 %}
+                    <img src="{{ contenido.hero_imagen_2.url }}" alt="Hero 2" class="imagen-preview" id="preview-hero-2">
+                  {% else %}
+                    <div class="imagen-preview imagen-vacia" id="preview-hero-2"><i class="bi bi-image"></i></div>
+                  {% endif %}
+                  <label class="btn-subir-imagen">
+                    <i class="bi bi-upload me-1"></i> Cambiar
+                    <input type="file" name="hero_imagen_2" accept="image/*" class="d-none"
+                           onchange="previsualizarImagen(this, 'preview-hero-2')">
+                  </label>
+                  <span class="imagen-caption">Imagen 2</span>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="imagen-upload-box">
+                  {% if contenido.hero_imagen_3 %}
+                    <img src="{{ contenido.hero_imagen_3.url }}" alt="Hero 3" class="imagen-preview" id="preview-hero-3">
+                  {% else %}
+                    <div class="imagen-preview imagen-vacia" id="preview-hero-3"><i class="bi bi-image"></i></div>
+                  {% endif %}
+                  <label class="btn-subir-imagen">
+                    <i class="bi bi-upload me-1"></i> Cambiar
+                    <input type="file" name="hero_imagen_3" accept="image/*" class="d-none"
+                           onchange="previsualizarImagen(this, 'preview-hero-3')">
+                  </label>
+                  <span class="imagen-caption">Imagen 3</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================= MARCA ============================= -->
+      <div class="editar-card mb-4">
+        <div class="editar-card-header">
+          <i class="bi bi-award-fill"></i>
+          <div>
+            <h5>Nuestra marca</h5>
+            <span>Sección "Una barbería pensada para..."</span>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-8">
+            <label class="form-label-custom">Título</label>
+            <input type="text" class="form-control form-control-custom" name="marca_titulo"
+                   value="{{ contenido.marca_titulo }}" maxlength="150">
+
+            <label class="form-label-custom mt-3">Descripción</label>
+            <textarea class="form-control form-control-custom" name="marca_descripcion"
+                      rows="4">{{ contenido.marca_descripcion }}</textarea>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom d-block mb-3">Imagen de la sección</label>
+            <div class="imagen-upload-box imagen-upload-box-alta">
+              {% if contenido.marca_imagen %}
+                <img src="{{ contenido.marca_imagen.url }}" alt="Marca" class="imagen-preview" id="preview-marca">
+              {% else %}
+                <div class="imagen-preview imagen-vacia" id="preview-marca"><i class="bi bi-image"></i></div>
+              {% endif %}
+              <label class="btn-subir-imagen">
+                <i class="bi bi-upload me-1"></i> Cambiar imagen
+                <input type="file" name="marca_imagen" accept="image/*" class="d-none"
+                       onchange="previsualizarImagen(this, 'preview-marca')">
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== HORARIOS Y CONTACTO ===================== -->
+      <div class="editar-card mb-4">
+        <div class="editar-card-header">
+          <i class="bi bi-telephone-fill"></i>
+          <div>
+            <h5>Horarios y contacto</h5>
+            <span>Datos que aparecen en la sección final de contacto</span>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label-custom">Horario Lunes a Viernes</label>
+            <input type="text" class="form-control form-control-custom" name="horario_semana"
+                   value="{{ contenido.horario_semana }}" maxlength="60">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Horario Sábados</label>
+            <input type="text" class="form-control form-control-custom" name="horario_sabado"
+                   value="{{ contenido.horario_sabado }}" maxlength="60">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">Teléfono fijo</label>
+            <input type="text" class="form-control form-control-custom" name="telefono_fijo"
+                   value="{{ contenido.telefono_fijo }}" maxlength="30">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">WhatsApp</label>
+            <input type="text" class="form-control form-control-custom" name="whatsapp"
+                   value="{{ contenido.whatsapp }}" maxlength="30">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label-custom">Dirección</label>
+            <input type="text" class="form-control form-control-custom" name="direccion"
+                   value="{{ contenido.direccion }}" maxlength="200">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label-custom">
+              URL del mapa embebido
+              <small class="d-block text-white-50 mt-1" style="font-size:0.78rem;">
+                Pégala desde Google Maps → Compartir → Insertar un mapa → copia solo el "src" del iframe.
+              </small>
+            </label>
+            <input type="url" class="form-control form-control-custom" name="mapa_embed_url"
+                   value="{{ contenido.mapa_embed_url }}">
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================= CTA FINAL ============================= -->
+      <div class="editar-card mb-4">
+        <div class="editar-card-header">
+          <i class="bi bi-megaphone-fill"></i>
+          <div>
+            <h5>Llamado a la acción final</h5>
+            <span>El bloque justo antes del pie de página</span>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label-custom">Título</label>
+            <input type="text" class="form-control form-control-custom" name="cta_titulo"
+                   value="{{ contenido.cta_titulo }}" maxlength="150">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Texto</label>
+            <input type="text" class="form-control form-control-custom" name="cta_texto"
+                   value="{{ contenido.cta_texto }}" maxlength="200">
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================= ACCIONES ============================= -->
+      <div class="d-flex justify-content-center gap-3 flex-wrap mt-5">
+        <a href="{% url 'home' %}" class="btn btn-borde">
+          <i class="bi bi-x-lg me-1"></i> Cancelar
+        </a>
+        <button type="submit" class="btn btn-dorado px-4">
+          <i class="bi bi-check-lg me-1"></i> Guardar cambios
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .editar-index-section { padding-top: 2rem; }
+
+  .editar-card {
+    background: linear-gradient(145deg, #171717, #0b0b0b);
+    border: 1px solid rgba(255, 198, 0, 0.10);
+    border-radius: 18px;
+    padding: 2rem 2rem 2.2rem;
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+  }
+  .editar-card:hover {
+    border-color: rgba(255, 198, 0, 0.28);
+    box-shadow: 0 0 30px rgba(255, 198, 0, 0.06);
+  }
+
+  .editar-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .editar-card-header i {
+    color: var(--dorado);
+    font-size: 1.4rem;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border: 1px solid rgba(255,198,0,0.25);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .editar-card-header h5 {
+    margin: 0;
+    color: #fff;
+    font-family: "Times New Roman", serif;
+    letter-spacing: 0.3px;
+  }
+  .editar-card-header span {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.85rem;
+  }
+
+  textarea.form-control-custom { resize: vertical; }
+
+  /* --- Subida de imágenes --- */
+  .imagen-upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .imagen-preview {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #101010;
+  }
+  .imagen-upload-box-alta .imagen-preview { height: 220px; }
+  .imagen-vacia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.25);
+    font-size: 2rem;
+  }
+  .imagen-caption {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .btn-subir-imagen {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: 1px solid var(--dorado);
+    color: var(--dorado);
+    border-radius: 30px;
+    padding: 0.35rem 1rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  .btn-subir-imagen:hover {
+    background-color: var(--dorado);
+    color: #1c1c1c;
+  }
+
+  /* --- Mensajes de Django --- */
+  .alert-mya {
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    font-size: 0.92rem;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .alert-mya-ok {
+    background: rgba(40, 167, 69, 0.12);
+    border: 1px solid rgba(40, 167, 69, 0.35);
+    color: #8ee6a1;
+  }
+  .alert-mya-error {
+    background: rgba(220, 53, 69, 0.12);
+    border: 1px solid rgba(220, 53, 69, 0.35);
+    color: #f2a3ab;
+  }
+</style>
+
+<script>
+  function previsualizarImagen(input, previewId) {
+    if (!input.files || !input.files[0]) return;
+    var preview = document.getElementById(previewId);
+    var url = URL.createObjectURL(input.files[0]);
+
+    if (preview.tagName === 'IMG') {
+      preview.src = url;
+    } else {
+      // Estaba vacía (icono placeholder): la reemplazamos por un <img> real
+      var img = document.createElement('img');
+      img.id = previewId;
+      img.className = 'imagen-preview';
+      img.src = url;
+      preview.replaceWith(img);
+    }
+  }
+</script>
+{% endblock %}
