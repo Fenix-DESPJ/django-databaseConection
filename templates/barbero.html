@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+{% csrf_token %}
 <main class="dashboard-container container my-5">
     
     <div class="welcome-section mb-4">
@@ -45,6 +46,7 @@
                         <th>Cliente</th>
                         <th>Servicio</th>
                         <th>Precio</th>
+                        <th>Pago</th>
                         <th>Estado / Observaciones</th>
                         <th class="text-center">Acción</th>
                     </tr>
@@ -61,9 +63,15 @@
                             <td><span class="badge bg-secondary">{{ cita.idserviciofk.nombreservicio }}</span></td>
                             
                             <td class="text-gold">${{ cita.idserviciofk.precioservicio }}</td>
-                            
+
                             <td>
-                                {% if "Completado" in cita.observaciones %}
+                                <span class="badge bg-dark border border-secondary badge-metodo-pago">
+                                    {{ cita.idpagofk.metodopago|default:"Sin definir" }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {% if cita.esta_completada %}
                                     <span class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Servicio Realizado</span>
                                 {% else %}
                                     <span class="text-warning small italic"><i class="bi bi-clock-history"></i> Pendiente</span>
@@ -71,13 +79,27 @@
                             </td>
                             
                             <td class="text-center">
-                                {% if "Completado" in cita.observaciones %}
-                                    <button class="btn btn-sm btn-outline-secondary" disabled>Listo</button>
-                                {% else %}
-                                    <a href="{% url 'completar_cita' cita.idcita %}" class="btn btn-sm btn-gold fw-bold" style="background: #ffc600; color: #000; border-radius: 8px; border: none; padding: 5px 12px; font-size: 0.85rem;">
-                                        Completar
-                                    </a>
-                                {% endif %}
+                                <div class="d-flex gap-2 justify-content-center">
+                                    {% if cita.esta_completada %}
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>Listo</button>
+                                        <!-- Cita completada: método de pago inmutable, botón Editar deshabilitado -->
+                                        <button class="btn btn-sm btn-outline-secondary" disabled title="La cita ya fue completada">
+                                            Editar
+                                        </button>
+                                    {% else %}
+                                        <a href="{% url 'completar_cita' cita.idcita %}" class="btn btn-sm btn-gold fw-bold" style="background: #ffc600; color: #000; border-radius: 8px; border: none; padding: 5px 12px; font-size: 0.85rem;">
+                                            Completar
+                                        </a>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-light btn-editar-pago"
+                                                data-cita-id="{{ cita.idcita }}"
+                                                data-metodo-actual="{{ cita.idpagofk.metodopago }}"
+                                                data-url-editar-pago="{% url 'editar_metodo_pago' cita.idcita %}"
+                                                style="border-radius: 8px; padding: 5px 12px; font-size: 0.85rem;">
+                                            Editar
+                                        </button>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                     {% empty %}
@@ -93,4 +115,31 @@
     </div>
 
 </main>
+
+<!-- Modal: editar método de pago (solo citas NO completadas, validado también en backend) -->
+<div class="modal fade" id="editarPagoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:#1d1d1d; border:1px solid #444; border-radius:12px;">
+            <div class="modal-body p-4">
+                <h5 class="text-gold mb-3">Editar método de pago</h5>
+                <div class="mb-3">
+                    <label class="form-label text-white-50 small" for="editarPagoMetodo">Nuevo método</label>
+                    <select class="form-select" id="editarPagoMetodo">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="PSE">PSE</option>
+                        <option value="Tarjeta">Tarjeta de Crédito/Débito</option>
+                    </select>
+                </div>
+                <div id="editarPagoError" class="text-danger small mb-3" style="display:none;"></div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-sm fw-bold" id="btnGuardarMetodoPago"
+                            style="background:#ffc600; color:#000; border-radius:8px; border:none; padding:6px 16px;">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

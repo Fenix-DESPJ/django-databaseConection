@@ -1,5 +1,5 @@
 // --- VARIABLES GLOBALMENTE DECLARADAS PARA MODALES BOOTSTRAP ---
-let pseModal, cardModal, reservationToast;
+let reservationToast;
 
 // --- ESTADO DE DISPONIBILIDAD (viene del backend: días habilitados por el admin,
 //     horas configuradas y horas ya ocupadas por barbero/fecha) ---
@@ -81,10 +81,9 @@ async function inicializarModuloReservas() {
     }
   }
 
-  // --- INICIALIZACIÓN DE MODALES Y TOASTS (BOOTSTRAP) ---
-  pseModal = new bootstrap.Modal(document.getElementById("pseModal"));
-  cardModal = new bootstrap.Modal(document.getElementById("cardModal"));
-
+  // --- INICIALIZACIÓN DE TOASTS (BOOTSTRAP) ---
+  // Ya no hay modales de pasarela (PSE/Tarjeta): el método de pago se
+  // guarda directamente al seleccionarlo en el dropdown.
   const toastEl = document.getElementById("reservationToast");
   if (toastEl) {
     reservationToast = new bootstrap.Toast(toastEl, { delay: 3000 });
@@ -153,25 +152,6 @@ async function inicializarModuloReservas() {
       if (summaryPayment) summaryPayment.textContent = metodo;
     });
   });
-
-  // Validar cuando confirman dentro del modal de PSE o Tarjeta
-  const btnPagarPSE = document.getElementById("btnPagarPSE");
-  if (btnPagarPSE) {
-    btnPagarPSE.addEventListener("click", () => {
-      inputMetodoPago.value = "PSE";
-      if (selectedMethodDisplay) selectedMethodDisplay.textContent = "PSE";
-      if (summaryPayment) summaryPayment.textContent = "PSE";
-    });
-  }
-
-  const btnPagarCard = document.getElementById("btnPagarCard");
-  if (btnPagarCard) {
-    btnPagarCard.addEventListener("click", () => {
-      inputMetodoPago.value = "Tarjeta de Crédito";
-      if (selectedMethodDisplay) selectedMethodDisplay.textContent = "Tarjeta de Crédito";
-      if (summaryPayment) summaryPayment.textContent = "Tarjeta de Crédito";
-    });
-  }
 
   // --- RENDERIZACIÓN DINÁMICA DEL CALENDARIO ---
   function renderizarCalendario() {
@@ -624,90 +604,6 @@ document.querySelectorAll('.toggle-password').forEach(button => {
     });
 });
 
-/* --- Carrusel de reseñas/opiniones: loop infinito, sin autoplay --- */
-document.addEventListener("DOMContentLoaded", () => {
-    const dataScript = document.getElementById('resenas-data');
-    const slotPrev = document.getElementById('resenaSlotPrev');
-    const slotCenter = document.getElementById('resenaSlotCenter');
-    const slotNext = document.getElementById('resenaSlotNext');
-    const track = document.getElementById('resenasTrack');
-    const prevBtn = document.getElementById('resenaPrevBtn');
-    const nextBtn = document.getElementById('resenaNextBtn');
-
-    if (!dataScript || !slotPrev || !slotCenter || !slotNext || !track || !prevBtn || !nextBtn) {
-        return; // No hay sección de reseñas en esta página (o no hay opiniones aún)
-    }
-
-    let resenas = [];
-    try {
-        resenas = JSON.parse(dataScript.textContent);
-    } catch (e) {
-        console.error('No se pudieron leer las reseñas:', e);
-        return;
-    }
-
-    const total = resenas.length;
-    if (!total) return;
-
-    let currentIndex = 0;
-
-    // Índice circular: siempre cae dentro de [0, total-1], sin importar el offset
-    function indiceCircular(offset) {
-        return ((currentIndex + offset) % total + total) % total;
-    }
-
-    function renderEstrellas(cantidad) {
-        let html = '';
-        for (let i = 1; i <= 5; i++) {
-            html += `<i class="bi ${i <= cantidad ? 'bi-star-fill' : 'bi-star'}"></i>`;
-        }
-        return html;
-    }
-
-    function renderTarjeta(slotEl, resena) {
-        slotEl.innerHTML = `
-            <div class="resena-card">
-                <div class="resena-estrellas mb-2">${renderEstrellas(resena.estrellas)}</div>
-                <p class="resena-comentario">"${resena.comentario}"</p>
-                <p class="resena-cliente mb-0">${resena.cliente}</p>
-                <p class="resena-fecha">${resena.fecha}</p>
-            </div>
-        `;
-    }
-
-    function pintarCarrusel() {
-        // Con 1 o 2 reseñas no tiene sentido mostrar prev/next duplicados
-        slotPrev.style.visibility = total > 2 ? 'visible' : 'hidden';
-        slotNext.style.visibility = total > 2 ? 'visible' : 'hidden';
-        prevBtn.disabled = total <= 1;
-        nextBtn.disabled = total <= 1;
-
-        renderTarjeta(slotPrev, resenas[indiceCircular(-1)]);
-        renderTarjeta(slotCenter, resenas[indiceCircular(0)]);
-        renderTarjeta(slotNext, resenas[indiceCircular(1)]);
-    }
-
-    function irA(offset) {
-        if (total <= 1) return;
-        currentIndex = indiceCircular(offset);
-
-        // Pequeño fundido para que el cambio de tarjeta se sienta fluido,
-        // en vez de un salto brusco de contenido
-        track.classList.add('is-changing');
-        window.setTimeout(() => {
-            pintarCarrusel();
-            track.classList.remove('is-changing');
-        }, 180);
-    }
-
-    prevBtn.addEventListener('click', () => irA(-1));
-    nextBtn.addEventListener('click', () => irA(1));
-
-    // Render inicial. Ningún setInterval/autoplay: el movimiento solo
-    // ocurre cuando el usuario hace clic en las flechas.
-    pintarCarrusel();
-});
-
 /* Carruseles y mas estilo*/
 document.addEventListener("DOMContentLoaded", () => {
     const images = document.querySelectorAll('.carrusel-container img');
@@ -1078,6 +974,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const recomendacionTexto = document.getElementById("recomendacionTexto");
     const metricasChips = document.getElementById("metricasChips");
 
+    // ✅ Este bloque es exclusivo de analisis_rostro.html. Como script.js se
+    // carga en TODAS las páginas (incluida barbero.html), sin esta guarda
+    // "overlay", "contenido", "btnAceptar", etc. son null en cualquier otra
+    // página, y la primera línea de más abajo (btnAceptar.addEventListener)
+    // lanza el "Cannot read properties of null (reading 'addEventListener')".
+    if (!overlay || !contenido || !btnAceptar || !btnUsarCamara || !btnUsarArchivo ||
+        !btnUsarPerfil || !inputArchivo || !zonaCamara || !videoCamara ||
+        !canvasCaptura || !btnCapturar || !zonaPreview || !imgPreview ||
+        !btnAnalizar || !btnReintentar || !spinnerAnalisis || !errorBox || !resultadoBox) {
+        return;
+    }
+
     let streamCamara = null;
     let blobCapturado = null;
     let usarPerfilSeleccionado = false;
@@ -1403,4 +1311,97 @@ document.addEventListener("DOMContentLoaded", () => {
             btnEnviar.innerHTML = textoOriginal;
         }
     });
+});
+
+// =============================================================================
+// EDICIÓN DE MÉTODO DE PAGO — DASHBOARD DEL BARBERO
+// Botón "Editar" junto a "Completar": abre un modal chico, cambia el método
+// de pago vía AJAX y NO se muestra / se deshabilita en filas ya completadas.
+// =============================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const modalEl = document.getElementById("editarPagoModal");
+    const selectMetodo = document.getElementById("editarPagoMetodo");
+    const btnGuardar = document.getElementById("btnGuardarMetodoPago");
+    const errorDiv = document.getElementById("editarPagoError");
+
+    // ✅ Verificación de seguridad: Si no existen los elementos en esta página, detenemos la ejecución
+    if (!modalEl || !selectMetodo || !btnGuardar || !errorDiv) return;
+
+    function getCookie(name) {
+        const input = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (input) return input.value;
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+    }
+
+    const editarModal = new bootstrap.Modal(modalEl);
+    let citaIdActual = null;
+    let filaActual = null;
+    let urlEditarPagoActual = null;
+
+    document.querySelectorAll(".btn-editar-pago").forEach(btn => {
+        btn.addEventListener("click", () => {
+            citaIdActual = btn.dataset.citaId;
+            filaActual = btn.closest("tr");
+            // Usamos la URL real generada por Django ({% url %}), en vez de
+            // reconstruirla a mano en el JS: si el proyecto cambia el prefijo
+            // de rutas, esto sigue funcionando sin tocar nada aquí.
+            urlEditarPagoActual = btn.dataset.urlEditarPago;
+            selectMetodo.value = btn.dataset.metodoActual || "";
+            errorDiv.style.display = "none";
+            editarModal.show();
+        });
+    });
+    
+    if (btnGuardar) {
+        btnGuardar.addEventListener("click", async () => {
+            if (!citaIdActual || !selectMetodo.value || !urlEditarPagoActual) {
+                errorDiv.textContent = "Selecciona un método de pago.";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            btnGuardar.disabled = true;
+            const textoOriginal = btnGuardar.innerHTML;
+            btnGuardar.innerHTML = "Guardando...";
+
+            try {
+                const resp = await fetch(urlEditarPagoActual, {
+                    method: "POST",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `metodo_pago=${encodeURIComponent(selectMetodo.value)}`,
+                });
+                const data = await resp.json();
+
+                if (data.ok) {
+                    if (filaActual) {
+                        const badge = filaActual.querySelector(".badge-metodo-pago");
+                        if (badge) badge.textContent = data.metodo_pago_display;
+                    }
+                    editarModal.hide();
+                } else {
+                    errorDiv.textContent = data.error || "No se pudo actualizar el método de pago.";
+                    errorDiv.style.display = "block";
+                    // Si el backend rechazó por estar completada, bloqueamos el botón en la fila.
+                    if (filaActual) {
+                        const btnFila = filaActual.querySelector(".btn-editar-pago");
+                        if (btnFila && resp.status === 400) {
+                            btnFila.disabled = true;
+                            btnFila.classList.add("disabled");
+                        }
+                    }
+                }
+            } catch (err) {
+                errorDiv.textContent = "Error de conexión, intenta de nuevo.";
+                errorDiv.style.display = "block";
+            } finally {
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML = textoOriginal;
+            }
+        });
+    }
 });

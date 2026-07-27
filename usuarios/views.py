@@ -24,7 +24,7 @@ import tempfile
 from datetime import timedelta, date
 
 # Importación de tus modelos manuales
-from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion
+from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago
 from negocio.models import Barbero, Agenda
 from .utils import analizar_forma_rostro, RostroNoDetectadoError, RECOMENDACIONES_POR_FORMA
 
@@ -314,8 +314,10 @@ def panel_barbero(request):
 
     hoy = timezone.now().date()
 
-    citas_proximas = Cita.objects.filter(
-        idbarberofk=barbero_perfil.idbarbero, 
+    citas_proximas = Cita.objects.select_related(
+        'idpagofk', 'idclientefk__idusuariofk', 'idserviciofk', 'idagendafk'
+    ).filter(
+        idbarberofk=barbero_perfil.idbarbero,
         idagendafk__fecha__gte=hoy
     ).order_by('idagendafk__fecha', 'idagendafk__horainicio')
 
@@ -344,8 +346,18 @@ def panel_barbero(request):
 @login_required
 def completar_cita(request, cita_id):
     cita = get_object_or_404(Cita, idcita=cita_id)
+
+    # Idempotencia: si ya estaba completada, no volvemos a disparar notificaciones.
+    if cita.esta_completada:
+        return redirect('panel_barbero')
+
     cita.observaciones = "Completado - Servicio realizado"
     cita.save()
+
+    # Al completarse la cita, el pago queda cerrado/confirmado (ya no editable).
+    if cita.idpagofk and cita.idpagofk.estadopago != Pago.ESTADO_CANCELADO:
+        cita.idpagofk.estadopago = Pago.ESTADO_PAGADO
+        cita.idpagofk.save()
 
     try:
         barbero_usuario = cita.idbarberofk.idusuariofk
@@ -367,6 +379,148 @@ def completar_cita(request, cita_id):
         print(f"DEBUG: No se pudo crear la notificación de confirmación: {e}")
 
     return redirect('panel_barbero')
+
+
+# =========================================================================
+# 5b. RESERVA SIMPLIFICADA (sin pasarela de pago) Y EDICIÓN DE MÉTODO DE PAGO
+# =========================================================================
+@login_required
+@require_POST
+def crear_reserva(request):
+    """
+    Crea la Cita + el registro de Pago asociado a partir del formulario de
+    reservas.html. NO se integra con ninguna pasarela real: el método de
+    pago elegido (Efectivo / PSE / Tarjeta) se guarda tal cual, junto con
+    el monto del servicio, y la cita queda agendada de inmediato.
+
+    Nota: si ya tienes una vista existente (p. ej. en negocio/views.py) que
+    valida disponibilidad de agenda y crea la Cita, reemplaza ahí la parte
+    de creación del Pago/Cita por la lógica de abajo; lo importante es que
+    el guardado del método de pago no dependa de ningún formulario de
+    tarjeta/banco.
+    """
+    try:
+        usuario_manual = Usuario.objects.get(correo=request.user.email)
+        cliente = Cliente.objects.get(idusuariofk=usuario_manual)
+    except (Usuario.DoesNotExist, Cliente.DoesNotExist):
+        return JsonResponse({'ok': False, 'error': 'Tu perfil de cliente no está configurado.'}, status=400)
+
+    servicio_id = request.POST.get('servicio')
+    barbero_id = request.POST.get('barbero')
+    fecha = request.POST.get('fecha')
+    hora = request.POST.get('hora')
+    metodo_pago = (request.POST.get('metodo_pago') or '').strip()
+    observaciones = (request.POST.get('observaciones') or '').strip()
+
+    metodos_validos = dict(Pago.METODO_PAGO_CHOICES)
+    if metodo_pago not in metodos_validos:
+        return JsonResponse({'ok': False, 'error': 'Selecciona un método de pago válido.'}, status=400)
+
+    if not all([servicio_id, barbero_id, fecha, hora]):
+        return JsonResponse({'ok': False, 'error': 'Completa servicio, barbero, fecha y hora.'}, status=400)
+
+    try:
+        servicio = Servicio.objects.get(idservicio=servicio_id)
+        barbero = Barbero.objects.get(idbarbero=barbero_id)
+    except (Servicio.DoesNotExist, Barbero.DoesNotExist):
+        return JsonResponse({'ok': False, 'error': 'Servicio o barbero no válido.'}, status=400)
+
+    try:
+        with transaction.atomic():
+            # Aquí reutiliza tu lógica actual de búsqueda/creación de Agenda
+            # para (barbero, fecha, hora). Se deja como placeholder explícito
+            # porque esa parte no formaba parte de este archivo.
+            agenda, _ = Agenda.objects.get_or_create(
+                idbarberofk=barbero,
+                fecha=fecha,
+                horainicio=hora,
+            )
+
+            # El pago se cierra directamente: sin pasarela, sin validación bancaria.
+            # Efectivo se cobra en el local -> queda PENDIENTE; los demás métodos
+            # se registran como PAGADO porque el usuario ya "confirmó" el pago
+            # en el flujo simplificado.
+            estado_inicial = (
+                Pago.ESTADO_PENDIENTE if metodo_pago == Pago.METODO_EFECTIVO
+                else Pago.ESTADO_PAGADO
+            )
+
+            pago = Pago.objects.create(
+                metodopago=metodo_pago,
+                montototal=servicio.precioservicio,
+                fechapago=timezone.now(),
+                estadopago=estado_inicial,
+            )
+
+            cita = Cita.objects.create(
+                idclientefk=cliente,
+                idbarberofk=barbero,
+                idserviciofk=servicio,
+                idagendafk=agenda,
+                idpagofk=pago,
+                observaciones=observaciones,
+            )
+    except Exception as e:
+        return JsonResponse({'ok': False, 'error': f'No se pudo agendar la cita: {e}'}, status=400)
+
+    return JsonResponse({'ok': True, 'redirect': reverse('home')})
+
+
+@login_required
+@require_POST
+def editar_metodo_pago(request, cita_id):
+    """
+    Permite al barbero (o admin) asignado a la cita cambiar el método de
+    pago registrado, siempre que la cita NO esté completada. Se usa desde
+    el botón "Editar" del dashboard del barbero, vía AJAX.
+    """
+    cita = get_object_or_404(Cita, idcita=cita_id)
+
+    try:
+        usuario_manual = Usuario.objects.get(correo=request.user.email)
+    except Usuario.DoesNotExist:
+        return JsonResponse({'ok': False, 'error': 'Usuario no válido.'}, status=403)
+
+    es_barbero_asignado = (
+        usuario_manual.idrolfk_id == ID_ROL_BARBERO and
+        cita.idbarberofk.idusuariofk_id == usuario_manual.idusuario
+    )
+    es_admin = usuario_manual.idrolfk_id == ID_ROL_ADMIN
+
+    if not (es_barbero_asignado or es_admin):
+        return JsonResponse({'ok': False, 'error': 'No tienes permiso para editar esta cita.'}, status=403)
+
+    # --- Bloqueo backend: cita completada = inmutable ---
+    if cita.esta_completada:
+        return JsonResponse(
+            {'ok': False, 'error': 'La cita ya fue completada; el método de pago no se puede modificar.'},
+            status=400
+        )
+
+    nuevo_metodo = (request.POST.get('metodo_pago') or '').strip()
+    metodos_validos = dict(Pago.METODO_PAGO_CHOICES)
+    if nuevo_metodo not in metodos_validos:
+        return JsonResponse({'ok': False, 'error': 'Método de pago no válido.'}, status=400)
+
+    if cita.idpagofk:
+        pago = cita.idpagofk
+        pago.metodopago = nuevo_metodo
+        pago.save()
+    else:
+        pago = Pago.objects.create(
+            metodopago=nuevo_metodo,
+            montototal=cita.idserviciofk.precioservicio if cita.idserviciofk else None,
+            fechapago=timezone.now(),
+            estadopago=Pago.ESTADO_PENDIENTE,
+        )
+        cita.idpagofk = pago
+        cita.save()
+
+    return JsonResponse({
+        'ok': True,
+        'metodo_pago': nuevo_metodo,
+        'metodo_pago_display': metodos_validos[nuevo_metodo],
+    })
 
 
 def olvide_contrasena(request):

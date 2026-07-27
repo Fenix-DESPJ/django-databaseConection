@@ -44,6 +44,58 @@ class Cliente(models.Model):
         db_table = 'cliente'
         
 
+class Pago(models.Model):
+    """
+    Mapea la tabla `pago`, que ya existía en la base de datos pero no estaba
+    expuesta en el ORM. Aquí es donde vive el método de pago elegido por el
+    cliente (Efectivo, PSE, Tarjeta...). No se hace ninguna validación
+    bancaria real: solo se registra la elección del usuario.
+    """
+    METODO_EFECTIVO = 'Efectivo'
+    METODO_PSE = 'PSE'
+    METODO_TARJETA = 'Tarjeta'
+
+    METODO_PAGO_CHOICES = (
+        (METODO_EFECTIVO, 'Efectivo'),
+        (METODO_PSE, 'PSE'),
+        (METODO_TARJETA, 'Tarjeta de Crédito/Débito'),
+    )
+
+    ESTADO_PAGADO = 'PAGADO'
+    ESTADO_PENDIENTE = 'PENDIENTE'
+    ESTADO_CANCELADO = 'CANCELADO'
+
+    ESTADO_PAGO_CHOICES = (
+        (ESTADO_PAGADO, 'Pagado'),
+        (ESTADO_PENDIENTE, 'Pendiente'),
+        (ESTADO_CANCELADO, 'Cancelado'),
+    )
+
+    idpago = models.AutoField(db_column='idPago', primary_key=True)
+    metodopago = models.CharField(
+        db_column='metodoPago', max_length=35,
+        choices=METODO_PAGO_CHOICES, default=METODO_EFECTIVO
+    )
+    montototal = models.DecimalField(
+        db_column='montoTotal', max_digits=10, decimal_places=2,
+        null=True, blank=True
+    )
+    fechapago = models.DateTimeField(db_column='fechaPago', null=True, blank=True)
+    estadopago = models.CharField(
+        db_column='estadoPago', max_length=15,
+        choices=ESTADO_PAGO_CHOICES, default=ESTADO_PENDIENTE,
+        null=True, blank=True
+    )
+    codigofactura = models.CharField(db_column='codigoFactura', max_length=20, null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pago'
+
+    def __str__(self):
+        return f"{self.metodopago} - {self.estadopago}"
+
+
 class Servicio(models.Model):
     idservicio = models.AutoField(db_column='idServicio', primary_key=True)
     nombreservicio = models.CharField(db_column='nombreServicio', max_length=45)
@@ -75,12 +127,26 @@ class Cita(models.Model):
     idbarberofk = models.ForeignKey('negocio.Barbero', on_delete=models.DO_NOTHING, db_column='idBarberoFk')
     idserviciofk = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING, db_column='idServicioFk')
     idagendafk = models.ForeignKey('negocio.Agenda', on_delete=models.DO_NOTHING, db_column='idAgendaFk')
+    idpagofk = models.ForeignKey(
+        Pago, on_delete=models.DO_NOTHING, db_column='idPagoFk',
+        null=True, blank=True, related_name='citas'
+    )
     observaciones = models.TextField(db_column='observaciones', blank=True, null=True)
     calificacion_omitida = models.BooleanField(db_column='calificacionOmitida', default=False)
 
     class Meta:
         managed = False
         db_table = 'cita'
+
+    @property
+    def esta_completada(self):
+        """
+        No existe una columna `estado` en la tabla `cita`; el estado de
+        'Completada' se sigue infiriendo del texto de `observaciones`,
+        igual que ya hacía la vista `completar_cita`. Se centraliza aquí
+        para no repetir el mismo `in` en todas partes.
+        """
+        return bool(self.observaciones) and 'Completado' in self.observaciones
 
 class Notificacion(models.Model):
     idnotificacion = models.AutoField(primary_key=True)

@@ -224,22 +224,25 @@
         }
 
         function updateButtons() {
-          prevBtn.disabled = activeIndex === 0;
-          nextBtn.disabled = activeIndex === reviews.length - 1;
+          // Con 1 sola reseña no hay a dónde rotar; con 2 o más, el
+          // carrusel es infinito (circular) y las flechas nunca se bloquean.
+          var soloUna = reviews.length <= 1;
+          prevBtn.disabled = soloUna;
+          nextBtn.disabled = soloUna;
         }
 
         prevBtn.addEventListener('click', function () {
-          if (activeIndex > 0) {
-            activeIndex--;
-            render();
-          }
+          if (reviews.length <= 1) return;
+          // Índice circular: de la primera reseña pasa a la última
+          activeIndex = (activeIndex - 1 + reviews.length) % reviews.length;
+          render();
         });
 
         nextBtn.addEventListener('click', function () {
-          if (activeIndex < reviews.length - 1) {
-            activeIndex++;
-            render();
-          }
+          if (reviews.length <= 1) return;
+          // Índice circular: de la última reseña pasa a la primera
+          activeIndex = (activeIndex + 1) % reviews.length;
+          render();
         });
 
         window.addEventListener('resize', positionTrack);

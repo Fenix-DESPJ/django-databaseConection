@@ -79,11 +79,16 @@
 
                         <div class="mb-4">
                             <label class="form-label custom-label">Método de Pago</label>
+                            <!--
+                                Selección directa: no se abre ningún formulario de
+                                pasarela (sin número de tarjeta, CVV ni banco). El
+                                método elegido se guarda tal cual en la reserva.
+                            -->
                             <div class="dropdown w-100">
                                 <button class="btn payment-dropdown dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">Seleccionar método</button>
                                 <ul class="dropdown-menu payment-menu">
-                                    <li><a class="dropdown-item payment-option" href="#" data-method="Tarjeta de Crédito" data-bs-toggle="modal" data-bs-target="#cardModal">Tarjeta de Crédito</a></li>
-                                    <li><a class="dropdown-item payment-option" href="#" data-method="PSE" data-bs-toggle="modal" data-bs-target="#pseModal">PSE</a></li>
+                                    <li><a class="dropdown-item payment-option" href="#" data-method="Tarjeta">Tarjeta de Crédito/Débito</a></li>
+                                    <li><a class="dropdown-item payment-option" href="#" data-method="PSE">PSE</a></li>
                                     <li><a class="dropdown-item payment-option" href="#" data-method="Efectivo">Efectivo</a></li>
                                 </ul>
                             </div>
@@ -120,77 +125,6 @@
         </div>
     </section>
 </form>
-
-<div class="modal fade" id="pseModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content custom-modal">
-            <div class="modal-body">
-                <h3 class="text-gold text-center mb-4">Pago por PSE</h3>
-                <div class="mb-3">
-                    <label class="custom-label">Nombre completo</label>
-                    <input type="text" class="form-control custom-input" placeholder="Ingresa tu nombre"
-                           data-solo="letras" maxlength="60">
-                </div>
-                <div class="mb-3">
-                    <label class="custom-label">Correo electrónico</label>
-                    <input type="email" class="form-control custom-input" placeholder="correo@ejemplo.com">
-                </div>
-                <div class="mb-3">
-                    <label class="custom-label">Banco</label>
-                    <select class="form-select custom-select">
-                        <option>Bancolombia</option>
-                        <option>Davivienda</option>
-                        <option>Banco de Bogotá</option>
-                        <option>BBVA</option>
-                        <option>Banco Popular</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="custom-label">Tipo de cuenta</label>
-                    <select class="form-select custom-select">
-                        <option>Ahorros</option>
-                        <option>Corriente</option>
-                    </select>
-                </div>
-                <button type="button" class="btn btn-reserve w-100" id="btnPagarPSE" data-bs-dismiss="modal">Pagar con PSE</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="cardModal">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content custom-modal">
-            <div class="modal-body">
-                <h3 class="text-gold mb-4">Pago con Tarjeta</h3>
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <input type="text" class="form-control custom-input" id="cardNumero"
-                               placeholder="Número de tarjeta" data-solo="tarjeta"
-                               inputmode="numeric" maxlength="19">
-                    </div>
-                    <div class="col-md-12">
-                        <input type="text" class="form-control custom-input" id="cardTitular"
-                               placeholder="Nombre del titular" data-solo="letras" maxlength="60">
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control custom-input" id="cardExpiry"
-                               placeholder="MM/AA" data-solo="expiry"
-                               inputmode="numeric" maxlength="5">
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control custom-input" id="cardCVV"
-                               placeholder="CVV" data-solo="numeros"
-                               inputmode="numeric" maxlength="4">
-                    </div>
-                    <div class="col-md-12">
-                        <button type="button" class="btn btn-reserve mt-4 w-100" id="btnPagarCard" data-bs-dismiss="modal">Pagar Ahora</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="errorReservaModal">
     <div class="modal-dialog modal-dialog-centered">
