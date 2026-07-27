@@ -3373,6 +3373,7 @@ body.modal-open {
 .resenas-track {
   display: flex;
   align-items: stretch;
+  justify-content: center;
   gap: 24px;
   will-change: transform;
   transition: transform 0.55s cubic-bezier(.25,.8,.3,1);

@@ -29,5 +29,6 @@ urlpatterns = [
 
     #Ruta propia del Dashboard de Administrador
     path('admin-dashboard/', views.dashboard_admin, name='dashboard_admin'),
+    path('editar-contenido-index/', views.editar_contenido_index, name='editar_contenido_index'),
     path('usuarios/admin-dashboard/todas-citas/', views.ver_todas_citas_admin, name='ver_todas_citas_admin'),
 ]

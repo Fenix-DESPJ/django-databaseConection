@@ -59,11 +59,13 @@
                     {% if request.session.sesion_iniciada %}
                         
                         {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard_admin' %}">Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'reportes_admin' %}">Reportes</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'gestionar_agenda_admin' %}">Agenda</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'editar_contenido_index' %}"><i class="bi bi-pencil-square me-1"></i>Editar Inicio</a></li>
                         
                         {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>
@@ -147,6 +149,7 @@
                     <ul class="nav justify-content-center">
                         {% if request.session.sesion_iniciada %}
                             {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'dashboard_admin' %}">Dashboard</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'reportes_admin' %}">Reportes</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
@@ -258,4 +261,3 @@
     <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
-

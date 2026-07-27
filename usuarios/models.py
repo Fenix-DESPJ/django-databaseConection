@@ -197,3 +197,89 @@ class Calificacion(models.Model):
 
     def __str__(self):
         return f"{self.calificacion}★ - Cita #{self.idcitafk_id}"
+    
+    # =========================================================================
+# CONTENIDO EDITABLE DEL LANDING/INDEX (solo Admin/Superusuario vía Django Admin)
+# =========================================================================
+class ContenidoIndex(models.Model):
+    """
+    Modelo tipo 'singleton': solo debe existir UNA fila. Guarda todo el
+    contenido editable de la portada (hero, marca, contacto, CTA).
+    """
+    # --- HERO ---
+    hero_etiqueta = models.CharField(max_length=60, default="Barbería moderna")
+    hero_titulo = models.CharField(max_length=150, default="Estilo, precisión y confianza en cada corte")
+    hero_descripcion = models.TextField(
+        default="En M&A Barber Shop combinamos tradición, elegancia e innovación para "
+                "ofrecer una experiencia de barbería organizada, cómoda y profesional."
+    )
+    hero_tarjeta_titulo = models.CharField(max_length=60, default="Servicio premium")
+    hero_tarjeta_texto = models.CharField(max_length=100, default="Atención personalizada")
+    hero_imagen_1 = models.ImageField(upload_to='index/hero/', null=True, blank=True)
+    hero_imagen_2 = models.ImageField(upload_to='index/hero/', null=True, blank=True)
+    hero_imagen_3 = models.ImageField(upload_to='index/hero/', null=True, blank=True)
+
+    # --- MARCA / SOBRE NOSOTROS ---
+    marca_titulo = models.CharField(max_length=150, default="Una barbería pensada para una experiencia más cómoda")
+    marca_descripcion = models.TextField(
+        default="M&A Barber Shop nace para modernizar el servicio de barbería mediante una "
+                "atención profesional y un sistema de agendamiento que evita largas esperas."
+    )
+    marca_imagen = models.ImageField(upload_to='index/marca/', null=True, blank=True)
+
+    # --- CONTACTO ---
+    horario_semana = models.CharField(max_length=60, default="9:00 a.m. – 8:00 p.m.")
+    horario_sabado = models.CharField(max_length=60, default="9:00 a.m. – 6:00 p.m.")
+    telefono_fijo = models.CharField(max_length=30, default="(601) 123 4567")
+    whatsapp = models.CharField(max_length=30, default="+57 300 123 4567")
+    direccion = models.CharField(max_length=200, default="Carrera 27 #5a 09, Bogotá, Colombia")
+    mapa_embed_url = models.URLField(
+        max_length=500,
+        default="https://maps.google.com/maps?q=Carrera%2027%20%235a%2009,%20Bogota&t=&z=15&ie=UTF-8&iwloc=&output=embed"
+    )
+
+    # --- CTA FINAL ---
+    cta_titulo = models.CharField(max_length=150, default="¿Listo para renovar tu estilo?")
+    cta_texto = models.CharField(max_length=200, default="Agenda tu cita y vive la experiencia M&A Barber Shop.")
+
+    class Meta:
+        verbose_name = "Contenido del Index"
+        verbose_name_plural = "Contenido del Index"
+
+    def __str__(self):
+        return "Contenido de la página principal"
+
+    def save(self, *args, **kwargs):
+        # Fuerza el patrón singleton: siempre pk=1
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # Evita que alguien borre accidentalmente la única fila
+        pass
+
+    @classmethod
+    def cargar(cls):
+        """Devuelve la única instancia, creándola con valores por defecto si no existe."""
+        obj, _creado = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class BarberoDestacado(models.Model):
+    """
+    Tarjetas de barberos que se muestran en la portada (sección 'Nuestro equipo').
+    Independiente del modelo `negocio.Barbero` (ese es para el agendamiento real).
+    """
+    nombre = models.CharField(max_length=100)
+    especialidad = models.CharField(max_length=150, help_text="Ej: Cortes Clásicos · Afeitado")
+    foto = models.ImageField(upload_to='index/barberos/', null=True, blank=True)
+    orden = models.PositiveSmallIntegerField(default=0, help_text="Orden de aparición (menor = primero)")
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Barbero destacado (portada)"
+        verbose_name_plural = "Barberos destacados (portada)"
+        ordering = ['orden', 'id']
+
+    def __str__(self):
+        return self.nombre

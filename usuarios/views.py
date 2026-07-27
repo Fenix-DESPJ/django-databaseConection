@@ -24,7 +24,7 @@ import tempfile
 from datetime import timedelta, date
 
 # Importación de tus modelos manuales
-from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago
+from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago, ContenidoIndex, BarberoDestacado
 from negocio.models import Barbero, Agenda
 from .utils import analizar_forma_rostro, RostroNoDetectadoError, RECOMENDACIONES_POR_FORMA
 
@@ -294,7 +294,62 @@ def home(request):
         calificacion__gte=4
     ).select_related('idclientefk__idusuariofk').order_by('-fechacreacion')[:12]
 
-    return render(request, 'index.html', {'calificaciones': mejores_calificaciones})
+    contenido = ContenidoIndex.cargar()  # crea con defaults si no existe aún
+    barberos = BarberoDestacado.objects.filter(activo=True)
+
+    return render(request, 'index.html', {
+        'calificaciones': mejores_calificaciones,
+        'contenido': contenido,
+        'barberos': barberos,
+    })
+
+
+@login_required
+def editar_contenido_index(request):
+    """
+    Permite al administrador editar el contenido del index (hero, marca,
+    horarios, contacto y CTA) desde un formulario. Al guardar, redirige
+    de vuelta al home para ver los cambios reflejados.
+    """
+    usuario_rol = request.session.get('usuario_rol_id')
+    if usuario_rol != 1:
+        messages.error(request, "Acceso denegado. No tienes permisos de administrador.")
+        return redirect('home')
+
+    contenido = ContenidoIndex.cargar()  # crea con defaults si no existe aún
+
+    if request.method == 'POST':
+        contenido.hero_etiqueta = request.POST.get('hero_etiqueta', '').strip()
+        contenido.hero_titulo = request.POST.get('hero_titulo', '').strip()
+        contenido.hero_descripcion = request.POST.get('hero_descripcion', '').strip()
+        contenido.hero_tarjeta_titulo = request.POST.get('hero_tarjeta_titulo', '').strip()
+        contenido.hero_tarjeta_texto = request.POST.get('hero_tarjeta_texto', '').strip()
+
+        contenido.marca_titulo = request.POST.get('marca_titulo', '').strip()
+        contenido.marca_descripcion = request.POST.get('marca_descripcion', '').strip()
+
+        contenido.horario_semana = request.POST.get('horario_semana', '').strip()
+        contenido.horario_sabado = request.POST.get('horario_sabado', '').strip()
+        contenido.telefono_fijo = request.POST.get('telefono_fijo', '').strip()
+        contenido.whatsapp = request.POST.get('whatsapp', '').strip()
+        contenido.direccion = request.POST.get('direccion', '').strip()
+        contenido.mapa_embed_url = request.POST.get('mapa_embed_url', '').strip()
+
+        contenido.cta_titulo = request.POST.get('cta_titulo', '').strip()
+        contenido.cta_texto = request.POST.get('cta_texto', '').strip()
+
+        # Las imágenes solo se reemplazan si el admin sube un archivo nuevo;
+        # si no se sube nada, se conserva la imagen que ya estaba guardada.
+        for campo in ('hero_imagen_1', 'hero_imagen_2', 'hero_imagen_3', 'marca_imagen'):
+            archivo_nuevo = request.FILES.get(campo)
+            if archivo_nuevo:
+                setattr(contenido, campo, archivo_nuevo)
+
+        contenido.save()
+        messages.success(request, "El contenido del inicio se actualizó correctamente.")
+        return redirect('home')
+
+    return render(request, 'editar_contenido_index.html', {'contenido': contenido})
 
 # =========================================================================
 # 5. VISTAS: PANEL DE BARBERO Y CITAS

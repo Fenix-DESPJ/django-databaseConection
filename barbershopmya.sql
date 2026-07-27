@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-07-2026 a las 17:43:40
+-- Tiempo de generación: 27-07-2026 a las 18:45:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -259,7 +259,19 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (105, 'Can add calificacion', 27, 'add_calificacion'),
 (106, 'Can change calificacion', 27, 'change_calificacion'),
 (107, 'Can delete calificacion', 27, 'delete_calificacion'),
-(108, 'Can view calificacion', 27, 'view_calificacion');
+(108, 'Can view calificacion', 27, 'view_calificacion'),
+(109, 'Can add pago', 28, 'add_pago'),
+(110, 'Can change pago', 28, 'change_pago'),
+(111, 'Can delete pago', 28, 'delete_pago'),
+(112, 'Can view pago', 28, 'view_pago'),
+(113, 'Can add Barbero destacado (portada)', 29, 'add_barberodestacado'),
+(114, 'Can change Barbero destacado (portada)', 29, 'change_barberodestacado'),
+(115, 'Can delete Barbero destacado (portada)', 29, 'delete_barberodestacado'),
+(116, 'Can view Barbero destacado (portada)', 29, 'view_barberodestacado'),
+(117, 'Can add Contenido del Index', 30, 'add_contenidoindex'),
+(118, 'Can change Contenido del Index', 30, 'change_contenidoindex'),
+(119, 'Can delete Contenido del Index', 30, 'delete_contenidoindex'),
+(120, 'Can view Contenido del Index', 30, 'view_contenidoindex');
 
 -- --------------------------------------------------------
 
@@ -291,7 +303,7 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-07-27 15:36:40.224131', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
 (5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-07-27 15:40:19.469730', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-22 14:28:04.856462', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-27 16:09:31.701654', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
 (7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-27 15:41:21.945043', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423');
 
 -- --------------------------------------------------------
@@ -597,10 +609,13 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (13, 'servicios', 'servicio'),
 (26, 'servicios', 'usuario'),
 (6, 'sessions', 'session'),
+(29, 'usuarios', 'barberodestacado'),
 (27, 'usuarios', 'calificacion'),
 (18, 'usuarios', 'cita'),
 (19, 'usuarios', 'cliente'),
+(30, 'usuarios', 'contenidoindex'),
 (22, 'usuarios', 'notificacion'),
+(28, 'usuarios', 'pago'),
 (21, 'usuarios', 'perfilusuario'),
 (7, 'usuarios', 'rol'),
 (20, 'usuarios', 'servicio'),
@@ -650,7 +665,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (24, 'negocio', '0003_alter_configuracionhorario_id_alter_diahabilitado_id_and_more', '2026-07-01 20:59:29.749683'),
 (25, 'usuarios', '0002_cita_cliente_servicio_perfilusuario_notificacion', '2026-07-02 00:38:56.875506'),
 (26, 'servicios', '0002_agenda_barbero_cliente_usuario', '2026-07-02 00:52:25.138123'),
-(27, 'usuarios', '0003_calificacion', '2026-07-17 19:38:38.253486');
+(27, 'usuarios', '0003_calificacion', '2026-07-17 19:38:38.253486'),
+(28, 'usuarios', '0004_pago_barberodestacado_contenidoindex', '2026-07-27 16:00:42.881541');
 
 -- --------------------------------------------------------
 
@@ -672,6 +688,7 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('3i8hqj5a439xu8rb79kfnqrtmc7o1gzq', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wmXvY:VsS7Bovr4kQ63O-Zk7GJkVZEVSMHkAfrpnd-1xz4AVU', '2026-08-05 14:28:04.859625'),
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
 ('avgczg5y3i4uccct4edfx4nl1tkahju3', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wkjcF:Al9k-Y9_En4MSelWtg-nU6I69OtmZKAmhrEZ6ceu208', '2026-07-31 14:32:39.014945'),
+('dzsp3fialylt9tyorwfvqp4qnoe6xe6t', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1woNtT:OsSo6qdmkIEHGywJbMr9EGdWd9kaI9Q3HFiZ5SN59aI', '2026-08-10 16:09:31.761168'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
 ('fs60l91w68xadajzglyqlv4pe04469xt', '.eJxVj0tuhDAQRO_Sa4TAQ2PMcvZzBqtx28EJcUv-rKLcfcQIaZLte6VS1Q9YanW3rfhsI8MKM3R_2Ubuy6dT8CelD-mdpJrj1p-R_rKlfwj7435l_xXsVHZYQQ_LYMIt6M0YDqwDjXpQPLs5EPtFL0obdIpRTzjhoIJBRDJqnEZGZxA6KL5ESTam6CIxwVpz8x200ihHsUm-t-zPoZQivHmW4_VsfKMgVWBN7Th-n7NLVn0:1wewGw:CvaDz1aJKTprf-JR-t2Mri9MgzR-tQk2MeTDj6l93Vo', '2026-07-15 14:50:42.956166'),
 ('m37qj12g713d43akpcxqc7w88eyn2nfc', '.eJxVj8EOwiAQRP9lz01DsVtKj979BrJlwaIVEign47-bmibqdd7LZOYJhuq2mFpcNoFhggGa32wme3dxB3yjeE2tTXHLYW53pT1oaS-J3Xo-3L-ChcoCEygxCu1PXs1as2flqVNC8mAHT-xGNUql0UpG1WOPQnqNiKRl13eMViM0UFwJKZoQgw3EBNOWq2uglko5JBPTY85uH0oxwDfPaf08615vPTxO-Q:1wcP6q:8ftjTcLXAH0O328CfgWTbOaEmnp2-JGPNN2SPfBuSNs', '2026-07-08 15:01:48.007467'),
@@ -707,19 +724,19 @@ INSERT INTO `notificacion` (`idnotificacion`, `tipo`, `mensaje`, `leida`, `fecha
 (7, 'reserva_creada', 'Tu cita de Experiencia Premium quedó reservada para el 29/07/2026 a las 14:30 con JUAN MANUEL RESTREPO.', 0, '2026-07-27 15:04:43.397726', 16),
 (8, 'nueva_cita', 'JAMES ABELARDO DIAZ URIBE agendó el servicio de Experiencia Premium para el 29/07/2026 a las 14:30.', 0, '2026-07-27 15:04:43.398804', 17),
 (9, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Experiencia Premium).', 0, '2026-07-27 15:19:20.678610', 1),
-(10, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Experiencia Premium).', 0, '2026-07-27 15:19:20.736822', 19),
+(10, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Experiencia Premium).', 1, '2026-07-27 15:19:20.736822', 19),
 (11, 'reserva_creada', 'Tu cita de Corte personalizado quedó reservada para el 28/07/2026 a las 16:00 con JUAN MANUEL RESTREPO.', 0, '2026-07-27 15:34:50.339462', 16),
 (12, 'nueva_cita', 'JAMES ABELARDO DIAZ URIBE agendó el servicio de Corte personalizado para el 28/07/2026 a las 16:00.', 0, '2026-07-27 15:34:50.340554', 17),
 (13, 'reserva_creada', 'Tu cita de Mascarilla quedó reservada para el 31/07/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 0, '2026-07-27 15:35:36.743400', 20),
 (14, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Mascarilla para el 31/07/2026 a las 08:00.', 0, '2026-07-27 15:35:36.744829', 17),
 (15, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Corte personalizado).', 0, '2026-07-27 15:36:20.508267', 1),
-(16, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Corte personalizado).', 0, '2026-07-27 15:36:20.558143', 19),
+(16, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Corte personalizado).', 1, '2026-07-27 15:36:20.558143', 19),
 (17, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Mascarilla).', 0, '2026-07-27 15:36:21.847660', 1),
-(18, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Mascarilla).', 0, '2026-07-27 15:36:21.875934', 19),
+(18, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Mascarilla).', 1, '2026-07-27 15:36:21.875934', 19),
 (19, 'reserva_creada', 'Tu cita de Imagen Ejecutiva quedó reservada para el 27/07/2026 a las 16:30 con JUAN MANUEL RESTREPO.', 0, '2026-07-27 15:40:02.473504', 20),
 (20, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Imagen Ejecutiva para el 27/07/2026 a las 16:30.', 0, '2026-07-27 15:40:02.552696', 17),
 (21, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Imagen Ejecutiva).', 0, '2026-07-27 15:40:54.396552', 1),
-(22, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Imagen Ejecutiva).', 0, '2026-07-27 15:40:54.451167', 19);
+(22, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Imagen Ejecutiva).', 1, '2026-07-27 15:40:54.451167', 19);
 
 -- --------------------------------------------------------
 
@@ -885,6 +902,68 @@ CREATE TRIGGER `FormatearNombreUsuario` BEFORE INSERT ON `usuario` FOR EACH ROW 
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios_barberodestacado`
+--
+
+CREATE TABLE `usuarios_barberodestacado` (
+  `id` bigint(20) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `especialidad` varchar(150) NOT NULL,
+  `foto` varchar(100) DEFAULT NULL,
+  `orden` smallint(5) UNSIGNED NOT NULL CHECK (`orden` >= 0),
+  `activo` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios_barberodestacado`
+--
+
+INSERT INTO `usuarios_barberodestacado` (`id`, `nombre`, `especialidad`, `foto`, `orden`, `activo`) VALUES
+(1, 'Mateo Ríos', 'Cortes Clásicos · Afeitado', NULL, 1, 1),
+(2, 'Andrés Vega', 'Diseño de Barba · Degradados', NULL, 2, 1),
+(3, 'Santiago Mora', 'Estilos Modernos · Fade', NULL, 3, 1),
+(4, 'Camilo Torres', 'Tratamientos · Color', NULL, 4, 1),
+(5, 'Felipe Guzmán', 'Cortes Urbanos · Diseños', NULL, 5, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios_contenidoindex`
+--
+
+CREATE TABLE `usuarios_contenidoindex` (
+  `id` bigint(20) NOT NULL,
+  `hero_etiqueta` varchar(60) NOT NULL,
+  `hero_titulo` varchar(150) NOT NULL,
+  `hero_descripcion` longtext NOT NULL,
+  `hero_tarjeta_titulo` varchar(60) NOT NULL,
+  `hero_tarjeta_texto` varchar(100) NOT NULL,
+  `hero_imagen_1` varchar(100) DEFAULT NULL,
+  `hero_imagen_2` varchar(100) DEFAULT NULL,
+  `hero_imagen_3` varchar(100) DEFAULT NULL,
+  `marca_titulo` varchar(150) NOT NULL,
+  `marca_descripcion` longtext NOT NULL,
+  `marca_imagen` varchar(100) DEFAULT NULL,
+  `horario_semana` varchar(60) NOT NULL,
+  `horario_sabado` varchar(60) NOT NULL,
+  `telefono_fijo` varchar(30) NOT NULL,
+  `whatsapp` varchar(30) NOT NULL,
+  `direccion` varchar(200) NOT NULL,
+  `mapa_embed_url` varchar(500) NOT NULL,
+  `cta_titulo` varchar(150) NOT NULL,
+  `cta_texto` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios_contenidoindex`
+--
+
+INSERT INTO `usuarios_contenidoindex` (`id`, `hero_etiqueta`, `hero_titulo`, `hero_descripcion`, `hero_tarjeta_titulo`, `hero_tarjeta_texto`, `hero_imagen_1`, `hero_imagen_2`, `hero_imagen_3`, `marca_titulo`, `marca_descripcion`, `marca_imagen`, `horario_semana`, `horario_sabado`, `telefono_fijo`, `whatsapp`, `direccion`, `mapa_embed_url`, `cta_titulo`, `cta_texto`) VALUES
+(1, 'BARBERIA MODERNA', 'Estilo, precisión y confianza en cada corte', 'En M&A Barber Shop combinamos tradición, elegancia e innovación para ofrecer una experiencia de barbería organizada, cómoda y profesional.', 'Servicio premium', 'Atención personalizada', '', '', '', 'Una barbería pensada para una experiencia más cómoda', 'M&A Barber Shop nace para modernizar el servicio de barbería mediante una atención profesional y un sistema de agendamiento que evita largas esperas.', '', '9:00 a.m. – 8:00 p.m.', '9:00 a.m. – 6:00 p.m.', '(601) 123 4567', '+57 300 123 4567', 'Carrera 27 #5a 09, Bogotá, Colombia', 'https://maps.google.com/maps?q=Carrera%2027%20%235a%2009,%20Bogota&t=&z=15&ie=UTF-8&iwloc=&output=embed', '¿Listo para renovar tu estilo?', 'Agenda tu cita y vive la experiencia M&A Barber Shop.');
 
 -- --------------------------------------------------------
 
@@ -1134,6 +1213,18 @@ ALTER TABLE `usuario`
   ADD KEY `fk_usuario_rol` (`idRolFk`);
 
 --
+-- Indices de la tabla `usuarios_barberodestacado`
+--
+ALTER TABLE `usuarios_barberodestacado`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `usuarios_contenidoindex`
+--
+ALTER TABLE `usuarios_contenidoindex`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `usuarios_perfilusuario`
 --
 ALTER TABLE `usuarios_perfilusuario`
@@ -1166,7 +1257,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT de la tabla `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user`
@@ -1238,13 +1329,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `notificacion`
@@ -1275,6 +1366,18 @@ ALTER TABLE `servicio`
 --
 ALTER TABLE `usuario`
   MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios_barberodestacado`
+--
+ALTER TABLE `usuarios_barberodestacado`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios_contenidoindex`
+--
+ALTER TABLE `usuarios_contenidoindex`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_perfilusuario`
