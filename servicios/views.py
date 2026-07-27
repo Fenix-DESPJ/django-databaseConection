@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+#los quiero chiques
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
