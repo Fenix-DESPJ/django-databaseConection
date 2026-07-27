@@ -3340,9 +3340,20 @@ body.modal-open {
     color: #fff;
     transition: border-color 0.45s ease, box-shadow 0.45s ease;
     box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 .resena-estrellas i { color: var(--dorado); font-size: 1rem; }
-.resena-comentario { color: rgba(255,255,255,0.75); font-style: italic; min-height: 60px; }
+.resena-comentario {
+    color: rgba(255,255,255,0.75);
+    font-style: italic;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 .resena-cliente { font-weight: bold; color: var(--dorado); margin-top: 0.8rem; }
 .resena-fecha { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
 
@@ -3370,22 +3381,38 @@ body.modal-open {
   margin: -80px -40px;
 }
 
+/* El track ya NO es un flex row: es simplemente el punto de referencia
+   (position: relative) para que cada tarjeta se centre con left:50%.
+   --step = cuántos px representa "una tarjeta de distancia" (ancho +
+   separación); se redefine por breakpoint más abajo. */
 .resenas-track {
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  gap: 24px;
-  will-change: transform;
-  transition: transform 0.55s cubic-bezier(.25,.8,.3,1);
+  position: relative;
+  height: 280px;
+  --step: 324px; /* 300px de tarjeta + 24px de separación */
 }
 
-/* Slots (contienen cada tarjeta de reseña) */
+/* Mientras se resetea el índice al llegar a un clon (loop infinito),
+   desactivamos la transición un instante para que el salto sea invisible. */
+.resenas-track.sin-transicion .resena-slot {
+  transition: none !important;
+}
+
+/* Slots (contienen cada tarjeta de reseña). El centrado es 100% CSS:
+   left:50% + translateX(-50%) centra la tarjeta exactamente en medio de
+   .resenas-track sin importar anchos de viewport, scrollbars, etc. El
+   desplazamiento adicional (translateX(var(--d) * var(--step))) la mueve
+   a su posición según qué tan lejos esté del centro. */
 .resena-slot {
-  flex: 0 0 300px;
+  position: absolute;
+  top: 0;
+  left: 50%;
   width: 300px;
+  height: 100%;
+  --d: 0;
+  --s: 0.78;
+  transform: translate(-50%, 0) translateX(calc(var(--d) * var(--step))) scale(var(--s));
   transition: transform 0.55s cubic-bezier(.25,.8,.3,1), opacity 0.45s ease;
-  opacity: 0.3;
-  transform: scale(0.82);
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -3393,19 +3420,20 @@ body.modal-open {
   height: 100%;
 }
 
-/* Vecinas inmediatas: un poco más visibles */
+/* Vecinas inmediatas (única compañía visible junto al centro) */
 .resena-slot[data-distancia="1"],
 .resena-slot[data-distancia="-1"] {
-  opacity: 0.65;
-  transform: scale(0.9);
+  --s: 0.86;
+  opacity: 0.55;
+  z-index: 1;
 }
 
-/* Tarjeta central: escala + brillo dorado. El borde/box-shadow nunca se
-   recorta porque .resenas-viewport tiene colchón de sobra en todas
-   direcciones (ver arriba). */
+/* Tarjeta central: escala + brillo dorado, claramente la protagonista.
+   El borde/box-shadow nunca se recorta porque .resenas-viewport tiene
+   colchón de sobra en todas direcciones (ver arriba). */
 .resena-slot[data-distancia="0"] {
+  --s: 1.18;
   opacity: 1;
-  transform: scale(1.14);
   z-index: 2;
   pointer-events: auto;
 }
@@ -3415,7 +3443,9 @@ body.modal-open {
   box-shadow: 0 0 45px rgba(255, 198, 0, 0.4), 0 20px 40px rgba(0, 0, 0, 0.45);
 }
 
-/* Tarjetas fuera del rango visible: se desvanecen sin quedar "flotando" */
+/* Tarjetas fuera del rango visible: se desvanecen, pero siguen su
+   posición real (var(--d) sigue creciendo) para que el "cinturón" se
+   sienta continuo en vez de saltar. */
 .resena-slot[data-distancia="oculto"] {
   opacity: 0;
 }
@@ -3457,24 +3487,26 @@ body.modal-open {
 .resenas-arrow-prev { left: 10px; }
 .resenas-arrow-next { right: 10px; }
 
-/* Responsive: menos tarjetas visibles a los lados en pantallas chicas */
+/* Responsive: menos tarjetas visibles a los lados en pantallas chicas.
+   Solo hace falta ajustar --step y el ancho de la tarjeta; el centrado
+   (left:50% / translateX(-50%)) no cambia nunca. */
 @media (max-width: 991px) {
   .resenas-carousel-wrapper { padding: 0 55px; }
   .resenas-viewport { padding: 70px 30px; margin: -70px -30px; }
-  .resena-slot { flex-basis: 240px; width: 240px; }
-  .resena-slot[data-distancia="2"],
-  .resena-slot[data-distancia="-2"] {
-    opacity: 0;
-  }
+  .resenas-track { --step: 264px; height: 250px; }
+  .resena-slot { width: 240px; }
 }
 
 @media (max-width: 575px) {
   .resenas-carousel-wrapper { padding: 0 45px; }
   .resenas-viewport { padding: 55px 15px; margin: -55px -15px; }
-  .resena-slot { flex-basis: 210px; width: 210px; }
+  .resenas-track { --step: 234px; height: 240px; }
+  .resena-slot { width: 210px; }
+  /* En pantallas muy chicas, las vecinas casi no se ven para que la
+     central (la que realmente se puede leer) sea la protagonista. */
   .resena-slot[data-distancia="1"],
   .resena-slot[data-distancia="-1"] {
-    opacity: 0.3;
-    transform: scale(0.82);
+    opacity: 0.25;
+    --s: 0.78;
   }
 }

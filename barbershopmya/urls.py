@@ -25,19 +25,18 @@ from negocio.views import gestionar_agenda_admin
 from servicios import views
 from django.urls import path, include
 from servicios import views as servicios_views # Importa la vista del home
+from usuarios import views as usuarios_views  # agrega este import
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    # La Raíz (Home)
-    path('', servicios_views.index, name='home'), 
-    
-    # Redireccionamiento de Apps
+
+    # La Raíz (Home) — ahora sí es la vista de usuarios con el contenido real
+    path('', usuarios_views.home, name='home'),
+
     path('servicios/', include('servicios.urls')),
-    path('usuarios/', include('usuarios.urls')), 
+    path('usuarios/', include('usuarios.urls')),
     path('reservas/', include('reservas.urls')),
-    path('servicios-ind/', views.servicios_ind, name='servicios_ind'), # Acceso directo
-    path('servicios/', include('servicios.urls')), # Resto de rutas
+    path('servicios-ind/', views.servicios_ind, name='servicios_ind'),
     path('gestionar-agenda/', gestionar_agenda_admin, name='gestionar_agenda_admin'),
     path('reservas/disponibilidad/', servicios_views.disponibilidad_ajax, name='disponibilidad_ajax'),
 ]

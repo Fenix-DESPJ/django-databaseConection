@@ -142,7 +142,19 @@
         }
         if (!reviews || !reviews.length) return;
 
-        var activeIndex = 0;
+        var n = reviews.length;
+        var infinito = n > 1;
+        var ANIMATION_MS = 550; // debe coincidir con la transición del CSS
+
+        // Para el loop infinito "de verdad" (sin que se note el salto),
+        // clonamos la última reseña al inicio y la primera al final.
+        var extendida = infinito
+          ? [reviews[n - 1]].concat(reviews, [reviews[0]])
+          : reviews.slice();
+
+        var pointer = infinito ? 1 : 0;
+        var animando = false;
+        var direccionPendiente = 0;
 
         function estrellasHTML(n) {
           var html = '';
@@ -152,14 +164,11 @@
           return html;
         }
 
-        function render() {
+        function construirSlots() {
           track.innerHTML = '';
-          reviews.forEach(function (r, i) {
-            var distancia = i - activeIndex;
-            var absD = Math.abs(distancia);
+          extendida.forEach(function (r) {
             var slot = document.createElement('div');
             slot.className = 'resena-slot';
-            slot.setAttribute('data-distancia', absD > 2 ? 'oculto' : String(distancia));
 
             var card = document.createElement('div');
             card.className = 'resena-card';
@@ -172,46 +181,71 @@
             slot.appendChild(card);
             track.appendChild(slot);
           });
-          positionTrack();
-          updateButtons();
         }
 
-        function positionTrack() {
-          var firstSlot = track.children[0];
-          if (!firstSlot) return;
-          var slotWidth = firstSlot.getBoundingClientRect().width;
-          var gapValue = parseFloat(getComputedStyle(track).gap) || 24;
-          var viewportWidth = track.parentElement.getBoundingClientRect().width;
-          var centerOffset = (viewportWidth / 2) - (slotWidth / 2);
-          var shift = activeIndex * (slotWidth + gapValue);
-          track.style.transform = 'translateX(' + (centerOffset - shift) + 'px)';
+        // NADA de medir anchos ni calcular translateX en JS. Cada
+        // .resena-slot se auto-centra por CSS (left:50% + translateX(-50%)),
+        // y solo le decimos "a cuántos pasos del centro estás" mediante la
+        // variable --d; el propio CSS convierte eso en desplazamiento real
+        // (var(--d) * var(--step)). Así el centrado nunca puede desalinearse
+        // por diferencias de medición.
+        function actualizarPosiciones() {
+          var slots = track.children;
+          for (var i = 0; i < slots.length; i++) {
+            var distancia = i - pointer;
+            var absD = Math.abs(distancia);
+            slots[i].style.setProperty('--d', distancia);
+            slots[i].setAttribute('data-distancia', absD > 1 ? 'oculto' : String(distancia));
+          }
         }
 
-        function updateButtons() {
-          // Con 1 sola reseña no hay a dónde rotar; con 2 o más, el
-          // carrusel es infinito (circular) y las flechas nunca se bloquean.
-          var soloUna = reviews.length <= 1;
-          prevBtn.disabled = soloUna;
-          nextBtn.disabled = soloUna;
+        function actualizarBotones() {
+          var soloUna = n <= 1;
+          prevBtn.disabled = soloUna || animando;
+          nextBtn.disabled = soloUna || animando;
         }
 
-        prevBtn.addEventListener('click', function () {
-          if (reviews.length <= 1) return;
-          // Índice circular: de la primera reseña pasa a la última
-          activeIndex = (activeIndex - 1 + reviews.length) % reviews.length;
-          render();
-        });
+        // Al terminar la animación, si quedamos parados sobre un clon,
+        // saltamos (sin transición, en el mismo frame) a la reseña real
+        // equivalente. Como el clon es una copia exacta, el salto es
+        // imperceptible y el loop se siente infinito de verdad.
+        function saltarSiEsClon() {
+          var enClonFinal = direccionPendiente === 1 && pointer === extendida.length - 1;
+          var enClonInicial = direccionPendiente === -1 && pointer === 0;
 
-        nextBtn.addEventListener('click', function () {
-          if (reviews.length <= 1) return;
-          // Índice circular: de la última reseña pasa a la primera
-          activeIndex = (activeIndex + 1) % reviews.length;
-          render();
-        });
+          if (enClonFinal || enClonInicial) {
+            track.classList.add('sin-transicion');
+            pointer = enClonFinal ? 1 : extendida.length - 2;
+            actualizarPosiciones();
+            // Forzamos reflow antes de quitar la clase para que el
+            // navegador no intente animar este reseteo invisible.
+            void track.offsetWidth;
+            track.classList.remove('sin-transicion');
+          }
 
-        window.addEventListener('resize', positionTrack);
+          animando = false;
+          direccionPendiente = 0;
+          actualizarBotones();
+        }
 
-        render();
+        function mover(direccion) {
+          if (animando || !infinito) return;
+          animando = true;
+          direccionPendiente = direccion;
+          actualizarBotones();
+
+          pointer += direccion;
+          actualizarPosiciones();
+
+          setTimeout(saltarSiEsClon, ANIMATION_MS + 60);
+        }
+
+        prevBtn.addEventListener('click', function () { mover(-1); });
+        nextBtn.addEventListener('click', function () { mover(1); });
+
+        construirSlots();
+        actualizarPosiciones();
+        actualizarBotones();
       })();
     </script>
     {% else %}
