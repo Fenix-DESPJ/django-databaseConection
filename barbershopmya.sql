@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-07-2026 a las 18:45:07
+-- Tiempo de generación: 29-07-2026 a las 01:01:15
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -95,11 +95,9 @@ CREATE TABLE `agenda` (
 --
 
 INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`, `horaFin`) VALUES
-(3, 1, '2026-03-21', '09:00:00', '13:00:00'),
 (4, 2, '2026-03-21', '15:00:00', '19:00:00'),
 (5, 1, '2026-03-22', '09:00:00', '13:00:00'),
 (6, 2, '2026-03-22', '10:00:00', '14:00:00'),
-(9, 1, '2026-03-24', '09:00:00', '13:00:00'),
 (10, 2, '2026-03-24', '10:00:00', '14:00:00'),
 (11, 11, '2026-06-24', '08:00:00', NULL),
 (12, 11, '2026-06-25', '09:00:00', NULL),
@@ -303,8 +301,9 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-07-27 15:36:40.224131', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
 (5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-07-27 15:40:19.469730', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-27 16:09:31.701654', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
-(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-27 15:41:21.945043', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423');
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-27 22:35:33.698281', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-27 15:41:21.945043', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
+(8, 'pbkdf2_sha256$600000$E53eALCUkkcRHOiN6JnwdP$U2ajNUDQIShVRQsqG62Alt7gbSa/CXd3QkNBoBqQ/hI=', '2026-07-28 20:39:15.413493', 0, 'juanesspa76@gmail.com', 'Mapache', 'uwu', 'juanesspa76@gmail.com', 0, 1, '2026-07-28 20:33:53.831652');
 
 -- --------------------------------------------------------
 
@@ -445,11 +444,9 @@ CREATE TABLE `cita` (
 --
 
 INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idAgendaFk`, `fecha`, `horaInicio`, `observaciones`, `idPagoFk`, `calificacionOmitida`) VALUES
-(3, 1, 3, 5, 3, '2026-03-21', '10:15:00', NULL, NULL, 0),
 (4, 2, 4, 2, 4, '2026-03-21', '15:30:00', NULL, NULL, 0),
 (5, 1, 5, 4, 5, '2026-03-22', '09:00:00', NULL, NULL, 0),
 (6, 2, 6, 1, 6, '2026-03-22', '12:00:00', NULL, NULL, 0),
-(9, 1, 9, 8, 9, '2026-03-24', '09:00:00', NULL, NULL, 0),
 (10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL, 0),
 (40, 11, 11, 1, 25, '2026-07-02', '08:00:00', 'Completado - Servicio realizado', 30, 0),
 (41, 11, 14, 2, 26, '2026-07-02', '09:00:00', 'Completado - Servicio realizado', 31, 0),
@@ -477,14 +474,13 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`, `contactoEmergencia`) VALUES
-(3, 7, 'Condado', '2026-01-15', 'Ana-097'),
 (4, 8, 'La Floresta', '2026-01-20', 'Luis-096'),
 (5, 9, 'Quitumbe', '2026-01-25', 'Rosa-095'),
 (6, 10, 'Cumbayá', '2026-01-28', 'Felipe-094'),
-(9, 7, 'Condado', '2026-02-10', 'Jose-098'),
 (10, 8, 'La Floresta', '2026-02-15', 'Ana-097'),
 (11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado'),
-(14, 20, 'Registrado desde la Web', '2026-06-24', 'No asignado');
+(14, 20, 'Registrado desde la Web', '2026-06-24', 'No asignado'),
+(18, 22, 'Registrado desde la Web', '2026-07-28', 'No asignado');
 
 -- --------------------------------------------------------
 
@@ -881,7 +877,6 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (2, '1755842100', 'MATEO ALVEAR', 'mateo.barber@mya.com', '0984455667', NULL, NULL, 2, ''),
 (3, '1004556772', 'LUIS SIMBAÑA', 'luis.barber@mya.com', '0977889900', NULL, NULL, 2, ''),
 (5, '1711223344', 'JUAN RODRÍGUEZ', 'juan.rod@outlook.com', '0955667788', NULL, NULL, 3, ''),
-(7, '0988776655', 'DIEGO FERNÁNDEZ', 'diego.fer@gmail.com', '0922446688', NULL, NULL, 3, ''),
 (8, '1788990011', 'ROBERTO GÓMEZ', 'roberto@gmail.com', '0933557799', NULL, NULL, 3, ''),
 (9, '1744556611', 'LUCÍA TORRES', 'lucia@gmail.com', '0944668800', NULL, NULL, 3, ''),
 (10, '1722334455', 'PEDRO SALAS', 'pedro@gmail.com', '0955779911', NULL, NULL, 3, ''),
@@ -891,7 +886,8 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (17, '35919743', 'JUAN MANUEL RESTREPO', 'restrepo123@gmail.com', '3427685463', 'pbkdf2_sha256$600000$Ui57A5R99oF2FSYuJdWQWu$S3PjXGv17+nJfSOMUXEDj8z/TdGK8/4B6gqwgKLTQA0=', '1989-08-12', 2, 'perfiles/usuario_17_mivice.webp'),
 (19, '4444444444', 'DANI JORDIWILDE', 'dani@gmail.com', '22222222222', 'pbkdf2_sha256$600000$ud3U9yK19LvNUYSFpWdxuA$wSPZm1V3A8E2of2uJ9oX39DgBkfzwf3u/vM/rHVvTh0=', '2026-06-16', 1, NULL),
 (20, '1111222333', 'CLIENTE UWU', 'cliente@gmail.com', '3334445555', 'pbkdf2_sha256$600000$A8DpsiokPP0k1bHK7pPT96$v8G4lzCykQndKOJ2OJKPRj2YtCb3dCyOKAZmLlVPaHI=', '2026-06-25', 3, 'perfiles/usuario_20_21452447-juutb5hh-v4.webp'),
-(21, '1111111112', 'NUEVO BARBERO', 'barbero.nuevo@mya.com', '0999999999', NULL, NULL, 2, '');
+(21, '1111111112', 'NUEVO BARBERO', 'barbero.nuevo@mya.com', '0999999999', NULL, NULL, 2, ''),
+(22, '1211321231', 'MAPACHE UWU', 'juanesspa76@gmail.com', '3227569201', 'pbkdf2_sha256$600000$JgAhs3lXZFWFeyvKl4Qo7l$JZrc1/3tM4zGV75iFAIV8IN8KMnpmx7IVLkOS8wS1lA=', '2006-09-20', 3, '');
 
 --
 -- Disparadores `usuario`
@@ -1263,7 +1259,7 @@ ALTER TABLE `auth_permission`
 -- AUTO_INCREMENT de la tabla `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user_groups`
@@ -1281,7 +1277,7 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT de la tabla `barbero`
 --
 ALTER TABLE `barbero`
-  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `barbero_dia_habilitado`
@@ -1305,7 +1301,7 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion_horario`
@@ -1365,7 +1361,7 @@ ALTER TABLE `servicio`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_barberodestacado`
