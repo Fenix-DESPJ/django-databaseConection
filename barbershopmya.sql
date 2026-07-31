@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-07-2026 a las 01:01:15
+-- Tiempo de generación: 31-07-2026 a las 15:37:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -86,28 +86,30 @@ CREATE TABLE `agenda` (
   `idAgenda` int(11) NOT NULL,
   `idBarberoFk` int(11) DEFAULT NULL,
   `fecha` date DEFAULT NULL,
-  `horaInicio` time DEFAULT NULL,
-  `horaFin` time DEFAULT NULL
+  `horaInicio` time DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `agenda`
 --
 
-INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`, `horaFin`) VALUES
-(4, 2, '2026-03-21', '15:00:00', '19:00:00'),
-(5, 1, '2026-03-22', '09:00:00', '13:00:00'),
-(6, 2, '2026-03-22', '10:00:00', '14:00:00'),
-(10, 2, '2026-03-24', '10:00:00', '14:00:00'),
-(11, 11, '2026-06-24', '08:00:00', NULL),
-(12, 11, '2026-06-25', '09:00:00', NULL),
-(14, 11, '2026-06-30', '08:00:00', NULL),
-(25, 11, '2026-07-02', '08:00:00', NULL),
-(26, 11, '2026-07-02', '09:00:00', NULL),
-(29, 11, '2026-07-29', '14:30:00', NULL),
-(30, 11, '2026-07-28', '16:00:00', NULL),
-(31, 11, '2026-07-31', '08:00:00', NULL),
-(32, 11, '2026-07-27', '16:30:00', NULL);
+INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`) VALUES
+(4, 2, '2026-03-21', '15:00:00'),
+(5, 1, '2026-03-22', '09:00:00'),
+(6, 2, '2026-03-22', '10:00:00'),
+(10, 2, '2026-03-24', '10:00:00'),
+(11, 11, '2026-06-24', '08:00:00'),
+(12, 11, '2026-06-25', '09:00:00'),
+(14, 11, '2026-06-30', '08:00:00'),
+(25, 11, '2026-07-02', '08:00:00'),
+(26, 11, '2026-07-02', '09:00:00'),
+(29, 11, '2026-07-29', '14:30:00'),
+(30, 11, '2026-07-28', '16:00:00'),
+(31, 11, '2026-07-31', '08:00:00'),
+(32, 11, '2026-07-27', '16:30:00'),
+(33, 11, '2026-08-05', '08:30:00'),
+(34, 11, '2026-08-04', '09:00:00'),
+(35, 11, '2026-08-14', '11:00:00');
 
 -- --------------------------------------------------------
 
@@ -300,9 +302,9 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (2, 'pbkdf2_sha256$600000$cOmiRYMYpYxwbGXzoqxcHg$BxVF3vH9nwY4PJxNTWbMhNODYw/kxa2C+UgD1uAMsWw=', '2026-06-18 14:09:14.566411', 0, 'ivan@gmail.com', 'Ivancito', 'Cepeda', 'ivan@gmail.com', 0, 1, '2026-06-18 13:04:14.605021'),
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-07-27 15:36:40.224131', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
-(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-07-27 15:40:19.469730', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-27 22:35:33.698281', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
-(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-27 15:41:21.945043', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
+(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-07-31 13:24:41.913495', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-31 13:21:01.219047', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-31 13:26:13.033726', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
 (8, 'pbkdf2_sha256$600000$E53eALCUkkcRHOiN6JnwdP$U2ajNUDQIShVRQsqG62Alt7gbSa/CXd3QkNBoBqQ/hI=', '2026-07-28 20:39:15.413493', 0, 'juanesspa76@gmail.com', 'Mapache', 'uwu', 'juanesspa76@gmail.com', 0, 1, '2026-07-28 20:33:53.831652');
 
 -- --------------------------------------------------------
@@ -453,7 +455,10 @@ INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idA
 (44, 11, 11, 19, 29, '2026-07-29', '14:30:00', 'Completado - Servicio realizado', 34, 0),
 (45, 11, 11, 14, 30, '2026-07-28', '16:00:00', 'Completado - Servicio realizado', 35, 0),
 (46, 11, 14, 10, 31, '2026-07-31', '08:00:00', 'Completado - Servicio realizado', 36, 0),
-(47, 11, 14, 17, 32, '2026-07-27', '16:30:00', 'Completado - Servicio realizado', 37, 0);
+(47, 11, 14, 17, 32, '2026-07-27', '16:30:00', 'Completado - Servicio realizado', 37, 0),
+(48, 11, 14, 14, 33, '2026-08-05', '08:30:00', 'Completado - Servicio realizado', 38, 0),
+(49, 11, 14, 5, 34, '2026-08-04', '09:00:00', 'Completado - Servicio realizado', 39, 0),
+(50, 11, 14, 6, 35, '2026-08-14', '11:00:00', 'Completado - Servicio realizado', 40, 1);
 
 -- --------------------------------------------------------
 
@@ -550,7 +555,38 @@ INSERT INTO `dia_habilitado` (`id`, `fecha`, `habilitado`) VALUES
 (28, '2026-07-28', 1),
 (29, '2026-07-29', 1),
 (30, '2026-07-30', 1),
-(31, '2026-07-31', 1);
+(31, '2026-07-31', 1),
+(32, '2026-08-01', 0),
+(33, '2026-08-02', 0),
+(34, '2026-08-03', 1),
+(35, '2026-08-04', 1),
+(36, '2026-08-05', 1),
+(37, '2026-08-06', 1),
+(38, '2026-08-07', 1),
+(39, '2026-08-08', 0),
+(40, '2026-08-09', 0),
+(41, '2026-08-10', 1),
+(42, '2026-08-11', 1),
+(43, '2026-08-12', 1),
+(44, '2026-08-13', 1),
+(45, '2026-08-14', 1),
+(46, '2026-08-15', 0),
+(47, '2026-08-16', 0),
+(48, '2026-08-17', 1),
+(49, '2026-08-18', 1),
+(50, '2026-08-19', 1),
+(51, '2026-08-20', 1),
+(52, '2026-08-21', 1),
+(53, '2026-08-22', 0),
+(54, '2026-08-23', 0),
+(55, '2026-08-24', 1),
+(56, '2026-08-25', 1),
+(57, '2026-08-26', 1),
+(58, '2026-08-27', 1),
+(59, '2026-08-28', 1),
+(60, '2026-08-29', 0),
+(61, '2026-08-30', 0),
+(62, '2026-08-31', 1);
 
 -- --------------------------------------------------------
 
@@ -684,6 +720,7 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('3i8hqj5a439xu8rb79kfnqrtmc7o1gzq', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wmXvY:VsS7Bovr4kQ63O-Zk7GJkVZEVSMHkAfrpnd-1xz4AVU', '2026-08-05 14:28:04.859625'),
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
 ('avgczg5y3i4uccct4edfx4nl1tkahju3', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wkjcF:Al9k-Y9_En4MSelWtg-nU6I69OtmZKAmhrEZ6ceu208', '2026-07-31 14:32:39.014945'),
+('d07yj93md4dqbam51hkbtz5u89b3wh6z', '.eJxVj8tuwyAQRX8lYp3YBAM2WWbfb0ADDDWpAxaPdlH132tXidpu7z3njuaTaGh11q1g1sGRCxnJ8W9mwL5h3At3g_iaOptizcF0O9I92tK9JIfL9cH-G5ihzJtNBUolheHeSD4wkDB4joJKK8aJgZ-4o6gmCcCZH5F5qpSRZ6BC2ZF52EYLlpCiDjHYAA7IpeaGR9JKgxySjuluMm6n7BIwVjw4PKwbYXb3CeW0_Lw5_EY-1bRZ_R1dgH7F7MOCpX_WjGp25oJxPp5urVUj5vn0zrsPNCv5-gbonWwJ:1wpnFd:ASAEPZUaVqgqJvohhsseJRH7ilgn5XI7n30K0xwBt_s', '2026-08-14 13:26:13.038728'),
 ('dzsp3fialylt9tyorwfvqp4qnoe6xe6t', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1woNtT:OsSo6qdmkIEHGywJbMr9EGdWd9kaI9Q3HFiZ5SN59aI', '2026-08-10 16:09:31.761168'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
 ('fs60l91w68xadajzglyqlv4pe04469xt', '.eJxVj0tuhDAQRO_Sa4TAQ2PMcvZzBqtx28EJcUv-rKLcfcQIaZLte6VS1Q9YanW3rfhsI8MKM3R_2Ubuy6dT8CelD-mdpJrj1p-R_rKlfwj7435l_xXsVHZYQQ_LYMIt6M0YDqwDjXpQPLs5EPtFL0obdIpRTzjhoIJBRDJqnEZGZxA6KL5ESTam6CIxwVpz8x200ihHsUm-t-zPoZQivHmW4_VsfKMgVWBN7Th-n7NLVn0:1wewGw:CvaDz1aJKTprf-JR-t2Mri9MgzR-tQk2MeTDj6l93Vo', '2026-07-15 14:50:42.956166'),
@@ -732,7 +769,19 @@ INSERT INTO `notificacion` (`idnotificacion`, `tipo`, `mensaje`, `leida`, `fecha
 (19, 'reserva_creada', 'Tu cita de Imagen Ejecutiva quedó reservada para el 27/07/2026 a las 16:30 con JUAN MANUEL RESTREPO.', 0, '2026-07-27 15:40:02.473504', 20),
 (20, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Imagen Ejecutiva para el 27/07/2026 a las 16:30.', 0, '2026-07-27 15:40:02.552696', 17),
 (21, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Imagen Ejecutiva).', 0, '2026-07-27 15:40:54.396552', 1),
-(22, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Imagen Ejecutiva).', 1, '2026-07-27 15:40:54.451167', 19);
+(22, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Imagen Ejecutiva).', 1, '2026-07-27 15:40:54.451167', 19),
+(23, 'reserva_creada', 'Tu cita de Corte personalizado quedó reservada para el 05/08/2026 a las 08:30 con JUAN MANUEL RESTREPO.', 0, '2026-07-31 13:21:52.817163', 20),
+(24, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Corte personalizado para el 05/08/2026 a las 08:30.', 0, '2026-07-31 13:21:52.817163', 17),
+(25, 'reserva_creada', 'Tu cita de Fade quedó reservada para el 04/08/2026 a las 09:00 con JUAN MANUEL RESTREPO.', 0, '2026-07-31 13:23:46.635334', 20),
+(26, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Fade para el 04/08/2026 a las 09:00.', 0, '2026-07-31 13:23:46.635334', 17),
+(27, 'reserva_creada', 'Tu cita de Tinte quedó reservada para el 14/08/2026 a las 11:00 con JUAN MANUEL RESTREPO.', 0, '2026-07-31 13:24:07.511843', 20),
+(28, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Tinte para el 14/08/2026 a las 11:00.', 0, '2026-07-31 13:24:07.515841', 17),
+(29, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Corte personalizado).', 0, '2026-07-31 13:25:04.959247', 1),
+(30, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Corte personalizado).', 0, '2026-07-31 13:25:04.961247', 19),
+(31, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Tinte).', 0, '2026-07-31 13:25:06.323908', 1),
+(32, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Tinte).', 0, '2026-07-31 13:25:06.326907', 19),
+(33, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Fade).', 0, '2026-07-31 13:25:07.613300', 1),
+(34, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Fade).', 0, '2026-07-31 13:25:07.616295', 19);
 
 -- --------------------------------------------------------
 
@@ -789,7 +838,10 @@ INSERT INTO `pago` (`idPago`, `metodoPago`, `montoTotal`, `fechaPago`, `estadoPa
 (34, 'PSE', 60.00, '2026-07-27 15:04:43', 'PAGADO', 'FAC52294'),
 (35, 'Tarjeta', 26.00, '2026-07-27 15:34:50', 'PAGADO', 'FAC43062'),
 (36, 'Efectivo', 10.00, '2026-07-27 15:35:36', 'PAGADO', 'FAC51006'),
-(37, 'PSE', 32.00, '2026-07-27 15:40:02', 'PAGADO', 'FAC52157');
+(37, 'PSE', 32.00, '2026-07-27 15:40:02', 'PAGADO', 'FAC52157'),
+(38, 'PSE', 26.00, '2026-07-31 13:21:52', 'PAGADO', 'FAC44002'),
+(39, 'Tarjeta', 14.00, '2026-07-31 13:23:46', 'PAGADO', 'FAC53396'),
+(40, 'Tarjeta', 25.00, '2026-07-31 13:24:07', 'PAGADO', 'FAC16658');
 
 -- --------------------------------------------------------
 
@@ -1235,7 +1287,7 @@ ALTER TABLE `usuarios_perfilusuario`
 -- AUTO_INCREMENT de la tabla `agenda`
 --
 ALTER TABLE `agenda`
-  MODIFY `idAgenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `idAgenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_group`
@@ -1295,7 +1347,7 @@ ALTER TABLE `calificacion`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
@@ -1313,7 +1365,7 @@ ALTER TABLE `configuracion_horario`
 -- AUTO_INCREMENT de la tabla `dia_habilitado`
 --
 ALTER TABLE `dia_habilitado`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT de la tabla `django_admin_log`
@@ -1337,13 +1389,13 @@ ALTER TABLE `django_migrations`
 -- AUTO_INCREMENT de la tabla `notificacion`
 --
 ALTER TABLE `notificacion`
-  MODIFY `idnotificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idnotificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
