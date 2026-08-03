@@ -8,7 +8,7 @@
         
         <h1 class="h3 mb-3 text-center">Recuperar contraseña</h1>
         <p class="text-secondary text-center mb-4">
-            Ingresa tu correo y te enviaremos las instrucciones.
+            Ingresa tu correo electrónico y te enviaremos las instrucciones.
         </p>
 
         {% if messages %}
@@ -23,7 +23,8 @@
             {% csrf_token %}
             <div class="mb-4">
                 <label for="correo" class="form-label text-white-50">Correo electrónico</label>
-                <input type="email" class="form-control" id="correo" name="correo" required>
+                <input type="email" class="form-control" id="correo" name="correo"
+                       placeholder="ejemplo@correo.com" required>
             </div>
 
             <button type="submit" class="btn btn-dorado w-100 py-2">

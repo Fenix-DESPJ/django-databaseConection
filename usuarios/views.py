@@ -24,10 +24,12 @@ import tempfile
 from datetime import timedelta, date
 
 # Importación de tus modelos manuales
-from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago, ContenidoIndex, BarberoDestacado
+from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago, ContenidoIndex, BarberoDestacado, PerfilUsuario
 from negocio.models import Barbero, Agenda
 from .utils import analizar_forma_rostro, RostroNoDetectadoError, RECOMENDACIONES_POR_FORMA
-
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
+from .auth_utils import generar_password_provisional
 
 # =========================================================================
 # REGLAS DE NEGOCIO QUE ANTES ERAN TRIGGERS DE MYSQL
@@ -146,7 +148,7 @@ def _cascada_borrar_barbero(barbero):
 # =========================================================================
 def iniciar_sesion(request):
     if request.method == 'POST':
-        usuario_input = request.POST.get('identificador')  
+        usuario_input = (request.POST.get('identificador') or '').strip()
         contrasena_input = request.POST.get('contrasena')
         rol_formulario = request.POST.get('rol')  
         
@@ -162,8 +164,17 @@ def iniciar_sesion(request):
         elif rol_formulario == 'cliente':
             rol_esperado_id = 3  
 
+        # --- NUEVO: si el identificador NO parece un correo, buscamos por celular ---
+        username_para_auth = usuario_input
+        if usuario_input and '@' not in usuario_input:
+            usuario_por_celular = Usuario.objects.filter(numcelular=usuario_input).first()
+            if usuario_por_celular:
+                username_para_auth = usuario_por_celular.correo
+            # si no existe ningún usuario con ese celular, se deja tal cual
+            # y authenticate() fallará más abajo con el mensaje genérico de siempre
+
         # Autenticación con Django Auth
-        user = authenticate(request, username=usuario_input, password=contrasena_input)
+        user = authenticate(request, username=username_para_auth, password=contrasena_input)
         
         if user is not None:
             try:
@@ -189,13 +200,10 @@ def iniciar_sesion(request):
                 request.session['usuario_nombre'] = user.first_name if user.first_name else user.username
                 request.session['usuario_rol_id'] = int(rol_actual_id)
                 
-                # --- INTEGRACIÓN DE FOTO DE PERFIL ---
-                # Usamos .url para obtener la ruta completa (ej: /media/perfiles/foto.jpg)
                 if usuario_manual.foto_perfil:
                     request.session['usuario_foto'] = usuario_manual.foto_perfil.url
                 else:
                     request.session['usuario_foto'] = None
-                # -------------------------------------
                 
                 # Redirección basada en rol
                 rol_final = int(rol_actual_id)
@@ -210,10 +218,134 @@ def iniciar_sesion(request):
                 messages.error(request, "Tu cuenta no está vinculada correctamente a la barbería.")
                 return redirect('iniciar_sesion')
         else:
-            messages.error(request, "El correo o la contraseña son incorrectos.")
+            messages.error(request, "El correo, celular o la contraseña son incorrectos.")
             return redirect('iniciar_sesion')
             
     return render(request, 'iniciarsesion.html')
+
+# =========================================================================
+# 1.B VISTA: INICIAR SESIÓN / AUTOREGISTRO CON GOOGLE
+# =========================================================================
+@require_POST
+def google_login(request):
+    credential = request.POST.get('credential')
+    rol_formulario = (request.POST.get('rol') or 'cliente').lower().strip()
+
+    mapa_roles = {'admin': 1, 'administrador': 1, 'barbero': 2, 'cliente': 3}
+    rol_esperado_id = mapa_roles.get(rol_formulario, 3)
+
+    if not credential:
+        return JsonResponse({'ok': False, 'error': 'No se recibió el token de Google.'}, status=400)
+
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            credential, google_requests.Request(), settings.GOOGLE_CLIENT_ID
+        )
+    except ValueError:
+        return JsonResponse({'ok': False, 'error': 'El token de Google no es válido.'}, status=400)
+
+    correo_google = idinfo.get('email')
+    nombre_google = idinfo.get('name') or (correo_google.split('@')[0] if correo_google else 'Usuario')
+    google_sub = idinfo.get('sub')
+
+    if not correo_google:
+        return JsonResponse({'ok': False, 'error': 'Tu cuenta de Google no tiene un correo válido.'}, status=400)
+
+    password_generada = None
+    usuario_manual = Usuario.objects.filter(correo__iexact=correo_google).first()
+
+    if usuario_manual is None:
+        # --- Autoregistro: cuenta nueva, siempre como Cliente ---
+        rol_cliente = Rol.objects.get(idrol=ID_ROL_CLIENTE)
+        password_generada = generar_password_provisional()
+        cedula_temporal = f"G-{uuid.uuid4().hex[:10].upper()}"
+
+        usuario_manual = Usuario.objects.create(
+            cedula=cedula_temporal,
+            nombre=formatear_nombre(nombre_google),
+            correo=correo_google,
+            contrasena=make_password(password_generada),
+            numcelular='',
+            fechanacimiento=date(2000, 1, 1),
+            idrolfk=rol_cliente,
+        )
+        clasificar_rol_nuevo_usuario(usuario_manual)
+
+        user_django = User.objects.create_user(
+            username=correo_google,
+            email=correo_google,
+            password=password_generada,
+            first_name=nombre_google,
+        )
+    else:
+        # --- Cuenta existente: valida que el rol coincida con la pestaña elegida ---
+        try:
+            rol_real_id = usuario_manual.idrolfk.idrol
+        except Exception:
+            rol_real_id = usuario_manual.idrolfk_id
+
+        if rol_real_id != rol_esperado_id:
+            return JsonResponse({'ok': False, 'error': 'Esa cuenta de Google no corresponde al rol seleccionado.'}, status=400)
+
+        try:
+            user_django = User.objects.get(username=usuario_manual.correo)
+        except User.DoesNotExist:
+            # Existía en tu tabla manual pero nunca se creó su User de Django (caso raro)
+            password_generada = generar_password_provisional()
+            user_django = User.objects.create_user(
+                username=usuario_manual.correo,
+                email=usuario_manual.correo,
+                password=password_generada,
+                first_name=usuario_manual.nombre,
+            )
+            usuario_manual.contrasena = make_password(password_generada)
+            usuario_manual.save(update_fields=['contrasena'])
+
+        rol_actual_id = rol_real_id
+
+    perfil, _creado_perfil = PerfilUsuario.objects.get_or_create(user=user_django)
+    if perfil.google_id != google_sub:
+        perfil.google_id = google_sub
+        if password_generada:
+            perfil.password_provisional = True
+        perfil.save()
+
+    # Login real (esto es INDEPENDIENTE de la contraseña tradicional:
+    # aunque el usuario la cambie después, Google seguirá funcionando)
+    user_django.backend = 'django.contrib.auth.backends.ModelBackend'
+    auth_login(request, user_django)
+
+    try:
+        rol_actual_id = usuario_manual.idrolfk.idrol
+    except Exception:
+        rol_actual_id = usuario_manual.idrolfk_id
+    rol_actual_id = int(rol_actual_id)
+
+    request.session['sesion_iniciada'] = True
+    request.session['usuario_nombre'] = user_django.first_name or user_django.username
+    request.session['usuario_rol_id'] = rol_actual_id
+    request.session['usuario_foto'] = usuario_manual.foto_perfil.url if usuario_manual.foto_perfil else None
+
+    if rol_actual_id == 1:
+        redirect_url = reverse('dashboard_admin')
+    elif rol_actual_id == 2:
+        redirect_url = reverse('panel_barbero')
+    else:
+        redirect_url = reverse('home')
+
+    respuesta = {'ok': True, 'redirect': redirect_url}
+
+    if password_generada:
+        aviso = (
+            f"¡Bienvenido, {usuario_manual.nombre}! Creamos tu cuenta usando Google. "
+            f"También dejamos lista una contraseña de acceso tradicional: {password_generada}. "
+            f"Puedes cambiarla cuando quieras desde tu perfil y, aunque la cambies, "
+            f"siempre podrás seguir entrando con Google sin problema."
+        )
+        messages.info(request, aviso)
+        respuesta['aviso_password'] = aviso
+
+    return JsonResponse(respuesta)
 
 # =========================================================================
 # 2. VISTA: CERRAR SESIÓN
@@ -580,15 +712,15 @@ def editar_metodo_pago(request, cita_id):
 
 def olvide_contrasena(request):
     if request.method == 'POST':
-        email = request.POST.get('correo')
-        usuario = Usuario.objects.filter(correo=email).first()
-        
+        correo = (request.POST.get('identificador') or request.POST.get('correo') or '').strip()
+
+        usuario = Usuario.objects.filter(correo__iexact=correo).first()
+
         if usuario:
             signer = TimestampSigner()
-            token = signer.sign(usuario.idusuario) 
+            token = signer.sign(usuario.idusuario)
             link = request.build_absolute_uri(reverse('cambiar_contrasena', args=[token]))
-            
-            # Asunto y cuerpo redactados para M&A Barbería
+
             asunto = 'Recuperación de Contraseña - M&A Barbería'
             mensaje = (
                 f"Hola {usuario.nombre},\n\n"
@@ -598,22 +730,20 @@ def olvide_contrasena(request):
                 f"Este enlace es válido únicamente durante 1 hora.\n"
                 f"Si no solicitaste este cambio, puedes ignorar este mensaje."
             )
-            
             send_mail(
                 subject=asunto,
                 message=mensaje,
-                from_email=settings.DEFAULT_FROM_EMAIL,  # <--- Usa el correo configurado en settings
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[usuario.correo],
                 fail_silently=False,
             )
+
             return render(request, 'mensaje_enviado.html')
         else:
-            # Si el correo no existe, mostramos mensaje para no dejar la pantalla en blanco
-            messages.error(request, "El correo electrónico ingresado no se encuentra registrado.")
+            messages.error(request, "No encontramos ninguna cuenta con ese correo electrónico.")
             return render(request, 'olvide_contrasena.html')
-            
-    return render(request, 'olvide_contrasena.html')
 
+    return render(request, 'olvide_contrasena.html')
 
 def cambiar_contrasena(request, token):
     signer = TimestampSigner()
@@ -1037,11 +1167,16 @@ def verificar_calificacion_pendiente(request):
     except (Usuario.DoesNotExist, Cliente.DoesNotExist):
         return JsonResponse({'pendiente': False})
 
+    # Citas que el usuario omitió "por ahora" durante ESTA sesión.
+    # Se reinicia al cerrar sesión (request.session.flush() en cerrar_sesion).
+    citas_omitidas_sesion = request.session.get('citas_omitidas_calificacion', [])
+
     cita_pendiente = Cita.objects.filter(
         idclientefk=cliente,
         observaciones__icontains='Completado',
         calificacion__isnull=True,
-        calificacion_omitida=False,
+    ).exclude(
+        idcita__in=citas_omitidas_sesion
     ).select_related(
         'idserviciofk', 'idbarberofk__idusuariofk'
     ).order_by('-idagendafk__fecha').first()
@@ -1055,7 +1190,6 @@ def verificar_calificacion_pendiente(request):
         'servicio': cita_pendiente.idserviciofk.nombreservicio if cita_pendiente.idserviciofk else 'tu servicio',
         'barbero': cita_pendiente.idbarberofk.idusuariofk.nombre if cita_pendiente.idbarberofk else '',
     })
-
 
 @login_required
 @require_POST
@@ -1100,7 +1234,11 @@ def guardar_calificacion(request):
 @login_required
 @require_POST
 def omitir_calificacion(request):
-    """Marca una cita puntual como 'no quiero calificar'."""
+    """
+    Oculta el aviso de calificación para esta cita SOLO durante la sesión
+    actual (hasta que el usuario cierre sesión). Si vuelve a iniciar sesión
+    y la cita sigue sin calificar, el aviso vuelve a aparecer.
+    """
     try:
         usuario = Usuario.objects.get(correo=request.user.email)
         cliente = Cliente.objects.get(idusuariofk=usuario)
@@ -1113,9 +1251,12 @@ def omitir_calificacion(request):
 
     cita = get_object_or_404(Cita, idcita=cita_id, idclientefk=cliente)
 
-    # Si ya la calificó, no hace falta marcarla como omitida (evita pisar datos por gusto)
+    # Si ya la calificó, no hace falta guardar nada.
     if not Calificacion.objects.filter(idcitafk=cita).exists():
-        cita.calificacion_omitida = True
-        cita.save(update_fields=['calificacion_omitida'])
+        citas_omitidas = request.session.get('citas_omitidas_calificacion', [])
+        cita_id_int = int(cita_id)
+        if cita_id_int not in citas_omitidas:
+            citas_omitidas.append(cita_id_int)
+        request.session['citas_omitidas_calificacion'] = citas_omitidas
 
     return JsonResponse({'ok': True})

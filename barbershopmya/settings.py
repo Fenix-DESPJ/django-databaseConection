@@ -56,6 +56,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'usuarios.context_processors.google_client_id',  # NUEVO: expone GOOGLE_CLIENT_ID en todos los templates
             ],
         },
     },
@@ -126,6 +127,8 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = f"M&A Barbería <{EMAIL_HOST_USER}>"
 
+# --- NUEVO: Google Sign-In ---
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/

@@ -35,7 +35,7 @@
 
         {% csrf_token %}
 
-        <div id="contenidoAnalisis"data-url-analizar="{% url 'analizar_rostro_ajax' %}"data-foto-perfil="{% if request.session.usuario_foto %}{{ request.session.usuario_foto }}{% endif %}"style="opacity:0.3; pointer-events:none;">
+        <div id="contenidoAnalisis" data-url-analizar="{% url 'analizar_rostro_ajax' %}" data-foto-perfil="{% if request.session.usuario_foto %}{{ request.session.usuario_foto }}{% endif %}" data-user-id="{{ request.user.id|default:'anon' }}" style="opacity:0.3; pointer-events:none;">
 
             <div class="d-flex justify-content-center flex-wrap mb-3">
                 <button type="button" class="btn-opcion" id="btnUsarCamara"><i class="bi bi-camera"></i> Usar cámara</button>

@@ -986,6 +986,27 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // --- Recordar aceptación del aviso de privacidad, por usuario ---
+    // Se guarda en localStorage con una clave que incluye el ID del usuario
+    // (data-user-id inyectado por Django en el div #contenidoAnalisis), así
+    // que cada usuario tiene su propio registro de aceptación en ESE
+    // navegador. Si el usuario le da "No acepto", no se guarda nada, así
+    // que el aviso vuelve a aparecer la próxima vez que entre.
+    function obtenerUserId() {
+        return contenido.dataset.userId || 'anon';
+    }
+
+    function claveStoragePrivacidad() {
+        return `analisis_rostro_privacidad_aceptada_${obtenerUserId()}`;
+    }
+
+    // Si este usuario ya aceptó antes en este navegador, saltamos el aviso
+    if (localStorage.getItem(claveStoragePrivacidad()) === 'true') {
+        overlay.remove();
+        contenido.style.opacity = "1";
+        contenido.style.pointerEvents = "auto";
+    }
+
     let streamCamara = null;
     let blobCapturado = null;
     let usarPerfilSeleccionado = false;
@@ -1008,6 +1029,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Aceptar aviso de privacidad ---
     btnAceptar.addEventListener("click", () => {
+        localStorage.setItem(claveStoragePrivacidad(), 'true');
         overlay.remove();
         contenido.style.opacity = "1";
         contenido.style.pointerEvents = "auto";
@@ -1352,7 +1374,7 @@ document.addEventListener("DOMContentLoaded", () => {
             editarModal.show();
         });
     });
-    
+
     if (btnGuardar) {
         btnGuardar.addEventListener("click", async () => {
             if (!citaIdActual || !selectMetodo.value || !urlEditarPagoActual) {

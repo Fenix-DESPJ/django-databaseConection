@@ -3351,9 +3351,11 @@ body.modal-open {
     flex: 1;
     display: -webkit-box;
     -webkit-line-clamp: 4;
+    line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
 .resena-cliente { font-weight: bold; color: var(--dorado); margin-top: 0.8rem; }
 .resena-fecha { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
 
