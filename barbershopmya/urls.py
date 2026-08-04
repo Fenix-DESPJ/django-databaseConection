@@ -29,7 +29,8 @@ from usuarios import views as usuarios_views  # agrega este import
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    path('accounts/', include('allauth.urls')),
+    
     # La Raíz (Home) — ahora sí es la vista de usuarios con el contenido real
     path('', usuarios_views.home, name='home'),
 

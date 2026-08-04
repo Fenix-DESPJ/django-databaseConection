@@ -26,6 +26,8 @@ from django.db.models import F
 from django.http import FileResponse
 from fpdf import FPDF
 import os
+import uuid
+import tempfile
 from django.conf import settings  # <-- NUEVO: necesario para localizar MEDIA_ROOT
 
 
@@ -255,82 +257,147 @@ def lista_servicios(request):
         'es_admin': es_admin(request.user) # <--- Aquí calculas si es admin
     })
 
+def _obtener_rango_fechas(request):
+    """
+    Lee fecha_inicio / fecha_fin de la querystring (formato YYYY-MM-DD, el
+    que manda un <input type="date">). Si no vienen o son inválidas, el
+    reporte se calcula sobre TODO el histórico.
+    """
+    fecha_inicio = fecha_fin = None
+    try:
+        if request.GET.get('fecha_inicio'):
+            fecha_inicio = datetime.strptime(request.GET['fecha_inicio'], '%Y-%m-%d').date()
+    except ValueError:
+        pass
+    try:
+        if request.GET.get('fecha_fin'):
+            fecha_fin = datetime.strptime(request.GET['fecha_fin'], '%Y-%m-%d').date()
+    except ValueError:
+        pass
+
+    if fecha_inicio and fecha_fin and fecha_inicio > fecha_fin:
+        fecha_inicio, fecha_fin = fecha_fin, fecha_inicio
+
+    return fecha_inicio, fecha_fin
+
+
+def _citas_filtradas_por_fecha(request):
+    citas = Cita.objects.all()
+    fecha_inicio, fecha_fin = _obtener_rango_fechas(request)
+
+    if fecha_inicio:
+        citas = citas.filter(fecha__gte=fecha_inicio)
+    if fecha_fin:
+        citas = citas.filter(fecha__lte=fecha_fin)
+
+    return citas, fecha_inicio, fecha_fin
+
+
+def _nombre_archivo_reporte(fecha_inicio, fecha_fin, extension):
+    if fecha_inicio and fecha_fin:
+        rango = f"{fecha_inicio:%Y%m%d}_a_{fecha_fin:%Y%m%d}"
+    elif fecha_inicio:
+        rango = f"desde_{fecha_inicio:%Y%m%d}"
+    elif fecha_fin:
+        rango = f"hasta_{fecha_fin:%Y%m%d}"
+    else:
+        rango = "historico_completo"
+    return f"reporte_citas_{rango}.{extension}"
+
+
 #reportes servicios
 @login_required
 def reportes_admin(request):
+    citas_filtradas, fecha_inicio, fecha_fin = _citas_filtradas_por_fecha(request)
+
     # 1. Ingresos totales
-    ingresos_totales = Cita.objects.aggregate(total=Sum('idserviciofk__precio'))['total'] or 0
-    
+    ingresos_totales = citas_filtradas.aggregate(total=Sum('idserviciofk__precio'))['total'] or 0
+
     # 2. Total de reservas
-    total_reservas = Cita.objects.count()
-    
+    total_reservas = citas_filtradas.count()
+
     # 3. Servicio más vendido
-    servicio_top_obj = Cita.objects.values('idserviciofk__nombreservicio') \
+    servicio_top_obj = citas_filtradas.values('idserviciofk__nombreservicio') \
                                    .annotate(total=Count('idcita')) \
                                    .order_by('-total').first()
     servicio_top = servicio_top_obj['idserviciofk__nombreservicio'] if servicio_top_obj else "N/A"
-    
+
     # 4. Top 5 Servicios para la lista lateral
-    top_servicios = Cita.objects.values('idserviciofk__nombreservicio') \
+    top_servicios = citas_filtradas.values('idserviciofk__nombreservicio') \
                                 .annotate(total=Count('idcita')) \
                                 .order_by('-total')[:5]
 
-    # 5. NUEVO: Agrupación para la gráfica de barras por Barbero
-    datos_barberos = Cita.objects.values('idbarberofk__idusuariofk__nombre') \
+    # 5. Agrupación para la gráfica de barras por Barbero
+    datos_barberos = citas_filtradas.values('idbarberofk__idusuariofk__nombre') \
                              .annotate(total_ingreso=Sum('idserviciofk__precio')) \
                              .order_by('-total_ingreso')
 
-    # Ahora, el diccionario SÍ tendrá la llave 'nombre_barbero'
     nombres_barberos = [item['idbarberofk__idusuariofk__nombre'] or "Sin Nombre" for item in datos_barberos]
     totales_barberos = [float(item['total_ingreso'] or 0) for item in datos_barberos]
-
-    Barbero = apps.get_model('servicios', 'Barbero') # Ajusta 'servicios' si tu app se llama diferente
 
     context = {
         'ingresos_totales': ingresos_totales,
         'total_reservas': total_reservas,
         'servicio_top': servicio_top,
         'top_servicios': top_servicios,
-        # Convertimos a JSON para que el template no sufra con los tipos de datos
         'nombres_barberos': json.dumps(nombres_barberos),
         'totales_barberos': json.dumps(totales_barberos),
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
     }
     return render(request, 'reportes.html', context)
 
+
 @login_required
 def descargar_reporte_excel(request):
-    datos = Cita.objects.all().values(
-        'idcita', 'fecha', 'horainicio', 
+    citas_filtradas, fecha_inicio, fecha_fin = _citas_filtradas_por_fecha(request)
+
+    datos = citas_filtradas.values(
+        'idcita', 'fecha', 'horainicio',
         'idserviciofk__nombreservicio', 'idserviciofk__precio'
     )
     df = pd.DataFrame(list(datos))
-    
-    # --- CORRECCIÓN AQUÍ ---
+
     # Convertimos la columna fecha a string para que no dé error en Excel
     if 'fecha' in df.columns:
         df['fecha'] = df['fecha'].astype(str)
-    
+
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = 'attachment; filename="reporte_citas.xlsx"'
+    nombre_archivo = _nombre_archivo_reporte(fecha_inicio, fecha_fin, 'xlsx')
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     df.to_excel(response, index=False)
     return response
 
+
 @login_required
 def descargar_reporte_pdf(request):
+    citas_filtradas, fecha_inicio, fecha_fin = _citas_filtradas_por_fecha(request)
+
     # 1. Obtener datos
-    datos = Cita.objects.all().values(
+    datos = citas_filtradas.values(
         'idcita', 'fecha', 'idserviciofk__nombreservicio', 'idserviciofk__precio'
     )
-    
+
     # 2. Crear PDF
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", 'B', 16)
     pdf.cell(0, 10, "Reporte de Citas - BarberShop", ln=True, align='C')
-    pdf.ln(10)
-    
+
+    pdf.set_font("Arial", '', 11)
+    if fecha_inicio and fecha_fin:
+        subtitulo = f"Del {fecha_inicio.strftime('%d/%m/%Y')} al {fecha_fin.strftime('%d/%m/%Y')}"
+    elif fecha_inicio:
+        subtitulo = f"Desde el {fecha_inicio.strftime('%d/%m/%Y')}"
+    elif fecha_fin:
+        subtitulo = f"Hasta el {fecha_fin.strftime('%d/%m/%Y')}"
+    else:
+        subtitulo = "Historico completo"
+    pdf.cell(0, 8, subtitulo, ln=True, align='C')
+    pdf.ln(5)
+
     # Encabezados
     pdf.set_font("Arial", 'B', 12)
     pdf.cell(20, 10, "ID", 1)
@@ -338,7 +405,7 @@ def descargar_reporte_pdf(request):
     pdf.cell(80, 10, "Servicio", 1)
     pdf.cell(30, 10, "Precio", 1)
     pdf.ln()
-    
+
     # Datos
     pdf.set_font("Arial", '', 12)
     for cita in datos:
@@ -348,15 +415,14 @@ def descargar_reporte_pdf(request):
         pdf.cell(30, 10, str(cita.get('idserviciofk__precio', '')), 1)
         pdf.ln()
 
-    # 3. Guardar en archivo temporal (evita problemas de buffer)
-    ruta_temp = "temp_reporte.pdf"
+    # 3. Guardar en archivo temporal ÚNICO (evita que dos descargas simultáneas se pisen)
+    nombre_archivo = _nombre_archivo_reporte(fecha_inicio, fecha_fin, 'pdf')
+    ruta_temp = os.path.join(tempfile.gettempdir(), f"reporte_{uuid.uuid4().hex}.pdf")
     pdf.output(ruta_temp)
-    
+
     # 4. Enviar archivo al usuario
     response = FileResponse(open(ruta_temp, 'rb'), content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="reporte_citas.pdf"'
-    
-    # Nota: Aquí no borramos el archivo inmediatamente para asegurar la descarga
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
 
 def disponibilidad_ajax(request):

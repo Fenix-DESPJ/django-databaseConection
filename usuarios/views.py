@@ -22,6 +22,9 @@ import os
 import uuid
 import tempfile
 from datetime import timedelta, date
+from allauth.socialaccount.models import SocialAccount, SocialToken
+from allauth.account.models import EmailAddress
+from django.contrib.admin.models import LogEntry
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago, ContenidoIndex, BarberoDestacado, PerfilUsuario
@@ -226,126 +229,18 @@ def iniciar_sesion(request):
 # =========================================================================
 # 1.B VISTA: INICIAR SESIÓN / AUTOREGISTRO CON GOOGLE
 # =========================================================================
-@require_POST
-def google_login(request):
-    credential = request.POST.get('credential')
-    rol_formulario = (request.POST.get('rol') or 'cliente').lower().strip()
+# --- Reemplaza la vista antigua @require_POST def google_login(request): por esta ---
 
+def seleccionar_rol_google(request, rol):
+    """
+    Guarda en sesión el rol elegido (admin/barbero/cliente) ANTES de mandar
+    al usuario al flujo de redirección de Google (allauth). El adapter
+    (usuarios/adapters.py) lee este valor cuando Google redirige de vuelta.
+    """
+    rol = (rol or 'cliente').lower().strip()
     mapa_roles = {'admin': 1, 'administrador': 1, 'barbero': 2, 'cliente': 3}
-    rol_esperado_id = mapa_roles.get(rol_formulario, 3)
-
-    if not credential:
-        return JsonResponse({'ok': False, 'error': 'No se recibió el token de Google.'}, status=400)
-
-    try:
-        idinfo = google_id_token.verify_oauth2_token(
-            credential, google_requests.Request(), settings.GOOGLE_CLIENT_ID
-        )
-    except ValueError:
-        return JsonResponse({'ok': False, 'error': 'El token de Google no es válido.'}, status=400)
-
-    correo_google = idinfo.get('email')
-    nombre_google = idinfo.get('name') or (correo_google.split('@')[0] if correo_google else 'Usuario')
-    google_sub = idinfo.get('sub')
-
-    if not correo_google:
-        return JsonResponse({'ok': False, 'error': 'Tu cuenta de Google no tiene un correo válido.'}, status=400)
-
-    password_generada = None
-    usuario_manual = Usuario.objects.filter(correo__iexact=correo_google).first()
-
-    if usuario_manual is None:
-        # --- Autoregistro: cuenta nueva, siempre como Cliente ---
-        rol_cliente = Rol.objects.get(idrol=ID_ROL_CLIENTE)
-        password_generada = generar_password_provisional()
-        cedula_temporal = f"G-{uuid.uuid4().hex[:10].upper()}"
-
-        usuario_manual = Usuario.objects.create(
-            cedula=cedula_temporal,
-            nombre=formatear_nombre(nombre_google),
-            correo=correo_google,
-            contrasena=make_password(password_generada),
-            numcelular='',
-            fechanacimiento=date(2000, 1, 1),
-            idrolfk=rol_cliente,
-        )
-        clasificar_rol_nuevo_usuario(usuario_manual)
-
-        user_django = User.objects.create_user(
-            username=correo_google,
-            email=correo_google,
-            password=password_generada,
-            first_name=nombre_google,
-        )
-    else:
-        # --- Cuenta existente: valida que el rol coincida con la pestaña elegida ---
-        try:
-            rol_real_id = usuario_manual.idrolfk.idrol
-        except Exception:
-            rol_real_id = usuario_manual.idrolfk_id
-
-        if rol_real_id != rol_esperado_id:
-            return JsonResponse({'ok': False, 'error': 'Esa cuenta de Google no corresponde al rol seleccionado.'}, status=400)
-
-        try:
-            user_django = User.objects.get(username=usuario_manual.correo)
-        except User.DoesNotExist:
-            # Existía en tu tabla manual pero nunca se creó su User de Django (caso raro)
-            password_generada = generar_password_provisional()
-            user_django = User.objects.create_user(
-                username=usuario_manual.correo,
-                email=usuario_manual.correo,
-                password=password_generada,
-                first_name=usuario_manual.nombre,
-            )
-            usuario_manual.contrasena = make_password(password_generada)
-            usuario_manual.save(update_fields=['contrasena'])
-
-        rol_actual_id = rol_real_id
-
-    perfil, _creado_perfil = PerfilUsuario.objects.get_or_create(user=user_django)
-    if perfil.google_id != google_sub:
-        perfil.google_id = google_sub
-        if password_generada:
-            perfil.password_provisional = True
-        perfil.save()
-
-    # Login real (esto es INDEPENDIENTE de la contraseña tradicional:
-    # aunque el usuario la cambie después, Google seguirá funcionando)
-    user_django.backend = 'django.contrib.auth.backends.ModelBackend'
-    auth_login(request, user_django)
-
-    try:
-        rol_actual_id = usuario_manual.idrolfk.idrol
-    except Exception:
-        rol_actual_id = usuario_manual.idrolfk_id
-    rol_actual_id = int(rol_actual_id)
-
-    request.session['sesion_iniciada'] = True
-    request.session['usuario_nombre'] = user_django.first_name or user_django.username
-    request.session['usuario_rol_id'] = rol_actual_id
-    request.session['usuario_foto'] = usuario_manual.foto_perfil.url if usuario_manual.foto_perfil else None
-
-    if rol_actual_id == 1:
-        redirect_url = reverse('dashboard_admin')
-    elif rol_actual_id == 2:
-        redirect_url = reverse('panel_barbero')
-    else:
-        redirect_url = reverse('home')
-
-    respuesta = {'ok': True, 'redirect': redirect_url}
-
-    if password_generada:
-        aviso = (
-            f"¡Bienvenido, {usuario_manual.nombre}! Creamos tu cuenta usando Google. "
-            f"También dejamos lista una contraseña de acceso tradicional: {password_generada}. "
-            f"Puedes cambiarla cuando quieras desde tu perfil y, aunque la cambies, "
-            f"siempre podrás seguir entrando con Google sin problema."
-        )
-        messages.info(request, aviso)
-        respuesta['aviso_password'] = aviso
-
-    return JsonResponse(respuesta)
+    request.session['rol_google_seleccionado'] = mapa_roles.get(rol, 3)
+    return redirect('/accounts/google/login/?process=login')
 
 # =========================================================================
 # 2. VISTA: CERRAR SESIÓN
@@ -915,8 +810,25 @@ def eliminar_perfil(request, usuario_id):
 
             usuario.delete()  # Notificacion se borra sola (on_delete=CASCADE)
 
-            with connection.cursor() as cursor:
-                cursor.execute("DELETE FROM auth_user WHERE username = %s", [correo_eliminado])
+            # --- Limpieza de todo lo que allauth pudo crear ---
+            user_django = User.objects.filter(username=correo_eliminado).first()
+            if user_django:
+                SocialToken.objects.filter(account__user=user_django).delete()
+                SocialAccount.objects.filter(user=user_django).delete()
+                EmailAddress.objects.filter(user=user_django).delete()
+                PerfilUsuario.objects.filter(user=user_django).delete()
+                user_django.groups.clear()
+                user_django.user_permissions.clear()
+                LogEntry.objects.filter(user=user_django).delete()
+
+                # --- IMPORTANTE: NO usar user_django.delete() ---
+                # El collector de Django recorre TODAS las relaciones hacia
+                # auth_user declaradas en tus modelos, incluida una que
+                # parece existir en Usuario (campo "user") pero sin columna
+                # real en la BD ("usuario.user_id"). Por eso truena con 1054.
+                # Borramos la fila directo con SQL para saltarnos ese recorrido.
+                with connection.cursor() as cursor:
+                    cursor.execute("DELETE FROM auth_user WHERE id = %s", [user_django.pk])
 
     except Exception as e:
         messages.error(
@@ -925,7 +837,10 @@ def eliminar_perfil(request, usuario_id):
         )
         return redirect('editar_perfiles')
 
-    messages.success(request, f"Se ha eliminado a {nombre_eliminado} de forma permanente, junto con sus citas, agendas y calificaciones asociadas.")
+    messages.success(
+        request,
+        f"Se ha eliminado a {nombre_eliminado} de forma permanente, junto con sus citas, agendas, calificaciones y su cuenta de acceso (incluida la de Google si aplicaba)."
+    )
     return redirect('editar_perfiles')
 
 @login_required
@@ -1260,3 +1175,4 @@ def omitir_calificacion(request):
         request.session['citas_omitidas_calificacion'] = citas_omitidas
 
     return JsonResponse({'ok': True})
+

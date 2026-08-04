@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-08-2026 a las 00:52:20
+-- Tiempo de generación: 05-08-2026 a las 01:13:34
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -79,6 +79,34 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `account_emailaddress`
+--
+
+CREATE TABLE `account_emailaddress` (
+  `id` int(11) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `verified` tinyint(1) NOT NULL,
+  `primary` tinyint(1) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `account_emailconfirmation`
+--
+
+CREATE TABLE `account_emailconfirmation` (
+  `id` int(11) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `sent` datetime(6) DEFAULT NULL,
+  `key` varchar(64) NOT NULL,
+  `email_address_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `agenda`
 --
 
@@ -94,10 +122,8 @@ CREATE TABLE `agenda` (
 --
 
 INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`) VALUES
-(4, 2, '2026-03-21', '15:00:00'),
 (5, 1, '2026-03-22', '09:00:00'),
 (6, 2, '2026-03-22', '10:00:00'),
-(10, 2, '2026-03-24', '10:00:00'),
 (11, 11, '2026-06-24', '08:00:00'),
 (12, 11, '2026-06-25', '09:00:00'),
 (14, 11, '2026-06-30', '08:00:00'),
@@ -272,7 +298,31 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (117, 'Can add Contenido del Index', 30, 'add_contenidoindex'),
 (118, 'Can change Contenido del Index', 30, 'change_contenidoindex'),
 (119, 'Can delete Contenido del Index', 30, 'delete_contenidoindex'),
-(120, 'Can view Contenido del Index', 30, 'view_contenidoindex');
+(120, 'Can view Contenido del Index', 30, 'view_contenidoindex'),
+(121, 'Can add site', 31, 'add_site'),
+(122, 'Can change site', 31, 'change_site'),
+(123, 'Can delete site', 31, 'delete_site'),
+(124, 'Can view site', 31, 'view_site'),
+(125, 'Can add email address', 32, 'add_emailaddress'),
+(126, 'Can change email address', 32, 'change_emailaddress'),
+(127, 'Can delete email address', 32, 'delete_emailaddress'),
+(128, 'Can view email address', 32, 'view_emailaddress'),
+(129, 'Can add email confirmation', 33, 'add_emailconfirmation'),
+(130, 'Can change email confirmation', 33, 'change_emailconfirmation'),
+(131, 'Can delete email confirmation', 33, 'delete_emailconfirmation'),
+(132, 'Can view email confirmation', 33, 'view_emailconfirmation'),
+(133, 'Can add social account', 34, 'add_socialaccount'),
+(134, 'Can change social account', 34, 'change_socialaccount'),
+(135, 'Can delete social account', 34, 'delete_socialaccount'),
+(136, 'Can view social account', 34, 'view_socialaccount'),
+(137, 'Can add social application', 35, 'add_socialapp'),
+(138, 'Can change social application', 35, 'change_socialapp'),
+(139, 'Can delete social application', 35, 'delete_socialapp'),
+(140, 'Can view social application', 35, 'view_socialapp'),
+(141, 'Can add social application token', 36, 'add_socialtoken'),
+(142, 'Can change social application token', 36, 'change_socialtoken'),
+(143, 'Can delete social application token', 36, 'delete_socialtoken'),
+(144, 'Can view social application token', 36, 'view_socialtoken');
 
 -- --------------------------------------------------------
 
@@ -304,9 +354,10 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-07-27 15:36:40.224131', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
 (5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-08-03 22:50:48.954927', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-07-31 13:21:01.219047', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-08-04 23:05:26.877663', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
 (7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-07-31 13:26:13.033726', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
-(8, 'pbkdf2_sha256$600000$E53eALCUkkcRHOiN6JnwdP$U2ajNUDQIShVRQsqG62Alt7gbSa/CXd3QkNBoBqQ/hI=', '2026-08-03 22:51:34.469732', 0, 'juanesspa76@gmail.com', 'Mapache', 'uwu', 'juanesspa76@gmail.com', 0, 1, '2026-07-28 20:33:53.831652');
+(8, 'pbkdf2_sha256$600000$E53eALCUkkcRHOiN6JnwdP$U2ajNUDQIShVRQsqG62Alt7gbSa/CXd3QkNBoBqQ/hI=', '2026-08-04 23:04:08.417768', 0, 'juanesspa76@gmail.com', 'Mapache', 'uwu', 'juanesspa76@gmail.com', 0, 1, '2026-07-28 20:33:53.831652'),
+(9, 'pbkdf2_sha256$600000$fsmNBV20n2xa02hrKtKkoG$Z+KO0IUH/D88sKc3/18HOvRcEhwUtlOykmAFBcTDUQI=', '2026-08-04 23:05:11.582915', 0, 'fenixdespj@gmail.com', 'Fenix', '', 'fenixdespj@gmail.com', 0, 1, '2026-08-04 22:54:59.864405');
 
 -- --------------------------------------------------------
 
@@ -448,10 +499,8 @@ CREATE TABLE `cita` (
 --
 
 INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idAgendaFk`, `fecha`, `horaInicio`, `observaciones`, `idPagoFk`, `calificacionOmitida`) VALUES
-(4, 2, 4, 2, 4, '2026-03-21', '15:30:00', NULL, NULL, 0),
 (5, 1, 5, 4, 5, '2026-03-22', '09:00:00', NULL, NULL, 0),
 (6, 2, 6, 1, 6, '2026-03-22', '12:00:00', NULL, NULL, 0),
-(10, 2, 10, 9, 10, '2026-03-24', '10:00:00', NULL, NULL, 0),
 (40, 11, 11, 1, 25, '2026-07-02', '08:00:00', 'Completado - Servicio realizado', 30, 0),
 (41, 11, 14, 2, 26, '2026-07-02', '09:00:00', 'Completado - Servicio realizado', 31, 0),
 (44, 11, 11, 19, 29, '2026-07-29', '14:30:00', 'Completado - Servicio realizado', 34, 0),
@@ -482,13 +531,12 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`, `contactoEmergencia`) VALUES
-(4, 8, 'La Floresta', '2026-01-20', 'Luis-096'),
 (5, 9, 'Quitumbe', '2026-01-25', 'Rosa-095'),
 (6, 10, 'Cumbayá', '2026-01-28', 'Felipe-094'),
-(10, 8, 'La Floresta', '2026-02-15', 'Ana-097'),
 (11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado'),
 (14, 20, 'Registrado desde la Web', '2026-06-24', 'No asignado'),
-(18, 22, 'Registrado desde la Web', '2026-07-28', 'No asignado');
+(18, 22, 'Registrado desde la Web', '2026-07-28', 'No asignado'),
+(20, 24, 'Registrado desde la Web', '2026-08-04', 'No asignado');
 
 -- --------------------------------------------------------
 
@@ -625,6 +673,8 @@ CREATE TABLE `django_content_type` (
 --
 
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
+(32, 'account', 'emailaddress'),
+(33, 'account', 'emailconfirmation'),
 (1, 'admin', 'logentry'),
 (3, 'auth', 'group'),
 (2, 'auth', 'permission'),
@@ -644,6 +694,10 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (13, 'servicios', 'servicio'),
 (26, 'servicios', 'usuario'),
 (6, 'sessions', 'session'),
+(31, 'sites', 'site'),
+(34, 'socialaccount', 'socialaccount'),
+(35, 'socialaccount', 'socialapp'),
+(36, 'socialaccount', 'socialtoken'),
 (29, 'usuarios', 'barberodestacado'),
 (27, 'usuarios', 'calificacion'),
 (18, 'usuarios', 'cita'),
@@ -702,7 +756,25 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (26, 'servicios', '0002_agenda_barbero_cliente_usuario', '2026-07-02 00:52:25.138123'),
 (27, 'usuarios', '0003_calificacion', '2026-07-17 19:38:38.253486'),
 (28, 'usuarios', '0004_pago_barberodestacado_contenidoindex', '2026-07-27 16:00:42.881541'),
-(29, 'usuarios', '0004_pago_barberodestacado_contenidoindex_and_more', '2026-08-03 21:02:59.714525');
+(29, 'usuarios', '0004_pago_barberodestacado_contenidoindex_and_more', '2026-08-03 21:02:59.714525'),
+(30, 'account', '0001_initial', '2026-08-04 22:15:49.772821'),
+(31, 'account', '0002_email_max_length', '2026-08-04 22:15:49.796823'),
+(32, 'account', '0003_alter_emailaddress_create_unique_verified_email', '2026-08-04 22:15:49.850822'),
+(33, 'account', '0004_alter_emailaddress_drop_unique_email', '2026-08-04 22:15:50.357210'),
+(34, 'account', '0005_emailaddress_idx_upper_email', '2026-08-04 22:15:50.376203'),
+(35, 'account', '0006_emailaddress_lower', '2026-08-04 22:15:50.414204'),
+(36, 'account', '0007_emailaddress_idx_email', '2026-08-04 22:15:50.462200'),
+(37, 'account', '0008_emailaddress_unique_primary_email_fixup', '2026-08-04 22:15:50.503203'),
+(38, 'account', '0009_emailaddress_unique_primary_email', '2026-08-04 22:15:50.523200'),
+(39, 'sites', '0001_initial', '2026-08-04 22:15:50.543203'),
+(40, 'sites', '0002_alter_domain_unique', '2026-08-04 22:15:50.567201'),
+(41, 'socialaccount', '0001_initial', '2026-08-04 22:15:51.095214'),
+(42, 'socialaccount', '0002_token_max_lengths', '2026-08-04 22:15:51.244217'),
+(43, 'socialaccount', '0003_extra_data_default_dict', '2026-08-04 22:15:51.409213'),
+(44, 'socialaccount', '0004_app_provider_id_settings', '2026-08-04 22:15:51.473261'),
+(45, 'socialaccount', '0005_socialtoken_nullable_app', '2026-08-04 22:15:51.991215'),
+(46, 'socialaccount', '0006_alter_socialaccount_extra_data', '2026-08-04 22:15:52.097212'),
+(47, 'usuarios', '0005_pago_barberodestacado_contenidoindex_and_more', '2026-08-04 22:35:17.806518');
 
 -- --------------------------------------------------------
 
@@ -721,7 +793,9 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('233nceu55e0mh847sir5knthu93hzfus', 'eyJyb2xfZ29vZ2xlX3NlbGVjY2lvbmFkbyI6Mywic29jaWFsYWNjb3VudF9zdGF0ZXMiOnt9fQ:1wrNpD:zRxENNxHeLR-YwG9nY-XXf3R3IjHjtWmLcp4D1Rc16s', '2026-08-18 22:41:31.968359'),
 ('3i8hqj5a439xu8rb79kfnqrtmc7o1gzq', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wmXvY:VsS7Bovr4kQ63O-Zk7GJkVZEVSMHkAfrpnd-1xz4AVU', '2026-08-05 14:28:04.859625'),
+('4nenmlb6zh5eysfyr5vz7livefnvbj1v', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wrOCM:rcPwelNudoArk3PUcYsc6lR4ILxGCOJsoi6wGd6UOvE', '2026-08-18 23:05:26.881669'),
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
 ('avgczg5y3i4uccct4edfx4nl1tkahju3', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wkjcF:Al9k-Y9_En4MSelWtg-nU6I69OtmZKAmhrEZ6ceu208', '2026-07-31 14:32:39.014945'),
 ('dzsp3fialylt9tyorwfvqp4qnoe6xe6t', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1woNtT:OsSo6qdmkIEHGywJbMr9EGdWd9kaI9Q3HFiZ5SN59aI', '2026-08-10 16:09:31.761168'),
@@ -730,6 +804,25 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('m37qj12g713d43akpcxqc7w88eyn2nfc', '.eJxVj8EOwiAQRP9lz01DsVtKj979BrJlwaIVEign47-bmibqdd7LZOYJhuq2mFpcNoFhggGa32wme3dxB3yjeE2tTXHLYW53pT1oaS-J3Xo-3L-ChcoCEygxCu1PXs1as2flqVNC8mAHT-xGNUql0UpG1WOPQnqNiKRl13eMViM0UFwJKZoQgw3EBNOWq2uglko5JBPTY85uH0oxwDfPaf08615vPTxO-Q:1wcP6q:8ftjTcLXAH0O328CfgWTbOaEmnp2-JGPNN2SPfBuSNs', '2026-07-08 15:01:48.007467'),
 ('nwdypz3bo5cldbh48xevs2wc2ybwpo8d', '.eJxVj8tuwyAQRX8lYp3YBAM2WWbfb0ADDDWpAxaPdlH132tXidpu7z3njuaTaGh11q1g1sGRCxnJ8W9mwL5h3At3g_iaOptizcF0O9I92tK9JIfL9cH-G5ihzJtNBUolheHeSD4wkDB4joJKK8aJgZ-4o6gmCcCZH5F5qpSRZ6BC2ZF52EYLlpCiDjHYAA7IpeaGR9JKgxySjuluMm6n7BIwVjw4PKwbYXb3CeW0_Lw5_EY-1bRZ_R1dgH7F7MOCpX_WjGp25oJxPp5urVUj5vn0zrsPNCv5-gbonWwJ:1weNXh:Ii3-hNesC2KJd1f4BbeVzMxNKB9djlTXuYBoiKTH1pE', '2026-07-14 01:45:41.287793'),
 ('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `django_site`
+--
+
+CREATE TABLE `django_site` (
+  `id` int(11) NOT NULL,
+  `domain` varchar(100) NOT NULL,
+  `name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `django_site`
+--
+
+INSERT INTO `django_site` (`id`, `domain`, `name`) VALUES
+(1, 'localhost:8000', 'localhost:8000');
 
 -- --------------------------------------------------------
 
@@ -780,15 +873,15 @@ INSERT INTO `notificacion` (`idnotificacion`, `tipo`, `mensaje`, `leida`, `fecha
 (27, 'reserva_creada', 'Tu cita de Tinte quedó reservada para el 14/08/2026 a las 11:00 con JUAN MANUEL RESTREPO.', 0, '2026-07-31 13:24:07.511843', 20),
 (28, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Tinte para el 14/08/2026 a las 11:00.', 0, '2026-07-31 13:24:07.515841', 17),
 (29, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Corte personalizado).', 0, '2026-07-31 13:25:04.959247', 1),
-(30, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Corte personalizado).', 0, '2026-07-31 13:25:04.961247', 19),
+(30, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Corte personalizado).', 1, '2026-07-31 13:25:04.961247', 19),
 (31, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Tinte).', 0, '2026-07-31 13:25:06.323908', 1),
-(32, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Tinte).', 0, '2026-07-31 13:25:06.326907', 19),
+(32, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Tinte).', 1, '2026-07-31 13:25:06.326907', 19),
 (33, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Fade).', 0, '2026-07-31 13:25:07.613300', 1),
-(34, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Fade).', 0, '2026-07-31 13:25:07.616295', 19),
+(34, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Fade).', 1, '2026-07-31 13:25:07.616295', 19),
 (35, 'reserva_creada', 'Tu cita de Facial quedó reservada para el 20/08/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 0, '2026-08-03 22:50:34.413175', 22),
 (36, 'nueva_cita', 'MAPACHE UWU agendó el servicio de Facial para el 20/08/2026 a las 08:00.', 0, '2026-08-03 22:50:34.414178', 17),
 (37, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de MAPACHE UWU (Facial).', 0, '2026-08-03 22:50:51.979093', 1),
-(38, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de MAPACHE UWU (Facial).', 0, '2026-08-03 22:50:51.982109', 19);
+(38, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de MAPACHE UWU (Facial).', 1, '2026-08-03 22:50:51.982109', 19);
 
 -- --------------------------------------------------------
 
@@ -913,6 +1006,74 @@ INSERT INTO `servicio` (`idServicio`, `nombreServicio`, `duracion`, `precio`, `t
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `socialaccount_socialaccount`
+--
+
+CREATE TABLE `socialaccount_socialaccount` (
+  `id` int(11) NOT NULL,
+  `provider` varchar(200) NOT NULL,
+  `uid` varchar(191) NOT NULL,
+  `last_login` datetime(6) NOT NULL,
+  `date_joined` datetime(6) NOT NULL,
+  `extra_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`extra_data`)),
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `socialaccount_socialaccount`
+--
+
+INSERT INTO `socialaccount_socialaccount` (`id`, `provider`, `uid`, `last_login`, `date_joined`, `extra_data`, `user_id`) VALUES
+(1, 'google', '114881672322936713317', '2026-08-04 23:04:08.397667', '2026-08-04 22:52:37.979594', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"114881672322936713317\", \"email\": \"juanesspa76@gmail.com\", \"email_verified\": true, \"at_hash\": \"_UqTpajBm4-Xp19fV_xg7g\", \"name\": \"juan esteban parra rodriguez\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocIN99GvxyxzGsXhSU_ZLxgK7D0Dx2OioefYgPTO0lbfLwbP27zAgQ=s96-c\", \"given_name\": \"juan esteban\", \"family_name\": \"parra rodriguez\", \"iat\": 1785884649, \"exp\": 1785888249}', 8),
+(2, 'google', '110805645877386512366', '2026-08-04 23:04:56.462991', '2026-08-04 22:55:00.823524', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"110805645877386512366\", \"email\": \"fenixdespj@gmail.com\", \"email_verified\": true, \"at_hash\": \"627rdxppAAsAnUw1KV_G6g\", \"name\": \"Fenix\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocKxlj-8DE0plNN02dtBNvVBpGsNMhSU42UV5nwN-g-4AJhY1l0=s96-c\", \"given_name\": \"Fenix\", \"iat\": 1785884697, \"exp\": 1785888297}', 9);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `socialaccount_socialapp`
+--
+
+CREATE TABLE `socialaccount_socialapp` (
+  `id` int(11) NOT NULL,
+  `provider` varchar(30) NOT NULL,
+  `name` varchar(40) NOT NULL,
+  `client_id` varchar(191) NOT NULL,
+  `secret` varchar(191) NOT NULL,
+  `key` varchar(191) NOT NULL,
+  `provider_id` varchar(200) NOT NULL,
+  `settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`settings`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `socialaccount_socialapp_sites`
+--
+
+CREATE TABLE `socialaccount_socialapp_sites` (
+  `id` bigint(20) NOT NULL,
+  `socialapp_id` int(11) NOT NULL,
+  `site_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `socialaccount_socialtoken`
+--
+
+CREATE TABLE `socialaccount_socialtoken` (
+  `id` int(11) NOT NULL,
+  `token` longtext NOT NULL,
+  `token_secret` longtext NOT NULL,
+  `expires_at` datetime(6) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  `app_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuario`
 --
 
@@ -937,7 +1098,6 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (2, '1755842100', 'MATEO ALVEAR', 'mateo.barber@mya.com', '0984455667', NULL, NULL, 2, ''),
 (3, '1004556772', 'LUIS SIMBAÑA', 'luis.barber@mya.com', '0977889900', NULL, NULL, 2, ''),
 (5, '1711223344', 'JUAN RODRÍGUEZ', 'juan.rod@outlook.com', '0955667788', NULL, NULL, 3, ''),
-(8, '1788990011', 'ROBERTO GÓMEZ', 'roberto@gmail.com', '0933557799', NULL, NULL, 3, ''),
 (9, '1744556611', 'LUCÍA TORRES', 'lucia@gmail.com', '0944668800', NULL, NULL, 3, ''),
 (10, '1722334455', 'PEDRO SALAS', 'pedro@gmail.com', '0955779911', NULL, NULL, 3, ''),
 (13, '1111111111', 'SAMUEL LINARES', 'samueluwu@gmail.com', '3333333333', 'samuel', '2026-06-24', 3, ''),
@@ -947,7 +1107,8 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (19, '4444444444', 'DANI JORDIWILDE', 'dani@gmail.com', '22222222222', 'pbkdf2_sha256$600000$ud3U9yK19LvNUYSFpWdxuA$wSPZm1V3A8E2of2uJ9oX39DgBkfzwf3u/vM/rHVvTh0=', '2026-06-16', 1, NULL),
 (20, '1111222333', 'CLIENTE UWU', 'cliente@gmail.com', '3334445555', 'pbkdf2_sha256$600000$A8DpsiokPP0k1bHK7pPT96$v8G4lzCykQndKOJ2OJKPRj2YtCb3dCyOKAZmLlVPaHI=', '2026-06-25', 3, 'perfiles/usuario_20_21452447-juutb5hh-v4.webp'),
 (21, '1111111112', 'NUEVO BARBERO', 'barbero.nuevo@mya.com', '0999999999', NULL, NULL, 2, ''),
-(22, '1211321231', 'MAPACHE UWU', 'juanesspa76@gmail.com', '3227569201', 'pbkdf2_sha256$600000$JgAhs3lXZFWFeyvKl4Qo7l$JZrc1/3tM4zGV75iFAIV8IN8KMnpmx7IVLkOS8wS1lA=', '2006-09-20', 3, 'perfiles/usuario_22_Mapache de apoyo emocional.PNG');
+(22, '1211321231', 'MAPACHE UWU', 'juanesspa76@gmail.com', '3227569201', 'pbkdf2_sha256$600000$JgAhs3lXZFWFeyvKl4Qo7l$JZrc1/3tM4zGV75iFAIV8IN8KMnpmx7IVLkOS8wS1lA=', '2006-09-20', 3, 'perfiles/usuario_22_Mapache de apoyo emocional.PNG'),
+(24, 'G-F0F2164AD6', 'FENIX', 'fenixdespj@gmail.com', '', 'pbkdf2_sha256$600000$DGRUCUkGy7KONgCjKhZq5p$xglhcXKg9vo5IgOM3em4gD6ju/21Mo/zl/RgZxadgNc=', '2000-01-01', 3, '');
 
 --
 -- Disparadores `usuario`
@@ -1036,6 +1197,14 @@ CREATE TABLE `usuarios_perfilusuario` (
   `password_provisional` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `usuarios_perfilusuario`
+--
+
+INSERT INTO `usuarios_perfilusuario` (`id`, `rol`, `telefono`, `user_id`, `google_id`, `password_provisional`) VALUES
+(1, 'cliente', NULL, 8, '114881672322936713317', 0),
+(2, 'cliente', NULL, 9, '110805645877386512366', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -1101,6 +1270,22 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `account_emailaddress`
+--
+ALTER TABLE `account_emailaddress`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `account_emailaddress_user_id_email_987c8728_uniq` (`user_id`,`email`),
+  ADD KEY `account_emailaddress_email_03be32b2` (`email`);
+
+--
+-- Indices de la tabla `account_emailconfirmation`
+--
+ALTER TABLE `account_emailconfirmation`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `key` (`key`),
+  ADD KEY `account_emailconfirm_email_address_id_5b7f8c58_fk_account_e` (`email_address_id`);
 
 --
 -- Indices de la tabla `agenda`
@@ -1237,6 +1422,13 @@ ALTER TABLE `django_session`
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
 
 --
+-- Indices de la tabla `django_site`
+--
+ALTER TABLE `django_site`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `django_site_domain_a2e37b91_uniq` (`domain`);
+
+--
 -- Indices de la tabla `notificacion`
 --
 ALTER TABLE `notificacion`
@@ -1260,6 +1452,36 @@ ALTER TABLE `rol`
 --
 ALTER TABLE `servicio`
   ADD PRIMARY KEY (`idServicio`);
+
+--
+-- Indices de la tabla `socialaccount_socialaccount`
+--
+ALTER TABLE `socialaccount_socialaccount`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `socialaccount_socialaccount_provider_uid_fc810c6e_uniq` (`provider`,`uid`),
+  ADD KEY `socialaccount_socialaccount_user_id_8146e70c_fk_auth_user_id` (`user_id`);
+
+--
+-- Indices de la tabla `socialaccount_socialapp`
+--
+ALTER TABLE `socialaccount_socialapp`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `socialaccount_socialapp_sites`
+--
+ALTER TABLE `socialaccount_socialapp_sites`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `socialaccount_socialapp_sites_socialapp_id_site_id_71a9a768_uniq` (`socialapp_id`,`site_id`),
+  ADD KEY `socialaccount_socialapp_sites_site_id_2579dee5_fk_django_site_id` (`site_id`);
+
+--
+-- Indices de la tabla `socialaccount_socialtoken`
+--
+ALTER TABLE `socialaccount_socialtoken`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq` (`app_id`,`account_id`),
+  ADD KEY `socialaccount_social_account_id_951f210e_fk_socialacc` (`account_id`);
 
 --
 -- Indices de la tabla `usuario`
@@ -1295,6 +1517,18 @@ ALTER TABLE `usuarios_perfilusuario`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `account_emailaddress`
+--
+ALTER TABLE `account_emailaddress`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `account_emailconfirmation`
+--
+ALTER TABLE `account_emailconfirmation`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `agenda`
 --
 ALTER TABLE `agenda`
@@ -1316,13 +1550,13 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT de la tabla `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user_groups`
@@ -1364,7 +1598,7 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion_horario`
@@ -1388,13 +1622,19 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+
+--
+-- AUTO_INCREMENT de la tabla `django_site`
+--
+ALTER TABLE `django_site`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `notificacion`
@@ -1421,10 +1661,34 @@ ALTER TABLE `servicio`
   MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
+-- AUTO_INCREMENT de la tabla `socialaccount_socialaccount`
+--
+ALTER TABLE `socialaccount_socialaccount`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `socialaccount_socialapp`
+--
+ALTER TABLE `socialaccount_socialapp`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `socialaccount_socialapp_sites`
+--
+ALTER TABLE `socialaccount_socialapp_sites`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `socialaccount_socialtoken`
+--
+ALTER TABLE `socialaccount_socialtoken`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_barberodestacado`
@@ -1442,11 +1706,23 @@ ALTER TABLE `usuarios_contenidoindex`
 -- AUTO_INCREMENT de la tabla `usuarios_perfilusuario`
 --
 ALTER TABLE `usuarios_perfilusuario`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `account_emailaddress`
+--
+ALTER TABLE `account_emailaddress`
+  ADD CONSTRAINT `account_emailaddress_user_id_2c513194_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Filtros para la tabla `account_emailconfirmation`
+--
+ALTER TABLE `account_emailconfirmation`
+  ADD CONSTRAINT `account_emailconfirm_email_address_id_5b7f8c58_fk_account_e` FOREIGN KEY (`email_address_id`) REFERENCES `account_emailaddress` (`id`);
 
 --
 -- Filtros para la tabla `agenda`
@@ -1522,6 +1798,26 @@ ALTER TABLE `django_admin_log`
 --
 ALTER TABLE `notificacion`
   ADD CONSTRAINT `notificacion_idUsuarioFk_b84fac34_fk_usuario_idUsuario` FOREIGN KEY (`idUsuarioFk`) REFERENCES `usuario` (`idUsuario`);
+
+--
+-- Filtros para la tabla `socialaccount_socialaccount`
+--
+ALTER TABLE `socialaccount_socialaccount`
+  ADD CONSTRAINT `socialaccount_socialaccount_user_id_8146e70c_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Filtros para la tabla `socialaccount_socialapp_sites`
+--
+ALTER TABLE `socialaccount_socialapp_sites`
+  ADD CONSTRAINT `socialaccount_social_socialapp_id_97fb6e7d_fk_socialacc` FOREIGN KEY (`socialapp_id`) REFERENCES `socialaccount_socialapp` (`id`),
+  ADD CONSTRAINT `socialaccount_socialapp_sites_site_id_2579dee5_fk_django_site_id` FOREIGN KEY (`site_id`) REFERENCES `django_site` (`id`);
+
+--
+-- Filtros para la tabla `socialaccount_socialtoken`
+--
+ALTER TABLE `socialaccount_socialtoken`
+  ADD CONSTRAINT `socialaccount_social_account_id_951f210e_fk_socialacc` FOREIGN KEY (`account_id`) REFERENCES `socialaccount_socialaccount` (`id`),
+  ADD CONSTRAINT `socialaccount_social_app_id_636a42d7_fk_socialacc` FOREIGN KEY (`app_id`) REFERENCES `socialaccount_socialapp` (`id`);
 
 --
 -- Filtros para la tabla `usuario`

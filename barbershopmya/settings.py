@@ -26,6 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',                    # NUEVO — requerido por allauth
+    'allauth',                                   # NUEVO
+    'allauth.account',                            # NUEVO
+    'allauth.socialaccount',                       # NUEVO
+    'allauth.socialaccount.providers.google',       # NUEVO
     'usuarios',
     'negocio',
     'servicios',
@@ -38,9 +43,33 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',   # NUEVO
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
+            'key': ''
+        },
+        'SCOPE': ['profile', 'email'],
+    }
+}
+
+# Redirige aquí después de un login social exitoso (lo ajustamos con lógica propia luego)
+LOGIN_REDIRECT_URL = '/'
+SOCIALACCOUNT_ADAPTER = 'usuarios.adapters.MiSocialAccountAdapter'
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 ROOT_URLCONF = 'barbershopmya.urls'
 

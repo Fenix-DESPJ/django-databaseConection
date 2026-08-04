@@ -15,6 +15,22 @@
 
 <body>
 
+    <!-- Avisos generales (errores/éxitos) de Django messages, excluyendo el
+         de contraseña provisional de Google, que se muestra como modal aparte
+         más abajo. Reutiliza el mismo auto-cierre a los 3s que ya trae script.js
+         para cualquier elemento .alert. -->
+    {% if messages %}
+    <div class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 2000; width: 90%; max-width: 480px;">
+        {% for message in messages %}
+            {% if 'password-provisional' not in message.tags %}
+                <div class="alert {% if 'error' in message.tags %}alert-danger{% else %}alert-success{% endif %} p-2 small text-center fade show js-timeout-alert" role="alert" style="transition: opacity 0.5s ease;">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <nav class="navbar navbar-expand-lg navbar-dark py-3 fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
@@ -209,6 +225,34 @@
         </div>
     </div>
 
+    <!-- Modal de aviso de contraseña provisional (se genera al registrarse/entrar
+         con Google por primera vez). Se dispara solo por JS al final de este
+         archivo, únicamente si Django dejó un message con la etiqueta
+         'password-provisional'. data-bs-backdrop="static" + data-bs-keyboard="false"
+         evitan que se cierre solo: el usuario debe usar la X o "Aceptar". -->
+    {% for message in messages %}
+        {% if 'password-provisional' in message.tags %}
+        <div class="modal fade" id="passwordProvisionalModal" tabindex="-1" aria-labelledby="passwordProvisionalModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-white border-secondary">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title" id="passwordProvisionalModalLabel">
+                            <i class="bi bi-key-fill text-gold me-2"></i>Cuenta creada con Google
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-0">{{ message }}</p>
+                    </div>
+                    <div class="modal-footer border-secondary justify-content-center">
+                        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
     {% if request.session.sesion_iniciada %}
         <div id="calificacion-data"
             data-url-verificar="{% url 'verificar_calificacion_pendiente' %}"
@@ -259,5 +303,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        // Muestra automáticamente el modal de contraseña provisional (si
+        // Django dejó ese message en esta carga de página) y lo deja abierto
+        // hasta que el usuario lo cierre explícitamente con la X o "Aceptar".
+        document.addEventListener("DOMContentLoaded", function () {
+            var passwordModalEl = document.getElementById('passwordProvisionalModal');
+            if (passwordModalEl) {
+                var passwordModal = new bootstrap.Modal(passwordModalEl);
+                passwordModal.show();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -119,7 +119,8 @@ class PerfilUsuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
     rol = models.CharField(max_length=20, choices=ROLES, default='cliente')
     telefono = models.CharField(max_length=20, blank=True, null=True)
-
+    google_id = models.CharField(max_length=255, blank=True, null=True)
+    password_provisional = models.BooleanField(default=False)
 
 class Cita(models.Model):
     idcita = models.AutoField(db_column='idCita', primary_key=True)

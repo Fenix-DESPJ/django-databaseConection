@@ -3,20 +3,36 @@
 
 {% block content %}
 <section class="container-fluid py-5" style="max-width: 1200px;">
-    
-    <div class="d-flex justify-content-between align-items-center mb-5">
+
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
         <div>
             <h2 class="titulo-servicios">Reportes Administrativos</h2>
-            <p class="text-white-50">Resumen de rendimiento y ventas del negocio.</p>
+            <p class="text-white-50 mb-0">Resumen de rendimiento y ventas del negocio.</p>
         </div>
-        <div class="d-flex gap-2">
-            <a href="{% url 'descargar_reporte_excel' %}" class="btn btn-success">
-                <i class="fas fa-file-excel"></i> Descargar Excel
-            </a>
-            <a href="{% url 'descargar_reporte_pdf' %}" class="btn btn-danger">
-                <i class="fas fa-file-pdf"></i> Descargar PDF
-            </a>
-        </div>
+
+        <form method="get" class="d-flex gap-2 align-items-end">
+            <div>
+                <label class="text-white-50 small d-block mb-1">Desde</label>
+                <input type="date" name="fecha_inicio" value="{{ fecha_inicio|date:'Y-m-d' }}" class="form-control form-control-sm">
+            </div>
+            <div>
+                <label class="text-white-50 small d-block mb-1">Hasta</label>
+                <input type="date" name="fecha_fin" value="{{ fecha_fin|date:'Y-m-d' }}" class="form-control form-control-sm">
+            </div>
+            <button type="submit" class="btn btn-warning btn-sm">Filtrar</button>
+            {% if request.GET.fecha_inicio or request.GET.fecha_fin %}
+                <a href="{% url 'reportes_admin' %}" class="btn btn-outline-light btn-sm">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mb-5">
+        <a href="{% url 'descargar_reporte_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> Descargar Excel
+        </a>
+        <a href="{% url 'descargar_reporte_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">
+            <i class="fas fa-file-pdf"></i> Descargar PDF
+        </a>
     </div>
 
     <div class="row g-4 mb-5">
