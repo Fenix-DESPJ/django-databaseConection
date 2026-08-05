@@ -39,7 +39,7 @@ Con el venv activo:
 
 ```bash
 python -m pip install --upgrade pip
-python -m pip install "django>=4.2,<5.0" pymysql mysqlclient django-widget-tweaks xhtml2pdf fpdf2 pandas openpyxl pillow opencv-python-headless mediapipe==0.10.14 django-allauth
+python -m pip install "django>=4.2,<5.0" pymysql mysqlclient django-widget-tweaks xhtml2pdf fpdf2 pandas openpyxl pillow opencv-python-headless mediapipe==0.10.14 django-allauth PyJWT google-auth
 ```
 
 O directamente con el archivo de dependencias:
@@ -59,6 +59,8 @@ python -c "import django; print('Django:', django.get_version())"
 python -c "import mediapipe as mp; print(mp.solutions.face_mesh); print('MediaPipe OK')"
 python -c "import MySQLdb; print('mysqlclient OK')"
 python -c "import allauth; print('django-allauth OK')"
+python -c "import jwt; print('PyJWT OK')"
+python -c "import google.auth; print('google-auth OK')"
 ```
 
 Deberías ver:
@@ -68,6 +70,8 @@ Django: 4.2.30
 Una línea con <module 'mediapipe.python.solutions.face_mesh' ...> seguida de MediaPipe OK
 mysqlclient OK
 django-allauth OK
+PyJWT OK
+google-auth OK
 ```
 
 Si alguno de estos 4 falla, no sigas — resolvé eso primero (ver sección de problemas comunes más abajo).
