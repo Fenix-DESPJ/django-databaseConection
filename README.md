@@ -25,7 +25,7 @@ cd ruta\a\tu\proyecto
 py -3.11 -m venv .venv
 
 # Activar (PowerShell)
-.venv\Scripts\Activate.ps1
+venv\Scripts\activate
 
 # Si PowerShell bloquea la ejecución de scripts, corré esto una vez y volvé a intentar:
 # Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
