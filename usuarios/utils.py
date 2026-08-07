@@ -153,11 +153,214 @@ def _clasificar_forma(largo, pomulos, mandibula, frente):
 
 
 RECOMENDACIONES_POR_FORMA = {
-    "Ovalado": "Tu rostro es equilibrado: casi cualquier corte te queda bien. Prueba degradados clásicos o texturizados.",
-    "Redondo": "Busca cortes con volumen arriba y laterales cortos para alargar visualmente el rostro (ej. pompadour, undercut).",
-    "Cuadrado": "Los cortes con textura suave en los laterales suavizan la mandíbula (ej. quiff, flow con fade).",
-    "Alargado": "Evita mucho volumen arriba; prueba flequillos y cortes con más ancho lateral (ej. crop francés).",
-    "Corazón": "Cortes que reduzcan volumen en la frente y aporten en la zona de la mandíbula funcionan mejor (ej. side part).",
-    "Diamante": "Cortes con volumen moderado en la frente y mandíbula equilibran los pómulos marcados (ej. textured crop).",
-    "Triangular": "Cortes con volumen en la parte superior y laterales más cerrados equilibran una mandíbula marcada (ej. pompadour corto, quiff).",
+    "Ovalado": {
+        "texto": "Tu rostro es equilibrado y versátil: casi cualquier estilo se adapta perfectamente a tus proporciones.",
+        "cortes": [
+            {
+                "nombre": "Textured Crop",
+                "descripcion": "Corte moderno con textura en la parte superior que resalta tus facciones.",
+                "imagen": "img/cortes/textured_crop.png"
+            },
+            {
+                "nombre": "Quiff",
+                "descripcion": "Aporta un estilo dinámico y tupé estilizado que mantiene el balance natural.",
+                "imagen": "img/cortes/quiff.jpg"
+            },
+            {
+                "nombre": "Pompadour",
+                "descripcion": "Peinado clásico con volumen superior para una presencia elegante.",
+                "imagen": "img/cortes/pompadour.jpg"
+            },
+            {
+                "nombre": "Slick Back",
+                "descripcion": "Cabello peinado hacia atrás de forma pulida y profesional.",
+                "imagen": "img/cortes/slick_back.jpg"
+            },
+            {
+                "nombre": "Buzz Cut",
+                "descripcion": "Corte uniforme muy corto que resalta la estructura simétrica de tu rostro.",
+                "imagen": "img/cortes/buzz_cut.webp"
+            }
+        ]
+    },
+    "Redondo": {
+        "texto": "Busca cortes con altura en la coronilla y laterales bien definidos para alargar visualmente las facciones.",
+        "cortes": [
+            {
+                "nombre": "Textured Quiff",
+                "descripcion": "Añade altura con movimiento superior, estilizando la cara.",
+                "imagen": "img/cortes/textured_quiff.jpg"
+            },
+            {
+                "nombre": "High Fade + Top Texturizado",
+                "descripcion": "Laterales despejados que reducen el ancho visual del rostro.",
+                "imagen": "img/cortes/high_fade_textured.jpg"
+            },
+            {
+                "nombre": "Pompadour",
+                "descripcion": "Crea una ilusión vertical alargando la línea de la frente y el rostro.",
+                "imagen": "img/cortes/pompadour.jpg"
+            },
+            {
+                "nombre": "Faux Hawk",
+                "descripcion": "Cresta suave central que enfoca la atención hacia arriba.",
+                "imagen": "img/cortes/faux_hawk.webp"
+            },
+            {
+                "nombre": "Side Part + Fade",
+                "descripcion": "Raya lateral marcada con degradado que rompe la simetría circular.",
+                "imagen": "img/cortes/side_part_fade.jpg"
+            }
+        ]
+    },
+    "Cuadrado": {
+        "texto": "Tus angulos faciales y mandíbula son marcados; los cortes limpios o suavemente texturizados te favorecen.",
+        "cortes": [
+            {
+                "nombre": "Buzz Cut",
+                "descripcion": "Resalta la fuerza y definición natural de la mandíbula.",
+                "imagen": "img/cortes/buzz_cut.webp"
+            },
+            {
+                "nombre": "Crew Cut",
+                "descripcion": "Corte militar tradicional, práctico y muy masculino.",
+                "imagen": "img/cortes/crew_cut.webp"
+            },
+            {
+                "nombre": "French Crop",
+                "descripcion": "Flequillo corto con laterales degradados que suaviza la frente.",
+                "imagen": "img/cortes/french_crop.jpg"
+            },
+            {
+                "nombre": "Ivy League",
+                "descripcion": "Estilo clásico universitario, pulcro y atemporal.",
+                "imagen": "img/cortes/ivy_league.jpeg"
+            },
+            {
+                "nombre": "Side Part",
+                "descripcion": "Raya tradicional que aporta balance formal y sofisticado.",
+                "imagen": "img/cortes/side_part.jpg"
+            }
+        ]
+    },
+    "Alargado": {
+        "texto": "Evita el volumen excesivo en la parte superior y opta por flequillos o estilos con ancho lateral.",
+        "cortes": [
+            {
+                "nombre": "Textured Crop",
+                "descripcion": "Cubre parte de la frente reduciendo la longitud visual.",
+                "imagen": "img/cortes/textured_crop.png"
+            },
+            {
+                "nombre": "Fringe",
+                "descripcion": "Flequillo suelto que acorta proporciones de forma moderna.",
+                "imagen": "img/cortes/fringe.jpg"
+            },
+            {
+                "nombre": "Side Swept",
+                "descripcion": "Peinado de lado que aporta balance horizontal al rostro.",
+                "imagen": "img/cortes/side_swept.jpg"
+            },
+            {
+                "nombre": "Crew Cut",
+                "descripcion": "Mantiene proporciones bajas y pegadas a la cabeza.",
+                "imagen": "img/cortes/crew_cut.webp"
+            },
+            {
+                "nombre": "Low Fade + Top Texturizado",
+                "descripcion": "Degradado bajo que no añade altura innecesaria en la coronilla.",
+                "imagen": "img/cortes/low_fade_textured.webp"
+            }
+        ]
+    },
+    "Corazón": {
+        "texto": "El objetivo es equilibrar la anchura de la frente con la mandíbula más afinada.",
+        "cortes": [
+            {
+                "nombre": "Side Swept Fringe",
+                "descripcion": "Flequillo de lado que disimula suavemente la anchura superior.",
+                "imagen": "img/cortes/side_swept_fringe.jpg"
+            },
+            {
+                "nombre": "Textured Fringe",
+                "descripcion": "Aporta textura frontal reduciendo el protagonismo de la frente.",
+                "imagen": "img/cortes/textured_fringe.jpg"
+            },
+            {
+                "nombre": "Curtains",
+                "descripcion": "Corte de cortina clásica que enmarca y suaviza las proporciones.",
+                "imagen": "img/cortes/curtains.jpg"
+            },
+            {
+                "nombre": "Side Part",
+                "descripcion": "Redirige la atención en diagonal equilibrando la mirada.",
+                "imagen": "img/cortes/side_part.jpg"
+            },
+            {
+                "nombre": "Medium Layered Cut",
+                "descripcion": "Largo medio en capas que aporta volumen cerca del cuello.",
+                "imagen": "img/cortes/medium_layered_cut.jpg"
+            }
+        ]
+    },
+    "Diamante": {
+        "texto": "Tus pómulos son el punto más ancho; los cortes con volumen superior y flequillos compensan tus rasgos.",
+        "cortes": [
+            {
+                "nombre": "Textured Fringe",
+                "descripcion": "Añade textura en la frente compensando la anchura de pómulos.",
+                "imagen": "img/cortes/textured_fringe.jpg"
+            },
+            {
+                "nombre": "Side Swept",
+                "descripcion": "Aporta suavidad en la parte alta con un perfilado lateral.",
+                "imagen": "img/cortes/side_swept.jpg"
+            },
+            {
+                "nombre": "Curtains",
+                "descripcion": "Caída natural hacia los lados que enmarca el rostro con fluidez.",
+                "imagen": "img/cortes/curtains.jpg"
+            },
+            {
+                "nombre": "Messy Quiff",
+                "descripcion": "Tupé desenfadado que atrae la mirada hacia la coronilla.",
+                "imagen": "img/cortes/messy_quiff.jpg"
+            },
+            {
+                "nombre": "Medium Layered Cut",
+                "descripcion": "Suaviza las líneas angulosas de los pómulos con capas medias.",
+                "imagen": "img/cortes/medium_layered_cut.jpg"
+            }
+        ]
+    },
+    "Triangular": {
+        "texto": "Busca volumen en la parte superior y la frente para compensar una mandíbula más ancha.",
+        "cortes": [
+            {
+                "nombre": "Textured Crop",
+                "descripcion": "Aumenta la densidad visual en la zona superior de la cabeza.",
+                "imagen": "img/cortes/textured_crop.png"
+            },
+            {
+                "nombre": "Fringe",
+                "descripcion": "Flequillo que ensancha la percepción de la zona superior.",
+                "imagen": "img/cortes/fringe.jpg"
+            },
+            {
+                "nombre": "Messy Quiff",
+                "descripcion": "Volumen desenfadado que equilibra el peso visual del maxilar.",
+                "imagen": "img/cortes/messy_quiff.jpg"
+            },
+            {
+                "nombre": "Side Swept",
+                "descripcion": "Peinado lateral con cuerpo que proyecta amplitud en la frente.",
+                "imagen": "img/cortes/side_swept.jpg"
+            },
+            {
+                "nombre": "Medium Layered Cut",
+                "descripcion": "Capas superiores que redistribuyen el volumen hacia arriba.",
+                "imagen": "img/cortes/medium_layered_cut.jpg"
+            }
+        ]
+    }
 }

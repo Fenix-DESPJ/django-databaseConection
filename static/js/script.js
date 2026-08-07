@@ -1144,6 +1144,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 formaDetectada.textContent = data.forma;
                 recomendacionTexto.textContent = data.recomendacion;
 
+                // 🌟 NUEVA LÓGICA: Renderizar tarjetas de cortes con imagen
+                const contenedorCortes = document.getElementById("contenedorCortes");
+                if (contenedorCortes) {
+                    contenedorCortes.innerHTML = ""; // Limpiar resultados anteriores
+                    
+                    if (data.cortes && data.cortes.length > 0) {
+                        data.cortes.forEach(corte => {
+                            const col = document.createElement("div");
+                            col.className = "col-12 col-md-6";
+                            
+                            col.innerHTML = `
+                                <div class="card h-100 bg-dark text-white border-secondary shadow-sm overflow-hidden d-flex flex-column">
+                                    <div class="ratio ratio-4x3 bg-black">
+                                        <img src="${corte.imagen_url}" class="card-img-top p-1" alt="${corte.nombre}" style="object-fit: contain;">
+                                    </div>
+                                    <div class="card-body p-3 text-center">
+                                        <h6 class="card-title text-warning fw-bold mb-1">${corte.nombre}</h6>
+                                        <p class="card-text small text-white-50 mb-0">${corte.descripcion}</p>
+                                    </div>
+                                </div>
+                            `;
+                            contenedorCortes.appendChild(col);
+                        });
+                    }
+                }
+
                 if (metricasChips) {
                     const m = data.metricas;
                     metricasChips.innerHTML =

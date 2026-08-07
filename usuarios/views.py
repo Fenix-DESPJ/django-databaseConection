@@ -25,6 +25,7 @@ from datetime import timedelta, date
 from allauth.socialaccount.models import SocialAccount, SocialToken
 from allauth.account.models import EmailAddress
 from django.contrib.admin.models import LogEntry
+from django.templatetags.static import static
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago, ContenidoIndex, BarberoDestacado, PerfilUsuario
@@ -1046,12 +1047,22 @@ def analizar_rostro_ajax(request):
 
         resultado = analizar_forma_rostro(ruta_temporal)
         forma_detectada = resultado['forma']
+        info_recomendacion = RECOMENDACIONES_POR_FORMA.get(forma_detectada, {"texto": "", "cortes": []})
+        
+        cortes_con_url = []
+        for corte in info_recomendacion.get("cortes", []):
+            cortes_con_url.append({
+                "nombre": corte["nombre"],
+                "descripcion": corte["descripcion"],
+                "imagen_url": static(corte["imagen"])
+            })
 
         return JsonResponse({
             'ok': True,
             'forma': forma_detectada,
             'metricas': resultado['metricas'],
-            'recomendacion': RECOMENDACIONES_POR_FORMA.get(forma_detectada, ''),
+            'recomendacion': info_recomendacion.get("texto", ""),
+            'cortes': cortes_con_url, # <--- Enviamos el array de cortes con sus imágenes
         })
 
     except RostroNoDetectadoError as e:
