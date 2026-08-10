@@ -1296,9 +1296,12 @@ h5 {
     background-color: #1a1a1a;
     color: white;
 }
-.custom-input::placeholder {
-    color: #cfcfcf;
-    opacity: 1;
+/* Placeholder universal para inputs y textarea */
+.custom-input::placeholder,
+.custom-select::placeholder,
+.form-control::placeholder,
+textarea::placeholder {
+    color: white /* Blanco legible con leve transparencia */
 }
 .payment-dropdown {
     background-color: #1a1a1a;
