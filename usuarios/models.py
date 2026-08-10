@@ -24,6 +24,19 @@ class Usuario(models.Model):
     fechanacimiento = models.DateField(db_column='fechaNacimiento') 
     idrolfk = models.ForeignKey(Rol, on_delete=models.DO_NOTHING, db_column='idRolFk')
     foto_perfil = models.ImageField(upload_to='perfiles/', null=True, blank=True, db_column='foto_perfil')
+
+    # --- Perfil profesional editable por el propio barbero ---
+    # Se guardan aquí (y no en `negocio.Barbero`) a propósito: las filas de
+    # `Barbero` están enlazadas a `Cita` para el agendamiento real, así que
+    # borrarlas/recrearlas al editar el perfil pondría en riesgo el
+    # historial de citas. Estos dos campos son solo para lo que se muestra
+    # en el carrusel/perfil público, totalmente aparte de la agenda.
+    especialidades = models.CharField(
+        db_column='especialidades', max_length=255, blank=True, null=True,
+        help_text="Ej: Cortes Clásicos, Fade, Diseño de Barba (separadas por coma)"
+    )
+    
+
     class Meta:
         managed = False 
         db_table = 'usuario'

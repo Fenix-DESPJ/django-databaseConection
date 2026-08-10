@@ -3512,3 +3512,141 @@ body.modal-open {
     --s: 0.78;
   }
 }
+/* ==========================================================================
+   SECCIÓN: PERFIL DE USUARIO — PANEL DE EDICIÓN (Perfil Profesional Barbero)
+   ========================================================================== */
+
+/* Tarjeta "Perfil Profesional": mismo lenguaje visual que el resto de
+   tarjetas de perfil, con un leve acento dorado para diferenciarla. */
+.perfil-profesional-card {
+    border: 1px solid rgba(255, 198, 0, 0.18) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.perfil-profesional-card:hover {
+    border-color: rgba(255, 198, 0, 0.35) !important;
+    box-shadow: 0 10px 30px rgba(255, 198, 0, 0.08);
+}
+
+.perfil-profesional-card .bi-scissors {
+    color: var(--dorado);
+}
+
+/* Texto de ayuda bajo el campo de Especialidades */
+.texto-ayuda-perfil {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.78rem;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------
+   Inputs y textarea del formulario de perfil (Información Personal,
+   Perfil Profesional y Seguridad comparten estas reglas)
+   -------------------------------------------------------------------- */
+#formEditarPerfil .form-control {
+    border-radius: 10px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+#formEditarPerfil .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+#formEditarPerfil textarea.form-control {
+    resize: vertical;
+    min-height: 110px;
+}
+
+/* Estado focus: resalte dorado consistente con la identidad de marca */
+#formEditarPerfil .form-control:focus {
+    background-color: rgba(255, 198, 0, 0.05) !important;
+    border-color: var(--dorado) !important;
+    box-shadow: 0 0 0 3px rgba(255, 198, 0, 0.15);
+    color: var(--blanco) !important;
+    outline: none;
+}
+
+/* Campo de solo lectura (correo electrónico) */
+#formEditarPerfil .form-control[readonly] {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: rgba(255, 255, 255, 0.55) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Hover suave en campos editables para reforzar la interactividad */
+#formEditarPerfil .form-control:not([readonly]):hover {
+    border-color: rgba(255, 198, 0, 0.45);
+}
+
+/* --------------------------------------------------------------------
+   Botón "Guardar" (header de la página de perfil)
+   -------------------------------------------------------------------- */
+button[form="formEditarPerfil"] {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+button[form="formEditarPerfil"]:hover {
+    background-color: var(--dorado-oscuro);
+    color: var(--negro);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(255, 198, 0, 0.3);
+}
+
+button[form="formEditarPerfil"]:active {
+    transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------
+   Alertas de estado (mensajes de Django: éxito / error / advertencia)
+   -------------------------------------------------------------------- */
+.alert {
+    border-radius: 12px;
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.12);
+    border-color: rgba(40, 167, 69, 0.4);
+    color: #7be29a;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.12);
+    border-color: rgba(220, 53, 69, 0.4);
+    color: #ff8a94;
+}
+
+.alert-warning {
+    background-color: rgba(255, 198, 0, 0.12);
+    border-color: rgba(255, 198, 0, 0.4);
+    color: var(--dorado);
+}
+
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.12);
+    border-color: rgba(13, 202, 240, 0.4);
+    color: #7fdcef;
+}
+
+.alert .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* --------------------------------------------------------------------
+   Responsive: apilar mejor el panel de perfil en pantallas pequeñas
+   -------------------------------------------------------------------- */
+@media (max-width: 767px) {
+    .perfil-profesional-card,
+    .card.bg-dark.text-light.border-secondary {
+        padding: 1.5rem !important;
+    }
+
+    #formEditarPerfil .row.g-3 > [class^="col-md-6"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

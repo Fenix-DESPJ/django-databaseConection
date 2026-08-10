@@ -11,6 +11,9 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models import Q
 from django.core.mail import send_mail
+
+
+
 from django.urls import reverse
 from django.core.files.storage import FileSystemStorage
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
@@ -322,8 +325,36 @@ def home(request):
         calificacion__gte=4
     ).select_related('idclientefk__idusuariofk').order_by('-fechacreacion')[:12]
 
-    contenido = ContenidoIndex.cargar()  # crea con defaults si no existe aún
-    barberos = BarberoDestacado.objects.filter(activo=True)
+    contenido = ContenidoIndex.cargar()
+
+    barberos_qs = Barbero.objects.select_related('idusuariofk').filter(
+        idusuariofk__idrolfk_id=ID_ROL_BARBERO
+    ).order_by('idusuariofk__nombre', 'idbarbero')
+
+    equipo = {}
+    for b in barberos_qs:
+        usuario = b.idusuariofk
+        entrada = equipo.setdefault(usuario.idusuario, {
+            'nombre': usuario.nombre,
+            'foto': usuario.foto_perfil,
+            'especialidades_agenda': [],       # fallback: viene de negocio.Barbero
+            'especialidades_perfil': usuario.especialidades,  # editado en /perfil
+        })
+        if b.especialidad:
+            entrada['especialidades_agenda'].append(b.especialidad)
+
+    barberos = [
+        {
+            'nombre': datos['nombre'],
+            'foto': datos['foto'],
+            'especialidad': (
+                datos['especialidades_perfil']
+                or ' · '.join(datos['especialidades_agenda'])
+                or 'Barbero'
+            ),
+        }
+        for datos in equipo.values()
+    ]
 
     return render(request, 'index.html', {
         'calificaciones': mejores_calificaciones,
@@ -692,8 +723,9 @@ def perfil_usuario(request):
 @login_required
 def guardar_perfil(request):
     if request.method == 'POST':
-        nombre = request.POST.get('nombre')
+        nombre = request.POST.get('nombre_profesional') or request.POST.get('nombre')
         telefono = request.POST.get('telefono')
+        especialidades = request.POST.get('especialidades')
         password_actual = request.POST.get('password_actual')
         password_nueva = request.POST.get('password_nueva')
         
@@ -705,6 +737,13 @@ def guardar_perfil(request):
                 
                 usuario_manual.nombre = nombre
                 usuario_manual.numcelular = telefono
+
+                # Especialidades y bio solo llegan desde el formulario del
+                # barbero (perfil.html los muestra solo si idrolfk_id == 2),
+                # pero se guardan igual si vienen en el POST.
+                if especialidades is not None:
+                    usuario_manual.especialidades = especialidades.strip()
+                
                 
                 request.session['usuario_nombre'] = nombre
                 
@@ -1186,4 +1225,3 @@ def omitir_calificacion(request):
         request.session['citas_omitidas_calificacion'] = citas_omitidas
 
     return JsonResponse({'ok': True})
-

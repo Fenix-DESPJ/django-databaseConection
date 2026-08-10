@@ -85,6 +85,34 @@
                     </div>
                 </div>
 
+                {% if usuario.idrolfk_id == 2 %}
+                <div class="card bg-dark text-light border-secondary p-4 mb-4 perfil-profesional-card">
+                    <h5 class="text-warning mb-4 d-flex align-items-center fw-bold">
+                        <i class="bi bi-scissors me-2"></i> Perfil Profesional
+                    </h5>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="inputNombreProfesional" class="form-label text-white small text-uppercase fw-bold mb-1">Nombre Profesional</label>
+                            <input type="text" id="inputNombreProfesional" name="nombre_profesional"
+                                   class="form-control bg-transparent text-light border-secondary py-2"
+                                   value="{{ usuario.nombre }}"
+                                   placeholder="Ej: Andrés &quot;El Fade&quot; Gómez"
+                                   maxlength="100">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputEspecialidades" class="form-label text-white small text-uppercase fw-bold mb-1">Especialidades</label>
+                            <input type="text" id="inputEspecialidades" name="especialidades"
+                                   class="form-control bg-transparent text-light border-secondary py-2"
+                                   value="{{ usuario.especialidades }}"
+                                   placeholder="Corte clásico, Barba, Diseño de cejas"
+                                   maxlength="255">
+                            <small class="form-text texto-ayuda-perfil">Separa cada habilidad con una coma.</small>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <div class="card bg-dark text-light border-secondary p-4">
                     <h5 class="text-warning mb-4 d-flex align-items-center fw-bold">
                         <i class="bi bi-shield-lock me-2"></i> Seguridad
