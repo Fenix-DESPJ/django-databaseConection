@@ -11,6 +11,7 @@ from .models import Cita
 from django.http import JsonResponse
 from django.urls import reverse
 from negocio.models import ConfiguracionHorario, DiaHabilitado, BarberoDiaHabilitado
+import re
 
 
 def agenda_view(request):
@@ -38,7 +39,21 @@ def crear_reserva(request):
         servicio_id = request.POST.get('servicio')
         usuario_barbero_id = request.POST.get('barbero')  # idUsuario del barbero
         metodo_pago = request.POST.get('metodo_pago')
-        observaciones = request.POST.get('observaciones', '').strip() or "Sin observaciones o notas especiales"
+        observaciones_raw = request.POST.get('observaciones', '').strip() 
+
+        # =========================================================================
+        # VALIDACIÓN DE OBSERVACIONES (Solo letras y espacios)
+        # =========================================================================
+
+        if observaciones_raw:
+            if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', observaciones_raw):
+                return _responder_error(
+                    request,
+                    "Las observaciones solo pueden contener letras y espacios (sin números ni símbolos)."
+                )
+
+        observaciones = observaciones_raw or "Sin observaciones o notas especiales"
+        
 
         if not all([fecha_reserva, hora_reserva, servicio_id, usuario_barbero_id, metodo_pago]):
             return _responder_error(request, "Por favor completa todos los campos.")
