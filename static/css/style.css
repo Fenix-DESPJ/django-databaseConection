@@ -3653,3 +3653,46 @@ button[form="formEditarPerfil"]:active {
         max-width: 100%;
     }
 }
+
+/* ==========================================================================
+   BOTÓN FLOTANTE DE WHATSAPP (visible en todas las páginas)
+   ========================================================================== */
+.whatsapp-float {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    width: 58px;
+    height: 58px;
+    background-color: #25D366;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    z-index: 1400;
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.whatsapp-float:hover {
+    background-color: #1ebe5b;
+    color: #ffffff;
+    transform: scale(1.08);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+.whatsapp-float i {
+    line-height: 1;
+}
+
+@media (max-width: 576px) {
+    .whatsapp-float {
+        width: 52px;
+        height: 52px;
+        font-size: 1.6rem;
+        bottom: 18px;
+        left: 18px;
+    }
+}

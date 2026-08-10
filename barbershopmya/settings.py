@@ -85,7 +85,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
-                'usuarios.context_processors.google_client_id',  # NUEVO: expone GOOGLE_CLIENT_ID en todos los templates
+                'usuarios.context_processors.google_client_id',
+                'usuarios.context_processors.contenido_global',
             ],
         },
     },

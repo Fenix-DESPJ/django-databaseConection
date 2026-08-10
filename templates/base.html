@@ -16,6 +16,17 @@
 
 <body>
 
+    {% if whatsapp_link %}
+    <a href="{{ whatsapp_link }}"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="whatsapp-float"
+       title="Escríbenos por WhatsApp"
+       aria-label="Contactar por WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+    {% endif %}
+    
     <!-- Avisos generales (errores/éxitos) de Django messages, excluyendo el
          de contraseña provisional de Google, que se muestra como modal aparte
          más abajo. Reutiliza el mismo auto-cierre a los 3s que ya trae script.js
