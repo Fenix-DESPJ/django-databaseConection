@@ -14,6 +14,7 @@ class Cita(models.Model):
     fecha = models.DateField(db_column='fecha')
     horainicio = models.TimeField(db_column='horaInicio')
     observaciones = models.CharField(max_length=255, db_column='observaciones', null=True, blank=True)
+    recordatorio_enviado = models.BooleanField(db_column='recordatorio_enviado', default=False)  # NUEVO
 
     class Meta:
         managed = False
