@@ -11,7 +11,7 @@ Instrucciones para dejar el proyecto funcionando desde cero en cualquier equipo 
 Verificá tu versión de Python antes de crear el entorno virtual:
 
 ```bash
-py -0
+python --version
 ```
 
 Si ves varias versiones instaladas, asegurate de usar la 3.11 al crear el venv (ver paso 2).
