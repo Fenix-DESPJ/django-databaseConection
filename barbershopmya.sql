@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-08-2026 a las 18:45:20
+-- Tiempo de generación: 12-08-2026 a las 14:37:55
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -491,26 +491,27 @@ CREATE TABLE `cita` (
   `horaInicio` time DEFAULT NULL,
   `observaciones` varchar(150) DEFAULT NULL,
   `idPagoFk` int(11) DEFAULT NULL,
-  `calificacionOmitida` tinyint(1) NOT NULL DEFAULT 0
+  `calificacionOmitida` tinyint(1) NOT NULL DEFAULT 0,
+  `recordatorio_enviado` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `cita`
 --
 
-INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idAgendaFk`, `fecha`, `horaInicio`, `observaciones`, `idPagoFk`, `calificacionOmitida`) VALUES
-(5, 1, 5, 4, 5, '2026-03-22', '09:00:00', NULL, NULL, 0),
-(6, 2, 6, 1, 6, '2026-03-22', '12:00:00', NULL, NULL, 0),
-(40, 11, 11, 1, 25, '2026-07-02', '08:00:00', 'Completado - Servicio realizado', 30, 0),
-(41, 11, 14, 2, 26, '2026-07-02', '09:00:00', 'Completado - Servicio realizado', 31, 0),
-(44, 11, 11, 19, 29, '2026-07-29', '14:30:00', 'Completado - Servicio realizado', 34, 0),
-(45, 11, 11, 14, 30, '2026-07-28', '16:00:00', 'Completado - Servicio realizado', 35, 0),
-(46, 11, 14, 10, 31, '2026-07-31', '08:00:00', 'Completado - Servicio realizado', 36, 0),
-(47, 11, 14, 17, 32, '2026-07-27', '16:30:00', 'Completado - Servicio realizado', 37, 0),
-(48, 11, 14, 14, 33, '2026-08-05', '08:30:00', 'Completado - Servicio realizado', 38, 1),
-(49, 11, 14, 5, 34, '2026-08-04', '09:00:00', 'Completado - Servicio realizado', 39, 1),
-(50, 11, 14, 6, 35, '2026-08-14', '11:00:00', 'Completado - Servicio realizado', 40, 1),
-(51, 11, 18, 4, 36, '2026-08-20', '08:00:00', 'Completado - Servicio realizado', 41, 0);
+INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idAgendaFk`, `fecha`, `horaInicio`, `observaciones`, `idPagoFk`, `calificacionOmitida`, `recordatorio_enviado`) VALUES
+(5, 1, 5, 4, 5, '2026-03-22', '09:00:00', NULL, NULL, 0, 0),
+(6, 2, 6, 1, 6, '2026-03-22', '12:00:00', NULL, NULL, 0, 0),
+(40, 11, 11, 1, 25, '2026-07-02', '08:00:00', 'Completado - Servicio realizado', 30, 0, 0),
+(41, 11, 14, 2, 26, '2026-07-02', '09:00:00', 'Completado - Servicio realizado', 31, 0, 0),
+(44, 11, 11, 19, 29, '2026-07-29', '14:30:00', 'Completado - Servicio realizado', 34, 0, 0),
+(45, 11, 11, 14, 30, '2026-07-28', '16:00:00', 'Completado - Servicio realizado', 35, 0, 0),
+(46, 11, 14, 10, 31, '2026-07-31', '08:00:00', 'Completado - Servicio realizado', 36, 0, 0),
+(47, 11, 14, 17, 32, '2026-07-27', '16:30:00', 'Completado - Servicio realizado', 37, 0, 0),
+(48, 11, 14, 14, 33, '2026-08-05', '08:30:00', 'Completado - Servicio realizado', 38, 1, 0),
+(49, 11, 14, 5, 34, '2026-08-04', '09:00:00', 'Completado - Servicio realizado', 39, 1, 0),
+(50, 11, 14, 6, 35, '2026-08-14', '11:00:00', 'Completado - Servicio realizado', 40, 1, 0),
+(51, 11, 18, 4, 36, '2026-08-20', '08:00:00', 'Completado - Servicio realizado', 41, 0, 0);
 
 -- --------------------------------------------------------
 
