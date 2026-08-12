@@ -29,6 +29,7 @@ from allauth.socialaccount.models import SocialAccount, SocialToken
 from allauth.account.models import EmailAddress
 from django.contrib.admin.models import LogEntry
 from django.templatetags.static import static
+from django.contrib.auth import logout
 
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago, ContenidoIndex, BarberoDestacado, PerfilUsuario
@@ -59,6 +60,69 @@ def formatear_nombre(nombre):
     """Antes: trigger FormatearNombreUsuario (BEFORE INSERT)."""
     return (nombre or '').strip().upper()
 
+@login_required
+def eliminar_mi_cuenta(request):
+    if request.method == 'POST':
+        # 1. Obtener la cuenta de auth_user y el perfil de la tabla personalizada 'usuario'
+        user_django = request.user
+        correo_actual = user_django.email or user_django.username
+        
+        usuario = Usuario.objects.filter(correo=correo_actual).first()
+
+        # Si por alguna razón no existe el perfil de usuario personalizado
+        if not usuario:
+            messages.error(request, "No se encontró un perfil de usuario asociado a esta cuenta.")
+            return redirect('perfil')
+
+        # 2. Validar que no tenga bloqueos (ej. citas pendientes o restricciones de negocio)
+        error_bloqueo = validar_eliminacion_usuario(usuario)
+        if error_bloqueo:
+            messages.error(request, error_bloqueo)
+            return redirect('perfil')
+
+        nombre_eliminado = usuario.nombre
+
+        try:
+            with transaction.atomic():
+                # 3. Limpieza en cascada de citas, agendas y datos de Cliente/Barbero
+                for cliente in Cliente.objects.filter(idusuariofk=usuario):
+                    _cascada_borrar_cliente(cliente)
+                for barbero in Barbero.objects.filter(idusuariofk=usuario):
+                    _cascada_borrar_barbero(barbero)
+
+                # 4. Eliminar el registro de la tabla personalizada 'usuario'
+                usuario.delete()
+
+                # 5. Limpieza previa de relaciones de allauth y logs
+                SocialToken.objects.filter(account__user=user_django).delete()
+                SocialAccount.objects.filter(user=user_django).delete()
+                EmailAddress.objects.filter(user=user_django).delete()
+                PerfilUsuario.objects.filter(user=user_django).delete()
+                user_django.groups.clear()
+                user_django.user_permissions.clear()
+                LogEntry.objects.filter(user=user_django).delete()
+
+                # 6. IMPORTANTE: Cerrar sesión en el navegador ANTES de borrar el usuario de la BD
+                logout(request)
+
+                # 7. Borrado directo en auth_user para evitar el Collector de Django
+                with connection.cursor() as cursor:
+                    cursor.execute("DELETE FROM auth_user WHERE id = %s", [user_django.pk])
+
+        except Exception as e:
+            messages.error(
+                request,
+                f"No se pudo eliminar tu cuenta. Detalle técnico: {e}"
+            )
+            return redirect('perfil')
+
+        messages.success(
+            request,
+            f"Hola {nombre_eliminado}, tu cuenta y tus datos asociados han sido eliminados permanentemente."
+        )
+        return redirect('home')
+
+    return redirect('perfil')
 
 def clasificar_rol_nuevo_usuario(usuario):
     """

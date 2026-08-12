@@ -152,7 +152,7 @@
 
             <div class="col-lg-4">
 
-                <div class="card bg-dark text-light border-secondary p-4">
+                <div class="card bg-dark text-light border-secondary p-4 mb-4">
                     <h5 class="text-warning mb-3 d-flex align-items-center fw-bold">
                         <i class="bi bi-check-circle me-2"></i> Estado de Cuenta
                     </h5>
@@ -169,6 +169,18 @@
                             <span class="text-white">192.168.1.45</span>
                         </div>
                     </div>
+                </div>
+                <!-- 2. Eliminar Cuenta (METE ESTE RECUADRO AQUÍ ADENTRO) -->
+                <div class="card bg-dark text-light border-danger p-4">
+                    <h5 class="text-danger mb-3 d-flex align-items-center fw-bold">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Zona de Peligro
+                    </h5>
+                    <p class="text-white small mb-3">
+                        Una vez eliminada la cuenta, no podrás recuperar tus datos ni tu historial de citas.
+                    </p>
+                    <button type="button" class="btn btn-outline-danger w-100 text-uppercase fw-bold btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarCuenta">
+                        <i class="bi bi-trash3-fill me-1"></i> Eliminar Cuenta
+                    </button>
                 </div>
 
             </div>
@@ -199,6 +211,38 @@
           <button type="submit" name="accion" value="cambiar" class="btn btn-warning">Guardar Cambios</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar Eliminación de Cuenta -->
+<div class="modal fade" id="modalEliminarCuenta" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border-danger">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title text-danger fw-bold">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Eliminación
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <i class="bi bi-trash3 text-danger display-1 mb-3 d-block"></i>
+        <h6 class="fw-bold mb-2">¿Estás completamente seguro?</h6>
+        <p class="text-secondary small mb-0">
+          Esta acción es permanente e irreversible. Se eliminarán permanentemente tu perfil, datos guardados y configuraciones asociadas.
+        </p>
+      </div>
+      <div class="modal-footer border-secondary justify-content-between">
+        <button type="button" class="btn btn-outline-light btn-sm px-4 fw-bold text-uppercase" data-bs-dismiss="modal">
+            Cancelar
+        </button>
+        <form method="POST" action="{% url 'eliminar_mi_cuenta' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm px-4 fw-bold text-uppercase">
+                Sí, eliminar mi cuenta
+            </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
