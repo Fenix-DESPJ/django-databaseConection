@@ -315,17 +315,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
-    <script>
-        // Muestra automáticamente el modal de contraseña provisional (si
-        // Django dejó ese message en esta carga de página) y lo deja abierto
-        // hasta que el usuario lo cierre explícitamente con la X o "Aceptar".
-        document.addEventListener("DOMContentLoaded", function () {
-            var passwordModalEl = document.getElementById('passwordProvisionalModal');
-            if (passwordModalEl) {
-                var passwordModal = new bootstrap.Modal(passwordModalEl);
-                passwordModal.show();
-            }
-        });
-    </script>
+
 </body>
 </html>

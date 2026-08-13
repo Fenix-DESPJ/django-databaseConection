@@ -14,24 +14,28 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+"""
+URL configuration for barbershopmya project.
+"""
+"""
+URL configuration for barbershopmya project.
+"""
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-# Importa las vistas solo si vas a usarlas directamente en este archivo
-# Aunque, para mantener el orden, lo ideal es que cada app gestione sus propias rutas.
-from django.contrib import admin
+from django.shortcuts import render
+
 from negocio.views import gestionar_agenda_admin
 from servicios import views
-from django.urls import path, include
-from servicios import views as servicios_views # Importa la vista del home
-from usuarios import views as usuarios_views  # agrega este import
+from servicios import views as servicios_views
+from usuarios import views as usuarios_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    
-    # La Raíz (Home) — ahora sí es la vista de usuarios con el contenido real
+
+    # La Raíz (Home)
     path('', usuarios_views.home, name='home'),
 
     path('servicios/', include('servicios.urls')),
@@ -42,6 +46,37 @@ urlpatterns = [
     path('reservas/disponibilidad/', servicios_views.disponibilidad_ajax, name='disponibilidad_ajax'),
 ]
 
-# 5. Configuración de archivos estáticos (esto siempre va al final)
+# ---------------------------------------------------------------------------
+# Módulo de IA (análisis de forma de rostro) — AISLADO.
+# Si la carpeta analisis_facial/ no existe (por ejemplo la borraste mientras
+# pruebas otra cosa) o algo revienta al importar sus urls, esta ruta cae en
+# la plantilla mantenimiento.html en vez de tumbar el arranque de TODO el
+# proyecto (agendamiento, clientes, login, etc.).
+#
+# mantenimiento.html vive en templates/ (raíz del proyecto), NO dentro de
+# analisis_facial/, así que sigue disponible incluso si esa app desaparece.
+# ---------------------------------------------------------------------------
+try:
+    urlpatterns += [
+        path('usuarios/analisis-rostro/', include('analisis_facial.urls')),
+    ]
+except Exception:
+    def _analisis_rostro_en_mantenimiento(request, *args, **kwargs):
+        return render(request, 'mantenimiento.html', {
+            'feature_nombre': 'Análisis de forma de rostro',
+            'mensaje': (
+                'Esta función depende de un módulo de inteligencia artificial que '
+                'no está disponible en este entorno ahora mismo. El agendamiento de '
+                'citas, tu perfil y el resto del sitio siguen funcionando con normalidad.'
+            ),
+            'volver_url': 'home',
+        }, status=503)
+
+    urlpatterns += [
+        path('usuarios/analisis-rostro/', _analisis_rostro_en_mantenimiento, name='analisis_rostro'),
+        path('usuarios/analisis-rostro/procesar/', _analisis_rostro_en_mantenimiento, name='analizar_rostro_ajax'),
+    ]
+
+# Archivos estáticos (siempre al final)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

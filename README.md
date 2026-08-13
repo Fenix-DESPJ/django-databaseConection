@@ -31,7 +31,7 @@ venv\Scripts\activate
 # Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
 
-Vas a saber que está activo porque tu terminal muestra `(.venv)` al inicio de la línea.
+Vas a saber que está activo porque tu terminal muestra `(venv)` al inicio de la línea.
 
 ## 3. Instalar todas las dependencias
 
@@ -51,6 +51,8 @@ pip install -r requirements.txt
 Esto instala todo lo que el proyecto necesita: Django, el conector de MySQL, MediaPipe/OpenCV para el análisis de rostro, las librerías de generación de PDF/Excel, y (desde agosto 2026) **`django-allauth`** para el login con Google.
 
 > ⚠️ **Cambio importante (agosto 2026):** el proyecto migró del flujo manual de Google Identity Services (`google.oauth2.id_token`, paquete `google-auth`) a **`django-allauth`** con el flujo de redirección clásico de OAuth2. Ya **no** se necesita el paquete `google-auth` — si lo tenías instalado de una versión anterior del proyecto, podés desinstalarlo (`pip uninstall google-auth`), aunque dejarlo tampoco rompe nada.
+
+> ℹ️ **Nota sobre `mediapipe` y `numpy` (agosto 2026):** al instalar `mediapipe==0.10.14`, pip puede mostrar una advertencia parecida a `jax 0.10.2 requires numpy>=2.0, but you have numpy 1.26.4 which is incompatible`. En la práctica, para el uso que hace este proyecto de `mediapipe` (solo `mp.solutions.face_mesh`, sin usar `jax`), **esta advertencia no impide que funcione** — confirmado corriendo `import mediapipe` y creando un `FaceMesh` real con `numpy` 2.x instalado. No persigas esa advertencia bajando `numpy` a la fuerza; si algo falla de verdad, el síntoma real es un `ImportError`/`AttributeError` al hacer el import, no solo el warning de pip.
 
 ### Verificación rápida (correr estos 4 comandos después de instalar)
 
@@ -231,9 +233,84 @@ pip freeze > requirements.txt
 
 ⚠️ Cuidado: después de correr esto, abrí el archivo y confirmá que `Django==4.2.30` (o la versión que estés usando a propósito) sigue ahí — `pip freeze` vuelca lo que esté instalado en ese momento, así que si instalaste o actualizaste algo sin querer, se puede colar una versión que no querías (por ejemplo Django 5.x, que rompe con MariaDB 10.4).
 
+**Orden recomendado si vas a hacer una prueba destructiva (como la de la sección 10):** corré `pip freeze > requirements.txt` **antes** de desinstalar nada, con el entorno funcionando al 100%. Así el archivo queda como respaldo real, y al terminar la prueba restauras todo con `pip install -r requirements.txt` sin tener que recordar versiones a mano.
+
+## 10. Probar el modo mantenimiento del análisis de rostro (opcional, para QA)
+
+El proyecto está diseñado para que, si `mediapipe`/`opencv` no están disponibles, la ruta `/usuarios/analisis-rostro/` muestre `templates/mantenimiento.html` (503 controlado) en vez de tumbar el resto del sitio. Para comprobarlo sin arriesgar el resto de tu entorno:
+
+```bash
+# 1. Respaldo real del entorno funcionando (ver sección 9)
+pip freeze > requirements.txt
+
+# 2. Desinstalar SOLO lo específico de análisis facial (ver tabla abajo)
+pip uninstall -y mediapipe opencv-contrib-python opencv-python-headless
+
+# 3. Reiniciar el servidor por completo (no basta con el autoreloader:
+#    instalar/desinstalar paquetes con pip no dispara el StatReloader)
+#    Ctrl+C en la terminal donde corre runserver, y:
+python manage.py runserver
+```
+
+Entrá a `/usuarios/analisis-rostro/` — deberías ver la tarjeta de "en mantenimiento", mientras el resto del sitio (reservas, login, perfiles) sigue funcionando normal.
+
+**Librerías específicas del análisis facial** (las únicas que hace falta tocar para esta prueba):
+
+| Librería | Por qué se desinstala |
+|---|---|
+| `mediapipe==0.10.14` | El modelo de IA que detecta los landmarks del rostro |
+| `opencv-contrib-python` | Se instala automáticamente como dependencia de `mediapipe` — aunque no la pidas a mano, queda instalada |
+| `opencv-python-headless` | La que usás explícitamente para `cv2.imread`/`cv2.cvtColor` en `analisis_facial/utils.py` |
+
+No toques `numpy`, `pandas`, `pillow`, `openpyxl`, etc. — esas las usan otras partes del proyecto (reportes, fotos de perfil) y no tienen relación con el análisis facial.
+
+Para restaurar:
+
+```bash
+pip install -r requirements.txt
+python manage.py runserver
+```
+
 ---
 
 ## Problemas comunes
+
+### El sitio siempre muestra `mantenimiento.html` en `/usuarios/analisis-rostro/`, aunque `mediapipe` y `opencv` estén instalados y funcionen bien
+
+Este NO es un problema de librerías — es un bug de código. `analisis_facial/views.py` importa esto desde `utils.py`:
+
+```python
+from .utils import (
+    analizar_forma_rostro,
+    RostroNoDetectadoError,
+    FuncionNoDisponibleError,
+    RECOMENDACIONES_POR_FORMA,
+    MEDIAPIPE_DISPONIBLE,
+)
+```
+
+Si `analisis_facial/utils.py` no define `FuncionNoDisponibleError` y `MEDIAPIPE_DISPONIBLE` (por ejemplo, si el `try/except` alrededor de `import cv2` / `import mediapipe` no está, o el archivo quedó en una versión vieja), ese `import` completo falla con `ImportError`. Ese error lo atrapa el `try/except` genérico de `barbershopmya/urls.py` alrededor de `include('analisis_facial.urls')`, y **siempre** cae a `mantenimiento.html` — sin importar si las librerías están instaladas o no.
+
+**Diagnóstico rápido:**
+
+```bash
+python -c "from analisis_facial import utils; print('MEDIAPIPE_DISPONIBLE =', utils.MEDIAPIPE_DISPONIBLE)"
+```
+
+Si esto tira un `ImportError` en vez de imprimir `True`/`False`, el problema está en `utils.py`, no en el entorno. Confirmá que el archivo tenga:
+
+```python
+try:
+    import cv2
+    import mediapipe as mp
+    MEDIAPIPE_DISPONIBLE = True
+except ImportError:
+    cv2 = None
+    mp = None
+    MEDIAPIPE_DISPONIBLE = False
+```
+
+y una clase `FuncionNoDisponibleError(Exception)` definida.
 
 ### `mediapipe` no tiene `solutions` (o tira `AttributeError`)
 Las versiones de mediapipe a partir de la ~0.10.29 rompieron el legacy API `mp.solutions` (el que usa `face_mesh`) en varias plataformas. Solución:
@@ -276,6 +353,3 @@ Pasa si una migración se aplicó parcialmente a la base de datos pero el regist
 ```bash
 python manage.py migrate usuarios <numero_migracion> --fake
 ```
-
-### El botón "Continuar con Google" da error 400 "The given origin is not allowed for the given client ID"
-Esto era un error del flujo viejo (Google Identity Services embebido) que ya no debería aparecer con el flujo de redirección actual. Si lo ves, probablemente estás mirando una versión vieja de las plantillas `iniciarsesion.html` / `registrarse.html` — confirmá que usan el link a `/usuarios/google-iniciar/<rol>/` y no `google.accounts.id.initialize(...)`.

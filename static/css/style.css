@@ -1,6 +1,46 @@
-/* ==========================================================================
-   CONFIGURACIÓN GLOBAL Y VARIABLES
-   ========================================================================== */
+/* ============================================================================
+   ÍNDICE DE SECCIONES (todo el CSS original está aquí, solo reordenado y
+   agrupado por sección visual. No se eliminó ni se modificó ninguna regla.
+
+   ⚠️ NOTA IMPORTANTE: el archivo original declara `:root` y `body` varias
+   veces en distintos puntos (probablemente porque se fueron pegando trozos
+   de CSS de páginas distintas). Dejé TODAS esas repeticiones, agrupadas en
+   la sección 1, para que puedas revisar si hay valores que se pisan entre
+   sí antes de limpiarlas manualmente.
+   ============================================================================
+   1. VARIABLES GLOBALES (:root) Y BASE (body, tipografías) — todas las
+      repeticiones del original agrupadas aquí
+   2. NAVBAR Y MENÚ LATERAL
+   3. HERO / INICIO (carrusel principal, tarjeta flotante)
+   4. CARRUSEL DE BARBEROS (home)
+   5. SECCIÓN MARCA
+   6. CTA (llamada a la acción)
+   7. CONTACTO
+   8. FOOTER
+   9. NOTIFICACIONES (CAMPANITA)
+   10. SERVICIOS (grid, tarjetas de precio, página de servicios)
+   11. RESERVAS (calendario, horas, formulario, modal, toast, mis reservas)
+   12. AGENDA (ADMIN Y BARBERO)
+   13. DASHBOARD BARBERO (stats, tabla de citas)
+   14. DASHBOARD ADMIN (KPIs, tabla, accesos rápidos)
+   15. GESTIÓN DE PERFILES (panel admin)
+   16. EDITAR PERFIL (cliente/barbero)
+   17. PERFIL PROFESIONAL DEL BARBERO / EDITAR ÍNDICE
+   18. AUTENTICACIÓN (login, recuperar contraseña)
+   19. ANÁLISIS DE ROSTRO
+   20. CALIFICACIONES Y RESEÑAS
+   21. MODALES GENERALES Y Z-INDEX
+   22. WHATSAPP FLOTANTE
+   23. ANIMACIONES Y EFECTOS GENERALES
+   24. RESPONSIVE / UTILIDADES SUELTAS
+   ============================================================================ */
+
+
+/* ============================================================================
+   1. VARIABLES GLOBALES (:root) Y BASE
+   (todas las declaraciones repetidas del archivo original, sin eliminar)
+   ============================================================================ */
+
 :root {
   /* Paleta de colores principal */
   --dorado: #FFC600;
@@ -29,9 +69,124 @@ h1, h2, h3, h4 {
   font-family: "Times New Roman", serif;
 }
 
-/* ==========================================================================
-   SECCIÓN: NAVBAR (Encabezado de navegación)
-   ========================================================================== */
+:root {
+
+    --dorado-branding: #FFC600;
+    --dorado-hover: #FFD43E;
+
+    --gris: #565654;
+    --gris-borde: #30302E;
+
+    --negro-absoluto: #111111;
+    --negro-navbar: #000000;
+
+    --texto-blanco: #FFFFFF;
+
+    --fuente-titulos: 'Times New Roman', Times, serif;
+    --fuente-cuerpo: 'Segoe UI', Roboto, sans-serif;
+
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--negro-absoluto);
+    color: var(--texto-blanco);
+    font-family: var(--fuente-cuerpo);
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: var(--fuente-titulos);
+}
+
+.text-gold {
+    color: var(--dorado-branding);
+}
+
+.sub-bar {
+    width: 60px;
+    height: 3px;
+    background: var(--dorado-branding);
+    margin: 20px auto;
+}
+
+/*Seccion Barberos*/
+:root {
+    --dorado: #FFC600;
+    --dorado-oscuro: #BF930D;
+    --gris: #565654;
+    --gris-oscuro: #30302E;
+    --negro: #111111;
+    --negro-tarjeta: #1d1d1d;
+    --blanco: #FFFFFF;
+}
+
+body {
+    background-color: var(--negro);
+    color: var(--blanco);
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.text-gold {
+    color: var(--dorado);
+}
+
+/* PALETA DE COLORES DE LA BARBERÍA (Inspirado en tu proyecto anterior) */
+:root {
+    --bg-dark-page: #161513;        /* Fondo general de la página */
+    --bg-card: #1f1e1b;             /* Fondo de la tarjeta central */
+    --bg-input: #262421;            /* Fondo interno de los campos de texto */
+    --gold-accent: #cca553;         /* Dorado elegante para labels y bordes */
+    --gold-hover: #bca067;          /* Dorado al pasar el cursor */
+    --text-light: #f4f2ee;          /* Color del texto de los inputs */
+    --text-muted: #9e9b96;          /* Color grisáceo para textos secundarios */
+}
+
+/* Estilos de fondo globales */
+body {
+    background-color: var(--bg-dark-page);
+    color: var(--text-light);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+/* ---------- Variables (AGENDA ADMIN) ---------- */
+:root {
+    --gold: #ffc600;
+    --gold-dark: #e0a800;
+
+    --bg-card: #1d1d1d;
+    --bg-day: #262626;
+    --bg-disabled: #1a1a1a;
+
+    --border: #3a3a3a;
+    --text: #fff;
+    --text-light: #ccc;
+    --text-muted: #aaa;
+}
+
+/* Dale espacio al main para que el navbar fijo no tape el contenido */
+#main-content {
+    padding-top: 100px; /* Ajusta según la altura de tu navbar */
+    min-height: 80vh;   /* Asegura que el footer siempre quede abajo */
+}
+
+/* Esto hace que el navegador no pegue el título al borde del menú fijo */
+section {
+    scroll-margin-top: 100px; 
+}
+
+
+/* ============================================================================
+   2. NAVBAR Y MENÚ LATERAL
+   ============================================================================ */
+
 .navbar {
   background-color: var(--negro);
   border-bottom: 1px solid rgba(255, 198, 0, 0.25);
@@ -99,9 +254,334 @@ h1, h2, h3, h4 {
   font-weight: bold;
 }
 
-/* ==========================================================================
-   SECCIÓN: INICIO (Hero Section / Portada)
-   ========================================================================== */
+.custom-navbar {
+    background-color: var(--negro-navbar);
+    border-bottom: 1px solid var(--gris-borde);
+    padding: 18px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    color: var(--dorado-branding);
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: var(--fuente-titulos);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.logo-navbar {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 35px;
+    margin: 0 30px 0 auto;
+    padding: 0;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: .3s;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: var(--dorado-branding);
+}
+
+.active-link {
+    color: var(--dorado-branding);
+}
+
+/* --- NAVBAR de la vista Barbero --- */
+.navbar-barber {
+    background-color: #0b0b0b;
+    border-bottom: 1px solid rgba(255, 198, 0, 0.15);
+    padding: 15px 20px;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: bold;
+}
+
+.logo-nav {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--dorado);
+    object-fit: cover;
+}
+
+.btn-logout {
+    color: #d8d8d8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: #d9534f;
+    color: white;
+    border-color: #d9534f;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.brand-title {
+    color: var(--dorado-branding);
+    font-family: var(--fuente-titulos);
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.brand-role {
+    color: #e2e2e2;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Corrección y unificación de Brand Area */
+#brand-area {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px; /* Espacio entre el icono y el resto del logo */
+    text-decoration: none;
+}
+
+/* Asegurar visibilidad del icono solo en escritorio */
+#gear-icon-desktop {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+/* Asegurar que el icono solo se vea en escritorio como querías */
+@media (max-width: 991px) {
+    #gear-icon-desktop {
+        display: none !important;
+    }
+}
+
+/* Ajuste para que el texto y la rueda queden bien alineados en escritorio */
+@media (min-width: 992px) {
+    #brand-area {
+        gap: 15px; /* Espacio entre rueda y nombre */
+    }
+}
+
+/* Fuerza la ocultación absoluta si no tiene la clase adecuada */
+#gear-icon-desktop.d-none {
+    display: none !important;
+}
+
+#auth-links.d-none {
+    display: none !important;
+}
+
+/* Fuerza el diseño de fila para el contenedor de botones de auth en escritorio */
+@media (min-width: 992px) {
+    #auth-links {
+        display: flex !important; /* Fuerza la fila en escritorio */
+        flex-direction: row !important;
+    }
+}
+
+/* Regla base: el logo siempre es visible */
+#logo-container { display: flex !important; }
+
+/* Regla condicional: si el body tiene la clase, ocultamos el logo en escritorio */
+@media (min-width: 992px) {
+    body.sesion-iniciada #logo-container { display: none !important; }
+}
+
+@media (min-width: 992px) {
+    .d-lg-none {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991px) {
+    /* Asegura el despliegue correcto del auth-links si se requiere al cerrar sesión */
+    #auth-links {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+}
+
+/* Asegurar que las opciones de configuración en móvil estén centradas y en columna */
+#mobile-extra-options {
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100%;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 198, 0, 0.2);
+}
+
+#mobile-extra-options .nav-link {
+    font-size: 1.1rem;
+    padding: 10px 0 !important;
+}
+
+/* Forzar que el icono de la rueda no aparezca en móvil bajo ninguna circunstancia */
+@media (max-width: 991px) {
+    #gear-icon { display: none !important; }
+}
+
+/* Contenedor dinámico (Nombre + Campana) */
+#dynamic-nav-area {
+    display: flex;
+    align-items: center;
+}
+
+/* En móvil, ocultamos el nombre del usuario (solo dejamos campana) */
+@media (max-width: 991px) {
+    .user-welcome-text { display: none !important; }
+}
+
+/* En escritorio, aseguramos que el nombre y campana estén a la derecha */
+@media (min-width: 992px) {
+    #dynamic-nav-area { margin-left: auto; }
+    #mobile-bell-container { display: none !important; }
+}
+
+/* --- MENÚ LATERAL (Escritorio) --- */
+#side-menu {
+    position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
+    background-color: #333; transition: 0.3s; z-index: 1050; padding: 20px; color: white;
+}
+#side-menu.active { left: 0; }
+
+/* Ocultar en móvil para que se muestren en el menú colapsado */
+@media (max-width: 991px) {
+    #side-menu { display: none !important; }
+}
+/* Menu Lateral (segunda declaración del original, con gradiente) */
+#side-menu {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    /* Gradiente oscuro que combina con tu barbería */
+    background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+    border-right: 2px solid #FFC600;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+    transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 2000;
+}
+
+#side-menu.active { left: 0; }
+
+.menu-header {
+    padding: 30px;
+    border-bottom: 1px solid rgba(255, 198, 0, 0.2);
+    text-align: center;
+}
+
+.menu-items {
+    padding: 20px;
+}
+
+.menu-items a {
+    display: block;
+    padding: 15px 20px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: 0.3s;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.menu-items a:hover {
+    background-color: rgba(255, 198, 0, 0.1);
+    color: #FFC600;
+    padding-left: 30px;
+}
+
+#side-menu .menu-items a {
+    position: relative;
+}
+
+#side-menu .menu-items a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 3px;
+    background-color: #FFC600;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+#side-menu .menu-items a.active::after {
+    width: 100%;
+}
+
+/* Capa oscura (Overlay) */
+#menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Oscuro transparente */
+    z-index: 1500;
+    display: none; /* Oculto por defecto */
+}
+
+/* Botón de cierre (X) */
+.close-menu-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    color: #FFC600;
+    cursor: pointer;
+}
+
+
+/* ============================================================================
+   3. HERO / INICIO
+   (carrusel principal, tarjeta flotante)
+   ============================================================================ */
+
 .inicio {
   padding: 90px 0;
   background: radial-gradient(circle at top left, #565654, #111111 60%);
@@ -148,7 +628,7 @@ h1, h2, h3, h4 {
   padding: 12px 30px;
 }
 
-/* Este es el contenedor que debe tener el diseño que buscas */
+/* Este es el contenedor que debe tener el diseño que buscas (versión 1, 520px) */
 .carrusel-container {
     position: relative;
     width: 100%;
@@ -188,9 +668,88 @@ h1, h2, h3, h4 {
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* ══════════════════════════════════════════════
-   CSS PARA CARRUSEL DE BARBEROS
-   ══════════════════════════════════════════════ */
+/* ⚠️ Redeclaración del original: mismo selector .carrusel-container con
+   height 400px y otro fondo — se conserva tal cual estaba, en orden. */
+.contenedor-principal-visual {
+    position: relative;
+    width: 100%;
+}
+
+.carrusel-container {
+    position: relative;
+    width: 100%;
+    height: 400px; /* Asegura esta altura */
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #f0f0f0; /* Color de fondo por si la imagen tarda en cargar */
+}
+
+.carrusel-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    /* Esto es importante si las imágenes no cargan bien */
+    display: block; 
+}
+
+.carrusel-container img.active {
+    opacity: 1;
+}
+
+.contenedor-principal-visual {
+    position: relative;
+}
+
+.tarjeta-flotante {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    z-index: 2;
+}
+
+/* Transición suave para las imágenes del carrusel de inicio (otra variante, 1.5s) */
+.carrusel-container img {
+    position: absolute;
+    top: 0; left: 0;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+.carrusel-container img.active {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .inicio h1 {
+    font-size: 2.8rem;
+  }
+
+  .imagen-principal img {
+    height: 380px;
+  }
+
+  /* Ajuste de la tarjeta flotante en móviles */
+  .tarjeta-flotante {
+    position: static;
+    margin-top: 20px;
+  }
+}
+
+
+/* ============================================================================
+   4. CARRUSEL DE BARBEROS (home)
+   ============================================================================ */
 
 .barbers-carousel-wrapper {
     position: relative;
@@ -362,9 +921,71 @@ h1, h2, h3, h4 {
   background-color: #222220;
 }
 
-/* ==========================================================================
-   SECCIÓN: MARCA (Nuestra historia y valores)
-   ========================================================================== */
+/* Efecto Hover en las tarjetas de barberos (segunda declaración) */
+.barber-card {
+    will-change: transform;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.barber-card:hover {
+    transform: translateY(-10px); /* Ligera elevación al pasar el mouse */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* Borra el fadeIn de la sección y aplícalo a las tarjetas */
+.barber-card {
+    animation: fadeIn 1s ease-out forwards;
+}
+
+/* Y asegúrate de que las tarjetas tengan un estado inicial claro */
+.barber-card {
+    opacity: 0;
+}
+
+.barbers-track-container {
+    overflow: hidden; /* Oculta la barra de scroll nativa */
+}
+
+.barbers-track {
+    display: flex;
+    gap: 20px; /* Importante para el cálculo del índice */
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 20px;
+}
+
+/* Esconde la barra de scroll en navegadores modernos */
+.barbers-track::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #555;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.dot.active {
+    background: #d4af37; /* Color dorado */
+}
+
+
+/* ============================================================================
+   5. SECCIÓN MARCA
+   (nuestra historia y valores)
+   ============================================================================ */
+
 .marca {
   background-color: var(--blanco);
   color: var(--gris-oscuro);
@@ -384,18 +1005,73 @@ h1, h2, h3, h4 {
   height: 100%;
 }
 
-/* ==========================================================================
-   SECCIÓN: CTA (Llamada a la acción final)
-   ========================================================================== */
+
+/* ============================================================================
+   6. CTA (llamada a la acción final)
+   ============================================================================ */
+
 .cta {
   padding: 70px 0;
   background: linear-gradient(135deg, #111111, #30302E);
 }
 
-/* ==========================================================================
-   SECCIÓN: FOOTER Y DATOS DE CONTACTO
-   ========================================================================== */
-   
+
+/* ============================================================================
+   7. CONTACTO
+   ============================================================================ */
+
+.mya-contact-section {
+    position: relative;
+    background: #050505;
+}
+
+.mya-contact-card {
+    background: linear-gradient(145deg, #0f0f0f, #000000);
+    border: 1px solid #2a2a2a;
+    padding: 3.5rem; /* Aumentamos el padding para hacerlo más grande */
+    border-radius: 20px;
+    min-height: 400px; /* Asegura altura mínima para presencia */
+    transition: all 0.4s ease;
+}
+
+.map-frame iframe {
+    border-radius: 10px;
+    filter: none !important; 
+}
+
+/* Efecto de borde dorado al pasar el mouse */
+.mya-contact-card:hover {
+    border-color: var(--mya-gold);
+    box-shadow: 0 0 20px rgba(255, 198, 0, 0.1);
+}
+
+/* Títulos con estilo */
+.contact-label {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mya-gold);
+    margin-bottom: 1.5rem !important;
+}
+
+/* Estilo para los iconos */
+.icon-box {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 198, 0, 0.1);
+    border-radius: 50%;
+    margin-right: 15px;
+    color: var(--mya-gold);
+}
+
+
+/* ============================================================================
+   8. FOOTER
+   ============================================================================ */
+
 /* Tipografía elegante para el título "Datos De Contacto" */
 .font-elegante {
     font-family: 'Times New Roman', Times, serif;
@@ -453,23 +1129,14 @@ h1, h2, h3, h4 {
 }
 
 /* ==========================================================================
-   RESPONSIVIDAD (Media Queries)
+   BOTÓN FLOTANTE DE WHATSAPP — ver también sección 22 (se deja referencia
+   aquí porque en el original aparecía cerca del footer en algunas versiones)
    ========================================================================== */
-@media (max-width: 768px) {
-  .inicio h1 {
-    font-size: 2.8rem;
-  }
 
-  .imagen-principal img {
-    height: 380px;
-  }
 
-  /* Ajuste de la tarjeta flotante en móviles */
-  .tarjeta-flotante {
-    position: static;
-    margin-top: 20px;
-  }
-}
+/* ============================================================================
+   9. NOTIFICACIONES (CAMPANITA)
+   ============================================================================ */
 
 /* Asegurar que la campanita tenga el estilo correcto */
 .bi-bell-fill {
@@ -491,215 +1158,32 @@ h1, h2, h3, h4 {
     background-color: var(--gris-oscuro);
 }
 
-/* Menú lateral (Escritorio) */
-#side-menu {
-    position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
-    background-color: #333; transition: 0.3s; z-index: 1050; padding: 20px; color: white;
-}
-#side-menu.active { left: 0; }
-
-/* Ocultar en móvil para que se muestren en el menú colapsado */
-@media (max-width: 991px) {
-    #side-menu { display: none !important; }
-}
-/* Menu Lateral */
-#side-menu {
-    position: fixed;
-    top: 0;
-    left: -300px;
-    width: 300px;
-    height: 100%;
-    /* Gradiente oscuro que combina con tu barbería */
-    background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
-    border-right: 2px solid #FFC600;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-    transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    z-index: 2000;
-}
-
-#side-menu.active { left: 0; }
-
-.menu-header {
-    padding: 30px;
-    border-bottom: 1px solid rgba(255, 198, 0, 0.2);
-    text-align: center;
-}
-
-.menu-items {
-    padding: 20px;
-}
-
-.menu-items a {
-    display: block;
-    padding: 15px 20px;
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: 0.3s;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.menu-items a:hover {
-    background-color: rgba(255, 198, 0, 0.1);
-    color: #FFC600;
-    padding-left: 30px;
-}
-
-/* Capa oscura (Overlay) */
-#menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Oscuro transparente */
-    z-index: 1500;
-    display: none; /* Oculto por defecto */
-}
-
-/* Botón de cierre (X) */
-.close-menu-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 1.5rem;
-    color: #FFC600;
+.notification-btn {
+    background: transparent;
+    border: none;
+    position: relative;
     cursor: pointer;
 }
 
-/* Contacto */
-/* Contenedor elegante */
-.mya-contact-section {
-    position: relative;
-    background: #050505;
+.notification-btn i {
+    color: var(--dorado-branding);
+    font-size: 1.2rem;
 }
 
-.mya-contact-card {
-    background: linear-gradient(145deg, #0f0f0f, #000000);
-    border: 1px solid #2a2a2a;
-    padding: 3.5rem; /* Aumentamos el padding para hacerlo más grande */
-    border-radius: 20px;
-    min-height: 400px; /* Asegura altura mínima para presencia */
-    transition: all 0.4s ease;
-}
-
-.map-frame iframe {
-    border-radius: 10px;
-    filter: none !important; 
-}
-
-/* Efecto de borde dorado al pasar el mouse */
-.mya-contact-card:hover {
-    border-color: var(--mya-gold);
-    box-shadow: 0 0 20px rgba(255, 198, 0, 0.1);
-}
-
-/* Títulos con estilo */
-.contact-label {
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--mya-gold);
-    margin-bottom: 1.5rem !important;
-}
-
-/* Estilo para los iconos */
-.icon-box {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 198, 0, 0.1);
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    margin-right: 15px;
-    color: var(--mya-gold);
-}
+    background: red;
+    color: white;
+    font-size: .65rem;
 
-
-@media (min-width: 992px) {
-    .d-lg-none {
-        display: none !important;
-    }
-}
-
-@media (max-width: 991px) {
-    /* Asegura el despliegue correcto del auth-links si se requiere al cerrar sesión */
-    #auth-links {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-}
-
-/* Asegurar que las opciones de configuración en móvil estén centradas y en columna */
-#mobile-extra-options {
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 100%;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid rgba(255, 198, 0, 0.2);
-}
-
-#mobile-extra-options .nav-link {
-    font-size: 1.1rem;
-    padding: 10px 0 !important;
-}
-
-/* Esto asegura que la marca siempre se comporte igual */
-#brand-area {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 50px; 
-}
-
-/* Forzar que el icono de la rueda no aparezca en móvil bajo ninguna circunstancia */
-@media (max-width: 991px) {
-    #gear-icon { display: none !important; }
-}
-
-/* Contenedor dinámico (Nombre + Campana) */
-#dynamic-nav-area {
     display: flex;
+    justify-content: center;
     align-items: center;
-}
-
-/* En móvil, ocultamos el nombre del usuario (solo dejamos campana) */
-@media (max-width: 991px) {
-    .user-welcome-text { display: none !important; }
-}
-
-/* En escritorio, aseguramos que el nombre y campana estén a la derecha */
-@media (min-width: 992px) {
-    #dynamic-nav-area { margin-left: auto; }
-    #mobile-bell-container { display: none !important; }
-}
-
-/* Fuerza la ocultación absoluta si no tiene la clase adecuada */
-#gear-icon-desktop.d-none {
-    display: none !important;
-}
-
-#auth-links.d-none {
-    display: none !important;
-}
-
-/* Fuerza el diseño de fila para el contenedor de botones de auth en escritorio */
-@media (min-width: 992px) {
-    #auth-links {
-        display: flex !important; /* Fuerza la fila en escritorio */
-        flex-direction: row !important;
-    }
-}
-
-/* Regla base: el logo siempre es visible */
-#logo-container { display: flex !important; }
-
-/* Regla condicional: si el body tiene la clase, ocultamos el logo en escritorio */
-@media (min-width: 992px) {
-    body.sesion-iniciada #logo-container { display: none !important; }
 }
 
 /* Panel de notificaciones - Estilo "Elegancia Visual" */
@@ -800,7 +1284,12 @@ h1, h2, h3, h4 {
 /* Scrollbar minimalista */
 #lista-notificaciones::-webkit-scrollbar { width: 4px; }
 #lista-notificaciones::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-/* --- SECCIÓN SERVICIOS: Ajustes de acabado --- */
+
+
+/* ============================================================================
+   10. SERVICIOS
+   (grid, tarjetas de precio, página de servicios individuales)
+   ============================================================================ */
 
 .servicios-container {
     padding: 80px 20px;
@@ -848,12 +1337,6 @@ h1, h2, h3, h4 {
     font-size: .95rem;
     min-height: 60px;
     margin-bottom: 20px;
-}
-
-/* Dale espacio al main para que el navbar fijo no tape el contenido */
-#main-content {
-    padding-top: 100px; /* Ajusta según la altura de tu navbar */
-    min-height: 80vh;   /* Asegura que el footer siempre quede abajo */
 }
 
 /* Mejora el título de la sección */
@@ -971,7 +1454,6 @@ h1, h2, h3, h4 {
     transform: translateX(-4px);
 }
 
-
 /* Ajuste para la imagen */
 .img-fluid {
     max-height: 300px;
@@ -979,10 +1461,14 @@ h1, h2, h3, h4 {
     width: 100%;
 }
 
-/* Esto hace que el navegador no pegue el título al borde del menú fijo */
-section {
-    scroll-margin-top: 100px; 
-}
+.border-borrar { border: 2px solid red !important; }
+.border-editar { border: 2px solid orange !important; }
+
+
+/* ============================================================================
+   11. RESERVAS
+   (calendario, horas, formulario, modal, toast, mis reservas)
+   ============================================================================ */
 
 /* --- CABECERA PREMIUM --- */
 .header-reserva-premium {
@@ -991,7 +1477,6 @@ section {
     border-bottom: 1px solid rgba(255, 193, 7, 0.25); /* Borde dorado translúcido */
 }
 
-/* --- TU CSS RESTANTE COMPLETO --- */
 .tracking-wider { 
     letter-spacing: 1.2px; 
 }
@@ -1060,134 +1545,6 @@ section {
 .custom-modal-content {
     border-radius: 16px; 
     background-color: #141414;
-}
-
-:root {
-
-    --dorado-branding: #FFC600;
-    --dorado-hover: #FFD43E;
-
-    --gris: #565654;
-    --gris-borde: #30302E;
-
-    --negro-absoluto: #111111;
-    --negro-navbar: #000000;
-
-    --texto-blanco: #FFFFFF;
-
-    --fuente-titulos: 'Times New Roman', Times, serif;
-    --fuente-cuerpo: 'Segoe UI', Roboto, sans-serif;
-
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--negro-absoluto);
-    color: var(--texto-blanco);
-    font-family: var(--fuente-cuerpo);
-    overflow-x: hidden;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5 {
-    font-family: var(--fuente-titulos);
-}
-
-.text-gold {
-    color: var(--dorado-branding);
-}
-
-.sub-bar {
-    width: 60px;
-    height: 3px;
-    background: var(--dorado-branding);
-    margin: 20px auto;
-}
-
-.custom-navbar {
-    background-color: var(--negro-navbar);
-    border-bottom: 1px solid var(--gris-borde);
-    padding: 18px 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.navbar-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.brand-logo {
-    color: var(--dorado-branding);
-    text-decoration: none;
-    font-size: 2rem;
-    font-weight: bold;
-    font-family: var(--fuente-titulos);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.logo-navbar {
-    width: 55px;
-    height: 55px;
-    object-fit: contain;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 35px;
-    margin: 0 30px 0 auto;
-    padding: 0;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    transition: .3s;
-    font-weight: 500;
-}
-
-.nav-links a:hover {
-    color: var(--dorado-branding);
-}
-
-.active-link {
-    color: var(--dorado-branding);
-}
-
-.notification-btn {
-    background: transparent;
-    border: none;
-    position: relative;
-    cursor: pointer;
-}
-
-.notification-btn i {
-    color: var(--dorado-branding);
-    font-size: 1.2rem;
-}
-
-.notification-badge {
-    position: absolute;
-    top: -6px;
-    right: -8px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: red;
-    color: white;
-    font-size: .65rem;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .reservation-header {
@@ -1274,6 +1631,31 @@ h5 {
     color: black;
     font-weight: bold;
 }
+
+/* Estado al pasar el cursor (Hover) — versión detallada con variables base */
+.day:hover:not(.selected) {
+    background-color: var(--gris);
+    color: var(--blanco);
+    border: 1px solid var(--dorado);
+    cursor: pointer;
+}
+
+/* Estado del día seleccionado */
+.day.selected {
+    background-color: var(--dorado);
+    color: var(--negro);
+    border: 1px solid var(--dorado-oscuro);
+    font-weight: bold;
+}
+
+.day.disabled {
+    background-color: var(--negro);
+    color: var(--gris);
+    cursor: not-allowed;
+    opacity: 0.3; /* Más tenue para indicar que no hay disponibilidad */
+    border: 1px solid transparent;
+}
+
 .custom-label {
     margin-bottom: 10px;
     color: var(--dorado-branding);
@@ -1395,136 +1777,62 @@ textarea::placeholder {
     color: black;
 }
 
-.agenda-page .calendar-container-agenda {
-    background-color: transparent;
-    border: 1px solid rgba(255,255,255,0.16);
-    border-radius: 16px;
-    padding: 16px;
-}
-
-.agenda-page .calendar-header {
-    margin-bottom: 16px;
-}
-
-.agenda-page .calendar-header h5 {
-    color: #fff;
-    margin: 0;
-    font-size: 1rem;
-}
-
-.agenda-page .month-btn {
-    background: transparent;
-    border: 1px solid #fff;
-    color: #fff;
-    cursor: pointer;
-    font-size: 1.1rem;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    transition: all 0.25s ease;
-}
-
-.agenda-page .month-btn:hover {
-    background-color: #fff;
-    color: #111;
-}
-
-.agenda-page .weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
-.agenda-day.agenda-day-incapacidad {
-    background: linear-gradient(145deg, #ff6b35, #c9451a) !important;
-    border-color: #ff6b35 !important;
-    color: #fff !important;
-    box-shadow: 0 3px 10px rgba(255, 107, 53, 0.35) !important;
-}
-
-.agenda-day.agenda-day-incapacidad.agenda-day-hoy::after {
-    background: #fff;
-}
-
-.agenda-page .weekdays span {
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-
-.agenda-page .calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    margin-bottom: 14px;
-}
-
-.agenda-page .day {
-    background-color: #ffffff;
-    border: 1px solid #ffffff;
-    color: #111111;
-    padding: 10px 0;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.agenda-page .day:hover:not(.disabled-day) {
-    background-color: #f5f5f5;
-    border-color: #111111;
-}
-
-.agenda-page .day.selected-day {
-    background-color: #ffffff;
-    color: #111111;
-    border-color: var(--dorado-branding);
-    box-shadow: 0 0 0 2px rgba(255,198,0,0.22);
-}
-
-.agenda-page .day.disabled-day {
-    opacity: 0.35;
-    cursor: not-allowed;
-}
-
-.agenda-page .hours-grid-agenda {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 10px;
-    margin-bottom: 12px;
-}
-
-.agenda-page .hour-card {
-    background-color: #ffffff;
-    border: 1px solid rgba(0,0,0,0.08);
-    color: #111111;
-    padding: 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.agenda-page .hour-card:hover {
-    background-color: #f5f5f5;
-    color: #111111;
-    border-color: #111111;
-}
-
-.agenda-page .hour-card.hour-selected {
-    background-color: var(--dorado-branding);
-    color: black;
-    border-color: var(--dorado-branding);
-}
-
 .hour-selected {
     background: var(--dorado-branding);
     color: black;
     font-weight: bold;
+}
+
+/* Contenedor de la grilla de horas (versión detallada con variables base) */
+.hours-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas para escritorio */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Estilo base de los botones de hora */
+.hour-btn {
+    padding: 10px 5px;
+    background-color: var(--gris-oscuro);
+    color: var(--blanco);
+    border: 1px solid var(--gris);
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+/* Estado al pasar el cursor (Hover) */
+.hour-btn:hover:not(.disabled):not(.selected) {
+    background-color: var(--gris);
+    border-color: var(--dorado);
+    color: var(--blanco);
+}
+
+/* Estado cuando el usuario selecciona una hora */
+.hour-btn.selected {
+    background-color: var(--dorado);
+    color: var(--negro);
+    border-color: var(--dorado-oscuro);
+    font-weight: bold;
+}
+
+/* Estado para horas no disponibles (Regla de 1 hora de antelación) */
+.hour-btn.disabled {
+    background-color: var(--negro);
+    color: var(--gris);
+    border: 1px solid #1a1a1a;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Ajuste responsivo para móviles */
+@media (max-width: 576px) {
+    .hours-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas pequeñas */
+    }
 }
 
 .summary-card {
@@ -1548,116 +1856,6 @@ textarea::placeholder {
 
 .summary-item span:last-child {
     font-weight: 600;
-}
-
-.custom-modal {
-    background-color: #0f0f0f; /* color sólido, no transparente */
-    color: var(--blanco);
-    border: 1px solid rgba(255,198,0,0.08);
-    border-radius: 14px;
-    padding: 22px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-    max-width: 760px;
-}
-
-.custom-modal .modal-header {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.custom-modal .modal-title {
-    color: var(--dorado);
-    font-weight: 700;
-}
-
-/* Modal title font más cómodo */
-.custom-modal .modal-title {
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 1.25rem;
-}
-
-.custom-modal .btn-close {
-    opacity: 0.85;
-}
-
-.custom-modal .custom-input {
-    background-color: #141414;
-    border: 1px solid rgba(255,198,0,0.05);
-    color: #e9e9e9;
-    padding: 10px 12px;
-    border-radius: 8px;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.custom-modal .custom-input::placeholder {
-    color: #bfbfbf;
-}
-
-.custom-modal .custom-input:focus {
-    border-color: var(--dorado-oscuro);
-    box-shadow: 0 6px 18px rgba(191,147,13,0.06);
-    outline: none;
-}
-
-.custom-modal .btn-reserve {
-    background-color: var(--dorado);
-    color: var(--negro);
-    font-weight: 700;
-    padding: 10px 16px;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 8px 18px rgba(197,160,89,0.12);
-}
-
-.custom-modal .btn-reserve:hover {
-    background-color: var(--dorado-oscuro);
-}
-
-.custom-modal .nav-tabs .nav-link {
-    color: #bdbdbd;
-    border: none;
-    padding: 10px 12px;
-    border-radius: 8px;
-}
-
-.custom-modal .nav-tabs .nav-link.active {
-    background: transparent;
-    color: var(--dorado);
-    border-bottom: 2px solid var(--dorado);
-}
-
-.custom-modal .btn-link {
-    color: var(--dorado);
-    text-decoration: none;
-    font-size: 0.95rem;
-}
-
-.custom-modal .btn-link:hover {
-    color: var(--mya-gold);
-    text-decoration: underline;
-}
-
-.custom-modal .form-label {
-    color: #d1d1d1;
-    font-size: 0.95rem;
-    margin-bottom: 6px;
-}
-
-/* Logo dentro del modal */
-.custom-modal .modal-logo {
-    display: block;
-    margin: 0 auto 14px auto;
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(255,198,0,0.12);
-}
-
-.success-icon {
-    color: #28a745;
-    font-size: 5rem;
-    margin-bottom: 20px;
 }
 
 .toast {
@@ -1796,24 +1994,819 @@ textarea::placeholder {
 
 }
 
-/* PALETA DE COLORES DE LA BARBERÍA (Inspirado en tu proyecto anterior) */
-:root {
-    --bg-dark-page: #161513;        /* Fondo general de la página */
-    --bg-card: #1f1e1b;             /* Fondo de la tarjeta central */
-    --bg-input: #262421;            /* Fondo interno de los campos de texto */
-    --gold-accent: #cca553;         /* Dorado elegante para labels y bordes */
-    --gold-hover: #bca067;          /* Dorado al pasar el cursor */
-    --text-light: #f4f2ee;          /* Color del texto de los inputs */
-    --text-muted: #9e9b96;          /* Color grisáceo para textos secundarios */
+
+/* ============================================================================
+   12. AGENDA (ADMIN Y BARBERO)
+   ============================================================================ */
+
+.agenda-page .calendar-container-agenda {
+    background-color: transparent;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 16px;
+    padding: 16px;
 }
 
-/* Estilos de fondo globales */
-body {
-    background-color: var(--bg-dark-page);
-    color: var(--text-light);
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
+.agenda-page .calendar-header {
+    margin-bottom: 16px;
 }
+
+.agenda-page .calendar-header h5 {
+    color: #fff;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.agenda-page .month-btn {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.1rem;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    transition: all 0.25s ease;
+}
+
+.agenda-page .month-btn:hover {
+    background-color: #fff;
+    color: #111;
+}
+
+.agenda-page .weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.agenda-day.agenda-day-incapacidad {
+    background: linear-gradient(145deg, #ff6b35, #c9451a) !important;
+    border-color: #ff6b35 !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(255, 107, 53, 0.35) !important;
+}
+
+.agenda-day.agenda-day-incapacidad.agenda-day-hoy::after {
+    background: #fff;
+}
+
+.agenda-page .weekdays span {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.agenda-page .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.agenda-page .day {
+    background-color: #ffffff;
+    border: 1px solid #ffffff;
+    color: #111111;
+    padding: 10px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.agenda-page .day:hover:not(.disabled-day) {
+    background-color: #f5f5f5;
+    border-color: #111111;
+}
+
+.agenda-page .day.selected-day {
+    background-color: #ffffff;
+    color: #111111;
+    border-color: var(--dorado-branding);
+    box-shadow: 0 0 0 2px rgba(255,198,0,0.22);
+}
+
+.agenda-page .day.disabled-day {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.agenda-page .hours-grid-agenda {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.agenda-page .hour-card {
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    color: #111111;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.agenda-page .hour-card:hover {
+    background-color: #f5f5f5;
+    color: #111111;
+    border-color: #111111;
+}
+
+.agenda-page .hour-card.hour-selected {
+    background-color: var(--dorado-branding);
+    color: black;
+    border-color: var(--dorado-branding);
+}
+
+@media (min-width: 992px) {
+    .agenda-sticky {
+        position: sticky;
+        top: 90px;
+    }
+}
+
+/* ==========================================================
+   AGENDA ADMIN (bloque completo con su propio set de variables)
+========================================================== */
+
+.agenda-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.agenda-header h2 {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.agenda-header .text-gold {
+    color: var(--gold);
+}
+
+.agenda-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,.35);
+}
+
+.agenda-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.agenda-calendar-header h4 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--gold);
+}
+
+.agenda-nav-btn {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid rgba(255,198,0,.35);
+    border-radius: 10px;
+
+    background: rgba(255,198,0,.10);
+    color: var(--gold);
+
+    transition: .2s ease;
+}
+
+.agenda-nav-btn:hover {
+    background: var(--gold);
+    color: #111;
+}
+
+.agenda-weekdays,
+.agenda-days {
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+    gap: 8px;
+}
+
+.agenda-weekdays span {
+    padding-bottom: .5rem;
+
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.agenda-day-cell {
+    min-height: 64px;
+}
+
+.agenda-day {
+    position: relative;
+
+    width: 100%;
+    height: 64px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--bg-day);
+    color: var(--text-light);
+
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: all .18s ease;
+}
+
+.agenda-day:hover:not(.agenda-day-disabled):not(.agenda-day-pasado) {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+/* ---------- Estados ---------- */
+
+.agenda-day-habilitado {
+    background: linear-gradient(145deg, var(--gold), var(--gold-dark));
+    border-color: var(--gold);
+    color: #111;
+    box-shadow: 0 3px 10px rgba(255,198,0,.35);
+}
+
+.agenda-day-pasado {
+    background: var(--bg-disabled);
+    border-color: #262626;
+    color: #555;
+    cursor: not-allowed;
+}
+
+.agenda-day-hoy {
+    border: 2px solid var(--gold) !important;
+}
+
+.agenda-day-hoy::after {
+    content: "";
+
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+    background: var(--gold);
+}
+
+.agenda-day-hoy.agenda-day-habilitado::after {
+    background: #111;
+}
+
+.patron-btn,
+.btn-limpiar-agenda {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: .9rem;
+    transition: .18s ease;
+}
+
+.patron-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.2);
+    color: var(--text);
+}
+
+.patron-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.btn-limpiar-agenda {
+    background: rgba(220,53,69,.08);
+    border: 1px solid rgba(220,53,69,.5);
+    color: #ff8a94;
+}
+
+.btn-limpiar-agenda:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+.agenda-stat {
+    padding: .5rem 1rem;
+
+    border: 1px solid rgba(255,198,0,.25);
+    border-radius: 10px;
+
+    background: rgba(255,198,0,.08);
+
+    color: var(--gold);
+    font-size: .85rem;
+    font-weight: 600;
+}
+
+.agenda-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+
+    margin-top: 1rem;
+}
+
+.agenda-legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: var(--text-muted);
+    font-size: .8rem;
+}
+
+.agenda-legend .dot {
+    width: 12px;
+    height: 12px;
+
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* ---------- Responsive AGENDA ---------- */
+
+/* Tablet */
+@media (max-width: 992px) {
+
+    .agenda-card {
+        padding: 1.25rem;
+    }
+
+    .agenda-calendar-header {
+        gap: .75rem;
+    }
+
+    .agenda-day,
+    .agenda-day-cell {
+        height: 58px;
+        min-height: 58px;
+    }
+
+    .agenda-weekdays span {
+        font-size: .75rem;
+    }
+
+    .agenda-stat {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Móvil */
+@media (max-width: 768px) {
+
+    .agenda-calendar-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .agenda-weekdays,
+    .agenda-days {
+        gap: 5px;
+    }
+
+    .agenda-day,
+    .agenda-day-cell {
+        height: 46px;
+        min-height: 46px;
+        font-size: .9rem;
+    }
+
+    .agenda-weekdays span {
+        font-size: .65rem;
+    }
+
+    .patron-btn,
+    .btn-limpiar-agenda {
+        width: 100%;
+    }
+
+    .agenda-legend {
+        flex-direction: column;
+        gap: .5rem;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+
+    .agenda-card {
+        padding: 1rem;
+    }
+
+    .agenda-day,
+    .agenda-day-cell {
+        height: 40px;
+        min-height: 40px;
+        font-size: .8rem;
+    }
+
+    .agenda-nav-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .agenda-calendar-header h4 {
+        font-size: 1rem;
+    }
+}
+
+
+/* ============================================================================
+   13. DASHBOARD BARBERO
+   (stats-card, tabla de citas del día)
+   ============================================================================ */
+
+.stats-card {
+    background-color: var(--negro-tarjeta);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.highlight-card {
+    border: 1px solid rgba(255, 198, 0, 0.25);
+    background: linear-gradient(145deg, #1d1d1d, #151515);
+}
+
+.stats-label {
+    color: #a0a0a0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.stats-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.stats-sub {
+    font-size: 0.85rem;
+}
+
+/* --- SECTION & TABLE --- */
+.section-title {
+    font-family: "Times New Roman", serif;
+    color: var(--dorado);
+    border-left: 4px solid var(--dorado);
+    padding-left: 12px;
+}
+
+.custom-table-container {
+    background-color: var(--negro-tarjeta);
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-table {
+    --bs-table-bg: transparent !important; /* Quita el fondo blanco nativo de Bootstrap */
+    --bs-table-color: var(--blanco) !important;
+    color: var(--blanco);
+    margin-bottom: 0;
+}
+
+.custom-table thead th {
+    color: var(--dorado);
+    border-bottom: 2px solid #333;
+    padding: 15px 10px;
+    font-weight: 600;
+}
+
+.custom-table tbody td {
+    padding: 18px 10px;
+    border-bottom: 1px solid #2a2a2a;
+    background-color: transparent !important;
+    color: #e0e0e0;
+}
+
+.time-col {
+    font-weight: bold;
+    color: var(--dorado);
+}
+
+/* --- BADGES DE ESTADO --- */
+.badge {
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+.status-done {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status-pending {
+    background-color: rgba(255, 198, 0, 0.12);
+    color: var(--dorado);
+    border: 1px solid rgba(255, 198, 0, 0.3);
+}
+
+.status-cancelled {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* --- ACCIONES BUTTONS --- */
+.btn-action {
+    padding: 6px 15px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-complete {
+    background-color: var(--dorado);
+    color: var(--negro);
+}
+
+.btn-complete:hover {
+    background-color: var(--dorado-oscuro);
+    color: white;
+}
+
+.btn-view {
+    background-color: #333;
+    color: #888;
+}
+
+/* Adaptabilidad para móviles */
+@media(max-width: 768px) {
+    .stats-value {
+        font-size: 1.8rem;
+    }
+    .custom-table {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* ============================================================================
+   14. DASHBOARD ADMIN
+   (KPIs, tabla, accesos rápidos)
+   ============================================================================ */
+
+.dashboard-container {
+    padding: 2rem 0;
+    color: var(--texto-principal);
+}
+
+/* --- Tarjetas KPI --- */
+.kpi-card {
+    background: var(--negro-tarjeta);
+    border: 1px solid var(--gris-profundo);
+    padding: 1.5rem;
+    border-radius: var(--radio-borde);
+    transition: all 0.4s ease;
+}
+
+.kpi-card:hover {
+    border-color: var(--dorado);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+.kpi-icon-box {
+    width: 50px;
+    height: 50px;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--dorado);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+/* --- Paneles Principales --- */
+.panel-bg {
+    background: var(--negro-tarjeta);
+    border: 1px solid var(--gris-profundo);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+}
+
+/* --- Tabla Personalizada --- */
+.custom-dashboard-table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.custom-dashboard-table tbody tr {
+    background: var(--negro);
+    transition: background 0.3s;
+}
+
+.custom-dashboard-table tbody tr:hover {
+    background: var(--gris-profundo);
+}
+
+/* --- Botones de Acción Rápida --- */
+.quick-link-btn {
+    display: block;
+    padding: 1rem;
+    background: var(--negro);
+    color: var(--texto-secundario);
+    text-decoration: none;
+    border-radius: var(--radio-borde);
+    border: 1px solid var(--gris-profundo);
+    transition: all 0.3s ease;
+}
+
+.quick-link-btn:hover {
+    background: var(--dorado);
+    color: var(--negro);
+    font-weight: 600;
+    padding-left: 1.5rem;
+}
+
+/* --- Extras --- */
+.text-gold { color: var(--dorado); }
+.custom-progress-bg { background-color: var(--dorado); }
+.background-accent-box { background: var(--negro); border: 1px solid var(--gris-profundo); }
+
+
+/* ============================================================================
+   15. GESTIÓN DE PERFILES (PANEL ADMIN)
+   ============================================================================ */
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+    color: #ffffff;
+}
+
+.panel-bg {
+    background-color: #121212;
+    border-radius: 15px;
+    padding: 30px;
+    border: 1px solid #1f1f1f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.table-header {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #a0a0a0;
+    margin-bottom: 15px;
+}
+
+.profile-row {
+    background-color: #1c1c1e;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+    align-items: center;
+    border: 1px solid #2c2c2e;
+}
+
+/* Campos de entrada personalizados (Modo Oscuro) */
+.form-control-custom {
+    background-color: #2c2c2e !important;
+    border: 1px solid #3a3a3c !important;
+    color: #ffffff !important;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.form-control-custom:focus {
+    border-color: #00e676 !important;
+    box-shadow: 0 0 8px rgba(0, 230, 118, 0.2);
+}
+
+/* Botón Eliminar Perfil (Círculo Rojo) */
+.btn-delete {
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+    transform: scale(1.1);
+    color: white;
+}
+
+/* Botones de acción */
+.btn-save {
+    background-color: #00e676;
+    color: #000000;
+    font-weight: 600;
+    padding: 10px 30px;
+    border-radius: 8px;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-save:hover {
+    background-color: #00c853;
+}
+
+.btn-return {
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 500;
+    padding: 8px 25px;
+    border-radius: 20px;
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.2s;
+}
+
+.btn-return:hover {
+    opacity: 0.9;
+    color: #000000;
+}
+
+/* Ventanas Modales */
+.modal-content-dark {
+    background-color: #121212;
+    color: white;
+    border: 1px solid #2c2c2e;
+}
+
+/* Contenedor con barra de desplazamiento interna */
+.scrollable-panel {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Personalización del scrollbar en navegadores Webkit (Chrome/Safari) */
+.scrollable-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-panel::-webkit-scrollbar-track {
+    background: #121212;
+}
+
+.scrollable-panel::-webkit-scrollbar-thumb {
+    background: #2c2c2e;
+    border-radius: 10px;
+}
+
+
+/* ============================================================================
+   16. EDITAR PERFIL (CLIENTE / BARBERO)
+   ============================================================================ */
 
 /* Estructura de la tarjeta central basada en image_f062a5.png */
 .edit-profile-card {
@@ -1979,484 +2972,266 @@ select.form-control-custom {
     box-shadow: 0 6px 20px rgba(255,198,0,0.25);
 }
 
-#side-menu .menu-items a {
-    position: relative;
-}
-
-#side-menu .menu-items a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    width: 0;
-    height: 3px;
-    background-color: #FFC600;
+/* --------------------------------------------------------------------
+   Inputs y textarea del formulario de perfil (Información Personal,
+   Perfil Profesional y Seguridad comparten estas reglas)
+   -------------------------------------------------------------------- */
+#formEditarPerfil .form-control {
     border-radius: 10px;
-    transition: width 0.3s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
-#side-menu .menu-items a.active::after {
-    width: 100%;
+#formEditarPerfil .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35);
 }
 
-.brand-text {
+#formEditarPerfil textarea.form-control {
+    resize: vertical;
+    min-height: 110px;
+}
+
+/* Estado focus: resalte dorado consistente con la identidad de marca */
+#formEditarPerfil .form-control:focus {
+    background-color: rgba(255, 198, 0, 0.05) !important;
+    border-color: var(--dorado) !important;
+    box-shadow: 0 0 0 3px rgba(255, 198, 0, 0.15);
+    color: var(--blanco) !important;
+    outline: none;
+}
+
+/* Campo de solo lectura (correo electrónico) */
+#formEditarPerfil .form-control[readonly] {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: rgba(255, 255, 255, 0.55) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Hover suave en campos editables para reforzar la interactividad */
+#formEditarPerfil .form-control:not([readonly]):hover {
+    border-color: rgba(255, 198, 0, 0.45);
+}
+
+/* --------------------------------------------------------------------
+   Botón "Guardar" (header de la página de perfil)
+   -------------------------------------------------------------------- */
+button[form="formEditarPerfil"] {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+button[form="formEditarPerfil"]:hover {
+    background-color: var(--dorado-oscuro);
+    color: var(--negro);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(255, 198, 0, 0.3);
+}
+
+button[form="formEditarPerfil"]:active {
+    transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------
+   Alertas de estado (mensajes de Django: éxito / error / advertencia)
+   -------------------------------------------------------------------- */
+.alert {
+    border-radius: 12px;
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.12);
+    border-color: rgba(40, 167, 69, 0.4);
+    color: #7be29a;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.12);
+    border-color: rgba(220, 53, 69, 0.4);
+    color: #ff8a94;
+}
+
+.alert-warning {
+    background-color: rgba(255, 198, 0, 0.12);
+    border-color: rgba(255, 198, 0, 0.4);
+    color: var(--dorado);
+}
+
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.12);
+    border-color: rgba(13, 202, 240, 0.4);
+    color: #7fdcef;
+}
+
+.alert .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* --------------------------------------------------------------------
+   Responsive: apilar mejor el panel de perfil en pantallas pequeñas
+   -------------------------------------------------------------------- */
+@media (max-width: 767px) {
+    .perfil-profesional-card,
+    .card.bg-dark.text-light.border-secondary {
+        padding: 1.5rem !important;
+    }
+
+    #formEditarPerfil .row.g-3 > [class^="col-md-6"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+
+/* ============================================================================
+   17. PERFIL PROFESIONAL DEL BARBERO / EDITAR ÍNDICE
+   ============================================================================ */
+
+/* Tarjeta "Perfil Profesional": mismo lenguaje visual que el resto de
+   tarjetas de perfil, con un leve acento dorado para diferenciarla. */
+.perfil-profesional-card {
+    border: 1px solid rgba(255, 198, 0, 0.18) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.perfil-profesional-card:hover {
+    border-color: rgba(255, 198, 0, 0.35) !important;
+    box-shadow: 0 10px 30px rgba(255, 198, 0, 0.08);
+}
+
+.perfil-profesional-card .bi-scissors {
+    color: var(--dorado);
+}
+
+/* Texto de ayuda bajo el campo de Especialidades */
+.texto-ayuda-perfil {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.78rem;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.editar-index-section { padding-top: 2rem; }
+
+.editar-card {
+    background: linear-gradient(145deg, #171717, #0b0b0b);
+    border: 1px solid rgba(255, 198, 0, 0.10);
+    border-radius: 18px;
+    padding: 2rem 2rem 2.2rem;
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+.editar-card:hover {
+    border-color: rgba(255, 198, 0, 0.28);
+    box-shadow: 0 0 30px rgba(255, 198, 0, 0.06);
+}
+
+.editar-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.editar-card-header i {
+    color: var(--dorado);
+    font-size: 1.4rem;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border: 1px solid rgba(255,198,0,0.25);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.editar-card-header h5 {
+    margin: 0;
+    color: #fff;
+    font-family: "Times New Roman", serif;
+    letter-spacing: 0.3px;
+}
+.editar-card-header span {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.85rem;
+}
+
+textarea.form-control-custom { resize: vertical; }
+
+/* --- Subida de imágenes --- */
+.imagen-upload-box {
     display: flex;
     flex-direction: column;
-    line-height: 1.1;
+    align-items: center;
+    gap: 0.7rem;
 }
-
-.brand-title {
-    color: var(--dorado-branding);
-    font-family: var(--fuente-titulos);
-    font-size: 1.8rem;
-    font-weight: bold;
-}
-
-.brand-role {
-    color: #e2e2e2;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-/* Corrección y unificación de Brand Area */
-#brand-area {
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px; /* Espacio entre el icono y el resto del logo */
-    text-decoration: none;
-}
-
-/* Asegurar visibilidad del icono solo en escritorio */
-#gear-icon-desktop {
-    cursor: pointer;
-    font-size: 1.5rem;
-}
-
-/* Asegurar que el icono solo se vea en escritorio como querías */
-@media (max-width: 991px) {
-    #gear-icon-desktop {
-        display: none !important;
-    }
-}
-
-/* Ajuste para que el texto y la rueda queden bien alineados en escritorio */
-@media (min-width: 992px) {
-    #brand-area {
-        gap: 15px; /* Espacio entre rueda y nombre */
-    }
-}
-
-.contenedor-principal-visual {
-    position: relative;
+.imagen-preview {
     width: 100%;
-}
-
-.carrusel-container {
-    position: relative;
-    width: 100%;
-    height: 400px; /* Asegura esta altura */
-    border-radius: 15px;
-    overflow: hidden;
-    background-color: #f0f0f0; /* Color de fondo por si la imagen tarda en cargar */
-}
-
-.carrusel-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    height: 140px;
     object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    /* Esto es importante si las imágenes no cargan bien */
-    display: block; 
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #101010;
 }
-
-.carrusel-container img.active {
-    opacity: 1;
-}
-
-.contenedor-principal-visual {
-    position: relative;
-}
-
-.tarjeta-flotante {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    border-radius: 10px;
+.imagen-upload-box-alta .imagen-preview { height: 220px; }
+.imagen-vacia {
     display: flex;
     align-items: center;
-    gap: 10px;
-    color: white;
-    z-index: 2;
+    justify-content: center;
+    color: rgba(255,255,255,0.25);
+    font-size: 2rem;
 }
-
-/* Estilos para los modales estáticos */
-.modal-content .form-control {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 10px;
-}
-
-.modal-content .form-control:focus {
-    background-color: #1a1a1a;
-    border-color: #ffc107;
-    color: #fff;
-    box-shadow: none;
-}
-
-.modal-content a {
-    text-decoration: none;
-    font-weight: bold;
-}
-
-/*Seccion Barberos*/
-:root {
-    --dorado: #FFC600;
-    --dorado-oscuro: #BF930D;
-    --gris: #565654;
-    --gris-oscuro: #30302E;
-    --negro: #111111;
-    --negro-tarjeta: #1d1d1d;
-    --blanco: #FFFFFF;
-}
-
-body {
-    background-color: var(--negro);
-    color: var(--blanco);
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-}
-
-.text-gold {
-    color: var(--dorado);
-}
-
-/* --- NAVBAR STYLES --- */
-.navbar-barber {
-    background-color: #0b0b0b;
-    border-bottom: 1px solid rgba(255, 198, 0, 0.15);
-    padding: 15px 20px;
-}
-
-.nav-container {
-    max-width: 1200px;
-    margin: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-weight: bold;
-}
-
-.logo-nav {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    border: 2px solid var(--dorado);
-    object-fit: cover;
-}
-
-.btn-logout {
-    color: #d8d8d8;
-    text-decoration: none;
-    font-size: 0.9rem;
-    padding: 8px 16px;
-    border: 1px solid #444;
-    border-radius: 20px;
-    transition: 0.3s;
-}
-
-.btn-logout:hover {
-    background-color: #d9534f;
-    color: white;
-    border-color: #d9534f;
-}
-
-/* --- STATS CARDS (PRODUCIDO) --- */
-.stats-card {
-    background-color: var(--negro-tarjeta);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-}
-
-.highlight-card {
-    border: 1px solid rgba(255, 198, 0, 0.25);
-    background: linear-gradient(145deg, #1d1d1d, #151515);
-}
-
-.stats-label {
-    color: #a0a0a0;
-    font-size: 0.9rem;
+.imagen-caption {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 5px;
 }
-
-.stats-value {
-    font-size: 2.2rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.stats-sub {
-    font-size: 0.85rem;
-}
-
-/* --- SECTION & TABLE --- */
-.section-title {
-    font-family: "Times New Roman", serif;
-    color: var(--dorado);
-    border-left: 4px solid var(--dorado);
-    padding-left: 12px;
-}
-
-.custom-table-container {
-    background-color: var(--negro-tarjeta);
-    border-radius: 20px;
-    padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.custom-table {
-    --bs-table-bg: transparent !important; /* Quita el fondo blanco nativo de Bootstrap */
-    --bs-table-color: var(--blanco) !important;
-    color: var(--blanco);
-    margin-bottom: 0;
-}
-
-.custom-table thead th {
-    color: var(--dorado);
-    border-bottom: 2px solid #333;
-    padding: 15px 10px;
-    font-weight: 600;
-}
-
-.custom-table tbody td {
-    padding: 18px 10px;
-    border-bottom: 1px solid #2a2a2a;
-    background-color: transparent !important;
-    color: #e0e0e0;
-}
-
-.time-col {
-    font-weight: bold;
-    color: var(--dorado);
-}
-
-/* --- BADGES DE ESTADO --- */
-.badge {
-    padding: 6px 12px;
-    border-radius: 30px;
-    font-size: 0.8rem;
-    font-weight: normal;
-}
-
-.status-done {
-    background-color: rgba(40, 167, 69, 0.15);
-    color: #28a745;
-    border: 1px solid rgba(40, 167, 69, 0.3);
-}
-
-.status-pending {
-    background-color: rgba(255, 198, 0, 0.12);
-    color: var(--dorado);
-    border: 1px solid rgba(255, 198, 0, 0.3);
-}
-
-.status-cancelled {
-    background-color: rgba(220, 53, 69, 0.15);
-    color: #dc3545;
-    border: 1px solid rgba(220, 53, 69, 0.3);
-}
-
-/* --- ACCIONES BUTTONS --- */
-.btn-action {
-    padding: 6px 15px;
-    border-radius: 15px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    border: none;
-    transition: 0.2s;
-}
-
-.btn-complete {
-    background-color: var(--dorado);
-    color: var(--negro);
-}
-
-.btn-complete:hover {
-    background-color: var(--dorado-oscuro);
-    color: white;
-}
-
-.btn-view {
-    background-color: #333;
-    color: #888;
-}
-
-/* Adaptabilidad para móviles */
-@media(max-width: 768px) {
-    .stats-value {
-        font-size: 1.8rem;
-    }
-    .custom-table {
-        font-size: 0.9rem;
-    }
-}
-/* diseño dias y horas en reservas */
-
-/* Estado al pasar el cursor (Hover) */
-.day:hover:not(.selected) {
-    background-color: var(--gris);
-    color: var(--blanco);
+.btn-subir-imagen {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
     border: 1px solid var(--dorado);
+    color: var(--dorado);
+    border-radius: 30px;
+    padding: 0.35rem 1rem;
+    font-size: 0.82rem;
     cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease;
 }
-
-/* Estado del día seleccionado */
-.day.selected {
+.btn-subir-imagen:hover {
     background-color: var(--dorado);
-    color: var(--negro);
-    border: 1px solid var(--dorado-oscuro);
-    font-weight: bold;
+    color: #1c1c1c;
 }
 
-.day.disabled {
-    background-color: var(--negro);
-    color: var(--gris);
-    cursor: not-allowed;
-    opacity: 0.3; /* Más tenue para indicar que no hay disponibilidad */
-    border: 1px solid transparent;
+/* --- Mensajes de Django (variante "mya") --- */
+.alert-mya {
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    font-size: 0.92rem;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.alert-mya-ok {
+    background: rgba(40, 167, 69, 0.12);
+    border: 1px solid rgba(40, 167, 69, 0.35);
+    color: #8ee6a1;
+}
+.alert-mya-error {
+    background: rgba(220, 53, 69, 0.12);
+    border: 1px solid rgba(220, 53, 69, 0.35);
+    color: #f2a3ab;
 }
 
-/* Contenedor de la grilla de horas */
-.hours-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columnas para escritorio */
-    gap: 10px;
-    margin-top: 20px;
-}
 
-/* Estilo base de los botones de hora */
-.hour-btn {
-    padding: 10px 5px;
-    background-color: var(--gris-oscuro);
-    color: var(--blanco);
-    border: 1px solid var(--gris);
-    border-radius: 4px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-}
+/* ============================================================================
+   18. AUTENTICACIÓN
+   (login, recuperar / olvidé contraseña)
+   ============================================================================ */
 
-/* Estado al pasar el cursor (Hover) */
-.hour-btn:hover:not(.disabled):not(.selected) {
-    background-color: var(--gris);
-    border-color: var(--dorado);
-    color: var(--blanco);
-}
-
-/* Estado cuando el usuario selecciona una hora */
-.hour-btn.selected {
-    background-color: var(--dorado);
-    color: var(--negro);
-    border-color: var(--dorado-oscuro);
-    font-weight: bold;
-}
-
-/* Estado para horas no disponibles (Regla de 1 hora de antelación) */
-.hour-btn.disabled {
-    background-color: var(--negro);
-    color: var(--gris);
-    border: 1px solid #1a1a1a;
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-/* Ajuste responsivo para móviles */
-@media (max-width: 576px) {
-    .hours-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas pequeñas */
-    }
-}
-
-/* --- CONFIGURACIÓN BASE DEL MODAL --- */
-.modal-barberia {
-    background-color: var(--negro-tarjeta) !important;
-    border: 1px solid var(--gris) !important;
-    color: var(--blanco) !important;
-}
-
-.modal-barberia .modal-header, 
-.modal-barberia .modal-footer {
-    border-color: var(--gris) !important;
-}
-
-.modal-barberia .modal-title {
-    color: var(--dorado) !important;
-}
-
-/* --- FORMULARIOS Y INPUTS (AGRUPADOS POR ESPECIFICIDAD) --- */
-.modal-barberia label {
-    color: var(--blanco) !important;
-    font-weight: 500;
-}
-
-.modal-barberia .form-control, 
-.modal-barberia .form-select, 
-.modal-barberia textarea {
-    background-color: #111111 !important;
-    border: 1px solid #565654 !important;
-    color: #ffffff !important;
-}
-
-.modal-barberia .form-control::placeholder {
-    color: var(--gris) !important;
-    opacity: 0.7;
-}
-
-/* Estado de enfoque (cuando haces clic en el input) */
-.modal-barberia .form-control:focus, 
-.modal-barberia .form-select:focus {
-    background-color: #111111 !important;
-    border-color: var(--dorado) !important; /* Un detalle visual mejor */
-    color: #ffffff !important;
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
-}
-
-/* --- BOTONES --- */
-.modal-barberia .btn-dorado {
-    background-color: var(--dorado) !important;
-    color: var(--negro) !important;
-    font-weight: bold;
-}
-
-.modal-barberia .btn-cancelar {
-    background-color: transparent;
-    color: var(--blanco) !important;
-    border: 1px solid var(--gris) !important;
-}
-
-.border-borrar { border: 2px solid red !important; }
-.border-editar { border: 2px solid orange !important; }
-
-/* olvide contraseña */
-/* Estilos para las tarjetas de formularios */
 .auth-card {
     background-color: var(--negro-absoluto);
     border: 1px solid var(--gris-borde);
@@ -2492,707 +3267,30 @@ body {
     background-color: var(--dorado-hover);
 }
 
-/* =========================================================================
-   PANEL GESTIÓN DE PERFILES - BARBERÍA M&A
-   ========================================================================= */
-
-.dashboard-container {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 20px;
-}
-
-.main-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 40px;
-    color: #ffffff;
-}
-
-.panel-bg {
-    background-color: #121212;
-    border-radius: 15px;
-    padding: 30px;
-    border: 1px solid #1f1f1f;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-.table-header {
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    color: #a0a0a0;
-    margin-bottom: 15px;
-}
-
-.profile-row {
-    background-color: #1c1c1e;
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 12px;
-    align-items: center;
-    border: 1px solid #2c2c2e;
-}
-
-/* Campos de entrada personalizados (Modo Oscuro) */
-.form-control-custom {
-    background-color: #2c2c2e !important;
-    border: 1px solid #3a3a3c !important;
-    color: #ffffff !important;
-    border-radius: 8px;
-    padding: 8px 12px;
-}
-
-.form-control-custom:focus {
-    border-color: #00e676 !important;
-    box-shadow: 0 0 8px rgba(0, 230, 118, 0.2);
-}
-
-/* Botón Eliminar Perfil (Círculo Rojo) */
-.btn-delete {
-    background-color: #ff3b30;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s;
-    text-decoration: none;
-}
-
-.btn-delete:hover {
-    background-color: #d32f2f;
-    transform: scale(1.1);
-    color: white;
-}
-
-/* Botones de acción */
-.btn-save {
-    background-color: #00e676;
-    color: #000000;
-    font-weight: 600;
-    padding: 10px 30px;
-    border-radius: 8px;
-    border: none;
-    transition: background-color 0.2s;
-}
-
-.btn-save:hover {
-    background-color: #00c853;
-}
-
-.btn-return {
-    background-color: #ffffff;
-    color: #000000;
-    font-weight: 500;
-    padding: 8px 25px;
-    border-radius: 20px;
-    text-decoration: none;
-    display: inline-block;
-    transition: opacity 0.2s;
-}
-
-.btn-return:hover {
-    opacity: 0.9;
-    color: #000000;
-}
-
-/* Ventanas Modales */
-.modal-content-dark {
-    background-color: #121212;
-    color: white;
-    border: 1px solid #2c2c2e;
-}
-
-/* Contenedor con barra de desplazamiento interna */
-.scrollable-panel {
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 5px;
-}
-
-/* Personalización del scrollbar en navegadores Webkit (Chrome/Safari) */
-.scrollable-panel::-webkit-scrollbar {
-    width: 6px;
-}
-
-.scrollable-panel::-webkit-scrollbar-track {
-    background: #121212;
-}
-
-.scrollable-panel::-webkit-scrollbar-thumb {
-    background: #2c2c2e;
-    border-radius: 10px;
-}
-
-/* Transición suave para las imágenes del carrusel de inicio */
-.carrusel-container img {
-    position: absolute;
-    top: 0; left: 0;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-}
-.carrusel-container img.active {
-    opacity: 1;
-}
-
-/* Efecto Hover en las tarjetas de barberos */
-.barber-card {
-    will-change: transform;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-
-.barber-card:hover {
-    transform: translateY(-10px); /* Ligera elevación al pasar el mouse */
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
-
-/* Animación de entrada al cargar la página (fade-in inicial) */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-section {
-    animation: fadeIn 1s ease-out forwards;
-}
-
-/* Hover suave en los botones */
-.btn-dorado, .btn-borde {
-    transition: all 0.3s ease;
-}
-
-.btn-dorado:hover {
-    transform: scale(1.05);
-    background-color: #d4af37 !important;
-}
-
-/* Borra el fadeIn de la sección y aplícalo a las tarjetas */
-.barber-card {
-    animation: fadeIn 1s ease-out forwards;
-}
-
-/* Y asegúrate de que las tarjetas tengan un estado inicial claro */
-.barber-card {
-    opacity: 0;
-}
-
-/* ==========================================================================
-   21. ANIMACIONES
-   ========================================================================== */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.barbers-track-container {
-    overflow: hidden; /* Oculta la barra de scroll nativa */
-}
-
-.barbers-track {
-    display: flex;
-    gap: 20px; /* Importante para el cálculo del índice */
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding-bottom: 20px;
-}
-
-/* Esconde la barra de scroll en navegadores modernos */
-.barbers-track::-webkit-scrollbar {
-    display: none;
-}
-
-.carousel-dots {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #555;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.dot.active {
-    background: #d4af37; /* Color dorado */
-}
-/*Dashboard admin*/
-
-.dashboard-container {
-    padding: 2rem 0;
-    color: var(--texto-principal);
-}
-
-/* --- Tarjetas KPI --- */
-.kpi-card {
-    background: var(--negro-tarjeta);
-    border: 1px solid var(--gris-profundo);
-    padding: 1.5rem;
-    border-radius: var(--radio-borde);
-    transition: all 0.4s ease;
-}
-
-.kpi-card:hover {
-    border-color: var(--dorado);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transform: translateY(-5px);
-}
-
-.kpi-icon-box {
-    width: 50px;
-    height: 50px;
-    background: rgba(212, 175, 55, 0.1);
-    color: var(--dorado);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    font-size: 1.5rem;
-}
-
-/* --- Paneles Principales --- */
-.panel-bg {
-    background: var(--negro-tarjeta);
-    border: 1px solid var(--gris-profundo);
-    padding: 2rem;
-    border-radius: var(--radio-borde);
-}
-
-/* --- Tabla Personalizada --- */
-.custom-dashboard-table {
-    border-collapse: separate;
-    border-spacing: 0 8px;
-}
-
-.custom-dashboard-table tbody tr {
-    background: var(--negro);
-    transition: background 0.3s;
-}
-
-.custom-dashboard-table tbody tr:hover {
-    background: var(--gris-profundo);
-}
-
-/* --- Botones de Acción Rápida --- */
-.quick-link-btn {
-    display: block;
-    padding: 1rem;
-    background: var(--negro);
-    color: var(--texto-secundario);
-    text-decoration: none;
-    border-radius: var(--radio-borde);
-    border: 1px solid var(--gris-profundo);
-    transition: all 0.3s ease;
-}
-
-.quick-link-btn:hover {
-    background: var(--dorado);
-    color: var(--negro);
-    font-weight: 600;
-    padding-left: 1.5rem;
-}
-
-/* --- Extras --- */
-.text-gold { color: var(--dorado); }
-.custom-progress-bg { background-color: var(--dorado); }
-.background-accent-box { background: var(--negro); border: 1px solid var(--gris-profundo); }
-
-/* Asegurar que el modal esté por encima de cualquier cosa en la web */
-.modal {
-    z-index: 9999 !important;
-}
-
-/* El backdrop debe ser la capa inmediatamente inferior al modal */
-.modal-backdrop {
-    z-index: 9998 !important;
-}
-
-/* Evitar que cualquier elemento de tu diseño (como navbars o sidebars) se interponga */
-body.modal-open {
-    overflow: hidden;
-}
-
-/* ==========================================================
-   AGENDA ADMIN
-========================================================== */
-
-/* ---------- Variables ---------- */
-:root {
-    --gold: #ffc600;
-    --gold-dark: #e0a800;
-
-    --bg-card: #1d1d1d;
-    --bg-day: #262626;
-    --bg-disabled: #1a1a1a;
-
-    --border: #3a3a3a;
-    --text: #fff;
-    --text-light: #ccc;
-    --text-muted: #aaa;
-}
-
-/* ==========================================================
-   Header
-========================================================== */
-
-.agenda-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.agenda-header h2 {
-    color: var(--text);
-    font-weight: 700;
-}
-
-.agenda-header .text-gold {
-    color: var(--gold);
-}
-
-/* ==========================================================
-   Card
-========================================================== */
-
-.agenda-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.75rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,.35);
-}
-
-/* ==========================================================
-   Cabecera calendario
-========================================================== */
-
-.agenda-calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
-}
-
-.agenda-calendar-header h4 {
-    margin: 0;
-    font-weight: 600;
-    color: var(--gold);
-}
-
-/* ==========================================================
-   Botones navegación
-========================================================== */
-
-.agenda-nav-btn {
-    width: 38px;
-    height: 38px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border: 1px solid rgba(255,198,0,.35);
-    border-radius: 10px;
-
-    background: rgba(255,198,0,.10);
-    color: var(--gold);
-
-    transition: .2s ease;
-}
-
-.agenda-nav-btn:hover {
-    background: var(--gold);
-    color: #111;
-}
-
-/* ==========================================================
-   Calendario
-========================================================== */
-
-.agenda-weekdays,
-.agenda-days {
-    display: grid;
-    grid-template-columns: repeat(7,1fr);
-    gap: 8px;
-}
-
-.agenda-weekdays span {
-    padding-bottom: .5rem;
-
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-
-    font-size: .8rem;
-    font-weight: 700;
-    color: var(--gold);
-}
-
-.agenda-day-cell {
-    min-height: 64px;
-}
-
-.agenda-day {
-    position: relative;
-
-    width: 100%;
-    height: 64px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border: 1px solid var(--border);
-    border-radius: 12px;
-
-    background: var(--bg-day);
-    color: var(--text-light);
-
-    font-weight: 600;
-    cursor: pointer;
-
-    transition: all .18s ease;
-}
-
-.agenda-day:hover:not(.agenda-day-disabled):not(.agenda-day-pasado) {
-    border-color: var(--gold);
-    transform: translateY(-2px);
-}
-
-/* ---------- Estados ---------- */
-
-.agenda-day-habilitado {
-    background: linear-gradient(145deg, var(--gold), var(--gold-dark));
-    border-color: var(--gold);
-    color: #111;
-    box-shadow: 0 3px 10px rgba(255,198,0,.35);
-}
-
-.agenda-day-pasado {
-    background: var(--bg-disabled);
-    border-color: #262626;
-    color: #555;
-    cursor: not-allowed;
-}
-
-.agenda-day-hoy {
-    border: 2px solid var(--gold) !important;
-}
-
-.agenda-day-hoy::after {
-    content: "";
-
-    position: absolute;
-    bottom: 6px;
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-    background: var(--gold);
-}
-
-.agenda-day-hoy.agenda-day-habilitado::after {
-    background: #111;
-}
-
-/* ==========================================================
-   Botones
-========================================================== */
-
-.patron-btn,
-.btn-limpiar-agenda {
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: .9rem;
-    transition: .18s ease;
-}
-
-.patron-btn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,.2);
-    color: var(--text);
-}
-
-.patron-btn:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-}
-
-.btn-limpiar-agenda {
-    background: rgba(220,53,69,.08);
-    border: 1px solid rgba(220,53,69,.5);
-    color: #ff8a94;
-}
-
-.btn-limpiar-agenda:hover {
-    background: #dc3545;
-    border-color: #dc3545;
+/* Estilos para los modales estáticos (login/registro embebidos) */
+.modal-content .form-control {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
     color: #fff;
+    padding: 10px;
 }
 
-/* ==========================================================
-   Estadísticas
-========================================================== */
-
-.agenda-stat {
-    padding: .5rem 1rem;
-
-    border: 1px solid rgba(255,198,0,.25);
-    border-radius: 10px;
-
-    background: rgba(255,198,0,.08);
-
-    color: var(--gold);
-    font-size: .85rem;
-    font-weight: 600;
+.modal-content .form-control:focus {
+    background-color: #1a1a1a;
+    border-color: #ffc107;
+    color: #fff;
+    box-shadow: none;
 }
 
-/* ==========================================================
-   Leyenda
-========================================================== */
-
-.agenda-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-
-    margin-top: 1rem;
+.modal-content a {
+    text-decoration: none;
+    font-weight: bold;
 }
 
-.agenda-legend span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
 
-    color: var(--text-muted);
-    font-size: .8rem;
-}
-
-.agenda-legend .dot {
-    width: 12px;
-    height: 12px;
-
-    border-radius: 4px;
-    display: inline-block;
-}
-
-/* ==========================================================
-   Responsive
-========================================================== */
-
-/* Tablet */
-
-@media (max-width: 992px) {
-
-    .agenda-card {
-        padding: 1.25rem;
-    }
-
-    .agenda-calendar-header {
-        gap: .75rem;
-    }
-
-    .agenda-day,
-    .agenda-day-cell {
-        height: 58px;
-        min-height: 58px;
-    }
-
-    .agenda-weekdays span {
-        font-size: .75rem;
-    }
-
-    .agenda-stat {
-        width: 100%;
-        text-align: center;
-    }
-}
-
-/* Móvil */
-
-@media (max-width: 768px) {
-
-    .agenda-calendar-header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .agenda-weekdays,
-    .agenda-days {
-        gap: 5px;
-    }
-
-    .agenda-day,
-    .agenda-day-cell {
-        height: 46px;
-        min-height: 46px;
-        font-size: .9rem;
-    }
-
-    .agenda-weekdays span {
-        font-size: .65rem;
-    }
-
-    .patron-btn,
-    .btn-limpiar-agenda {
-        width: 100%;
-    }
-
-    .agenda-legend {
-        flex-direction: column;
-        gap: .5rem;
-    }
-}
-
-/* Móviles pequeños */
-
-@media (max-width: 480px) {
-
-    .agenda-card {
-        padding: 1rem;
-    }
-
-    .agenda-day,
-    .agenda-day-cell {
-        height: 40px;
-        min-height: 40px;
-        font-size: .8rem;
-    }
-
-    .agenda-nav-btn {
-        width: 34px;
-        height: 34px;
-    }
-
-    .agenda-calendar-header h4 {
-        font-size: 1rem;
-    }
-}
-
-@media (min-width: 992px) {
-    .agenda-sticky {
-        position: sticky;
-        top: 90px;
-    }
-}
-
-/* ==========================================================
-    css de analisis de rostro
-========================================================== */
+/* ============================================================================
+   19. ANÁLISIS DE ROSTRO
+   ============================================================================ */
 
 .analisis-container { max-width: 1100px; margin: 0 auto; padding: 3rem 1rem; }
 .analisis-card {
@@ -3230,9 +3328,7 @@ body.modal-open {
 }
 .btn-opcion:hover { border-color: #ffc600; color: #ffc600; }
 
-/* ==========================================================
-   RESULTADO
-========================================================== */
+/* --- RESULTADO --- */
 #resultadoBox.resultado-box {
     background-color: #201c10 !important;
     border: 1px solid rgba(255,198,0,0.35);
@@ -3314,6 +3410,12 @@ body.modal-open {
 .error-box.visible { display: block; }
 .spinner-analisis { display: none; }
 .spinner-analisis.visible { display: block; }
+
+
+/* ============================================================================
+   20. CALIFICACIONES Y RESEÑAS
+   (estrellas del modal, tarjetas de reseña y su carrusel)
+   ============================================================================ */
 
 /* --- Estrellas de calificación (modal) --- */
 .estrellas-calificacion {
@@ -3515,148 +3617,199 @@ body.modal-open {
     --s: 0.78;
   }
 }
-/* ==========================================================================
-   SECCIÓN: PERFIL DE USUARIO — PANEL DE EDICIÓN (Perfil Profesional Barbero)
-   ========================================================================== */
 
-/* Tarjeta "Perfil Profesional": mismo lenguaje visual que el resto de
-   tarjetas de perfil, con un leve acento dorado para diferenciarla. */
-.perfil-profesional-card {
-    border: 1px solid rgba(255, 198, 0, 0.18) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+/* ============================================================================
+   21. MODALES GENERALES Y Z-INDEX
+   ============================================================================ */
+
+.custom-modal {
+    background-color: #0f0f0f; /* color sólido, no transparente */
+    color: var(--blanco);
+    border: 1px solid rgba(255,198,0,0.08);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    max-width: 760px;
 }
 
-.perfil-profesional-card:hover {
-    border-color: rgba(255, 198, 0, 0.35) !important;
-    box-shadow: 0 10px 30px rgba(255, 198, 0, 0.08);
+.custom-modal .modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
-.perfil-profesional-card .bi-scissors {
+.custom-modal .modal-title {
     color: var(--dorado);
+    font-weight: 700;
 }
 
-/* Texto de ayuda bajo el campo de Especialidades */
-.texto-ayuda-perfil {
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 0.78rem;
-    display: inline-block;
-    margin-top: 4px;
+/* Modal title font más cómodo */
+.custom-modal .modal-title {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.25rem;
 }
 
-/* --------------------------------------------------------------------
-   Inputs y textarea del formulario de perfil (Información Personal,
-   Perfil Profesional y Seguridad comparten estas reglas)
-   -------------------------------------------------------------------- */
-#formEditarPerfil .form-control {
-    border-radius: 10px;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+.custom-modal .btn-close {
+    opacity: 0.85;
 }
 
-#formEditarPerfil .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.35);
+.custom-modal .custom-input {
+    background-color: #141414;
+    border: 1px solid rgba(255,198,0,0.05);
+    color: #e9e9e9;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-#formEditarPerfil textarea.form-control {
-    resize: vertical;
-    min-height: 110px;
+.custom-modal .custom-input::placeholder {
+    color: #bfbfbf;
 }
 
-/* Estado focus: resalte dorado consistente con la identidad de marca */
-#formEditarPerfil .form-control:focus {
-    background-color: rgba(255, 198, 0, 0.05) !important;
-    border-color: var(--dorado) !important;
-    box-shadow: 0 0 0 3px rgba(255, 198, 0, 0.15);
-    color: var(--blanco) !important;
+.custom-modal .custom-input:focus {
+    border-color: var(--dorado-oscuro);
+    box-shadow: 0 6px 18px rgba(191,147,13,0.06);
     outline: none;
 }
 
-/* Campo de solo lectura (correo electrónico) */
-#formEditarPerfil .form-control[readonly] {
-    background-color: rgba(255, 255, 255, 0.03) !important;
-    color: rgba(255, 255, 255, 0.55) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Hover suave en campos editables para reforzar la interactividad */
-#formEditarPerfil .form-control:not([readonly]):hover {
-    border-color: rgba(255, 198, 0, 0.45);
-}
-
-/* --------------------------------------------------------------------
-   Botón "Guardar" (header de la página de perfil)
-   -------------------------------------------------------------------- */
-button[form="formEditarPerfil"] {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-button[form="formEditarPerfil"]:hover {
-    background-color: var(--dorado-oscuro);
+.custom-modal .btn-reserve {
+    background-color: var(--dorado);
     color: var(--negro);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(255, 198, 0, 0.3);
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 8px 18px rgba(197,160,89,0.12);
 }
 
-button[form="formEditarPerfil"]:active {
-    transform: translateY(0);
+.custom-modal .btn-reserve:hover {
+    background-color: var(--dorado-oscuro);
 }
 
-/* --------------------------------------------------------------------
-   Alertas de estado (mensajes de Django: éxito / error / advertencia)
-   -------------------------------------------------------------------- */
-.alert {
-    border-radius: 12px;
-    border: 1px solid transparent;
-    font-size: 0.92rem;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+.custom-modal .nav-tabs .nav-link {
+    color: #bdbdbd;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
 }
 
-.alert-success {
-    background-color: rgba(40, 167, 69, 0.12);
-    border-color: rgba(40, 167, 69, 0.4);
-    color: #7be29a;
-}
-
-.alert-danger {
-    background-color: rgba(220, 53, 69, 0.12);
-    border-color: rgba(220, 53, 69, 0.4);
-    color: #ff8a94;
-}
-
-.alert-warning {
-    background-color: rgba(255, 198, 0, 0.12);
-    border-color: rgba(255, 198, 0, 0.4);
+.custom-modal .nav-tabs .nav-link.active {
+    background: transparent;
     color: var(--dorado);
+    border-bottom: 2px solid var(--dorado);
 }
 
-.alert-info {
-    background-color: rgba(13, 202, 240, 0.12);
-    border-color: rgba(13, 202, 240, 0.4);
-    color: #7fdcef;
+.custom-modal .btn-link {
+    color: var(--dorado);
+    text-decoration: none;
+    font-size: 0.95rem;
 }
 
-.alert .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
+.custom-modal .btn-link:hover {
+    color: var(--mya-gold);
+    text-decoration: underline;
 }
 
-/* --------------------------------------------------------------------
-   Responsive: apilar mejor el panel de perfil en pantallas pequeñas
-   -------------------------------------------------------------------- */
-@media (max-width: 767px) {
-    .perfil-profesional-card,
-    .card.bg-dark.text-light.border-secondary {
-        padding: 1.5rem !important;
-    }
-
-    #formEditarPerfil .row.g-3 > [class^="col-md-6"] {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
+.custom-modal .form-label {
+    color: #d1d1d1;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
 }
 
-/* ==========================================================================
-   BOTÓN FLOTANTE DE WHATSAPP (visible en todas las páginas)
-   ========================================================================== */
+/* Logo dentro del modal */
+.custom-modal .modal-logo {
+    display: block;
+    margin: 0 auto 14px auto;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,198,0,0.12);
+}
+
+.success-icon {
+    color: #28a745;
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+/* --- CONFIGURACIÓN BASE DEL MODAL (variante "modal-barberia") --- */
+.modal-barberia {
+    background-color: var(--negro-tarjeta) !important;
+    border: 1px solid var(--gris) !important;
+    color: var(--blanco) !important;
+}
+
+.modal-barberia .modal-header, 
+.modal-barberia .modal-footer {
+    border-color: var(--gris) !important;
+}
+
+.modal-barberia .modal-title {
+    color: var(--dorado) !important;
+}
+
+/* --- FORMULARIOS Y INPUTS (AGRUPADOS POR ESPECIFICIDAD) --- */
+.modal-barberia label {
+    color: var(--blanco) !important;
+    font-weight: 500;
+}
+
+.modal-barberia .form-control, 
+.modal-barberia .form-select, 
+.modal-barberia textarea {
+    background-color: #111111 !important;
+    border: 1px solid #565654 !important;
+    color: #ffffff !important;
+}
+
+.modal-barberia .form-control::placeholder {
+    color: var(--gris) !important;
+    opacity: 0.7;
+}
+
+/* Estado de enfoque (cuando haces clic en el input) */
+.modal-barberia .form-control:focus, 
+.modal-barberia .form-select:focus {
+    background-color: #111111 !important;
+    border-color: var(--dorado) !important; /* Un detalle visual mejor */
+    color: #ffffff !important;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+
+/* --- BOTONES --- */
+.modal-barberia .btn-dorado {
+    background-color: var(--dorado) !important;
+    color: var(--negro) !important;
+    font-weight: bold;
+}
+
+.modal-barberia .btn-cancelar {
+    background-color: transparent;
+    color: var(--blanco) !important;
+    border: 1px solid var(--gris) !important;
+}
+
+/* Asegurar que el modal esté por encima de cualquier cosa en la web */
+.modal {
+    z-index: 9999 !important;
+}
+
+/* El backdrop debe ser la capa inmediatamente inferior al modal */
+.modal-backdrop {
+    z-index: 9998 !important;
+}
+
+/* Evitar que cualquier elemento de tu diseño (como navbars o sidebars) se interponga */
+body.modal-open {
+    overflow: hidden;
+}
+
+
+/* ============================================================================
+   22. WHATSAPP FLOTANTE
+   ============================================================================ */
+
 .whatsapp-float {
     position: fixed;
     bottom: 24px;
@@ -3694,5 +3847,42 @@ button[form="formEditarPerfil"]:active {
         font-size: 1.6rem;
         bottom: 18px;
         left: 18px;
+    }
+}
+
+
+/* ============================================================================
+   23. ANIMACIONES Y EFECTOS GENERALES
+   ============================================================================ */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+section {
+    animation: fadeIn 1s ease-out forwards;
+}
+
+/* Hover suave en los botones */
+.btn-dorado, .btn-borde {
+    transition: all 0.3s ease;
+}
+
+.btn-dorado:hover {
+    transform: scale(1.05);
+    background-color: #d4af37 !important;
+}
+
+
+/* ============================================================================
+   24. RESPONSIVE / UTILIDADES SUELTAS
+   (media queries generales que no pertenecían a ninguna sección específica)
+   ============================================================================ */
+
+@media (max-width: 767px) {
+    .perfil-profesional-card,
+    .card.bg-dark.text-light.border-secondary {
+        padding: 1.5rem !important;
     }
 }

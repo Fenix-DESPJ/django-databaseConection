@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!--
+    templates/mantenimiento.html
+    Plantilla GENÉRICA para avisar que una función puntual no está
+    disponible (dependencia externa caída, librería no instalada, app
+    aislada borrada por testing, etc.) sin tumbar el resto del sitio.
+
+    Vive en la carpeta de templates a nivel de PROYECTO (BASE_DIR/templates),
+    NO dentro de ninguna app hija — así sigue existiendo aunque borres por
+    completo la app que la usaba (ej: analisis_facial/).
+
+    Contexto esperado (todo opcional, con valores por defecto razonables):
+        feature_nombre  -> nombre visible de la función caída
+        mensaje         -> explicación corta, en lenguaje de cliente
+        volver_url      -> name= de la url a la que vuelve el botón
+        volver_texto    -> texto del botón de volver
+-->
+
+<div class="mantenimiento-container">
+    <div class="mantenimiento-card">
+
+        <div class="mantenimiento-icono">
+            <i class="bi bi-tools"></i>
+        </div>
+
+        <h3 class="text-gold text-center mb-2">
+            {{ feature_nombre|default:"Esta función" }} está en mantenimiento
+        </h3>
+
+        <p class="text-white-50 text-center mantenimiento-mensaje">
+            {{ mensaje|default:"Estamos trabajando para que esta función vuelva a estar disponible. Mientras tanto, el resto del sitio (agendamiento de citas, perfiles, servicios) funciona con normalidad." }}
+        </p>
+
+        <div class="mantenimiento-detalle">
+            <i class="bi bi-shield-check"></i>
+            <span>Tus citas y datos no se ven afectados por esto.</span>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2 mt-4">
+            <a href="{% url volver_url|default:'home' %}" class="btn btn-warning text-dark fw-bold btn-sm">
+                <i class="bi bi-arrow-left"></i>
+                {{ volver_texto|default:"Volver al inicio" }}
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .mantenimiento-container {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .mantenimiento-card {
+        max-width: 480px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        border-radius: 14px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .mantenimiento-icono {
+        font-size: 2.8rem;
+        color: #d4af37;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+
+    .mantenimiento-mensaje {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1.25rem;
+    }
+
+    .mantenimiento-detalle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: #9ad19a;
+        background: rgba(90, 200, 90, 0.08);
+        border: 1px solid rgba(90, 200, 90, 0.2);
+        border-radius: 8px;
+        padding: 0.6rem 0.9rem;
+    }
+
+    .text-gold {
+        color: #d4af37 !important;
+    }
+</style>
+
+{% endblock %}

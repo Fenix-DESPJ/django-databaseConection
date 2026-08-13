@@ -1,3 +1,30 @@
+/* ============================================================================
+   ÍNDICE DE SECCIONES (todo el código original está aquí, solo reordenado
+   y agrupado por función. No se eliminó ni se modificó ninguna línea)
+   ============================================================================
+   1. MÓDULO DE RESERVAS (calendario, horas, disponibilidad, envío)
+   2. GESTIÓN DE SERVICIOS (ADMIN) - crear / editar / borrar
+   3. REPORTES ADMIN - gráfico de ingresos (Chart.js)
+   4. UI GENERAL - alertas auto-cierre, mostrar/ocultar contraseña, limpieza de modales
+   5. CARRUSELES - imágenes de inicio y tarjetas de barberos
+   6. RESERVA DESDE TARJETA DE SERVICIO (manejarReserva)
+   7. VALIDACIÓN / RESTRICCIÓN DE INPUTS (letras, números, tarjeta, expiry)
+   8. NOTIFICACIONES (CAMPANITA)
+   9. ANÁLISIS DE ROSTRO (analisis_rostro.html)
+   10. CALIFICACIONES Y RESEÑAS (modal post-cita)
+   11. EDICIÓN DE MÉTODO DE PAGO - DASHBOARD DEL BARBERO
+   12. MODAL DE CONTRASEÑA PROVISIONAL
+   13. PREVISUALIZACIÓN DE IMÁGENES (perfil)
+   14. CARRUSEL DE RESEÑAS (INDEX, loop infinito)
+   15. LOGIN CON GOOGLE + BLOQUE SUELTO (ver nota al final)
+   ============================================================================ */
+
+
+/* ============================================================================
+   1. MÓDULO DE RESERVAS
+   (calendario, horas, disponibilidad, envío del formulario)
+   ============================================================================ */
+
 // --- VARIABLES GLOBALMENTE DECLARADAS PARA MODALES BOOTSTRAP ---
 let reservationToast;
 
@@ -402,6 +429,12 @@ async function inicializarModuloReservas() {
   }
 }
 
+
+/* ============================================================================
+   2. GESTIÓN DE SERVICIOS (ADMIN)
+   (modo editar / borrar tarjetas de precio, y modal crear/editar servicio)
+   ============================================================================ */
+
 /* Estado Centralizado */
 let modoActual = null; // 'editar', 'borrar', o null
 
@@ -525,6 +558,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+/* ============================================================================
+   3. REPORTES ADMIN
+   (gráfico de ingresos con Chart.js)
+   ============================================================================ */
+
 /* js reportes admin */
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof Chart === 'undefined') {
@@ -570,6 +609,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
+/* ============================================================================
+   4. UI GENERAL
+   (alertas auto-cierre, mostrar/ocultar contraseña, limpieza global de modales)
+   ============================================================================ */
+
+// --- Auto-cierre de alertas Bootstrap (versión 1, bloque original) ---
 document.addEventListener("DOMContentLoaded", function() {
     const alerts = document.querySelectorAll('.alert');
 
@@ -587,6 +633,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+// --- Mostrar/ocultar contraseña (inputs con botón .toggle-password) ---
 document.querySelectorAll('.toggle-password').forEach(button => {
     button.addEventListener('click', function() {
         const input = this.parentElement.querySelector('input');
@@ -603,6 +650,34 @@ document.querySelectorAll('.toggle-password').forEach(button => {
         }
     });
 });
+
+// --- Cierre de modal al hacer click en el backdrop (solución permanente al bloqueo) ---
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('modal-backdrop')) {
+        const modal = document.querySelector('.modal.show');
+        if (modal) {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) bsModal.hide();
+        }
+    }
+});
+
+// --- Limpieza total al cerrar cualquier modal ---
+document.addEventListener('hidden.bs.modal', function () {
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('padding-right');
+});
+
+
+/* ============================================================================
+   5. CARRUSELES
+   (imágenes del hero de inicio y tarjetas de barberos)
+   ============================================================================ */
 
 /* Carruseles y mas estilo*/
 document.addEventListener("DOMContentLoaded", () => {
@@ -631,6 +706,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// --- Carrusel de barberos con dots (versión con agrupación por página) ---
 document.addEventListener("DOMContentLoaded", () => {
     const track = document.querySelector('.barbers-track');
     const cards = document.querySelectorAll('.barber-card');
@@ -684,27 +760,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Este script soluciona el bloqueo permanentemente
-document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('modal-backdrop')) {
-        const modal = document.querySelector('.modal.show');
-        if (modal) {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if (bsModal) bsModal.hide();
-        }
-    }
-});
 
-// Limpieza total al cerrar cualquier modal
-document.addEventListener('hidden.bs.modal', function () {
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-        backdrop.remove();
-    }
-    document.body.classList.remove('modal-open');
-    document.body.style.removeProperty('overflow');
-    document.body.style.removeProperty('padding-right');
-});
+/* ============================================================================
+   6. RESERVA DESDE TARJETA DE SERVICIO
+   (botón que exige sesión iniciada antes de ir a reservar)
+   ============================================================================ */
 
 function manejarReserva(event) {
     const boton = event.currentTarget;
@@ -720,7 +780,12 @@ function manejarReserva(event) {
     }
 }
 
-/* --- Restricciones de tipo de dato en inputs (letras / números / tarjeta / expiry) --- */
+
+/* ============================================================================
+   7. VALIDACIÓN / RESTRICCIÓN DE INPUTS
+   (letras, números, tarjeta de crédito, fecha de expiración)
+   ============================================================================ */
+
 document.addEventListener("DOMContentLoaded", () => {
     // Solo letras, tildes, ñ y espacios (nombres, apellidos, titular de tarjeta, etc.)
     document.querySelectorAll('[data-solo="letras"]').forEach(input => {
@@ -795,16 +860,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-/* ============================================================
-   SISTEMA DE NOTIFICACIONES (Campanita) — por perfil individual
-   ============================================================
+
+/* ============================================================================
+   8. NOTIFICACIONES (CAMPANITA)
+   ============================================================================
    - Cliente: ve la confirmación de SU propia reserva.
    - Barbero: ve cuando un cliente le agenda un servicio a ÉL.
    - Admin: ve cuando un barbero confirma una cita exitosamente.
    Cada usuario solo ve lo que el backend le devuelve filtrado por
    su propio idUsuario (ver views.listar_notificaciones), así que
    nunca se mezclan notificaciones entre perfiles distintos.
-   ============================================================ */
+   ============================================================================ */
 document.addEventListener("DOMContentLoaded", () => {
     const panel = document.getElementById("notificaciones-panel");
     const lista = document.getElementById("lista-notificaciones");
@@ -944,9 +1010,11 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(cargarNotificaciones, 30000); // cada 30 segundos
 });
 
-/* ============================================================
-analisis_rostro.html: script.js para análisis de rostro
-============================================================ */
+
+/* ============================================================================
+   9. ANÁLISIS DE ROSTRO
+   (analisis_rostro.html)
+   ============================================================================ */
 document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("privacidadOverlay");
     const contenido = document.getElementById("contenidoAnalisis");
@@ -1193,9 +1261,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-/* ============================================================
-   SISTEMA DE CALIFICACIONES Y RESEÑAS
-   ============================================================ */
+
+/* ============================================================================
+   10. CALIFICACIONES Y RESEÑAS
+   (modal de calificación post-cita)
+   ============================================================================ */
 document.addEventListener("DOMContentLoaded", () => {
     const dataDiv = document.getElementById("calificacion-data");
     if (!dataDiv) return; // No hay sesión iniciada
@@ -1361,11 +1431,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// =============================================================================
-// EDICIÓN DE MÉTODO DE PAGO — DASHBOARD DEL BARBERO
-// Botón "Editar" junto a "Completar": abre un modal chico, cambia el método
-// de pago vía AJAX y NO se muestra / se deshabilita en filas ya completadas.
-// =============================================================================
+
+/* ============================================================================
+   11. EDICIÓN DE MÉTODO DE PAGO — DASHBOARD DEL BARBERO
+   Botón "Editar" junto a "Completar": abre un modal chico, cambia el método
+   de pago vía AJAX y NO se muestra / se deshabilita en filas ya completadas.
+   ============================================================================ */
 document.addEventListener("DOMContentLoaded", () => {
     const modalEl = document.getElementById("editarPagoModal");
     const selectMetodo = document.getElementById("editarPagoMetodo");
@@ -1452,4 +1523,205 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+});
+
+
+/* ============================================================================
+   12. MODAL DE CONTRASEÑA PROVISIONAL
+   Muestra automáticamente el modal de contraseña provisional (si
+   Django dejó ese message en esta carga de página) y lo deja abierto
+   hasta que el usuario lo cierre explícitamente con la X o "Aceptar".
+   ============================================================================ */
+document.addEventListener("DOMContentLoaded", function () {
+    var passwordModalEl = document.getElementById('passwordProvisionalModal');
+    if (passwordModalEl) {
+        var passwordModal = new bootstrap.Modal(passwordModalEl);
+        passwordModal.show();
+    }
+});
+
+
+/* ============================================================================
+   13. PREVISUALIZACIÓN DE IMÁGENES (perfil)
+   ============================================================================ */
+function previsualizarImagen(input, previewId) {
+if (!input.files || !input.files[0]) return;
+var preview = document.getElementById(previewId);
+var url = URL.createObjectURL(input.files[0]);
+
+if (preview.tagName === 'IMG') {
+  preview.src = url;
+} else {
+  // Estaba vacía (icono placeholder): la reemplazamos por un <img> real
+  var img = document.createElement('img');
+  img.id = previewId;
+  img.className = 'imagen-preview';
+  img.src = url;
+  preview.replaceWith(img);
+}
+}
+
+
+/* ============================================================================
+   14. CARRUSEL DE RESEÑAS (INDEX, loop infinito)
+   ============================================================================ */
+(function () {
+    var dataEl = document.getElementById('resenas-data');
+    var track = document.getElementById('resenasTrack');
+    var prevBtn = document.getElementById('resenaPrevBtn');
+    var nextBtn = document.getElementById('resenaNextBtn');
+    if (!dataEl || !track || !prevBtn || !nextBtn) return;
+
+    var reviews;
+    try {
+      reviews = JSON.parse(dataEl.textContent);
+    } catch (e) {
+      return;
+    }
+    if (!reviews || !reviews.length) return;
+
+    var n = reviews.length;
+    var infinito = n > 1;
+    var ANIMATION_MS = 550; // debe coincidir con la transición del CSS
+
+    // Para el loop infinito "de verdad" (sin que se note el salto),
+    // clonamos la última reseña al inicio y la primera al final.
+    var extendida = infinito
+      ? [reviews[n - 1]].concat(reviews, [reviews[0]])
+      : reviews.slice();
+
+    var pointer = infinito ? 1 : 0;
+    var animando = false;
+    var direccionPendiente = 0;
+
+    function estrellasHTML(n) {
+      var html = '';
+      for (var i = 1; i <= 5; i++) {
+        html += '<i class="bi ' + (i <= n ? 'bi-star-fill' : 'bi-star') + '"></i>';
+      }
+      return html;
+    }
+
+    function construirSlots() {
+      track.innerHTML = '';
+      extendida.forEach(function (r) {
+        var slot = document.createElement('div');
+        slot.className = 'resena-slot';
+
+        var card = document.createElement('div');
+        card.className = 'resena-card';
+        card.innerHTML =
+          '<div class="resena-estrellas mb-2">' + estrellasHTML(r.estrellas) + '</div>' +
+          '<p class="resena-comentario">&ldquo;' + r.comentario + '&rdquo;</p>' +
+          '<div class="resena-cliente">' + r.cliente + '</div>' +
+          '<div class="resena-fecha">' + r.fecha + '</div>';
+
+        slot.appendChild(card);
+        track.appendChild(slot);
+      });
+    }
+
+    // NADA de medir anchos ni calcular translateX en JS. Cada
+    // .resena-slot se auto-centra por CSS (left:50% + translateX(-50%)),
+    // y solo le decimos "a cuántos pasos del centro estás" mediante la
+    // variable --d; el propio CSS convierte eso en desplazamiento real
+    // (var(--d) * var(--step)). Así el centrado nunca puede desalinearse
+    // por diferencias de medición.
+    function actualizarPosiciones() {
+      var slots = track.children;
+      for (var i = 0; i < slots.length; i++) {
+        var distancia = i - pointer;
+        var absD = Math.abs(distancia);
+        slots[i].style.setProperty('--d', distancia);
+        slots[i].setAttribute('data-distancia', absD > 1 ? 'oculto' : String(distancia));
+      }
+    }
+
+    function actualizarBotones() {
+      var soloUna = n <= 1;
+      prevBtn.disabled = soloUna || animando;
+      nextBtn.disabled = soloUna || animando;
+    }
+
+    // Al terminar la animación, si quedamos parados sobre un clon,
+    // saltamos (sin transición, en el mismo frame) a la reseña real
+    // equivalente. Como el clon es una copia exacta, el salto es
+    // imperceptible y el loop se siente infinito de verdad.
+    function saltarSiEsClon() {
+      var enClonFinal = direccionPendiente === 1 && pointer === extendida.length - 1;
+      var enClonInicial = direccionPendiente === -1 && pointer === 0;
+
+      if (enClonFinal || enClonInicial) {
+        track.classList.add('sin-transicion');
+        pointer = enClonFinal ? 1 : extendida.length - 2;
+        actualizarPosiciones();
+        // Forzamos reflow antes de quitar la clase para que el
+        // navegador no intente animar este reseteo invisible.
+        void track.offsetWidth;
+        track.classList.remove('sin-transicion');
+      }
+
+      animando = false;
+      direccionPendiente = 0;
+      actualizarBotones();
+    }
+
+    function mover(direccion) {
+      if (animando || !infinito) return;
+      animando = true;
+      direccionPendiente = direccion;
+      actualizarBotones();
+
+      pointer += direccion;
+    actualizarPosiciones();
+
+  setTimeout(saltarSiEsClon, ANIMATION_MS + 60);
+    }
+
+    prevBtn.addEventListener('click', function () { mover(-1); });
+    nextBtn.addEventListener('click', function () { mover(1); });
+
+    construirSlots();
+    actualizarPosiciones();
+    actualizarBotones();
+    })();
+
+
+/* ============================================================================
+   15. LOGIN CON GOOGLE + BLOQUE SUELTO
+   ⚠️ NOTA: en el archivo original, este bloque venía envuelto en etiquetas
+   <script>...</script> pegadas dentro del propio .js (probablemente un
+   copy-paste desde un archivo .html). Dejo el contenido intacto pero SIN
+   las etiquetas <script>, porque dentro de un archivo .js real esas
+   etiquetas son inválidas y romperían el archivo. También incluye una
+   segunda copia (idéntica) del bloque de "auto-cierre de alertas" de la
+   sección 4 — se conserva tal cual estaba, sin eliminar el duplicado.
+   ============================================================================ */
+
+// --- Auto-cierre de alertas Bootstrap (versión 2, bloque duplicado del original) ---
+document.addEventListener("DOMContentLoaded", function() {
+    const alerts = document.querySelectorAll('.alert');
+    
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                bsAlert.close();
+            } else {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000); 
+    });
+});
+
+// --- Google Sign-In vía django-allauth (flujo de redirección clásico) ---
+// Ya no se usa el botón embebido de Google Identity Services (GSI); en
+// su lugar mandamos al usuario a nuestra vista seleccionar_rol_google,
+// que guarda el rol elegido en sesión y redirige a Google.
+document.getElementById('btn-google-login').addEventListener('click', function (e) {
+    e.preventDefault();
+    const rolSeleccionado = document.querySelector('input[name="rol"]:checked')?.value || 'cliente';
+    window.location.href = `/usuarios/google-iniciar/${encodeURIComponent(rolSeleccionado)}/`;
 });

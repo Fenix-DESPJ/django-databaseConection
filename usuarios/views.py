@@ -34,10 +34,16 @@ from django.contrib.auth import logout
 # Importación de tus modelos manuales
 from .models import Usuario, Rol, Cita, Servicio, Cliente, Notificacion, Calificacion, Pago, ContenidoIndex, BarberoDestacado, PerfilUsuario
 from negocio.models import Barbero, Agenda
-from .utils import analizar_forma_rostro, RostroNoDetectadoError, RECOMENDACIONES_POR_FORMA
+# NOTA: el import de `.utils` (analizar_forma_rostro, RostroNoDetectadoError,
+# RECOMENDACIONES_POR_FORMA) se ELIMINÓ de aquí a propósito. Esa lógica y sus
+# dependencias (cv2, mediapipe) ahora viven aisladas en la app analisis_facial/,
+# así un fallo de esas librerías (o borrar esa carpeta por testing) ya NO puede
+# tumbar el import de este archivo completo (login, perfiles, reservas, etc.).
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 from .auth_utils import generar_password_provisional
+import requests as http_requests  # nombrado así para no chocar con django.shortcuts... no aplica aquí, pero por claridad
+from allauth.socialaccount.models import SocialToken
 
 # =========================================================================
 # REGLAS DE NEGOCIO QUE ANTES ERAN TRIGGERS DE MYSQL
@@ -314,13 +320,38 @@ def seleccionar_rol_google(request, rol):
 # 2. VISTA: CERRAR SESIÓN
 # =========================================================================
 def cerrar_sesion(request):
+    # --- Revoca el token de Google ANTES de cerrar la sesión de Django ---
+    # Esto NO cierra Gmail (eso el navegador lo controla en accounts.google.com,
+    # fuera del alcance de cualquier sitio de terceros), pero sí revoca el
+    # permiso que Google le dio a esta app. La próxima vez que el usuario
+    # use "Continuar con Google", tendrá que volver a elegir cuenta y
+    # autorizar en vez de entrar en automático por la cookie de Google.
+    if request.user.is_authenticated:
+        social_token = SocialToken.objects.filter(
+            account__user=request.user,
+            account__provider='google'
+        ).first()
+
+        if social_token:
+            try:
+                http_requests.post(
+                    'https://oauth2.googleapis.com/revoke',
+                    params={'token': social_token.token},
+                    headers={'content-type': 'application/x-www-form-urlencoded'},
+                    timeout=5,
+                )
+            except http_requests.RequestException:
+                # Si Google no responde, no bloqueamos el logout del usuario
+                # por eso — su sesión en tu app se cierra igual.
+                pass
+
     auth_logout(request)
     if 'sesion_iniciada' in request.session:
         del request.session['sesion_iniciada']
     if 'usuario_nombre' in request.session:
         del request.session['usuario_nombre']
-        
-    request.session.flush() 
+
+    request.session.flush()
     messages.success(request, "Has cerrado sesión exitosamente. ¡Vuelve pronto!")
     return redirect('iniciar_sesion')
 
@@ -1077,113 +1108,13 @@ def marcar_notificaciones_leidas(request):
 # =========================================================================
 # 8. VISTA: ANALIZAR FORMA DE ROSTRO
 # =========================================================================
+# ELIMINADA de aquí a propósito. analisis_rostro_view y analizar_rostro_ajax
+# ahora viven, intactas (mismo código, mismo comportamiento), en
+# analisis_facial/views.py. Las urls con name='analisis_rostro' y
+# name='analizar_rostro_ajax' se sirven desde ahí (ver barbershopmya/urls.py
+# y usuarios/urls.py — este último ya NO debe tener esas dos rutas).
+# No hace falta tocar ningún template: usan los mismos `name=` de siempre.
 
-def analisis_rostro_view(request):
-    return render(request, 'analisis_rostro.html')
-
-
-@login_required
-@require_POST
-def analizar_rostro_ajax(request):
-    usar_perfil = request.POST.get('usar_perfil') == 'true'
-    ruta_temporal = None
-    es_archivo_temporal_propio = False
-
-    try:
-        if usar_perfil:
-            try:
-                usuario_actual = Usuario.objects.get(correo=request.user.email)
-            except Usuario.DoesNotExist:
-                return JsonResponse({
-                    'ok': False,
-                    'error': 'No encontramos tu perfil registrado. Intenta con la cámara en su lugar.'
-                }, status=404)
-
-            if not usuario_actual.foto_perfil:
-                return JsonResponse({
-                    'ok': False,
-                    'error': 'Aún no tienes una foto de perfil registrada. Usa la cámara o sube una imagen para continuar.'
-                }, status=400)
-
-            ruta_fisica_perfil = os.path.join(settings.MEDIA_ROOT, str(usuario_actual.foto_perfil))
-            if not os.path.exists(ruta_fisica_perfil):
-                return JsonResponse({
-                    'ok': False,
-                    'error': 'Tu foto de perfil no se encuentra disponible en el servidor. Por favor usa la cámara o sube una nueva imagen.'
-                }, status=404)
-
-            ruta_temporal = ruta_fisica_perfil
-            es_archivo_temporal_propio = False
-
-        else:
-            archivo = request.FILES.get('imagen')
-            if not archivo:
-                return JsonResponse({
-                    'ok': False,
-                    'error': 'No se recibió ninguna imagen. Captura una foto o selecciona un archivo.'
-                }, status=400)
-
-            extensiones_validas = ('.jpg', '.jpeg', '.png', '.webp')
-            nombre_original = archivo.name.lower()
-            if not nombre_original.endswith(extensiones_validas):
-                return JsonResponse({
-                    'ok': False,
-                    'error': 'Formato de imagen no soportado. Usa JPG, PNG o WEBP.'
-                }, status=400)
-
-            if archivo.size > 5 * 1024 * 1024:
-                return JsonResponse({
-                    'ok': False,
-                    'error': 'La imagen es demasiado pesada (máximo 5MB).'
-                }, status=400)
-
-            carpeta_temporal = tempfile.gettempdir()
-            extension = os.path.splitext(nombre_original)[1]
-            nombre_temporal = f"analisis_rostro_{uuid.uuid4().hex}{extension}"
-            ruta_temporal = os.path.join(carpeta_temporal, nombre_temporal)
-
-            with open(ruta_temporal, 'wb+') as destino:
-                for chunk in archivo.chunks():
-                    destino.write(chunk)
-
-            es_archivo_temporal_propio = True
-
-        resultado = analizar_forma_rostro(ruta_temporal)
-        forma_detectada = resultado['forma']
-        info_recomendacion = RECOMENDACIONES_POR_FORMA.get(forma_detectada, {"texto": "", "cortes": []})
-        
-        cortes_con_url = []
-        for corte in info_recomendacion.get("cortes", []):
-            cortes_con_url.append({
-                "nombre": corte["nombre"],
-                "descripcion": corte["descripcion"],
-                "imagen_url": static(corte["imagen"])
-            })
-
-        return JsonResponse({
-            'ok': True,
-            'forma': forma_detectada,
-            'metricas': resultado['metricas'],
-            'recomendacion': info_recomendacion.get("texto", ""),
-            'cortes': cortes_con_url, # <--- Enviamos el array de cortes con sus imágenes
-        })
-
-    except RostroNoDetectadoError as e:
-        return JsonResponse({'ok': False, 'error': str(e)}, status=422)
-
-    except Exception as e:
-        return JsonResponse({
-            'ok': False,
-            'error': f'Ocurrió un problema al procesar la imagen: {e}'
-        }, status=500)
-
-    finally:
-        if ruta_temporal and es_archivo_temporal_propio and os.path.exists(ruta_temporal):
-            try:
-                os.remove(ruta_temporal)
-            except OSError:
-                pass
-            
 # =========================================================================
 # 9. VISTAS: SISTEMA DE CALIFICACIONES Y RESEÑAS
 # =========================================================================

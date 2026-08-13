@@ -390,6 +390,34 @@
 
                     </div>
 
+                    <div>
+
+                        <label class="form-label text-white small">
+                            Patrón automático (ventana de 32 días)
+                        </label>
+
+                        <select
+                            class="form-select custom-input"
+                            name="patron_automatico">
+
+                            <option value="lv" {% if patron_automatico == 'lv' %}selected{% endif %}>
+                                Lunes a Viernes
+                            </option>
+                            <option value="ls" {% if patron_automatico == 'ls' %}selected{% endif %}>
+                                Lunes a Sábado
+                            </option>
+                            <option value="todos" {% if patron_automatico == 'todos' %}selected{% endif %}>
+                                Todos los días
+                            </option>
+
+                        </select>
+
+                        <small class="text-white-50 d-block mt-1" style="font-size:.75rem;">
+                            Patrón que se usa para habilitar automáticamente los próximos días de la agenda (independiente del "patrón rápido", que solo afecta el mes que estás viendo).
+                        </small>
+
+                    </div>
+
                     <button class="btn btn-reserve mt-2">
                         Guardar cambios
                     </button>

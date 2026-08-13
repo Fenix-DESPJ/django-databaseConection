@@ -5,9 +5,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
 from .models import ConfiguracionHorario, DiaHabilitado, BarberoDiaHabilitado
+from .utils_disponibilidad import asegurar_dias_habilitados
 
 MESES_ES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
             "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+PATRONES_VALIDOS = {'todos', 'lv', 'ls'}
 
 
 @login_required
@@ -18,6 +21,10 @@ def gestionar_agenda_admin(request):
 
     config, _ = ConfiguracionHorario.objects.get_or_create(pk=1)
     hoy = date.today()
+
+    # Se asegura que la ventana móvil (hoy -> +32 días) esté siempre al día,
+    # sin importar si el admin nunca visitó este panel.
+    asegurar_dias_habilitados()
 
     anio = int(request.GET.get('anio', hoy.year))
     mes = int(request.GET.get('mes', hoy.month))
@@ -36,6 +43,9 @@ def gestionar_agenda_admin(request):
             config.hora_cierre = request.POST.get('hora_cierre')
             config.intervalo_minutos = int(request.POST.get('intervalo_minutos', 30))
             config.limite_citas_mensuales = int(request.POST.get('limite_citas_mensuales', 3))
+            patron_automatico = request.POST.get('patron_automatico', 'lv')
+            if patron_automatico in PATRONES_VALIDOS:
+                config.patron_automatico = patron_automatico
             config.save()
             messages.success(request, "Horario de atención actualizado correctamente.")
             return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
@@ -61,6 +71,17 @@ def gestionar_agenda_admin(request):
                 DiaHabilitado.objects.update_or_create(fecha=dia, defaults={'habilitado': habilitado})
             messages.success(request, "Patrón aplicado sobre el mes seleccionado.")
             anio, mes = anio_p, mes_p
+            return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
+
+        elif accion == 'regenerar_agenda':
+            # Fuerza la regeneración inmediata de la ventana móvil (hoy -> +32
+            # días) ignorando la caché de 6h, útil justo después de cambiar
+            # el patrón automático en "guardar_horario".
+            creados = asegurar_dias_habilitados(forzar=True)
+            messages.success(
+                request,
+                f"Agenda regenerada: se crearon {creados} día(s) nuevo(s) en la ventana de reserva."
+            )
             return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
 
         elif accion == 'toggle_dia':
@@ -163,4 +184,5 @@ def gestionar_agenda_admin(request):
         'total_habilitados_mes': total_habilitados_mes,
         'fecha_gestion': fecha_gestion,
         'barberos_lista': barberos_lista,
+        'patron_automatico': getattr(config, 'patron_automatico', 'lv'),
     })

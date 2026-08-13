@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'negocio',
     'servicios',
     'reservas',
+    'analisis_facial',   # NUEVO — feature de IA aislada (ver README_PASOS.md)
 ]
 
 MIDDLEWARE = [
@@ -46,6 +47,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',   # NUEVO
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'negocio.middleware.AutoExtenderAgendaMiddleware',  # NUEVO — mantiene la agenda "hoy -> +1 mes"
 ]
 
 SITE_ID = 1
@@ -175,3 +177,7 @@ WHATSAPP_API_VERSION = os.getenv('WHATSAPP_API_VERSION', 'v21.0')
 WHATSAPP_PHONE_NUMBER_ID = os.getenv('WHATSAPP_PHONE_NUMBER_ID')
 WHATSAPP_ACCESS_TOKEN = os.getenv('WHATSAPP_ACCESS_TOKEN')
 WHATSAPP_TEMPLATE_RECORDATORIO = os.getenv('WHATSAPP_TEMPLATE_RECORDATORIO', 'recordatorio_cita')
+
+# --- Feature flag: IA (análisis de forma de rostro) ---
+# Se calcula solo, no lo edites a mano: lo lee analisis_facial.utils para
+# saber si mediapipe/opencv están instalados en este entorno.

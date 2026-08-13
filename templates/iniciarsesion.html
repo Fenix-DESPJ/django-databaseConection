@@ -87,33 +87,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const alerts = document.querySelectorAll('.alert');
-        
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
-                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                    bsAlert.close();
-                } else {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = "0";
-                    setTimeout(() => alert.remove(), 500);
-                }
-            }, 3000); 
-        });
-    });
-
-    // --- Google Sign-In vía django-allauth (flujo de redirección clásico) ---
-    // Ya no se usa el botón embebido de Google Identity Services (GSI); en
-    // su lugar mandamos al usuario a nuestra vista seleccionar_rol_google,
-    // que guarda el rol elegido en sesión y redirige a Google.
-    document.getElementById('btn-google-login').addEventListener('click', function (e) {
-        e.preventDefault();
-        const rolSeleccionado = document.querySelector('input[name="rol"]:checked')?.value || 'cliente';
-        window.location.href = `/usuarios/google-iniciar/${encodeURIComponent(rolSeleccionado)}/`;
-    });
-    </script>
+    
 </body>
 </html>

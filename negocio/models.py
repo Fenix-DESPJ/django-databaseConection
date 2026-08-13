@@ -35,19 +35,22 @@ class Agenda(models.Model):
         db_table = 'agenda'
 
 class ConfiguracionHorario(models.Model):
-    """Fila única con el horario general del negocio."""
     hora_apertura = models.TimeField(default='08:00')
     hora_cierre = models.TimeField(default='18:00')
-    intervalo_minutos = models.PositiveIntegerField(default=30)  # granularidad de los slots
-    limite_citas_mensuales = models.PositiveIntegerField(default=3)  # <-- editable aquí
+    intervalo_minutos = models.PositiveIntegerField(default=30)
+    limite_citas_mensuales = models.PositiveIntegerField(default=3)
+    patron_automatico = models.CharField(
+        max_length=10,
+        choices=[('todos', 'Todos los días'), ('lv', 'Lunes a Viernes'), ('ls', 'Lunes a Sábado')],
+        default='lv',
+    )
 
     class Meta:
         db_table = 'configuracion_horario'
 
     def save(self, *args, **kwargs):
-        self.pk = 1  # patrón singleton, siempre una sola fila
+        self.pk = 1
         super().save(*args, **kwargs)
-
 
 class DiaHabilitado(models.Model):
     """Días específicos que el admin habilita para reservar. Si no existe fila -> NO reservable."""
