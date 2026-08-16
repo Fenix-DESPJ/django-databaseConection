@@ -589,7 +589,38 @@ def completar_cita(request, cita_id):
 
     return redirect('panel_barbero')
 
-
+@login_required
+def marcar_incompleta(request, cita_id):
+    cita = get_object_or_404(Cita, idcita=cita_id)
+    
+    if cita.esta_incompleta or cita.esta_completada:
+        return redirect('panel_barbero')
+    
+    cita.observaciones = "Incompleta - Cliente no asistió"
+    cita.save()
+    
+    if cita.idpagofk:
+        cita.idpagofk.estadopago = "CANCELADO"
+        cita.idpagofk.save()
+        
+    try:
+        cliente_usuario = cita.idclientefk.idusuariofk if (cita.idclientefk and cita.idclientefk.idusuariofk) else None 
+        if cliente_usuario:
+            Notificacion.objects.create(
+                idusuariofk=cliente_usuario,
+                tipo='cita_incompleta',
+                mensaje=(
+                    f"Tu cita para el servicio de {cita.idserviciofk.nombreservicio if cita.idserviciofk else 'servicio'} "
+                    f" ha sido marcada como Incompleta debido a la inasistencia."
+                )
+            )
+    except Exception as e:
+        print(f"DEBUG: No se pudo crear la notificacion de inasistencia: {e}")
+        
+    messages.warning(request, f"La cita #{cita.idcita} se ha marcado como Incompleta.")
+    return redirect('panel_barbero')
+        
+        
 # =========================================================================
 # 5b. RESERVA SIMPLIFICADA (sin pasarela de pago) Y EDICIÓN DE MÉTODO DE PAGO
 # =========================================================================

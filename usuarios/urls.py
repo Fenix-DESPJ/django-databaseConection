@@ -7,6 +7,7 @@ urlpatterns = [
     path('panel-barbero/', views.panel_barbero, name='panel_barbero'),
     path('citas/<int:cita_id>/editar-pago/', views.editar_metodo_pago, name='editar_metodo_pago'),
     path('completar-cita/<int:cita_id>/', views.completar_cita, name='completar_cita'),
+    path('incompleta-cita/<int:cita_id>/', views.marcar_incompleta, name='marcar_incompleta'),
     path('iniciar-sesion/', views.iniciar_sesion, name='iniciar_sesion'),
     path('google-iniciar/<str:rol>/', views.seleccionar_rol_google, name='seleccionar_rol_google'),  # NUEVO
     path('cerrar-sesion/', views.cerrar_sesion, name='cerrar_sesion'),

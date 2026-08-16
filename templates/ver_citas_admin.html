@@ -16,6 +16,26 @@
         </div>
     </div>
 
+    <!-- Barra de Filtros Rápidos por Estado -->
+    <div class="mb-3 d-flex gap-2">
+        <a href="{% url 'ver_todas_citas_admin' %}" 
+           class="btn btn-sm {% if not estado_filtro %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+            Todas
+        </a>
+        <a href="{% url 'ver_todas_citas_admin' %}?estado=completada" 
+           class="btn btn-sm {% if estado_filtro == 'completada' %}btn-success{% else %}btn-outline-success{% endif %}">
+            Completadas
+        </a>
+        <a href="{% url 'ver_todas_citas_admin' %}?estado=incompleta" 
+           class="btn btn-sm {% if estado_filtro == 'incompleta' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+            Incompletas
+        </a>
+        <a href="{% url 'ver_todas_citas_admin' %}?estado=pendiente" 
+           class="btn btn-sm {% if estado_filtro == 'pendiente' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+            Pendientes
+        </a>
+    </div>
+
     <!-- Tabla Operativa de Citas -->
     <div class="panel-bg">
         <div class="table-responsive">
@@ -35,7 +55,7 @@
                 <tbody>
                     {% for cita in citas %}
                     <tr>
-                        <td class="fw-bold text-gold">#{{ cita.idCita }}</td>
+                        <td class="fw-bold text-gold">#{{ cita.idcita }}</td>
                         <td>{{ cita.fecha|date:"d/m/Y" }}</td>
                         <td>{{ cita.horainicio|time:"P" }}</td>
                         <td>
@@ -60,18 +80,24 @@
                             {% endif %}
                         </td>
                         <td>{{ cita.idserviciofk.nombreservicio }}</td>
+                        
+                        <!-- Columna de Estado Centralizada -->
                         <td>
-                            {% if "Completado" in cita.observaciones %}
+                            {% if cita.esta_completada %}
                                 <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Completado</span>
+                            {% elif cita.esta_incompleta %}
+                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Incompleta</span>
                             {% else %}
                                 <span class="badge bg-warning text-dark font-weight-bold"><i class="bi bi-clock me-1"></i>En Espera</span>
                             {% endif %}
                         </td>
+
+                        <!-- Columna de Acciones -->
                         <td class="text-center">
-                            {% if "Completado" not in cita.observaciones %}
+                            {% if not cita.esta_completada and not cita.esta_incompleta %}
                                 <a href="{% url 'cancelar_cita_admin' cita.idCita %}" 
                                    class="btn btn-sm btn-outline-danger"
-                                   onclick="return confirm('¿Estás seguro de cancelar la Cita #{{ cita.idCita }}? Se enviará una notificación automática al cliente notificándole la indisponibilidad del barbero.');">
+                                   onclick="return confirm('¿Estás seguro de cancelar la Cita #{{ cita.idcita }}? Se enviará una notificación automática al cliente notificándole la indisponibilidad del barbero.');">
                                     <i class="bi bi-x-circle me-1"></i> Cancelar Cita
                                 </a>
                             {% else %}
@@ -83,7 +109,7 @@
                     <tr>
                         <td colspan="8" class="text-center text-muted py-5">
                             <i class="bi bi-calendar-x display-4 d-block mb-2"></i>
-                            No hay citas registradas en el sistema.
+                            No hay citas registradas en el sistema para este criterio.
                         </td>
                     </tr>
                     {% endfor %}

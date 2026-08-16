@@ -15,6 +15,24 @@ class Cita(models.Model):
     horainicio = models.TimeField(db_column='horaInicio')
     observaciones = models.CharField(max_length=255, db_column='observaciones', null=True, blank=True)
     recordatorio_enviado = models.BooleanField(db_column='recordatorio_enviado', default=False)  # NUEVO
+    
+    @property
+    def esta_completada(self):
+        """
+        No existe una columna `estado` en la tabla `cita`; el estado de
+        'Completada' se sigue infiriendo del texto de `observaciones`,
+        igual que ya hacía la vista `completar_cita`. Se centraliza aquí
+        para no repetir el mismo `in` en todas partes.
+        """
+        return bool(self.observaciones) and 'Completado' in self.observaciones
+        
+    @property
+    def esta_incompleta(self):
+        """
+        Infiere si la cita quedó incompleta (asistencia fallida) buscando 'Incompleta' en observaciones.
+        """
+        return bool(self.observaciones) and 'Incompleta' in self.observaciones
+    
 
     class Meta:
         managed = False

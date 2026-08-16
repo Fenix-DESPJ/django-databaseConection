@@ -56,6 +56,14 @@
                             <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 border border-success border-opacity-25 fw-semibold sub-badge me-1">
                                 <i class="bi bi-check-circle me-1"></i> Completada
                             </span>
+                        {% elif cita.es_incompleta %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 border border-danger border-opacity-25 fw-semibold sub-badge me-1">
+                                <i class="bi bi-x-circle me-1"></i> Incompleta
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 border border-warning border-opacity-25 fw-semibold sub-badge me-1">
+                                <i class="bi bi-clock me-1"></i> Pendiente
+                            </span>
                         {% endif %}
                         <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 border border-warning border-opacity-25 fw-semibold sub-badge">
                             <i class="bi bi-scissors me-1"></i> {{ cita.servicio_nombre }}
@@ -121,6 +129,10 @@
                         {% if cita.es_completada %}
                             <button type="button" class="btn btn-secondary w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 opacity-50" disabled>
                                 <i class="bi bi-check-all"></i> Cita Completada
+                            </button>
+                        {% elif cita.es_incompleta %}
+                            <button type="button" class="btn btn-outline-danger w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 opacity-50" disabled>
+                                <i class="bi bi-exclamation-triangle"></i> Cita Incompleta
                             </button>
                         {% else %}
 

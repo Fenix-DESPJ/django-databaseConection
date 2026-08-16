@@ -73,6 +73,8 @@
                             <td>
                                 {% if cita.esta_completada %}
                                     <span class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Servicio Realizado</span>
+                                {% elif cita.esta_incompleta %}
+                                    <span class="text-danger small fw-bold"><i class="bi bi-x-circle-fill"></i> Incompleta (No asistió)</span>
                                 {% else %}
                                     <span class="text-warning small italic"><i class="bi bi-clock-history"></i> Pendiente</span>
                                 {% endif %}
@@ -81,14 +83,15 @@
                             <td class="text-center">
                                 <div class="d-flex gap-2 justify-content-center">
                                     {% if cita.esta_completada %}
-                                        <button class="btn btn-sm btn-outline-secondary" disabled>Listo</button>
-                                        <!-- Cita completada: método de pago inmutable, botón Editar deshabilitado -->
-                                        <button class="btn btn-sm btn-outline-secondary" disabled title="La cita ya fue completada">
-                                            Editar
-                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>Completada</button>
+                                    {% elif cita.esta_incompleta %}
+                                        <button class="btn btn-sm btn-outline-danger" disabled>Incompleta</button>
                                     {% else %}
                                         <a href="{% url 'completar_cita' cita.idcita %}" class="btn btn-sm btn-gold fw-bold" style="background: #ffc600; color: #000; border-radius: 8px; border: none; padding: 5px 12px; font-size: 0.85rem;">
                                             Completar
+                                        </a>
+                                        <a href="{% url 'marcar_incompleta' cita.idcita %}" class="btn btn-sm btn-outline-danger fw-bold" style="border-radius: 8px; padding: 5px 12px; font-size: 0.85rem;">
+                                            Incompleta
                                         </a>
                                         <button type="button"
                                                 class="btn btn-sm btn-outline-light btn-editar-pago"

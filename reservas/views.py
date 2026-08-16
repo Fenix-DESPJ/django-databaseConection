@@ -261,6 +261,7 @@ def mis_citas_view(request):
 
             observaciones_texto = c.observaciones if c.observaciones else ""
             es_completada = "Completado" in observaciones_texto
+            es_incompleta = "Incompleta" in observaciones_texto
 
             citas.append({
                 'idCita': c.idCita,
@@ -271,6 +272,7 @@ def mis_citas_view(request):
                 'cliente_nombre': cliente_nombre,
                 'observaciones': observaciones_texto,
                 'es_completada': es_completada,
+                'es_incompleta': es_incompleta,
             })
     except Exception as e:
         print("======= ERROR CRÍTICO AL TRAER CITAS =======")
@@ -389,8 +391,20 @@ def ver_todas_citas_admin(request):
         'idbarberofk__idusuariofk',
         'idclientefk__idusuariofk',
         'idagendafk'
-    ).order_by('-fecha', '-horainicio')
-
+    ).order_by('-idagendafk__fecha', '-idagendafk__horainicio')
+    
+    estado_filtro = request.GET.get('estado', '')
+    
+    if estado_filtro == 'completada':
+        citas = [c for c in citas if c.esta_completada]    
+    elif estado_filtro == 'incompleta':
+        citas = [c for c in citas if c.esta_incompleta]
+    elif estado_filtro == 'pendiente':
+        citas = [c for c in citas if not c.esta_completada and not c.esta_incompleta]  
+    else:
+        citas = citas
+        
     return render(request, 'ver_citas_admin.html', {
-        'citas': citas
+        'citas': citas,
+        'estado_filtro': estado_filtro
     })

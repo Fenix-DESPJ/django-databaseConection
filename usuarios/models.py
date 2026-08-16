@@ -161,6 +161,13 @@ class Cita(models.Model):
         para no repetir el mismo `in` en todas partes.
         """
         return bool(self.observaciones) and 'Completado' in self.observaciones
+    
+    @property
+    def esta_incompleta(self):
+        """
+        Infiere si la cita quedó incompleta (asistencia fallida) buscando 'Incompleta' en observaciones.
+        """
+        return bool(self.observaciones) and 'Incompleta' in self.observaciones
 
 class Notificacion(models.Model):
     idnotificacion = models.AutoField(primary_key=True)
