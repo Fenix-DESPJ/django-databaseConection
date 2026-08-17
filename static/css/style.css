@@ -2805,41 +2805,51 @@ textarea::placeholder {
 
 
 /* ============================================================================
+/* ============================================================================
    16. EDITAR PERFIL (CLIENTE / BARBERO)
    ============================================================================ */
 
-/* Estructura de la tarjeta central basada en image_f062a5.png */
+/* Rediseño de Tarjetas con Degradado, Elevación y Destello Superior */
 .edit-profile-card {
-    background-color: var(--bg-card);
+    background: linear-gradient(145deg, #1c1c1c 0%, #121212 100%) !important;
     width: 100%;
-    max-width: 650px;
-    padding: 40px 45px;
-    border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.02);
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 198, 0, 0.15) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Línea sutil brillante dorada en la parte superior de la tarjeta */
+.edit-profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--dorado, #cca553), transparent);
+    opacity: 0.6;
+}
+
+/* Efecto al pasar el cursor para dar dinamismo */
+.edit-profile-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 198, 0, 0.35) !important;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 198, 0, 0.05);
 }
 
 /* Título principal superior */
 .card-title {
-    color: var(--text-light);
+    color: var(--dorado, #cca553) !important;
+    font-family: "Times New Roman", serif;
     font-weight: 600;
     font-size: 1.85rem;
     letter-spacing: 0.5px;
 }
 
-/* Ajuste de colores para perfil: más coherente con root */
-.edit-profile-card {
-    background-color: var(--gris-oscuro);
-    border: 1px solid rgba(255,198,0,0.12);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-}
-
-.card-title {
-    color: var(--dorado);
-    font-family: "Times New Roman", serif;
-}
-
-/* Etiquetas que van arriba de los controles (Centrados) */
+/* Etiquetas sobre los campos */
 .form-label-custom {
     color: #d9d9d9;
     font-size: 0.95rem;
@@ -2855,8 +2865,8 @@ textarea::placeholder {
 
 /* Estilo unificado para inputs y selectores oscuros */
 .form-control-custom {
-    background-color: #1a1a1a !important;
-    border: 1px solid rgba(255,198,0,0.08) !important;
+    background-color: #141414 !important;
+    border: 1px solid rgba(255, 198, 0, 0.12) !important;
     color: #fff !important;
     border-radius: 8px !important;
     padding: 11px 16px !important;
@@ -2866,8 +2876,8 @@ textarea::placeholder {
 
 /* Efecto focus al seleccionar campos */
 .form-control-custom:focus {
-    border-color: var(--dorado) !important;
-    box-shadow: 0 0 12px rgba(255,198,0,0.15) !important;
+    border-color: var(--dorado, #cca553) !important;
+    box-shadow: 0 0 12px rgba(255, 198, 0, 0.2) !important;
     outline: none;
 }
 
@@ -2879,7 +2889,7 @@ textarea::placeholder {
     width: 70%;
 }
 
-/* Modificación de la flecha de los Select en Bootstrap para que combine */
+/* Modificación de la flecha de los Select en Bootstrap */
 select.form-control-custom {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cca553' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
     background-position: right 12px center;
@@ -2888,8 +2898,8 @@ select.form-control-custom {
 
 .form-control-custom[disabled],
 .form-select.form-control-custom[disabled] {
-    background-color: rgba(255,255,255,0.06) !important;
-    border-color: rgba(255,198,0,0.08) !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 198, 0, 0.08) !important;
     color: #bfbfbf !important;
     opacity: 1;
     cursor: not-allowed;
@@ -2899,7 +2909,7 @@ select.form-control-custom {
     opacity: 0.75;
 }
 
-/* Estructura para los selectores de fecha con etiqueta flotante simulada */
+/* Estructura para los selectores de fecha */
 .date-select-container {
     position: relative;
     width: 32%;
@@ -2911,7 +2921,6 @@ select.form-control-custom {
     font-size: 0.9rem !important;
 }
 
-/* El texto pequeño encima de los selectores de fecha (Mes, Día, Año) */
 .date-label {
     position: absolute;
     top: 3px;
@@ -2923,7 +2932,7 @@ select.form-control-custom {
     pointer-events: none;
 }
 
-/* Alineación de los textos de aceptación de WhatsApp */
+/* Checkboxes personalizados */
 .checkbox-container-custom {
     max-width: 530px;
     padding-top: 10px;
@@ -2936,46 +2945,42 @@ select.form-control-custom {
     cursor: pointer;
 }
 
-/* Estilos de los checkboxes personalizados dorados */
 .custom-checkbox {
     background-color: #1a1a1a !important;
-    border: 1px solid rgba(255,198,0,0.15) !important;
+    border: 1px solid rgba(255, 198, 0, 0.15) !important;
     cursor: pointer;
     border-radius: 4px !important;
 }
 
 .custom-checkbox:checked {
-    background-color: var(--dorado) !important;
-    border-color: var(--dorado) !important;
+    background-color: var(--dorado, #cca553) !important;
+    border-color: var(--dorado, #cca553) !important;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23111111' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
 }
 
 .custom-checkbox:focus {
-    box-shadow: 0 0 8px rgba(255,198,0,0.2) !important;
+    box-shadow: 0 0 8px rgba(255, 198, 0, 0.2) !important;
 }
 
-/* Botón de envío estilizado en dorado elegante en lugar de azul */
+/* Botón de envío estilizado */
 .btn-guardar-custom {
-    background-color: var(--dorado) !important;
-    color: var(--negro) !important;
+    background-color: var(--dorado, #cca553) !important;
+    color: var(--negro, #111) !important;
     border: none !important;
     border-radius: 8px !important;
     font-size: 1rem;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(255,198,0,0.15);
+    box-shadow: 0 4px 15px rgba(255, 198, 0, 0.2);
     transition: all 0.3s ease;
 }
 
 .btn-guardar-custom:hover {
-    background-color: var(--dorado-oscuro) !important;
+    background-color: var(--dorado-oscuro, #b38e40) !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255,198,0,0.25);
+    box-shadow: 0 6px 20px rgba(255, 198, 0, 0.35);
 }
 
-/* --------------------------------------------------------------------
-   Inputs y textarea del formulario de perfil (Información Personal,
-   Perfil Profesional y Seguridad comparten estas reglas)
-   -------------------------------------------------------------------- */
+/* Inputs del formulario de perfil */
 #formEditarPerfil .form-control {
     border-radius: 10px;
     transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
@@ -2990,48 +2995,25 @@ select.form-control-custom {
     min-height: 110px;
 }
 
-/* Estado focus: resalte dorado consistente con la identidad de marca */
 #formEditarPerfil .form-control:focus {
     background-color: rgba(255, 198, 0, 0.05) !important;
-    border-color: var(--dorado) !important;
+    border-color: var(--dorado, #cca553) !important;
     box-shadow: 0 0 0 3px rgba(255, 198, 0, 0.15);
-    color: var(--blanco) !important;
+    color: var(--blanco, #fff) !important;
     outline: none;
 }
 
-/* Campo de solo lectura (correo electrónico) */
 #formEditarPerfil .form-control[readonly] {
     background-color: rgba(255, 255, 255, 0.03) !important;
     color: rgba(255, 255, 255, 0.55) !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Hover suave en campos editables para reforzar la interactividad */
 #formEditarPerfil .form-control:not([readonly]):hover {
     border-color: rgba(255, 198, 0, 0.45);
 }
 
-/* --------------------------------------------------------------------
-   Botón "Guardar" (header de la página de perfil)
-   -------------------------------------------------------------------- */
-button[form="formEditarPerfil"] {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-button[form="formEditarPerfil"]:hover {
-    background-color: var(--dorado-oscuro);
-    color: var(--negro);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(255, 198, 0, 0.3);
-}
-
-button[form="formEditarPerfil"]:active {
-    transform: translateY(0);
-}
-
-/* --------------------------------------------------------------------
-   Alertas de estado (mensajes de Django: éxito / error / advertencia)
-   -------------------------------------------------------------------- */
+/* Alertas de estado */
 .alert {
     border-radius: 12px;
     border: 1px solid transparent;
@@ -3054,7 +3036,7 @@ button[form="formEditarPerfil"]:active {
 .alert-warning {
     background-color: rgba(255, 198, 0, 0.12);
     border-color: rgba(255, 198, 0, 0.4);
-    color: var(--dorado);
+    color: var(--dorado, #cca553);
 }
 
 .alert-info {
@@ -3067,9 +3049,21 @@ button[form="formEditarPerfil"]:active {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
 
-/* --------------------------------------------------------------------
-   Responsive: apilar mejor el panel de perfil en pantallas pequeñas
-   -------------------------------------------------------------------- */
+/* Zona de peligro adaptada al tema oscuro con acento rojo */
+.danger-zone-card {
+    border-color: rgba(220, 53, 69, 0.4) !important;
+}
+
+.danger-zone-card::before {
+    background: linear-gradient(90deg, transparent, #dc3545, transparent);
+}
+
+.danger-zone-card:hover {
+    border-color: rgba(220, 53, 69, 0.7) !important;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(220, 53, 69, 0.1);
+}
+
+/* Responsive */
 @media (max-width: 767px) {
     .perfil-profesional-card,
     .card.bg-dark.text-light.border-secondary {
@@ -3082,29 +3076,14 @@ button[form="formEditarPerfil"]:active {
     }
 }
 
-
 /* ============================================================================
    17. PERFIL PROFESIONAL DEL BARBERO / EDITAR ÍNDICE
    ============================================================================ */
 
-/* Tarjeta "Perfil Profesional": mismo lenguaje visual que el resto de
-   tarjetas de perfil, con un leve acento dorado para diferenciarla. */
-.perfil-profesional-card {
-    border: 1px solid rgba(255, 198, 0, 0.18) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.perfil-profesional-card:hover {
-    border-color: rgba(255, 198, 0, 0.35) !important;
-    box-shadow: 0 10px 30px rgba(255, 198, 0, 0.08);
-}
-
 .perfil-profesional-card .bi-scissors {
-    color: var(--dorado);
+    color: var(--dorado, #cca553);
 }
 
-/* Texto de ayuda bajo el campo de Especialidades */
 .texto-ayuda-perfil {
     color: rgba(255, 255, 255, 0.55);
     font-size: 0.78rem;
@@ -3135,7 +3114,7 @@ button[form="formEditarPerfil"]:active {
     border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 .editar-card-header i {
-    color: var(--dorado);
+    color: var(--dorado, #cca553);
     font-size: 1.4rem;
     width: 48px;
     height: 48px;
@@ -3159,7 +3138,6 @@ button[form="formEditarPerfil"]:active {
 
 textarea.form-control-custom { resize: vertical; }
 
-/* --- Subida de imágenes --- */
 .imagen-upload-box {
     display: flex;
     flex-direction: column;
@@ -3193,8 +3171,8 @@ textarea.form-control-custom { resize: vertical; }
     align-items: center;
     gap: 0.4rem;
     background: transparent;
-    border: 1px solid var(--dorado);
-    color: var(--dorado);
+    border: 1px solid var(--dorado, #cca553);
+    color: var(--dorado, #cca553);
     border-radius: 30px;
     padding: 0.35rem 1rem;
     font-size: 0.82rem;
@@ -3202,11 +3180,10 @@ textarea.form-control-custom { resize: vertical; }
     transition: background-color 0.25s ease, color 0.25s ease;
 }
 .btn-subir-imagen:hover {
-    background-color: var(--dorado);
+    background-color: var(--dorado, #cca553);
     color: #1c1c1c;
 }
 
-/* --- Mensajes de Django (variante "mya") --- */
 .alert-mya {
     border-radius: 10px;
     padding: 0.9rem 1.2rem;

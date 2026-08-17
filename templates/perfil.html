@@ -2,64 +2,65 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5" style="margin-top: 80px;">
-    <div class="row mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center border-bottom border-secondary pb-3">
-            <div>
-                <h6 class="text-warning text-uppercase mb-1 fw-bold" style="letter-spacing: 1px;">Administrar Perfil de Usuario</h6>
-                <p class="text-white small mb-0">Gestiona tus datos personales y configuración de seguridad.</p>
-            </div>
-            <div>
-                <a href="{% url 'home' %}" class="btn btn-outline-light me-2 px-4 text-uppercase fw-bold btn-sm">Cancelar</a>
-                <button type="submit" form="formEditarPerfil" class="btn btn-warning px-4 text-uppercase fw-bold btn-sm text-dark">
-                    <i class="bi bi-floppy-fill me-1"></i> Guardar
-                </button>
+<div class="container pt-1 pb-5 mb-5" style="margin-top: 80px;">
+    
+    <!-- Encabezado Centrado Elegante -->
+    <div class="row mb-5 text-center">
+        <div class="col-12">
+            <h2 class="card-title display-5 fw-bold mb-2">Administrar Perfil de Usuario</h2>
+            <p class="text-white-50 fs-6 mb-0">Gestiona tus datos personales y configuración de seguridad.</p>
+            <div class="d-flex justify-content-center mt-3">
+                <div style="width: 60px; height: 2px; background-color: var(--dorado, #cca553);"></div>
             </div>
         </div>
     </div>
 
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show alert-mya" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endif %}
 
-    <form id="formEditarPerfil" method="POST" action="{% url 'guardar_perfil' %}">
-        {% csrf_token %}
-        <div class="row g-4">
-            
-            <div class="col-lg-8">
+    <div class="row g-4">
+        
+        <!-- Columna Formulario Principal -->
+        <div class="col-lg-8">
+            <form id="formEditarPerfil" method="POST" action="{% url 'guardar_perfil' %}">
+                {% csrf_token %}
                 
-                <div class="card bg-dark text-light border-secondary p-4 mb-4">
-                    <h5 class="text-warning mb-4 d-flex align-items-center fw-bold">
-                        <i class="bi bi-person-vcard me-2"></i> Información Personal
+                <!-- 1. Información Personal -->
+                <div class="card edit-profile-card p-4 mb-4">
+                    <h5 class="card-title mb-4 d-flex align-items-center fs-4">
+                        <i class="bi bi-person-vcard me-2 text-warning"></i> Información Personal
                     </h5>
                     
                     <div class="d-flex align-items-center mb-4">
                         <div class="position-relative me-4">
-                            <div class="rounded-circle border border-warning d-flex align-items-center justify-content-center bg-secondary overflow-hidden" style="width: 80px; height: 80px;">
+                            <div class="rounded-circle border border-warning d-flex align-items-center justify-content-center overflow-hidden" style="width: 85px; height: 85px; background: #1a1a1a;">
                                 {% if usuario.foto_perfil %}
                                     <img src="{{ MEDIA_URL }}{{ usuario.foto_perfil }}" style="width: 100%; height: 100%; object-fit: cover;">
                                 {% else %}
-                                    <i class="bi bi-person-fill text-light fs-1"></i>
+                                    <i class="bi bi-person-fill text-secondary fs-1"></i>
                                 {% endif %}
                             </div>
                         </div>
                         <div>
-                            <h6 class="mb-1 fw-bold">Foto de Perfil</h6>
-                            <p class="text-white small mb-2">Formatos admitidos: JPG, PNG o WEBP. Tamaño máximo: 2 MB.</p>
-                            <button type="button" class="btn btn-outline-warning btn-sm text-uppercase fw-bold py-1" data-bs-toggle="modal" data-bs-target="#modalFoto">Cambiar Foto</button>
+                            <h6 class="mb-1 fw-bold text-light">Foto de Perfil</h6>
+                            <p class="text-white-50 small mb-2">Formatos: JPG, PNG o WEBP. Máx: 2 MB.</p>
+                            <button type="button" class="btn btn-subir-imagen" data-bs-toggle="modal" data-bs-target="#modalFoto">
+                                <i class="bi bi-camera me-1"></i> Cambiar Foto
+                            </button>
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="inputNombre" class="form-label text-white small text-uppercase fw-bold mb-1">Nombre Completo</label>
+                            <label for="inputNombre" class="form-label-custom">Nombre Completo</label>
                             <input type="text" id="inputNombre" name="nombre"
-                                   class="form-control bg-transparent text-light border-secondary py-2"
+                                   class="form-control form-control-custom"
                                    value="{{ usuario.nombre }}"
                                    data-solo="letras"
                                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
@@ -67,9 +68,9 @@
                                    maxlength="50">
                         </div>
                         <div class="col-md-6">
-                            <label for="inputTelefono" class="form-label text-white small text-uppercase fw-bold mb-1">Teléfono de Contacto</label>
+                            <label for="inputTelefono" class="form-label-custom">Teléfono de Contacto</label>
                             <input type="tel" id="inputTelefono" name="telefono"
-                                   class="form-control bg-transparent text-light border-secondary py-2"
+                                   class="form-control form-control-custom"
                                    value="{{ usuario.numcelular }}"
                                    placeholder="3xxxxxxxxx"
                                    data-solo="numeros"
@@ -79,68 +80,70 @@
                                    maxlength="10">
                         </div>
                         <div class="col-12">
-                            <label for="inputCorreo" class="form-label text-white small text-uppercase fw-bold mb-1">Correo Electrónico</label>
-                            <input type="email" id="inputCorreo" name="correo"class="form-control bg-transparent text-light border-secondary py-2" value="{{ usuario.correo }}" readonly style="cursor: not-allowed;">
+                            <label for="inputCorreo" class="form-label-custom">Correo Electrónico</label>
+                            <input type="email" id="inputCorreo" name="correo" class="form-control form-control-custom" value="{{ usuario.correo }}" readonly>
                         </div>
                     </div>
                 </div>
 
+                <!-- 2. Perfil Profesional (Barbero) -->
                 {% if usuario.idrolfk_id == 2 %}
-                <div class="card bg-dark text-light border-secondary p-4 mb-4 perfil-profesional-card">
-                    <h5 class="text-warning mb-4 d-flex align-items-center fw-bold">
-                        <i class="bi bi-scissors me-2"></i> Perfil Profesional
+                <div class="card edit-profile-card perfil-profesional-card p-4 mb-4">
+                    <h5 class="card-title mb-4 d-flex align-items-center fs-4">
+                        <i class="bi bi-scissors me-2 text-warning"></i> Perfil Profesional
                     </h5>
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="inputNombreProfesional" class="form-label text-white small text-uppercase fw-bold mb-1">Nombre Profesional</label>
+                            <label for="inputNombreProfesional" class="form-label-custom">Nombre Profesional</label>
                             <input type="text" id="inputNombreProfesional" name="nombre_profesional"
-                                   class="form-control bg-transparent text-light border-secondary py-2"
+                                   class="form-control form-control-custom"
                                    value="{{ usuario.nombre }}"
                                    placeholder="Ej: Andrés &quot;El Fade&quot; Gómez"
                                    maxlength="100">
                         </div>
                         <div class="col-md-6">
-                            <label for="inputEspecialidades" class="form-label text-white small text-uppercase fw-bold mb-1">Especialidades</label>
+                            <label for="inputEspecialidades" class="form-label-custom">Especialidades</label>
                             <input type="text" id="inputEspecialidades" name="especialidades"
-                                   class="form-control bg-transparent text-light border-secondary py-2"
+                                   class="form-control form-control-custom"
                                    value="{{ usuario.especialidades }}"
                                    placeholder="Corte clásico, Barba, Diseño de cejas"
                                    maxlength="255">
-                            <small class="form-text texto-ayuda-perfil">Separa cada habilidad con una coma.</small>
+                            <small class="texto-ayuda-perfil">Separa cada habilidad con una coma.</small>
                         </div>
                     </div>
                 </div>
                 {% endif %}
 
-                <div class="card bg-dark text-light border-secondary p-4">
-                    <h5 class="text-warning mb-4 d-flex align-items-center fw-bold">
-                        <i class="bi bi-shield-lock me-2"></i> Seguridad
+                <!-- 3. Seguridad -->
+                <div class="card edit-profile-card p-4">
+                    <h5 class="card-title mb-4 d-flex align-items-center fs-4">
+                        <i class="bi bi-shield-lock me-2 text-warning"></i> Seguridad
                     </h5>
                     <div class="row g-3">
                         <div class="col-12">
-                            <label for="inputPasswordActual" class="form-label text-white small text-uppercase fw-bold mb-1">Contraseña Actual</label>
+                            <label for="inputPasswordActual" class="form-label-custom">Contraseña Actual</label>
                             <div class="input-group">
-                                <input type="password" id="inputPasswordActual" name="password_actual" class="form-control bg-transparent text-light border-secondary py-2" placeholder="Escribe tu contraseña actual" required>
-                                <span class="input-group-text bg-transparent border-secondary text-white toggle-password" style="cursor: pointer;">
+                                <input type="password" id="inputPasswordActual" name="password_actual" class="form-control form-control-custom" placeholder="Escribe tu contraseña actual" required>
+                                <span class="input-group-text bg-transparent border-0 text-white toggle-password" style="cursor: pointer;">
                                     <i class="bi bi-eye-slash"></i>
                                 </span>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="inputPasswordNueva" class="form-label text-white small text-uppercase fw-bold mb-1">Nueva Contraseña</label>
+                            <label for="inputPasswordNueva" class="form-label-custom">Nueva Contraseña</label>
                             <div class="input-group">
-                                <input type="password" id="inputPasswordNueva" name="password_nueva" class="form-control bg-transparent text-light border-secondary py-2" placeholder="Mínimo 8 caracteres" minlength="8">
-                                <span class="input-group-text bg-transparent border-secondary text-white toggle-password" style="cursor: pointer;">
+                                <input type="password" id="inputPasswordNueva" name="password_nueva" class="form-control form-control-custom" placeholder="Mínimo 8 caracteres" minlength="8">
+                                <span class="input-group-text bg-transparent border-0 text-white toggle-password" style="cursor: pointer;">
                                     <i class="bi bi-eye-slash"></i>
                                 </span>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="inputPasswordConfirmar" class="form-label text-white small text-uppercase fw-bold mb-1">Confirmar Nueva Contraseña</label>
+                            <label for="inputPasswordConfirmar" class="form-label-custom">Confirmar Nueva Contraseña</label>
                             <div class="input-group">
-                                <input type="password" id="inputPasswordConfirmar" name="password_confirmar" class="form-control bg-transparent text-light border-secondary py-2" placeholder="Repite tu nueva contraseña" minlength="8">
-                                <span class="input-group-text bg-transparent border-secondary text-white toggle-password" style="cursor: pointer;">
+                                <input type="password" id="inputPasswordConfirmar" name="password_confirmar" class="form-control form-control-custom" placeholder="Repite tu nueva contraseña" minlength="8">
+                                <span class="input-group-text bg-transparent border-0 text-white toggle-password" style="cursor: pointer;">
                                     <i class="bi bi-eye-slash"></i>
                                 </span>
                             </div>
@@ -148,88 +151,99 @@
                     </div>
                 </div>
 
-            </div>
-
-            <div class="col-lg-4">
-
-                <div class="card bg-dark text-light border-secondary p-4 mb-4">
-                    <h5 class="text-warning mb-3 d-flex align-items-center fw-bold">
-                        <i class="bi bi-check-circle me-2"></i> Estado de Cuenta
-                    </h5>
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="badge bg-success text-dark fw-bold px-3 py-2 text-uppercase">Activa</span>
-                    </div>
-                    <div class="border-top border-secondary pt-3 mt-2" style="font-size: 0.8rem;">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-white">Último acceso:</span>
-                            <span class="text-light">{{ request.user.last_login|date:"d M Y, h:i a" }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-white">IP registrada:</span>
-                            <span class="text-white">192.168.1.45</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- 2. Eliminar Cuenta (METE ESTE RECUADRO AQUÍ ADENTRO) -->
-                <div class="card bg-dark text-light border-danger p-4">
-                    <h5 class="text-danger mb-3 d-flex align-items-center fw-bold">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Zona de Peligro
-                    </h5>
-                    <p class="text-white small mb-3">
-                        Una vez eliminada la cuenta, no podrás recuperar tus datos ni tu historial de citas.
-                    </p>
-                    <button type="button" class="btn btn-outline-danger w-100 text-uppercase fw-bold btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarCuenta">
-                        <i class="bi bi-trash3-fill me-1"></i> Eliminar Cuenta
+                <!-- Botones Cancelar / Guardar fuera de la tarjeta de seguridad -->
+                <div class="d-flex justify-content-end align-items-center gap-3 pt-4">
+                    <a href="{% url 'home' %}" class="btn btn-outline-light px-4 text-uppercase fw-bold btn-sm rounded-3">Cancelar</a>
+                    <button type="submit" class="btn btn-guardar-custom px-4 text-uppercase fw-bold btn-sm">
+                        <i class="bi bi-floppy-fill me-1"></i> Guardar Cambios
                     </button>
                 </div>
+            </form>
+        </div>
 
+        <!-- Columna Lateral -->
+        <div class="col-lg-4">
+            <div class="card edit-profile-card p-4 mb-4">
+                <h5 class="card-title mb-3 d-flex align-items-center fs-5">
+                    <i class="bi bi-check-circle me-2 text-warning"></i> Estado de Cuenta
+                </h5>
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-success text-dark fw-bold px-3 py-2 text-uppercase">Activa</span>
+                </div>
+                <div class="border-top border-secondary border-opacity-25 pt-3 mt-2" style="font-size: 0.8rem;">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-white-50">Último acceso:</span>
+                        <span class="text-light">{{ request.user.last_login|date:"d M Y, h:i a" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-white-50">IP registrada:</span>
+                        <span class="text-light">192.168.1.45</span>
+                    </div>
+                </div>
             </div>
 
+            <!-- Zona de Peligro -->
+            <div class="card edit-profile-card danger-zone-card border-danger p-4">
+                <h5 class="text-danger mb-3 d-flex align-items-center fw-bold fs-5">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Zona de Peligro
+                </h5>
+                <p class="text-white-50 small mb-3">
+                    Una vez eliminada la cuenta, no podrás recuperar tus datos ni tu historial de citas.
+                </p>
+                <button type="button" class="btn btn-outline-danger w-100 text-uppercase fw-bold btn-sm rounded-3" data-bs-toggle="modal" data-bs-target="#modalEliminarCuenta">
+                    <i class="bi bi-trash3-fill me-1"></i> Eliminar Cuenta
+                </button>
+            </div>
         </div>
-    </form>
+
+    </div>
 </div>
 
+<!-- Modal Cambiar Foto -->
 <div class="modal fade" id="modalFoto" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content bg-dark text-white border-secondary">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border-secondary edit-profile-card">
       <form method="POST" action="{% url 'gestionar_foto_perfil' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="modal-header border-secondary">
-          <h5 class="modal-title">Gestionar Foto</h5>
+          <h5 class="modal-title card-title fs-5">Gestionar Foto</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body text-center">
-          {% if usuario.imagen_perfil %}
-            <img src="{{ MEDIA_URL }}{{ usuario.imagen_perfil }}" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+        <div class="modal-body text-center py-4">
+          {% if usuario.foto_perfil %}
+            <img src="{{ MEDIA_URL }}{{ usuario.foto_perfil }}" class="rounded-circle mb-3 border border-warning" style="width: 130px; height: 130px; object-fit: cover;">
           {% else %}
-            <i class="bi bi-person-circle display-1"></i>
+            <i class="bi bi-person-circle display-1 text-secondary mb-3 d-block"></i>
           {% endif %}
-          <input type="file" name="nueva_foto" class="form-control bg-dark text-white border-secondary mt-3" accept="image/*">
+          <input type="file" name="nueva_foto" class="form-control form-control-custom mt-2" accept="image/*">
         </div>
-        <div class="modal-footer border-secondary">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" name="accion" value="borrar" class="btn btn-danger">Borrar</button>
-          <button type="submit" name="accion" value="cambiar" class="btn btn-warning">Guardar Cambios</button>
+        <div class="modal-footer border-secondary justify-content-between">
+          <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <div>
+            <button type="submit" name="accion" value="borrar" class="btn btn-outline-danger btn-sm me-1">Borrar</button>
+            <button type="submit" name="accion" value="cambiar" class="btn btn-guardar-custom btn-sm">Guardar Cambios</button>
+          </div>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-<!-- Modal Confirmar Eliminación de Cuenta -->
+<!-- Modal Confirmar Eliminación -->
 <div class="modal fade" id="modalEliminarCuenta" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-white border-danger">
+    <div class="modal-content bg-dark text-white edit-profile-card border-danger">
       <div class="modal-header border-secondary">
-        <h5 class="modal-title text-danger fw-bold">
+        <h5 class="modal-title text-danger fw-bold fs-5">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Eliminación
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-center py-4">
         <i class="bi bi-trash3 text-danger display-1 mb-3 d-block"></i>
-        <h6 class="fw-bold mb-2">¿Estás completamente seguro?</h6>
-        <p class="text-secondary small mb-0">
-          Esta acción es permanente e irreversible. Se eliminarán permanentemente tu perfil, datos guardados y configuraciones asociadas.
+        <h6 class="fw-bold mb-2 fs-5">¿Estás completamente seguro?</h6>
+        <p class="text-white-50 small mb-0">
+          Esta acción es permanente e irreversible. Se eliminarán tu perfil, datos guardados y configuraciones asociadas.
         </p>
       </div>
       <div class="modal-footer border-secondary justify-content-between">
@@ -238,7 +252,7 @@
         </button>
         <form method="POST" action="{% url 'eliminar_mi_cuenta' %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-sm px-4 fw-bold text-uppercase">
+            <button type="submit" class="btn btn-danger btn-sm px-4 fw-bold text-uppercase rounded-3">
                 Sí, eliminar mi cuenta
             </button>
         </form>
@@ -246,5 +260,4 @@
     </div>
   </div>
 </div>
-
 {% endblock %}
