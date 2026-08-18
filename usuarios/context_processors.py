@@ -3,6 +3,7 @@ import re
 
 from django.conf import settings
 from .models import ContenidoIndex
+from allauth.socialaccount.models import SocialAccount
 
 
 def google_client_id(request):
@@ -29,3 +30,17 @@ def contenido_global(request):
         'contenido_global': contenido,
         'whatsapp_link': f"https://wa.me/{whatsapp_numero}" if whatsapp_numero else None,
     }
+
+def google_account_status(request):
+    """
+    Expone si el usuario actual inició sesión vinculando una cuenta de
+    Google, para mostrarle la opción de "cerrar también Google" solo
+    cuando tiene sentido (no aplica a quien entra con correo/contraseña
+    tradicional, porque ahí no hay ninguna sesión de Google que cerrar).
+    """
+    tiene_google = False
+    if request.user.is_authenticated:
+        tiene_google = SocialAccount.objects.filter(
+            user=request.user, provider='google'
+        ).exists()
+    return {'tiene_cuenta_google': tiene_google}

@@ -89,6 +89,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'usuarios.context_processors.google_client_id',
                 'usuarios.context_processors.contenido_global',
+                'usuarios.context_processors.google_account_status',
             ],
         },
     },

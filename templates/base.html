@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
-<body>
+<body data-url-cerrar-sesion="{% url 'cerrar_sesion' %}">
 
     {% if whatsapp_link %}
     <a href="{{ whatsapp_link }}"
@@ -112,9 +112,15 @@
                         {% endif %}
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'cerrar_sesion' %}">
-                                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-                            </a>
+                            {% if tiene_cuenta_google %}
+                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                                </a>
+                            {% else %}
+                                <a class="nav-link" href="{% url 'cerrar_sesion' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                                </a>
+                            {% endif %}
                         </li>
 
                         <!-- Campana de escritorio: visible solo en lg+, a la DERECHA de "Cerrar sesión" -->
@@ -264,6 +270,35 @@
         </div>
         {% endif %}
     {% endfor %}
+
+    {% if tiene_cuenta_google %}
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="logoutModalLabel">Cerrar sesión</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">Iniciaste sesión con tu cuenta de Google. ¿Qué quieres cerrar?</p>
+                    <p class="text-white-50 small mb-0">
+                        "Solo aquí" cierra tu sesión en M&amp;A Barber Shop, pero tu cuenta de
+                        Google seguirá abierta en este navegador (Gmail, YouTube, etc.).
+                        "También Google" cierra ambas.
+                    </p>
+                </div>
+                <div class="modal-footer border-secondary flex-column flex-sm-row gap-2">
+                    <button type="button" class="btn btn-outline-light w-100 w-sm-auto" id="btnCerrarSoloAqui">
+                        Solo cerrar aquí
+                    </button>
+                    <button type="button" class="btn btn-warning w-100 w-sm-auto" id="btnCerrarTambienGoogle">
+                        También cerrar Google
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     {% if request.session.sesion_iniciada %}
         <div id="calificacion-data"

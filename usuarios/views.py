@@ -6,10 +6,10 @@ from django.db.models import Sum
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models import Q
+import requests as http_requests  # nombrado así para no chocar con la librería 'requests' del propio Django/WSGI
 from django.core.mail import send_mail
 
 
@@ -42,8 +42,6 @@ from negocio.models import Barbero, Agenda
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 from .auth_utils import generar_password_provisional
-import requests as http_requests  # nombrado así para no chocar con django.shortcuts... no aplica aquí, pero por claridad
-from allauth.socialaccount.models import SocialToken
 
 # =========================================================================
 # REGLAS DE NEGOCIO QUE ANTES ERAN TRIGGERS DE MYSQL

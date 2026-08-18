@@ -1720,8 +1720,61 @@ document.addEventListener("DOMContentLoaded", function() {
 // Ya no se usa el botón embebido de Google Identity Services (GSI); en
 // su lugar mandamos al usuario a nuestra vista seleccionar_rol_google,
 // que guarda el rol elegido en sesión y redirige a Google.
-document.getElementById('btn-google-login').addEventListener('click', function (e) {
-    e.preventDefault();
-    const rolSeleccionado = document.querySelector('input[name="rol"]:checked')?.value || 'cliente';
-    window.location.href = `/usuarios/google-iniciar/${encodeURIComponent(rolSeleccionado)}/`;
+// NOTA: 'btn-google-login' solo existe en iniciarsesion.html. Como este
+// script.js se carga en TODO el sitio, sin esta guarda null el resto de
+// páginas revientan con "Cannot read properties of null" al cargar.
+document.addEventListener("DOMContentLoaded", function () {
+    var btnGoogleLogin = document.getElementById('btn-google-login');
+    if (btnGoogleLogin) {
+        btnGoogleLogin.addEventListener('click', function (e) {
+            e.preventDefault();
+            const rolSeleccionado = document.querySelector('input[name="rol"]:checked')?.value || 'cliente';
+            window.location.href = `/usuarios/google-iniciar/${encodeURIComponent(rolSeleccionado)}/`;
+        });
+    }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+        var passwordModalEl = document.getElementById('passwordProvisionalModal');
+        if (passwordModalEl) {
+            var passwordModal = new bootstrap.Modal(passwordModalEl);
+            passwordModal.show();
+        }
+
+        // --- Modal de logout con opción de cerrar también Google ---
+        // IMPORTANTE: script.js es un archivo estático, Django NO lo procesa
+        // como template, así que aquí NO se puede usar {% url %}. La URL de
+        // cerrar_sesion se lee del data-attribute que base.html sí renderiza
+        // (<body data-url-cerrar-sesion="{% url 'cerrar_sesion' %}">).
+        var btnSoloAqui = document.getElementById('btnCerrarSoloAqui');
+        var btnTambienGoogle = document.getElementById('btnCerrarTambienGoogle');
+        var urlCerrarSesion = document.body.dataset.urlCerrarSesion;
+
+        if (btnSoloAqui) {
+            btnSoloAqui.addEventListener('click', function () {
+                window.location.href = urlCerrarSesion;
+            });
+        }
+
+        if (btnTambienGoogle) {
+            btnTambienGoogle.addEventListener('click', function () {
+                // Dispara el logout de Google como una petición GET "silenciosa"
+                // vía <img>, sin sacar al usuario de nuestra página. El
+                // navegador manda las cookies de accounts.google.com igual
+                // que si hubiera navegado ahí, así que la sesión de Google
+                // en ESTE navegador se cierra (Gmail, YouTube, Drive, etc.).
+                var img = document.createElement('img');
+                img.style.display = 'none';
+                img.src = 'https://accounts.google.com/Logout';
+                document.body.appendChild(img);
+
+                // No podemos leer la respuesta (la petición es cross-origin
+                // y el navegador la bloquea por seguridad), así que damos
+                // un margen breve para que la petición salga y seguimos
+                // con nuestro propio logout.
+                setTimeout(function () {
+                    window.location.href = urlCerrarSesion;
+                }, 400);
+            });
+        }
+    });
