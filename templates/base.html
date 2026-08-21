@@ -27,12 +27,14 @@
     </a>
     {% endif %}
     
-    
+
     <!-- Avisos generales (errores/éxitos) de Django messages, excluyendo el
          de contraseña provisional de Google, que se muestra como modal aparte
          más abajo. Reutiliza el mismo auto-cierre a los 3s que ya trae script.js
          para cualquier elemento .alert. -->
-    {% if messages %}
+
+         <!--Se mantiene comentado porque genera inconvenientes con las alertas pero al quitarlo nose sabe que otros riesgos traiga, por ende queda comentado-->
+    <!--{% if messages %}
     <div class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 2000; width: 90%; max-width: 480px;">
         {% for message in messages %}
             {% if 'password-provisional' not in message.tags %}
@@ -42,7 +44,7 @@
             {% endif %}
         {% endfor %}
     </div>
-    {% endif %}
+    {% endif %}-->
 
     <nav class="navbar navbar-expand-lg navbar-dark py-3 fixed-top">
         <div class="container">
