@@ -3790,7 +3790,7 @@ body.modal-open {
 .whatsapp-float {
     position: fixed;
     bottom: 24px;
-    left: 24px;
+    right: 24px;
     width: 58px;
     height: 58px;
     background-color: #25D366;
@@ -3823,7 +3823,7 @@ body.modal-open {
         height: 52px;
         font-size: 1.6rem;
         bottom: 18px;
-        left: 18px;
+        right: 18px;
     }
 }
 
