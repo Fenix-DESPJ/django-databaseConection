@@ -3863,3 +3863,186 @@ section {
         padding: 1.5rem !important;
     }
 }
+
+/* ============================================================================
+   25. TEMA CLARO / OSCURO (TOGGLE EN EL HEADER)
+   ============================================================================
+   Cómo funciona:
+   - El tema activo se guarda en el atributo data-theme del <html>
+     (data-theme="dark" | data-theme="light"), controlado desde script.js
+     y persistido en localStorage.
+   - Por defecto el sitio sigue siendo oscuro (no se tocó ni una sola regla
+     de las 24 secciones anteriores).
+   - Este bloque SOLO se activa cuando [data-theme="light"] está presente,
+     y redefine las variables de color usadas como FONDO/TEXTO en todo el
+     sitio (las --dorado / --gold / acentos de marca se mantienen iguales
+     en ambos temas, para conservar la identidad visual).
+   - También se cubren las clases utilitarias de Bootstrap que el proyecto
+     usa mucho para tarjetas y modales (bg-dark, bg-black, text-white,
+     text-white-50, border-secondary), así como los selectores hardcodeados
+     más repetidos (tarjetas, modales, inputs).
+   ============================================================================ */
+
+/* --- Botón del toggle de tema --- */
+.theme-toggle-btn {
+    background: transparent;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.theme-toggle-btn:hover {
+    background-color: rgba(255, 198, 0, 0.12);
+    transform: rotate(15deg);
+}
+
+.theme-toggle-btn i {
+    color: var(--dorado-branding, #FFC600);
+    font-size: 1.15rem;
+    pointer-events: none;
+}
+
+/* --- Variables de color reescritas para el tema claro --- */
+[data-theme="light"] {
+    /* Fondos (oscuro -> claro) */
+    --negro: #F5F5F2;
+    --negro-absoluto: #FFFFFF;
+    --negro-navbar: #FFFFFF;
+    --negro-tarjeta: #FFFFFF;
+    --gris-oscuro: #E4E4E0;
+    --bg-dark-page: #F5F5F2;
+    --bg-card: #FFFFFF;
+    --bg-input: #F0F0EC;
+    --bg-day: #ECECEA;
+    --bg-disabled: #E2E2DE;
+    --border: #DDDDDD;
+    --gris-borde: #DDDDDD;
+
+    /* Textos (blanco -> oscuro) */
+    --blanco: #1A1A1A;
+    --texto-blanco: #1A1A1A;
+    --text-light: #1A1A1A;
+    --text: #1A1A1A;
+    --text-muted: #6b6b6b;
+    --gris: #6b6b6b;
+
+    color-scheme: light;
+}
+
+/* Transición suave entre temas para toda la página */
+body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
+#notificaciones-panel, .form-control, .form-select {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* --- Ajustes puntuales que no dependen de las variables anteriores --- */
+
+[data-theme="light"] body {
+    background-color: var(--bg-dark-page);
+    color: var(--text-light);
+}
+
+[data-theme="light"] .navbar,
+[data-theme="light"] .custom-navbar {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .footer-mya {
+    background-color: #FFFFFF !important;
+    border-top-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Clases utilitarias de Bootstrap muy usadas en tarjetas y modales */
+[data-theme="light"] .bg-dark {
+    background-color: #FFFFFF !important;
+}
+
+[data-theme="light"] .bg-black {
+    background-color: #FFFFFF !important;
+}
+
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-light {
+    color: #1A1A1A !important;
+}
+
+[data-theme="light"] .text-white-50 {
+    color: rgba(0, 0, 0, 0.55) !important;
+}
+
+[data-theme="light"] .border-secondary {
+    border-color: #DDDDDD !important;
+}
+
+/* Modales con fondo hardcodeado (no usan variables) */
+[data-theme="light"] .custom-modal {
+    background-color: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .custom-modal .custom-input {
+    background-color: #F5F5F2;
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1A1A1A;
+}
+
+[data-theme="light"] .custom-modal .custom-input::placeholder {
+    color: #8a8a8a;
+}
+
+/* Inputs y selects generales (Bootstrap oscuro -> claro) */
+[data-theme="light"] .form-control,
+[data-theme="light"] .form-select,
+[data-theme="light"] textarea {
+    background-color: #FFFFFF;
+    border-color: #DDDDDD;
+    color: #1A1A1A;
+}
+
+[data-theme="light"] .modal-barberia .form-control,
+[data-theme="light"] .modal-barberia .form-select,
+[data-theme="light"] .modal-barberia textarea {
+    background-color: #F5F5F2 !important;
+    border-color: #DDDDDD !important;
+    color: #1A1A1A !important;
+}
+
+/* Panel de notificaciones */
+[data-theme="light"] #notificaciones-panel {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Dropdowns (Bootstrap) */
+[data-theme="light"] .dropdown-menu {
+    background-color: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .dropdown-item:hover {
+    background-color: #F0F0EC;
+}
+
+/* Tarjetas genéricas de Bootstrap usadas en dashboards/perfiles */
+[data-theme="light"] .card {
+    background-color: #FFFFFF;
+    color: #1A1A1A;
+}
+
+/* Íconos y textos dorados se mantienen igual: sin overrides para
+   .text-gold, .btn-dorado, var(--dorado)/var(--gold), etc. */
+
+/* Nota para futuras extensiones: si detectas alguna tarjeta o modal
+   puntual con un color hardcodeado que no cambie con el tema, agrega
+   aquí una regla [data-theme="light"] .tu-clase { ... } siguiendo el
+   mismo patrón que las anteriores. */

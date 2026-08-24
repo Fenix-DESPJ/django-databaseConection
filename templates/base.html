@@ -12,6 +12,17 @@
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="icon" type="image/jpeg" href="{% static 'img/logo.jpeg' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Anti-flash de tema: aplica el tema guardado ANTES de pintar la página,
+         así se evita el parpadeo de oscuro->claro (o viceversa) al cargar. -->
+    <script>
+        (function () {
+            var temaGuardado = localStorage.getItem('ma-theme');
+            var temaSistema = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            var tema = temaGuardado || temaSistema;
+            document.documentElement.setAttribute('data-theme', tema);
+        })();
+    </script>
 </head>
 
 <body data-url-cerrar-sesion="{% url 'cerrar_sesion' %}">
@@ -79,6 +90,12 @@
                     </button>
                 </div>
                 {% endif %}
+
+                <!-- Botón de cambio de tema (claro/oscuro) -->
+                <button class="theme-toggle-btn" id="btnThemeToggle" type="button" title="Cambiar tema" aria-label="Cambiar entre tema claro y oscuro">
+                    <i class="bi bi-moon-stars-fill" id="themeIconMoon"></i>
+                    <i class="bi bi-sun-fill d-none" id="themeIconSun"></i>
+                </button>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
                     <span class="navbar-toggler-icon"></span>

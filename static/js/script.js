@@ -1734,6 +1734,45 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+/* ============================================================================
+   16. TEMA CLARO / OSCURO (TOGGLE EN EL HEADER)
+   ============================================================================
+   El tema activo se guarda en el atributo data-theme del <html> y se
+   persiste en localStorage bajo la clave 'ma-theme'. base.html ya aplica
+   el tema guardado ANTES de esto (script inline en el <head>) para evitar
+   el parpadeo al cargar la página; aquí solo enlazamos el botón y
+   mantenemos el icono (luna/sol) sincronizado con el tema actual.
+   ============================================================================ */
+document.addEventListener("DOMContentLoaded", function () {
+    var btnThemeToggle = document.getElementById('btnThemeToggle');
+    var iconMoon = document.getElementById('themeIconMoon');
+    var iconSun = document.getElementById('themeIconSun');
+
+    if (!btnThemeToggle) return;
+
+    function actualizarIcono(tema) {
+        if (!iconMoon || !iconSun) return;
+        if (tema === 'light') {
+            iconMoon.classList.add('d-none');
+            iconSun.classList.remove('d-none');
+        } else {
+            iconSun.classList.add('d-none');
+            iconMoon.classList.remove('d-none');
+        }
+    }
+
+    // Sincroniza el icono con el tema ya aplicado por el script anti-flash
+    var temaActual = document.documentElement.getAttribute('data-theme') || 'dark';
+    actualizarIcono(temaActual);
+
+    btnThemeToggle.addEventListener('click', function () {
+        var temaNuevo = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', temaNuevo);
+        localStorage.setItem('ma-theme', temaNuevo);
+        actualizarIcono(temaNuevo);
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
         var passwordModalEl = document.getElementById('passwordProvisionalModal');
         if (passwordModalEl) {
