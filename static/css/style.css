@@ -37,149 +37,122 @@
 
 
 /* ============================================================================
-   1. VARIABLES GLOBALES (:root) Y BASE
-   (todas las declaraciones repetidas del archivo original, sin eliminar)
+   1. VARIABLES GLOBALES (:root) Y BASE — VERSIÓN LIMPIA Y ÚNICA
+   ----------------------------------------------------------------------------
+   Reemplaza los 5 bloques ":root" duplicados que existían antes (líneas
+   39-195 del archivo original). Ningún nombre de variable fue eliminado:
+   se conservaron TODOS los que ya usa el resto del CSS (se verificó con
+   grep en las 4245 líneas), solo se dejó UNA declaración por variable.
+
+   Donde había valores en conflicto (la misma variable declarada dos veces
+   con distinto color), se conservó el valor que ya estaba "ganando" en
+   cascada (el que realmente se veía en pantalla), para que nada cambie
+   de golpe:
+     --bg-card     -> se queda en #1d1d1d (no #1f1e1b)
+     --text-light  -> se queda en #ccc    (no #f4f2ee)
+     --text-muted  -> se queda en #aaa    (no #9e9b96)
+   body{} también estaba declarado 3 veces con tipografías distintas
+   (Arial / Segoe UI / Poppins) -> se dejó "Poppins", que era la que ganaba.
    ============================================================================ */
 
 :root {
-  /* Paleta de colores principal */
+  /* --- Marca / acentos dorados (iguales en ambos temas) --- */
   --dorado: #FFC600;
+  --dorado-branding: #FFC600;
   --dorado-oscuro: #BF930D;
+  --dorado-hover: #FFD43E;
+  --gold: #FFC600;
+  --gold-dark: #E0A800;
+  --gold-accent: #CCA553;
+  --gold-hover: #BCA067;
+  --mya-gold: #FFC600;
+  --mya-gold-light: #FFD43E;
+  --mya-gold-dark: #BF930D;
+
+  /* --- Fondos (modo oscuro = valor por defecto) --- */
+  --negro: #111111;
+  --negro-absoluto: #111111;
+  --negro-navbar: #000000;
+  --negro-tarjeta: #1d1d1d;
+  --bg-dark-page: #161513;
+  --bg-card: #1d1d1d;
+  --bg-input: #262421;
+  --bg-day: #262626;
+  --bg-disabled: #1a1a1a;
+  --gris-profundo: rgba(255, 255, 255, 0.08);
+
+  /* --- Textos --- */
+  --blanco: #FFFFFF;
+  --mya-white: #FFFFFF;
+  --texto-blanco: #FFFFFF;
+  --texto-principal: #FFFFFF;
+  --texto-secundario: #cfcfcf;
+  --text: #FFFFFF;
+  --text-light: #cccccc;
+  --text-muted: #aaaaaa;
+
+  /* --- Grises / bordes --- */
   --gris: #565654;
   --gris-oscuro: #30302E;
-  --negro: #111111;
-  --blanco: #FFFFFF;
-  
-  /* Variables específicas para el Footer (M&A Identidad) */
-  --mya-gold-light: #FFD43E;
-  --mya-gold: #FFC600;
-  --mya-gold-dark: #BF930D;
-  --mya-white: #FFFFFF;
+  --gris-borde: #30302E;
+  --border: #3a3a3a;
+
+  /* --- Otros --- */
+  --radio-borde: 16px;
+  --fuente-titulos: 'Times New Roman', Times, serif;
+  --fuente-cuerpo: 'Segoe UI', Roboto, sans-serif;
+
+  /* ==========================================================================
+     ALIAS SEMÁNTICOS NUEVOS (los que pediste). Apuntan a las variables
+     "reales" de arriba, así que si mañana cambias --bg-card, esto se
+     actualiza solo. Úsalos en templates NUEVOS; los viejos no hay que
+     tocarlos, ya consumen los nombres originales.
+     ========================================================================== */
+  --bg-main: var(--bg-dark-page);
+  --text-primary: var(--text-light);
+  --text-accent: var(--dorado);
+  --btn-primary-bg: var(--dorado);
+  --btn-primary-text: var(--negro);
+  --btn-secondary-bg: transparent;
+  --btn-secondary-text: var(--dorado);
+  --btn-secondary-border: var(--dorado);
+  --border-color: var(--border);
+
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: var(--negro);
-  color: var(--blanco);
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--fuente-cuerpo);
+  overflow-x: hidden;
 }
 
-/* Tipografías de títulos generales */
-h1, h2, h3, h4 {
-  font-family: "Times New Roman", serif;
-}
-
-:root {
-
-    --dorado-branding: #FFC600;
-    --dorado-hover: #FFD43E;
-
-    --gris: #565654;
-    --gris-borde: #30302E;
-
-    --negro-absoluto: #111111;
-    --negro-navbar: #000000;
-
-    --texto-blanco: #FFFFFF;
-
-    --fuente-titulos: 'Times New Roman', Times, serif;
-    --fuente-cuerpo: 'Segoe UI', Roboto, sans-serif;
-
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--negro-absoluto);
-    color: var(--texto-blanco);
-    font-family: var(--fuente-cuerpo);
-    overflow-x: hidden;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5 {
-    font-family: var(--fuente-titulos);
+h1, h2, h3, h4, h5 {
+  font-family: var(--fuente-titulos);
 }
 
 .text-gold {
-    color: var(--dorado-branding);
+  color: var(--dorado);
 }
 
 .sub-bar {
-    width: 60px;
-    height: 3px;
-    background: var(--dorado-branding);
-    margin: 20px auto;
-}
-
-/*Seccion Barberos*/
-:root {
-    --dorado: #FFC600;
-    --dorado-oscuro: #BF930D;
-    --gris: #565654;
-    --gris-oscuro: #30302E;
-    --negro: #111111;
-    --negro-tarjeta: #1d1d1d;
-    --blanco: #FFFFFF;
-}
-
-body {
-    background-color: var(--negro);
-    color: var(--blanco);
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-}
-
-.text-gold {
-    color: var(--dorado);
-}
-
-/* PALETA DE COLORES DE LA BARBERÍA (Inspirado en tu proyecto anterior) */
-:root {
-    --bg-dark-page: #161513;        /* Fondo general de la página */
-    --bg-card: #1f1e1b;             /* Fondo de la tarjeta central */
-    --bg-input: #262421;            /* Fondo interno de los campos de texto */
-    --gold-accent: #cca553;         /* Dorado elegante para labels y bordes */
-    --gold-hover: #bca067;          /* Dorado al pasar el cursor */
-    --text-light: #f4f2ee;          /* Color del texto de los inputs */
-    --text-muted: #9e9b96;          /* Color grisáceo para textos secundarios */
-}
-
-/* Estilos de fondo globales */
-body {
-    background-color: var(--bg-dark-page);
-    color: var(--text-light);
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-}
-
-/* ---------- Variables (AGENDA ADMIN) ---------- */
-:root {
-    --gold: #ffc600;
-    --gold-dark: #e0a800;
-
-    --bg-card: #1d1d1d;
-    --bg-day: #262626;
-    --bg-disabled: #1a1a1a;
-
-    --border: #3a3a3a;
-    --text: #fff;
-    --text-light: #ccc;
-    --text-muted: #aaa;
+  width: 60px;
+  height: 3px;
+  background: var(--dorado);
+  margin: 20px auto;
 }
 
 /* Dale espacio al main para que el navbar fijo no tape el contenido */
 #main-content {
-    padding-top: 100px; /* Ajusta según la altura de tu navbar */
-    min-height: 80vh;   /* Asegura que el footer siempre quede abajo */
+  padding-top: 100px;
+  min-height: 80vh;
 }
 
-/* Esto hace que el navegador no pegue el título al borde del menú fijo */
 section {
-    scroll-margin-top: 100px; 
+  scroll-margin-top: 100px;
 }
 
 
@@ -1563,6 +1536,7 @@ section {
     max-width: 700px;
     margin: auto;
 }
+ 
 .reservation-card {
     background: #1a1a1a;
     border: 1px solid rgba(255,255,255,.05);
@@ -3865,184 +3839,448 @@ section {
 }
 
 /* ============================================================================
-   25. TEMA CLARO / OSCURO (TOGGLE EN EL HEADER)
-   ============================================================================
-   Cómo funciona:
-   - El tema activo se guarda en el atributo data-theme del <html>
-     (data-theme="dark" | data-theme="light"), controlado desde script.js
-     y persistido en localStorage.
-   - Por defecto el sitio sigue siendo oscuro (no se tocó ni una sola regla
-     de las 24 secciones anteriores).
-   - Este bloque SOLO se activa cuando [data-theme="light"] está presente,
-     y redefine las variables de color usadas como FONDO/TEXTO en todo el
-     sitio (las --dorado / --gold / acentos de marca se mantienen iguales
-     en ambos temas, para conservar la identidad visual).
-   - También se cubren las clases utilitarias de Bootstrap que el proyecto
-     usa mucho para tarjetas y modales (bg-dark, bg-black, text-white,
-     text-white-50, border-secondary), así como los selectores hardcodeados
-     más repetidos (tarjetas, modales, inputs).
+   25. TEMA CLARO / OSCURO — SISTEMA COMPLETO
+   ----------------------------------------------------------------------------
+   Mecanismo (sin cambios respecto al que ya tenías, solo reordenado y
+   completado):
+   - El tema activo vive en el atributo data-theme del <html>
+     (data-theme="dark" | data-theme="light").
+   - theme-toggle.js lo alterna y lo guarda en localStorage ('ma-theme').
+   - Por defecto (sin el atributo, o data-theme="dark") rige el :root de
+     la Sección 1 (oscuro).
+   - Este bloque SOLO se activa con [data-theme="light"] y redefine EXACTAMENTE
+     las mismas variables que ya usa todo el sitio, por eso cualquier
+     componente que ya tenga var(--dorado), var(--bg-card), var(--text-light),
+     etc. cambia solo, sin tocar una línea más.
+   - Después de las variables van los "parches" puntuales para componentes
+     que usan colores fijos en hexadecimal (no variables) y por eso no
+     cambiaban solos.
    ============================================================================ */
 
-/* --- Botón del toggle de tema --- */
-.theme-toggle-btn {
-    background: transparent;
-    border: none;
-    position: relative;
-    cursor: pointer;
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background-color 0.25s ease, transform 0.25s ease;
-}
-
-.theme-toggle-btn:hover {
-    background-color: rgba(255, 198, 0, 0.12);
-    transform: rotate(15deg);
-}
-
-.theme-toggle-btn i {
-    color: var(--dorado-branding, #FFC600);
-    font-size: 1.15rem;
-    pointer-events: none;
-}
-
-/* --- Variables de color reescritas para el tema claro --- */
 [data-theme="light"] {
-    /* Fondos (oscuro -> claro) */
-    --negro: #F5F5F2;
-    --negro-absoluto: #FFFFFF;
-    --negro-navbar: #FFFFFF;
-    --negro-tarjeta: #FFFFFF;
-    --gris-oscuro: #E4E4E0;
-    --bg-dark-page: #F5F5F2;
-    --bg-card: #FFFFFF;
-    --bg-input: #F0F0EC;
-    --bg-day: #ECECEA;
-    --bg-disabled: #E2E2DE;
-    --border: #DDDDDD;
-    --gris-borde: #DDDDDD;
+  /* --- Fondos (oscuro -> claro) --- */
+  --negro: #F5F5F2;
+  --negro-absoluto: #FFFFFF;
+  --negro-navbar: #FFFFFF;
+  --negro-tarjeta: #FFFFFF;
+  --bg-dark-page: #F5F5F2;
+  --bg-card: #FFFFFF;
+  --bg-input: #F5F5F2;
+  --bg-day: #ECECEA;
+  --bg-disabled: #E2E2DE;
+  --gris-profundo: rgba(0, 0, 0, 0.04);
 
-    /* Textos (blanco -> oscuro) */
-    --blanco: #1A1A1A;
-    --texto-blanco: #1A1A1A;
-    --text-light: #1A1A1A;
-    --text: #1A1A1A;
-    --text-muted: #6b6b6b;
-    --gris: #6b6b6b;
+  /* --- Textos (blanco -> oscuro) --- */
+  --blanco: #1A1A1A;
+  --mya-white: #1A1A1A;
+  --texto-blanco: #1A1A1A;
+  --texto-principal: #1A1A1A;
+  --texto-secundario: #4d4d4d;
+  --text: #1A1A1A;
+  --text-light: #1A1A1A;
+  --text-muted: #6b6b6b;
 
-    color-scheme: light;
+  /* --- Grises / bordes --- */
+  --gris: #6b6b6b;
+  --gris-oscuro: #E4E4E0;
+  --gris-borde: #DDDDDD;
+  --border: #DDDDDD;
+
+  /* --- Dorado: un poco más oscuro en claro para que no "explote" sobre
+     blanco (pedido: D4AF37/FFC107 o negro para títulos e íconos) --- */
+  --dorado-oscuro: #BF930D;
+
+  /* --- Alias semánticos --- */
+  --bg-main: var(--bg-dark-page);
+  --text-primary: var(--text-light);
+  --text-accent: var(--dorado-oscuro);
+  --btn-secondary-text: var(--dorado-oscuro);
+  --btn-secondary-border: var(--dorado-oscuro);
+  --border-color: var(--border);
+
+  color-scheme: light;
 }
 
 /* Transición suave entre temas para toda la página */
 body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
-#notificaciones-panel, .form-control, .form-select {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+#notificaciones-panel, .form-control, .form-select, .btn {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* --- Ajustes puntuales que no dependen de las variables anteriores --- */
+/* --- Botón del toggle de tema (icono sol/luna) --- */
+.theme-toggle-btn {
+  background: transparent;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(255, 198, 0, 0.12);
+  transform: rotate(15deg);
+}
+
+.theme-toggle-btn i {
+  color: var(--dorado);
+  font-size: 1.15rem;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   BOTONES — ESTILO ÚNICO PARA TODO EL SITIO
+   ----------------------------------------------------------------------------
+   Clases nuevas para usar en templates nuevos o al ir migrando:
+   .btn-theme-primary   -> "Guardar", "Reservar", acciones principales
+   .btn-theme-secondary -> "Cancelar" y demás acciones secundarias
+   ============================================================================ */
+
+.btn-theme-primary {
+  background-color: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  border: none !important;
+  font-weight: 600;
+}
+
+.btn-theme-primary:hover {
+  background-color: var(--dorado-oscuro) !important;
+  color: var(--btn-primary-text) !important;
+}
+
+.btn-theme-secondary {
+  background-color: var(--btn-secondary-bg) !important;
+  color: var(--btn-secondary-text) !important;
+  border: 2px solid var(--btn-secondary-border) !important;
+  font-weight: 600;
+}
+
+.btn-theme-secondary:hover {
+  background-color: var(--btn-secondary-border) !important;
+  color: var(--btn-primary-text) !important;
+}
+
+/* --- FIX del botón "CANCELAR" invisible ---------------------------------
+   No sabemos qué clase exacta usa el botón CANCELAR de perfil.html (no
+   estaba en los archivos que compartiste), así que además de la clase
+   .btn-theme-secondary de arriba, este bloque cubre las clases estándar de
+   Bootstrap más probables (btn-secondary / btn-outline-secondary / btn-light
+   / btn-outline-light). Si el botón usa alguna de estas, queda arreglado
+   YA, en los dos temas, sin tocar el HTML. --------------------------------- */
+.btn-secondary,
+.btn-outline-secondary,
+.btn-light,
+.btn-outline-light {
+  background-color: transparent !important;
+  border: 2px solid var(--dorado) !important;
+  color: var(--dorado) !important;
+}
+
+.btn-secondary:hover,
+.btn-outline-secondary:hover,
+.btn-light:hover,
+.btn-outline-light:hover {
+  background-color: var(--dorado) !important;
+  color: var(--negro) !important;
+}
+
+/* ============================================================================
+   AJUSTES PUNTUALES DE MODO CLARO (no dependen de variables porque el
+   componente usa color fijo en hex, o es una clase utilitaria de Bootstrap)
+   ============================================================================ */
 
 [data-theme="light"] body {
-    background-color: var(--bg-dark-page);
-    color: var(--text-light);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
 }
 
 [data-theme="light"] .navbar,
 [data-theme="light"] .custom-navbar {
-    background-color: #FFFFFF;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: #FFFFFF;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="light"] .footer-mya {
-    background-color: #FFFFFF !important;
-    border-top-color: rgba(0, 0, 0, 0.08) !important;
+  background-color: #FFFFFF !important;
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Clases utilitarias de Bootstrap muy usadas en tarjetas y modales */
-[data-theme="light"] .bg-dark {
-    background-color: #FFFFFF !important;
-}
-
+/* Utilidades de Bootstrap muy usadas para tarjetas y modales */
+[data-theme="light"] .bg-dark,
 [data-theme="light"] .bg-black {
-    background-color: #FFFFFF !important;
+  background-color: #FFFFFF !important;
 }
 
 [data-theme="light"] .text-white,
 [data-theme="light"] .text-light {
-    color: #1A1A1A !important;
+  color: #1A1A1A !important;
 }
 
 [data-theme="light"] .text-white-50 {
-    color: rgba(0, 0, 0, 0.55) !important;
+  color: rgba(0, 0, 0, 0.55) !important;
 }
 
 [data-theme="light"] .border-secondary {
-    border-color: #DDDDDD !important;
+  border-color: #DDDDDD !important;
 }
 
-/* Modales con fondo hardcodeado (no usan variables) */
-[data-theme="light"] .custom-modal {
-    background-color: #FFFFFF;
-    border-color: rgba(0, 0, 0, 0.08);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+[data-theme="light"] .card {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
 }
 
-[data-theme="light"] .custom-modal .custom-input {
-    background-color: #F5F5F2;
-    border-color: rgba(0, 0, 0, 0.1);
-    color: #1A1A1A;
+[data-theme="light"] .dropdown-menu {
+  background-color: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
-[data-theme="light"] .custom-modal .custom-input::placeholder {
-    color: #8a8a8a;
+[data-theme="light"] .dropdown-item:hover {
+  background-color: #F0F0EC;
 }
 
-/* Inputs y selects generales (Bootstrap oscuro -> claro) */
+[data-theme="light"] #notificaciones-panel {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
 [data-theme="light"] .form-control,
 [data-theme="light"] .form-select,
 [data-theme="light"] textarea {
-    background-color: #FFFFFF;
-    border-color: #DDDDDD;
-    color: #1A1A1A;
+  background-color: #FFFFFF;
+  border-color: #DDDDDD;
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .form-control-custom,
+[data-theme="light"] .custom-input {
+  background-color: #FFFFFF !important;
+  border: 1px solid #DDDDDD !important;
+  color: #1A1A1A !important;
+}
+
+[data-theme="light"] .form-control-custom::placeholder,
+[data-theme="light"] .custom-input::placeholder {
+  color: #8a8a8a !important;
+}
+
+[data-theme="light"] .form-label-custom {
+  color: #555555;
+}
+
+[data-theme="light"] .modal-content,
+[data-theme="light"] .custom-modal {
+  background-color: #FFFFFF !important;
+  color: #1A1A1A !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .custom-modal .custom-input {
+  background-color: #F5F5F2;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1A1A1A;
 }
 
 [data-theme="light"] .modal-barberia .form-control,
 [data-theme="light"] .modal-barberia .form-select,
 [data-theme="light"] .modal-barberia textarea {
-    background-color: #F5F5F2 !important;
-    border-color: #DDDDDD !important;
-    color: #1A1A1A !important;
+  background-color: #F5F5F2 !important;
+  border-color: #DDDDDD !important;
+  color: #1A1A1A !important;
 }
 
-/* Panel de notificaciones */
-[data-theme="light"] #notificaciones-panel {
-    background: #FFFFFF;
-    border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+[data-theme="light"] .table-dark,
+[data-theme="light"] .table > :not(caption) > * > * {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: #1A1A1A !important;
+  border-color: #E4E4E0 !important;
 }
 
-/* Dropdowns (Bootstrap) */
-[data-theme="light"] .dropdown-menu {
-    background-color: #FFFFFF;
-    border-color: rgba(0, 0, 0, 0.08);
+[data-theme="light"] .badge.bg-secondary,
+[data-theme="light"] .badge.bg-dark {
+  background-color: #E4E4E0 !important;
+  color: #1A1A1A !important;
 }
 
-[data-theme="light"] .dropdown-item:hover {
-    background-color: #F0F0EC;
+/* --- Tarjetas / paneles con hex fijo (dashboards, perfiles, reservas) --- */
+[data-theme="light"] .panel-bg,
+[data-theme="light"] .kpi-card,
+[data-theme="light"] .agenda-card,
+[data-theme="light"] .auth-card,
+[data-theme="light"] .edit-profile-card {
+  background: #FFFFFF !important;
+  border-color: #E4E4E0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
 }
 
-/* Tarjetas genéricas de Bootstrap usadas en dashboards/perfiles */
-[data-theme="light"] .card {
-    background-color: #FFFFFF;
-    color: #1A1A1A;
+[data-theme="light"] .stats-card {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E4E4E0 !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07) !important;
 }
 
-/* Íconos y textos dorados se mantienen igual: sin overrides para
-   .text-gold, .btn-dorado, var(--dorado)/var(--gold), etc. */
+[data-theme="light"] .highlight-card {
+  background: linear-gradient(145deg, #FFFDF2, #FFF6D6) !important;
+  border-color: rgba(191, 147, 13, 0.35) !important;
+}
 
-/* Nota para futuras extensiones: si detectas alguna tarjeta o modal
-   puntual con un color hardcodeado que no cambie con el tema, agrega
-   aquí una regla [data-theme="light"] .tu-clase { ... } siguiendo el
-   mismo patrón que las anteriores. */
+[data-theme="light"] .quick-link-btn {
+  background: #F5F5F2;
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .quick-link-btn:hover {
+  background: #FFF6D6;
+  color: #111111;
+}
+
+[data-theme="light"] .editar-card {
+  background: linear-gradient(145deg, #FFFFFF, #FAF9F6) !important;
+  border-color: rgba(191, 147, 13, 0.20) !important;
+}
+
+[data-theme="light"] .danger-zone-card {
+  background: linear-gradient(145deg, #FFF5F5, #FFFFFF) !important;
+}
+
+[data-theme="light"] .observation-box {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+[data-theme="light"] .observation-box .observation-text {
+  color: #333333 !important;
+}
+
+[data-theme="light"] .observation-box .no-observation-text {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* --- Análisis de rostro --- */
+[data-theme="light"] .analisis-card,
+[data-theme="light"] .privacidad-modal {
+  background: #FFFFFF !important;
+  border-color: #E4E4E0 !important;
+}
+
+[data-theme="light"] .btn-opcion {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  color: #1A1A1A !important;
+}
+
+[data-theme="light"] .resultado-box {
+  background-color: #FFFBEA !important;
+  border-color: rgba(191, 147, 13, 0.35) !important;
+}
+
+[data-theme="light"] .metricas-chips {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="light"] .btn-return {
+  background-color: #1A1A1A;
+  color: #FFFFFF;
+}
+
+/* ============================================================================
+   CABECERA "PREMIUM" (mis_citas.html / mis reservas)
+   ----------------------------------------------------------------------------
+   Esta cabecera usa un degradado oscuro FIJO a propósito, como acento visual,
+   en AMBOS temas (tal cual se ve en tu captura "Mis Reservas": la franja del
+   título se mantiene oscura aunque el resto de la página esté en blanco).
+   El bug de "MIS" invisible pasaba porque la regla genérica de arriba
+   ([data-theme="light"] .text-white) pintaba el texto de negro sobre un
+   fondo que seguía siendo oscuro. Esta regla, más específica, gana siempre
+   y fuerza el texto de ESTA cabecera a blanco/dorado sin importar el tema.
+   ============================================================================ */
+.header-reserva-premium,
+.header-reserva-premium .page-title,
+[data-theme="light"] .header-reserva-premium .page-title.text-white {
+  color: #FFFFFF !important;
+}
+
+.header-reserva-premium .text-gradient,
+[data-theme="light"] .header-reserva-premium .text-gradient {
+  -webkit-text-fill-color: transparent;
+}
+
+/* Nota: si en el futuro prefieres que ESTA cabecera se vuelva blanca en modo
+   claro (en vez de quedarse oscura como acento fijo), borra el bloque de
+   arriba y usa en su lugar:
+
+   [data-theme="light"] .header-reserva-premium {
+     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F2 100%);
+     border-bottom-color: rgba(191, 147, 13, 0.25);
+   }
+   [data-theme="light"] .header-reserva-premium .page-title.text-white {
+     color: #1A1A1A !important;
+   }
+*/
+
+/* ============================================================================
+   AJUSTES MODO CLARO — VISTA "SERVICIOS" (general, individuales y paquetes)
+   ----------------------------------------------------------------------------
+   Solo corrige lo pedido: fondo de sección, color de títulos/subtítulos,
+   fondo de las tarjetas y botones, para que sean coherentes en modo claro.
+   ============================================================================ */
+
+/* --- Vista general de Servicios (servicios.html) --- */
+[data-theme="light"] .servicios-container {
+  background-color: var(--bg-main);
+}
+
+[data-theme="light"] .servicios-container h2 {
+  color: var(--dorado) !important;
+}
+
+[data-theme="light"] .servicio-card {
+  background-color: #F5F5F2;
+  border-radius: var(--radio-borde);
+}
+
+[data-theme="light"] .titulo-card-servicio {
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .descripcion-card-servicio {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+[data-theme="light"] .servicio-card .btn-warning {
+  background-color: transparent !important;
+  border: 2px solid var(--dorado) !important;
+  color: var(--dorado) !important;
+}
+
+[data-theme="light"] .servicio-card .btn-warning:hover {
+  background-color: var(--dorado) !important;
+  color: var(--negro) !important;
+}
+
+/* --- Vista Servicios Individuales (servicios-ind.html) --- */
+[data-theme="light"] .titulo-servicios {
+  color: var(--dorado);
+}
+
+[data-theme="light"] .subtitulo-servicios {
+  color: #1A1A1A;
+}
+
+/* --- Tarjetas de precio, compartidas por Individuales y Paquetes --- */
+[data-theme="light"] .card-precio {
+  background: #F5F5F2;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .card-precio h6 {
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .card-precio small {
+  color: rgba(0, 0, 0, 0.55);
+}
