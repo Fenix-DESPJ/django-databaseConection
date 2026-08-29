@@ -14,7 +14,10 @@ class Cita(models.Model):
     fecha = models.DateField(db_column='fecha')
     horainicio = models.TimeField(db_column='horaInicio')
     observaciones = models.CharField(max_length=255, db_column='observaciones', null=True, blank=True)
-    recordatorio_enviado = models.BooleanField(db_column='recordatorio_enviado', default=False)  # NUEVO
+    
+    # Nuevos campos para diferenciar ambos envíos
+    recordatorio_24h_enviado = models.BooleanField(db_column='recordatorio_24h_enviado', default=False)
+    recordatorio_1h_enviado = models.BooleanField(db_column='recordatorio_1h_enviado', default=False)
     
     @property
     def esta_completada(self):
@@ -32,7 +35,6 @@ class Cita(models.Model):
         Infiere si la cita quedó incompleta (asistencia fallida) buscando 'Incompleta' en observaciones.
         """
         return bool(self.observaciones) and 'Incompleta' in self.observaciones
-    
 
     class Meta:
         managed = False
