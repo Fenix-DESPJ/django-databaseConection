@@ -2,6 +2,8 @@ import logging
 import requests
 from django.conf import settings
 
+#configuracion final whatsapp
+
 logger = logging.getLogger(__name__)
 
 
