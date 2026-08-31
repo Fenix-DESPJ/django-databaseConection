@@ -27,10 +27,10 @@
     </div>
 
     <div class="d-flex justify-content-end gap-2 mb-5">
-        <a href="{% url 'descargar_reporte_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">
+        <a href="{% url 'descargar_reporte_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success btn-descargar-excel">
             <i class="fas fa-file-excel"></i> Descargar Excel
         </a>
-        <a href="{% url 'descargar_reporte_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">
+        <a href="{% url 'descargar_reporte_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger btn-descargar-pdf">
             <i class="fas fa-file-pdf"></i> Descargar PDF
         </a>
     </div>
