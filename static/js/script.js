@@ -690,23 +690,10 @@ document.addEventListener("DOMContentLoaded", () => {
             images[currentIndex].classList.add('active');
         }, 4000);
     }
-
-    const track = document.querySelector('.barbers-track');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    if (track && prevBtn && nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            track.scrollBy({ left: 300, behavior: 'smooth' });
-        });
-
-        prevBtn.addEventListener('click', () => {
-            track.scrollBy({ left: -300, behavior: 'smooth' });
-        });
-    }
 });
 
-// --- Carrusel de barberos con dots (versión con agrupación por página) ---
+// --- Carrusel de barberos: navegación "uno por uno" + dots sincronizados
+//     con el scroll manual (arrastrar con el mouse/dedo también mueve los dots) ---
 document.addEventListener("DOMContentLoaded", () => {
     const track = document.querySelector('.barbers-track');
     const cards = document.querySelectorAll('.barber-card');
@@ -716,47 +703,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!track || !cards.length || !nextBtn || !prevBtn || !dotsContainer) return;
 
-    const itemsPerView = 3;
-    const totalGroups = Math.ceil(cards.length / itemsPerView);
-    let currentGroup = 0;
+    const totalCards = cards.length;
+    let currentIndex = 0;
 
-    for (let i = 0; i < totalGroups; i++) {
+    // Un punto por cada barbero (antes agrupaba de a 3, lo que no coincidía
+    // con las tarjetas que realmente se ven en el diseño "uno por uno")
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < totalCards; i++) {
         const dot = document.createElement('div');
         dot.classList.add('dot');
         if (i === 0) dot.classList.add('active');
         dot.addEventListener('click', () => {
-            currentGroup = i;
-            updateCarousel();
+            currentIndex = i;
+            scrollToCard(currentIndex);
         });
         dotsContainer.appendChild(dot);
     }
 
     const dots = document.querySelectorAll('.dot');
 
-    function updateCarousel() {
-        const cardWidth = cards[0].offsetWidth + 20;
+    function updateDots(index) {
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+    }
+
+    // Centra la tarjeta "index" dentro del carrusel
+    function scrollToCard(index) {
+        const card = cards[index];
+        if (!card) return;
+
+        const trackRect = track.getBoundingClientRect();
+        const cardRect = card.getBoundingClientRect();
+        const offset = (cardRect.left + cardRect.width / 2) - (trackRect.left + trackRect.width / 2);
+
         track.scrollTo({
-            left: currentGroup * (cardWidth * itemsPerView),
+            left: track.scrollLeft + offset,
             behavior: 'smooth'
         });
 
-        dots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentGroup);
-        });
+        updateDots(index);
     }
 
+    // Detecta qué tarjeta quedó más cerca del centro visible del carrusel
+    function getClosestCardIndex() {
+        const trackRect = track.getBoundingClientRect();
+        const trackCenter = trackRect.left + trackRect.width / 2;
+
+        let closestIndex = 0;
+        let minDistance = Infinity;
+
+        cards.forEach((card, index) => {
+            const cardRect = card.getBoundingClientRect();
+            const cardCenter = cardRect.left + cardRect.width / 2;
+            const distance = Math.abs(cardCenter - trackCenter);
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIndex = index;
+            }
+        });
+
+        return closestIndex;
+    }
+
+    // Sincroniza los dots cuando el usuario arrastra o hace scroll manual
+    // (se espera a que termine el scroll para no recalcular en cada pixel)
+    let scrollTimeout;
+    track.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            currentIndex = getClosestCardIndex();
+            updateDots(currentIndex);
+        }, 120);
+    }, { passive: true });
+
     nextBtn.addEventListener('click', () => {
-        if (currentGroup < totalGroups - 1) {
-            currentGroup++;
-            updateCarousel();
-        }
+        currentIndex = Math.min(currentIndex + 1, totalCards - 1);
+        scrollToCard(currentIndex);
     });
 
     prevBtn.addEventListener('click', () => {
-        if (currentGroup > 0) {
-            currentGroup--;
-            updateCarousel();
-        }
+        currentIndex = Math.max(currentIndex - 1, 0);
+        scrollToCard(currentIndex);
     });
 });
 
