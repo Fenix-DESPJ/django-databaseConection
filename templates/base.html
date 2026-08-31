@@ -121,9 +121,7 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
                         
                         {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home_cliente' %}">Inicio</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'analisis_rostro' %}">Recomendación de Corte</a></li>
@@ -215,9 +213,7 @@
                                 <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
                             
                             {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
-                                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
-                                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#barberos">Barberos</a></li>
-                                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#marca">Marca</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'home_cliente' %}">Inicio</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'analisis_rostro' %}">Recomendación de corte</a></li>

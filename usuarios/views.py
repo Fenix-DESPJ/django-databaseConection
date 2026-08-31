@@ -59,6 +59,57 @@ ID_ROL_ADMIN = 1
 ID_ROL_BARBERO = 2
 ID_ROL_CLIENTE = 3
 
+@login_required
+def home_cliente(request):
+    """
+    Vista principal del Panel de Cliente: consulta y envía al template
+    la próxima cita agendada y el historial de citas.
+    """
+    try:
+        usuario_actual = Usuario.objects.get(correo=request.user.email)
+    except Usuario.DoesNotExist:
+        messages.error(request, "No se encontraron datos de usuario registrados.")
+        return redirect('login')
+
+    # Validar que el perfil pertenezca a un cliente (Rol 3 por ejemplo)
+    if usuario_actual.idrolfk_id == 1:
+        return redirect('dashboard_admin')
+    elif usuario_actual.idrolfk_id == 2:
+        return redirect('panel_barbero')
+
+    cliente = Cliente.objects.filter(idusuariofk=usuario_actual).first()
+    
+    proxima_cita = None
+    historial_citas = []
+
+    if cliente:
+        hoy = timezone.now().date()
+
+        # 1. Próxima cita activa (fecha mayor o igual a hoy, sin marcar como completada/incompleta)
+        proxima_cita = Cita.objects.filter(
+            idclientefk=cliente,
+            idagendafk__fecha__gte=hoy
+        ).exclude(
+            observaciones__icontains='Completado'
+        ).exclude(
+            observaciones__icontains='Incompleta'
+        ).select_related(
+            'idserviciofk', 'idbarberofk__idusuariofk', 'idagendafk'
+        ).order_by('idagendafk__fecha', 'idagendafk__horainicio').first()
+
+        # 2. Historial de citas pasadas o finalizadas
+        historial_citas = Cita.objects.filter(
+            idclientefk=cliente
+        ).select_related(
+            'idserviciofk', 'idbarberofk__idusuariofk', 'idagendafk'
+        ).order_by('-idagendafk__fecha', '-idagendafk__horainicio')[:5]
+
+    context = {
+        'usuario': usuario_actual,
+        'proxima_cita': proxima_cita,
+        'historial_citas': historial_citas,
+    }
+    return render(request, 'home_cliente.html', context)
 
 def formatear_nombre(nombre):
     """Antes: trigger FormatearNombreUsuario (BEFORE INSERT)."""
@@ -286,6 +337,8 @@ def iniciar_sesion(request):
                     return redirect('dashboard_admin')
                 elif rol_final == 2:
                     return redirect('panel_barbero')
+                elif rol_final == 3:
+                    return redirect('home_cliente')
                 else:
                     return redirect('home')
 
@@ -414,6 +467,25 @@ def registrarse(request):
 # 4. VISTA: HOME / INDEX
 # =========================================================================
 def home(request):
+
+    if request.user.is_authenticated:
+        rol_id = request.session.get('usuario_rol_id')
+        
+        # Si por alguna razón no está en sesión, se intenta obtener de la BD
+        if not rol_id:
+            try:
+                usuario_manual = Usuario.objects.get(correo=request.user.email)
+                rol_id = usuario_manual.idrolfk_id or usuario_manual.idrolfk.idrol
+            except Usuario.DoesNotExist:
+                rol_id = None
+
+        if rol_id == 1:
+            return redirect('dashboard_admin')
+        elif rol_id == 2:
+            return redirect('panel_barbero')
+        elif rol_id == 3:
+            return redirect('home_cliente')
+
     mejores_calificaciones = Calificacion.objects.filter(
         calificacion__gte=4
     ).select_related('idclientefk__idusuariofk').order_by('-fechacreacion')[:12]

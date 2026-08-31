@@ -230,6 +230,7 @@ def crear_reserva(request):
         'barberos': Usuario.objects.filter(idrolfk=2)
     })
 
+
 def mis_citas_view(request):
     if not request.user.is_authenticated:
         messages.error(request, "Debes iniciar sesión para ver tus citas.")

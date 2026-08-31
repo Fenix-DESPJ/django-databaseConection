@@ -28,4 +28,5 @@ urlpatterns = [
     path('editar-contenido-index/', views.editar_contenido_index, name='editar_contenido_index'),
     path('usuarios/admin-dashboard/todas-citas/', views.ver_todas_citas_admin, name='ver_todas_citas_admin'),
     path('eliminar-mi-cuenta/', views.eliminar_mi_cuenta, name='eliminar_mi_cuenta'),
+    path('cliente/home/', views.home_cliente, name='home_cliente'),
 ]

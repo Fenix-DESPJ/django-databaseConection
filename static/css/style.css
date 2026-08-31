@@ -7165,3 +7165,98 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 [data-theme="light"] .resena-comentario {
   color: #1A1A1A;
 }
+
+/* Configuración de Tarjetas y Secciones del home de cliente */
+.welcome-card {
+    background: var(--negro-tarjeta);
+    border: 1px solid var(--border-color);
+}
+
+.welcome-card-z {
+    z-index: 2;
+}
+
+.badge-cliente {
+    background: rgba(255, 198, 0, 0.15);
+    color: var(--dorado);
+    border: 1px solid var(--dorado);
+}
+
+.badge-estado-cita {
+    background: rgba(255, 198, 0, 0.1);
+    color: var(--dorado);
+    border: 1px solid var(--dorado);
+}
+
+/* Botones Personalizados */
+.btn-agendar-hero {
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    border-radius: 12px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-agendar-hero:hover {
+    transform: translateY(-2px);
+}
+
+.btn-reagendar {
+    background-color: transparent;
+    color: var(--dorado);
+    border: 1px solid var(--dorado);
+}
+
+.btn-reagendar:hover {
+    background-color: var(--dorado);
+    color: #000;
+}
+
+.btn-reservar-nuevo {
+    background-color: transparent;
+    color: var(--dorado);
+    border: 1px solid var(--dorado);
+    font-size: 0.825rem;
+}
+
+.btn-reservar-nuevo:hover {
+    background-color: var(--dorado);
+    color: #000;
+}
+
+/* Estilos de Tarjetas de Citas */
+.card-cita-main {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.card-empty {
+    background-color: var(--bg-card);
+    border: 1px dashed var(--border-color) !important;
+}
+
+.card-historial {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Bordes y Separadores */
+.border-custom {
+    border-color: var(--border-color) !important;
+}
+
+.border-subtle-custom {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Colores de Texto Utilitarios */
+.text-custom-light {
+    color: var(--text-light);
+}
+
+.text-custom-muted {
+    color: var(--text-muted);
+}
+
+.text-custom-gold {
+    color: var(--dorado);
+}
