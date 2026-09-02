@@ -7352,97 +7352,145 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
   color: #1A1A1A;
 }
 
-/* Configuración de Tarjetas y Secciones del home de cliente */
-.welcome-card {
-    background: var(--negro-tarjeta);
-    border: 1px solid var(--border-color);
+/* ==========================================================================
+   TARJETAS Y CONTENEDORES DEL HOME CLIENTE(Con profundidad y sombras)
+   ========================================================================== */
+.welcome-card,
+.card-cita-main,
+.card-historial,
+.mya-contact-card,
+.barber-card {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radio-borde);
+  box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              border-color 0.3s ease;
+}
+
+/* Hover en tarjetas */
+.welcome-card:hover,
+.card-cita-main:hover,
+.card-historial:hover,
+.mya-contact-card:hover,
+.barber-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--dorado-oscuro) !important;
+  box-shadow: 0 18px 35px -10px rgba(0, 0, 0, 0.9), 
+              0 0 15px rgba(255, 198, 0, 0.15);
 }
 
 .welcome-card-z {
-    z-index: 2;
-}
-
-.badge-cliente {
-    background: rgba(255, 198, 0, 0.15);
-    color: var(--dorado);
-    border: 1px solid var(--dorado);
-}
-
-.badge-estado-cita {
-    background: rgba(255, 198, 0, 0.1);
-    color: var(--dorado);
-    border: 1px solid var(--dorado);
-}
-
-/* Botones Personalizados */
-.btn-agendar-hero {
-    background-color: var(--btn-primary-bg);
-    color: var(--btn-primary-text);
-    border-radius: 12px;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.btn-agendar-hero:hover {
-    transform: translateY(-2px);
-}
-
-.btn-reagendar {
-    background-color: transparent;
-    color: var(--dorado);
-    border: 1px solid var(--dorado);
-}
-
-.btn-reagendar:hover {
-    background-color: var(--dorado);
-    color: #000;
-}
-
-.btn-reservar-nuevo {
-    background-color: transparent;
-    color: var(--dorado);
-    border: 1px solid var(--dorado);
-    font-size: 0.825rem;
-}
-
-.btn-reservar-nuevo:hover {
-    background-color: var(--dorado);
-    color: #000;
-}
-
-/* Estilos de Tarjetas de Citas */
-.card-cita-main {
-    background-color: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
+  z-index: 2;
 }
 
 .card-empty {
-    background-color: var(--bg-card);
-    border: 1px dashed var(--border-color) !important;
+  background-color: var(--bg-card);
+  border: 1px dashed var(--dorado-oscuro) !important;
+  border-radius: var(--radio-borde);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-.card-historial {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color) !important;
+/* Badges con brillo suave */
+.badge-cliente,
+.badge-estado-cita {
+  background: linear-gradient(135deg, rgba(255, 198, 0, 0.2) 0%, rgba(191, 147, 13, 0.08) 100%);
+  color: var(--dorado);
+  border: 1px solid var(--dorado-oscuro);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  font-weight: 600;
 }
 
-/* Bordes y Separadores */
+/* ==========================================================================
+   BOTONES CON DEGRADADOS, SOMBRAS Y HOVER
+   ========================================================================== */
+
+/* Botones Principales (Lleno Dorado con Degradado) */
+.btn-dorado,
+.btn-agendar-hero {
+  background: linear-gradient(135deg, var(--dorado-hover) 0%, var(--dorado) 50%, var(--dorado-oscuro) 100%) !important;
+  color: var(--negro-absoluto) !important;
+  font-weight: 700;
+  border: none !important;
+  border-radius: 12px;
+  padding: 12px 28px;
+  box-shadow: 0 4px 15px rgba(255, 198, 0, 0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.btn-dorado:hover,
+.btn-agendar-hero:hover {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--dorado-hover) 50%, var(--dorado) 100%) !important;
+  color: var(--negro-absoluto) !important;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 22px rgba(255, 198, 0, 0.5);
+}
+
+/* Botones Secundarios (Borde con Relleno en Hover) */
+.btn-borde,
+.btn-reagendar,
+.btn-reservar-nuevo {
+  background: transparent !important;
+  color: var(--dorado) !important;
+  border: 1px solid var(--dorado) !important;
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease !important;
+}
+
+.btn-borde:hover,
+.btn-reagendar:hover,
+.btn-reservar-nuevo:hover {
+  background: linear-gradient(135deg, var(--dorado-hover) 0%, var(--dorado) 100%) !important;
+  color: var(--negro-absoluto) !important;
+  border-color: transparent !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 18px rgba(255, 198, 0, 0.4);
+}
+
+/* ==========================================================================
+   FLECHAS DE CARRUSEL
+   ========================================================================== */
+.carousel-arrow,
+.resenas-arrow {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--dorado) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.carousel-arrow:hover,
+.resenas-arrow:hover {
+  background: linear-gradient(135deg, var(--dorado-hover) 0%, var(--dorado) 100%) !important;
+  color: var(--negro-absoluto) !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 15px rgba(255, 198, 0, 0.5);
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   UTILITARIOS DE TEXTO Y BORDES
+   ========================================================================== */
 .border-custom {
-    border-color: var(--border-color) !important;
+  border-color: var(--border-color) !important;
 }
 
 .border-subtle-custom {
-    border-color: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Colores de Texto Utilitarios */
 .text-custom-light {
-    color: var(--text-light);
+  color: var(--text-light);
 }
 
 .text-custom-muted {
-    color: var(--text-muted);
+  color: var(--text-muted);
 }
 
 .text-custom-gold {
-    color: var(--dorado);
+  color: var(--dorado);
 }
