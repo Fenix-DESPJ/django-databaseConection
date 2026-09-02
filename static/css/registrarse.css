@@ -1,11 +1,10 @@
-:root{
-    --dorado:#FFC600;
-    --dorado-oscuro:#BF930D;
-    --gris:#565654;
-    --gris-oscuro:#30302E;
-    --negro:#111111;
-    --blanco:#FFFFFF;
-}
+/* ============================================================================
+   registrarse.css
+   ----------------------------------------------------------------------------
+   Igual que iniciarsesion.css: ya no declara su propio :root, hereda las
+   variables de style.css (enlazado antes que este archivo en registrarse.html)
+   y por eso responde solo al atributo data-theme del <html>.
+   ============================================================================ */
 
 *{
     margin:0;
@@ -31,8 +30,20 @@ body{
     background-repeat:no-repeat;
     background-attachment:fixed;
 
-
     font-family:Arial, sans-serif;
+}
+
+[data-theme="light"] body{
+    background:
+    linear-gradient(
+        rgba(255,255,255,0.55),
+        rgba(255,255,255,0.55)
+    ),
+    url("../img/fondoRegistro.png");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
 }
 
 .registro-container{
@@ -44,9 +55,9 @@ body{
     max-width:600px;
     margin:auto;
 
-    background:rgba(17,17,17,.95);
+    background:var(--bg-card, #111111);
 
-    border:1px solid rgba(255,198,0,.25);
+    border:1px solid var(--border-color, rgba(255,198,0,.25));
 
     border-radius:30px;
 
@@ -66,13 +77,13 @@ body{
 
     border-radius:50%;
 
-    border:3px solid var(--dorado);
+    border:3px solid var(--dorado, #FFC600);
 
     margin-bottom:20px;
 }
 
 .registro-card h1{
-    color:var(--dorado);
+    color:var(--dorado, #FFC600);
 
     font-family:"Times New Roman", serif;
 
@@ -80,42 +91,55 @@ body{
 }
 
 .subtitulo{
-    color:#d8d8d8;
+    color:var(--text-muted, #d8d8d8);
     margin-bottom:30px;
 }
 
 .form-label{
-    color:var(--blanco);
+    color:var(--text-primary, #FFFFFF);
     display:block;
     text-align:left;
     margin-bottom:8px;
 }
 
 .form-control{
-    background:#1a1a1a;
-    border:1px solid rgba(255,198,0,.25);
-    color:#FFFFFF;
+    background:var(--bg-input, #1a1a1a);
+    border:1px solid var(--border-color, rgba(255,198,0,.25));
+    color:var(--text-primary, #FFFFFF);
     border-radius:15px;
     padding:12px;
 }
 
 .form-control::placeholder{
-    color:rgba(255,255,255,.75);
+    color:var(--text-muted, #d8d8d8);
     opacity:1;
 }
 
 .form-control:focus{
-    background:#1a1a1a;
-    color:#FFFFFF;
+    background:var(--bg-input, #1a1a1a);
+    color:var(--text-primary, #FFFFFF);
 
-    border-color:var(--dorado);
+    border-color:var(--dorado, #FFC600);
 
     box-shadow:
     0 0 0 .2rem rgba(255,198,0,.25);
 }
 
+/* --- Autofill de WebKit: usa las variables, así queda correcto en los
+   dos temas y no hace falta duplicar este bloque cuando cambie la paleta. */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:-webkit-autofill:active{
+    -webkit-text-fill-color:var(--text-primary, #FFFFFF);
+    -webkit-box-shadow:0 0 0 1000px var(--bg-input, #1a1a1a) inset;
+    box-shadow:0 0 0 1000px var(--bg-input, #1a1a1a) inset;
+    caret-color:var(--text-primary, #FFFFFF);
+    transition:background-color 9999s ease-in-out 0s;
+}
+
 input[type="date"]{
-    color:#FFFFFF;
+    color:var(--text-primary, #FFFFFF);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator{
@@ -123,12 +147,16 @@ input[type="date"]::-webkit-calendar-picker-indicator{
     cursor:pointer;
 }
 
+[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator{
+    filter:invert(0.7);
+}
+
 .btn-registro{
     width:100%;
 
-    background:var(--dorado);
+    background:var(--btn-primary-bg, var(--dorado, #FFC600));
 
-    color:var(--negro);
+    color:var(--btn-primary-text, #111111);
 
     border:none;
 
@@ -142,7 +170,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{
 }
 
 .btn-registro:hover{
-    background:var(--dorado-oscuro);
+    background:var(--dorado-oscuro, #BF930D);
     color:#FFFFFF;
 }
 
@@ -151,7 +179,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{
 
     margin-top:25px;
 
-    color:var(--dorado);
+    color:var(--dorado, #FFC600);
 
     text-decoration:none;
 
@@ -159,7 +187,15 @@ input[type="date"]::-webkit-calendar-picker-indicator{
 }
 
 .volver:hover{
-    color:#FFFFFF;
+    color:var(--text-primary, #FFFFFF);
+}
+
+/* --- Botón "Continuar con Google" ---
+   En modo claro el fondo blanco del botón se pierde contra el fondo
+   claro de la tarjeta, así que se le agrega un borde negro sutil para
+   que quede bien delimitado. En modo oscuro no hace falta. */
+[data-theme="light"] .btn-google{
+    border:1px solid #000000;
 }
 
 @media(max-width:576px){

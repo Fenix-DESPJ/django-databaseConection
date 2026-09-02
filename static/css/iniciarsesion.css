@@ -1,11 +1,15 @@
-:root{
-    --dorado:#FFC600;
-    --dorado-oscuro:#BF930D;
-    --gris:#565654;
-    --gris-oscuro:#30302E;
-    --negro:#111111;
-    --blanco:#FFFFFF;
-}
+/* ============================================================================
+   iniciarsesion.css
+   ----------------------------------------------------------------------------
+   Ya NO declara su propio :root. Todas las variables (--dorado, --bg-card,
+   --text-light, --border, etc.) vienen de style.css, que ahora se enlaza
+   ANTES que este archivo en iniciarsesion.html. Así, esta pantalla hereda
+   automáticamente el tema activo (data-theme="light" | "dark" en <html>)
+   sin necesitar su propia copia de las variables.
+
+   Si por algún motivo style.css no llegara a cargar, se dejan fallbacks
+   con var(--variable, valor-de-respaldo) para que la pantalla no se rompa.
+   ============================================================================ */
 
 *{
     margin:0;
@@ -31,8 +35,23 @@ body{
     background-repeat:no-repeat;
     background-attachment:fixed;
 
-
     font-family:Arial, sans-serif;
+}
+
+/* En modo claro el overlay negro tan fuerte deja la pantalla oscura aunque
+   el resto del sitio esté en claro; se suaviza SOLO el overlay, la foto
+   de fondo se mantiene igual. */
+[data-theme="light"] body{
+    background:
+    linear-gradient(
+        rgba(255,255,255,0.55),
+        rgba(255,255,255,0.55)
+    ),
+    url("../img/fondoLogin.png");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
 }
 
 .login-container{
@@ -44,9 +63,9 @@ body{
     max-width:450px;
     margin:auto;
 
-    background:rgba(17,17,17,.95);
+    background:var(--bg-card, #111111);
 
-    border:1px solid rgba(255,198,0,.25);
+    border:1px solid var(--border-color, rgba(255,198,0,.25));
 
     border-radius:30px;
 
@@ -66,13 +85,13 @@ body{
 
     border-radius:50%;
 
-    border:3px solid var(--dorado);
+    border:3px solid var(--dorado, #FFC600);
 
     margin-bottom:20px;
 }
 
 .login-card h1{
-    color:var(--dorado);
+    color:var(--dorado, #FFC600);
 
     font-family:"Times New Roman", serif;
 
@@ -80,46 +99,62 @@ body{
 }
 
 .subtitulo{
-    color:#d8d8d8;
+    color:var(--text-muted, #d8d8d8);
     margin-bottom:30px;
 }
 
 .form-label{
-    color:var(--blanco);
+    color:var(--text-primary, #FFFFFF);
     display:block;
     text-align:left;
     margin-bottom:8px;
 }
 
 .form-control{
-    background:#1d1d1d;
-    border:1px solid #444;
-    color:white;
+    background:var(--bg-input, #1d1d1d);
+    border:1px solid var(--border-color, #444);
+    color:var(--text-primary, #FFFFFF);
     border-radius:15px;
     padding:12px;
 }
 
 .form-control:focus{
-    background:#1d1d1d;
-    color:white;
+    background:var(--bg-input, #1d1d1d);
+    color:var(--text-primary, #FFFFFF);
 
-    border-color:var(--dorado);
+    border-color:var(--dorado, #FFC600);
 
     box-shadow:
     0 0 0 .2rem rgba(255,198,0,.25);
 }
 
 .form-control::placeholder{
-    color: #d8d8d8;
+    color:var(--text-muted, #d8d8d8);
     opacity: 1;
+}
+
+/* --- Autofill de WebKit (Chrome/Edge/Safari) -----------------------------
+   Sin esto, al autocompletar el navegador fuerza un fondo amarillo/blanco
+   y texto negro que ignora el tema. Se "engaña" al navegador con un
+   box-shadow interior del color de fondo actual (var(--bg-input)), que
+   además se actualiza solo al cambiar de tema porque es una variable CSS. */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:-webkit-autofill:active{
+    -webkit-text-fill-color:var(--text-primary, #FFFFFF);
+    -webkit-box-shadow:0 0 0 1000px var(--bg-input, #1d1d1d) inset;
+    box-shadow:0 0 0 1000px var(--bg-input, #1d1d1d) inset;
+    caret-color:var(--text-primary, #FFFFFF);
+    transition:background-color 9999s ease-in-out 0s;
 }
 
 .btn-login{
     width:100%;
 
-    background:var(--dorado);
+    background:var(--btn-primary-bg, var(--dorado, #FFC600));
 
-    color:var(--negro);
+    color:var(--btn-primary-text, #111111);
 
     border:none;
 
@@ -133,8 +168,8 @@ body{
 }
 
 .btn-login:hover{
-    background:var(--dorado-oscuro);
-    color:white;
+    background:var(--dorado-oscuro, #BF930D);
+    color:#FFFFFF;
 }
 
 .volver{
@@ -142,7 +177,7 @@ body{
 
     margin-top:25px;
 
-    color:var(--dorado);
+    color:var(--dorado, #FFC600);
 
     text-decoration:none;
 
@@ -150,7 +185,15 @@ body{
 }
 
 .volver:hover{
-    color:white;
+    color:var(--text-primary, #FFFFFF);
+}
+
+/* --- Botón "Continuar con Google" ---
+   En modo claro el fondo blanco del botón se pierde contra el fondo
+   claro de la tarjeta, así que se le agrega un borde negro sutil para
+   que quede bien delimitado. En modo oscuro no hace falta. */
+[data-theme="light"] .btn-google{
+    border:1px solid #000000;
 }
 
 @media(max-width:576px){
@@ -170,45 +213,41 @@ body{
 }
 
 /* ==========================================
-   NUEVO SELECTOR DE ROLES: BORDES MINIMALISTAS
+   SELECTOR DE ROLES: BORDES MINIMALISTAS
    ========================================== */
 .role-selector-container {
     display: flex;
-    gap: 10px; /* Separa los botones para que no estén pegados */
-    background: transparent; /* Quitamos el fondo gris grueso */
+    gap: 10px;
+    background: transparent;
     border: none;
     padding: 0;
     overflow: visible;
 }
 
-/* Ocultar los radio buttons nativos */
 .role-selector-container input[type="radio"] {
     display: none;
 }
 
-/* Estilo individual de cada pestaña como botón independiente */
 .role-tab {
     flex: 1;
     padding: 12px 0;
     font-size: 0.9rem;
-    color: #a0a0a0; /* Gris un poco más tenue para los no seleccionados */
-    background: #1d1d1d; /* Fondo idéntico a tus inputs */
-    border: 1px solid #444; /* Borde idéntico a tus inputs */
+    color: var(--text-muted, #a0a0a0);
+    background: var(--bg-input, #1d1d1d);
+    border: 1px solid var(--border-color, #444);
     text-align: center;
     cursor: pointer;
-    border-radius: 15px; /* Bordes redondeados en armonía con tu login */
+    border-radius: 15px;
     transition: all 0.3s ease;
     user-select: none;
     margin-bottom: 0;
 }
 
-/* Efecto Hover (cuando pasas el mouse por encima) */
 .role-tab:hover {
     border-color: rgba(255, 198, 0, 0.4);
-    color: var(--blanco);
+    color: var(--text-primary, #FFFFFF);
 }
 
-/* Eliminamos por completo la pastilla deslizante vieja ya que no se usará */
 .role-glider {
     display: none;
 }
@@ -219,9 +258,9 @@ body{
 #rol-admin:checked ~ label[for="rol-admin"],
 #rol-barbero:checked ~ label[for="rol-barbero"],
 #rol-cliente:checked ~ label[for="rol-cliente"] {
-    color: var(--dorado); /* Texto dorado elegante */
+    color: var(--dorado, #FFC600);
     font-weight: bold;
-    border-color: var(--dorado); /* Borde dorado brillante */
-    background: rgba(255, 198, 0, 0.03); /* Un sutil reflejo dorado de fondo */
-    box-shadow: 0 0 12px rgba(255, 198, 0, 0.15); /* Brillo suave alrededor del botón */
+    border-color: var(--dorado, #FFC600);
+    background: rgba(255, 198, 0, 0.03);
+    box-shadow: 0 0 12px rgba(255, 198, 0, 0.15);
 }
