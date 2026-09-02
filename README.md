@@ -39,7 +39,7 @@ Con el venv activo:
 
 ```bash
 python -m pip install --upgrade pip
-python -m pip install "django>=4.2,<5.0" pymysql mysqlclient django-widget-tweaks xhtml2pdf fpdf2 pandas openpyxl pillow opencv-python-headless mediapipe==0.10.14 django-allauth PyJWT google-auth python-dotenv
+python -m pip install "django>=4.2,<5.0" pymysql mysqlclient django-widget-tweaks xhtml2pdf fpdf2 pandas openpyxl pillow opencv-python-headless mediapipe==0.10.14 django-allauth PyJWT google-auth python-dotenv requests
 ```
 
 O directamente con el archivo de dependencias:
