@@ -7515,3 +7515,151 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 .text-custom-gold {
   color: var(--dorado);
 }
+
+/* ============================================================================
+   ANÁLISIS DE ROSTRO — FIX MODO CLARO ([data-theme="light"])
+   ----------------------------------------------------------------------------
+   Reemplaza el bloque que ya tenías en el archivo (líneas ~4375-4394,
+   comentario "--- Análisis de rostro ---"). El problema del bloque viejo
+   era que solo tocaba los fondos (.analisis-card, .resultado-box,
+   .privacidad-modal) pero dejaba varios textos con los colores casi-blancos
+   originales (rgba(255,255,255,x)), que sobre un fondo claro quedan
+   invisibles o muy tenues. Este bloque cubre esos textos también.
+   ============================================================================ */
+
+/* 1) FONDO PRINCIPAL: gris claro consistente con el resto del tema
+   (mismo tono que usa --negro / --bg-dark-page en [data-theme="light"]) */
+[data-theme="light"] .analisis-card,
+[data-theme="light"] .privacidad-modal {
+  background: #F5F5F2 !important;
+  border-color: #E4E4E0 !important;
+}
+
+/* Visor de cámara / preview: antes tenía fondo #111 fijo (negro puro
+   detrás del video/canvas) incluso en modo claro */
+[data-theme="light"] .video-preview,
+[data-theme="light"] #canvasCaptura {
+  background: #E4E4E0 !important;
+  border-color: #DDDDDD !important;
+}
+
+[data-theme="light"] .btn-opcion {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  color: #1A1A1A !important;
+}
+
+/* Caja de resultado: gris claro en vez del marrón oscuro (#201c10) original */
+[data-theme="light"] #resultadoBox.resultado-box {
+  background-color: #F5F5F2 !important;
+  border-color: rgba(191, 147, 13, 0.35) !important;
+}
+
+/* 2) CÍRCULO DE REFERENCIA: se mantiene amarillo.
+   OJO: en el HTML/CSS que compartiste no hay ninguna clase/id que dibuje
+   ese círculo (probablemente se pinta con JS sobre el <canvas> o es un
+   overlay del propio video). Si en tu script de captura ya usa un color
+   fijo tipo "#FFC600" o "yellow" para el trazo, no hay nada que tocar acá:
+   como el fondo detrás pasó de negro a gris claro (#E4E4E0), el amarillo
+   va a seguir contrastando bien. Si en tu proyecto SÍ existe una clase para
+   ese guía (ej. .guia-rostro, #circuloGuia), agregale esto: */
+[data-theme="light"] .guia-rostro,
+[data-theme="light"] #circuloGuia {
+  border-color: #FFC600 !important; /* o "stroke: #FFC600 !important;" si es SVG */
+}
+
+/* 3) ENCABEZADO DE RESULTADO */
+/* "Forma detectada" (el <h5> fijo) */
+[data-theme="light"] #resultadoBox h5 {
+  color: #1A1A1A !important;
+}
+
+/* El nombre de la forma detectada, ej. "Rostro Ovalado": se mantiene en el
+   mismo dorado que en modo oscuro (no hace falta override: la regla base
+   #formaDetectada { color: #ffc600; } ya se hereda igual en claro).
+   Lo dejamos explícito acá solo para que el bloque quede autocontenido. */
+[data-theme="light"] #formaDetectada {
+  color: #FFC600 !important;
+}
+
+/* Texto de recomendación debajo del nombre de la forma */
+[data-theme="light"] #recomendacionTexto {
+  color: #333333 !important;
+}
+
+/* 4) ESTADÍSTICAS / MÉTRICAS (Mandíbula, Pómulo, Largo, etc.) */
+/* Etiquetas: negro */
+[data-theme="light"] .metricas-chips {
+  color: #1A1A1A !important;
+}
+
+/* Valores numéricos: se mantienen en amarillo para que resalten */
+[data-theme="light"] .metricas-chips .metrica-valor {
+  color: #FFC600 !important;
+  /* Si el amarillo puro se ve muy "flojo" sobre el gris claro, usa un
+     dorado más oscuro para más contraste: color: #BF930D !important; */
+}
+
+/* 5) MENSAJE FINAL DE PRIVACIDAD */
+[data-theme="light"] .aviso-eliminada {
+  color: #333333 !important;
+  border-top-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ícono de seguridad: se mantiene verde en ambos temas (no se toca) */
+[data-theme="light"] .aviso-eliminada i {
+  color: #4caf7d !important;
+}
+
+/* ============================================================================
+   ALERTAS / MENSAJES DEL SISTEMA — MODO CLARO ([data-theme="light"])
+   ----------------------------------------------------------------------------
+   Estilo pastel/outline: fondo suave de baja opacidad, borde sólido bien
+   definido y texto en el mismo color pero oscuro (no negro), para mantener
+   identidad de color y buen contraste en fondo claro.
+
+   Clases cubiertas:
+     - .alert-success / .alert-danger   -> alertas Bootstrap estándar
+     - .alert-mya-ok / .alert-mya-error -> alertas propias (perfil, etc.)
+     - .error-box                       -> caja de error de Análisis de Rostro
+     - .toast                           -> toast de confirmación (#reservationToast)
+   ============================================================================ */
+
+/* --- ÉXITO / CONFIRMACIÓN: fondo verde pastel, borde verde sólido, texto verde oscuro --- */
+[data-theme="light"] .alert-success,
+[data-theme="light"] .alert-mya-ok,
+[data-theme="light"] .toast {
+  background-color: rgba(40, 167, 69, 0.12) !important;
+  border: 1px solid #28a745 !important;
+  color: #1e5631 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* --- ERROR / ADVERTENCIA: fondo rojo/rosa pastel, borde rojo sólido, texto rojo oscuro --- */
+[data-theme="light"] .alert-danger,
+[data-theme="light"] .alert-mya-error,
+[data-theme="light"] .error-box {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+  border: 1px solid #dc3545 !important;
+  color: #7a1f2b !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Íconos (Bootstrap Icons, bi-*) dentro de cada alerta: heredan el mismo
+   color de texto correspondiente (verde oscuro o rojo oscuro) */
+[data-theme="light"] .alert-success i,
+[data-theme="light"] .alert-mya-ok i,
+[data-theme="light"] .toast i {
+  color: #1e5631 !important;
+}
+
+[data-theme="light"] .alert-danger i,
+[data-theme="light"] .alert-mya-error i,
+[data-theme="light"] .error-box i {
+  color: #7a1f2b !important;
+}
+
+/* Botón "x" de cerrar (.btn-close): venía invertido a blanco para fondo
+   oscuro translúcido; sobre fondo pastel claro se ve mejor en su color
+   oscuro original */
+[data-theme="light"] .alert .btn-close {
+  filter: none !important;
