@@ -7609,3 +7609,57 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 [data-theme="light"] .aviso-eliminada i {
   color: #4caf7d !important;
 }
+
+/* ============================================================================
+   ALERTAS / MENSAJES DEL SISTEMA — MODO CLARO ([data-theme="light"])
+   ----------------------------------------------------------------------------
+   Estilo pastel/outline: fondo suave de baja opacidad, borde sólido bien
+   definido y texto en el mismo color pero oscuro (no negro), para mantener
+   identidad de color y buen contraste en fondo claro.
+
+   Clases cubiertas:
+     - .alert-success / .alert-danger   -> alertas Bootstrap estándar
+     - .alert-mya-ok / .alert-mya-error -> alertas propias (perfil, etc.)
+     - .error-box                       -> caja de error de Análisis de Rostro
+     - .toast                           -> toast de confirmación (#reservationToast)
+   ============================================================================ */
+
+/* --- ÉXITO / CONFIRMACIÓN: fondo verde pastel, borde verde sólido, texto verde oscuro --- */
+[data-theme="light"] .alert-success,
+[data-theme="light"] .alert-mya-ok,
+[data-theme="light"] .toast {
+  background-color: rgba(40, 167, 69, 0.12) !important;
+  border: 1px solid #28a745 !important;
+  color: #1e5631 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* --- ERROR / ADVERTENCIA: fondo rojo/rosa pastel, borde rojo sólido, texto rojo oscuro --- */
+[data-theme="light"] .alert-danger,
+[data-theme="light"] .alert-mya-error,
+[data-theme="light"] .error-box {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+  border: 1px solid #dc3545 !important;
+  color: #7a1f2b !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Íconos (Bootstrap Icons, bi-*) dentro de cada alerta: heredan el mismo
+   color de texto correspondiente (verde oscuro o rojo oscuro) */
+[data-theme="light"] .alert-success i,
+[data-theme="light"] .alert-mya-ok i,
+[data-theme="light"] .toast i {
+  color: #1e5631 !important;
+}
+
+[data-theme="light"] .alert-danger i,
+[data-theme="light"] .alert-mya-error i,
+[data-theme="light"] .error-box i {
+  color: #7a1f2b !important;
+}
+
+/* Botón "x" de cerrar (.btn-close): venía invertido a blanco para fondo
+   oscuro translúcido; sobre fondo pastel claro se ve mejor en su color
+   oscuro original */
+[data-theme="light"] .alert .btn-close {
+  filter: none !important;
