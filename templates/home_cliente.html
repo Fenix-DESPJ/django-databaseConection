@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/home_cliente.css' %}">
-{% endblock %}
-
 {% block content %}
 <div class="container py-4">
 
@@ -45,6 +41,7 @@
 
       {% if proxima_cita %}
         <div class="card border-0 p-4 rounded-4 shadow-sm card-cita-main">
+          <!-- Fecha y Estado -->
           <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-bottom pb-3 mb-3 border-custom">
             <div>
               <small class="text-uppercase fw-bold d-block mb-1 text-custom-gold">Fecha y Hora</small>
@@ -57,19 +54,46 @@
             </span>
           </div>
 
-          <div class="row g-3 mb-4">
-            <div class="col-6">
-              <small class="d-block text-custom-muted">Servicio</small>
-              <strong class="text-white fs-6">{{ proxima_cita.idserviciofk.nombreservicio }}</strong>
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <!-- Thumbnail / Imagen del Servicio -->
+            <div class="flex-shrink-0">
+              {% if proxima_cita.idserviciofk and proxima_cita.idserviciofk.imagen and proxima_cita.idserviciofk.imagen.name %}
+                <img src="{{ proxima_cita.idserviciofk.imagen.url }}" 
+                    alt="{{ proxima_cita.idserviciofk.nombreservicio }}" 
+                    class="rounded-3 object-fit-cover" 
+                    style="width: 80px; height: 80px; border: 1px solid #FFC600;">
+              {% else %}
+                <!-- Respaldo sin dependencias de archivos estáticos externos -->
+                <div class="d-flex align-items-center justify-content-center bg-dark text-warning rounded-3 border border-secondary" 
+                    style="width: 80px; height: 80px;">
+                  <i class="bi bi-scissors fs-2"></i>
+                </div>
+              {% endif %}
             </div>
-            <div class="col-6">
-              <small class="d-block text-custom-muted">Barbero Asignado</small>
-              <strong class="text-white fs-6"><i class="bi bi-person-badge me-1 text-custom-gold"></i>{{ proxima_cita.idbarberofk.idusuariofk.nombre }}</strong>
+
+            <!-- Información del servicio, barbero y precio -->
+            <div class="row g-2 flex-grow-1">
+              <div class="col-6">
+                <small class="d-block text-custom-muted">Servicio</small>
+                <strong class="text-white fs-6">{{ proxima_cita.idserviciofk.nombreservicio }}</strong>
+              </div>
+              <div class="col-6">
+                <small class="d-block text-custom-muted">Barbero Asignado</small>
+                <strong class="text-white fs-6">
+                  <i class="bi bi-person-badge me-1 text-custom-gold"></i>{{ proxima_cita.idbarberofk.idusuariofk.nombre }}
+                </strong>
+              </div>
+              <div class="col-12 mt-1">
+                <small class="d-block text-custom-muted">Precio</small>
+                <span class="text-custom-gold fw-bold fs-5">
+                  ${{ proxima_cita.idserviciofk.precio|default:proxima_cita.idserviciofk.precioservicio|floatformat:0 }}
+                </span>
+              </div>
             </div>
           </div>
 
           <!-- Acciones Cita -->
-          <div class="d-flex flex-wrap gap-2 pt-2 border-top border-custom">
+          <div class="d-flex flex-wrap gap-2 pt-3 border-top border-custom">
             <a href="{% url 'crear_reserva' %}?servicio_id={{ proxima_cita.idserviciofk.idservicio }}&barbero_id={{ proxima_cita.idbarberofk.idbarbero }}" class="btn btn-sm px-3 py-2 fw-semibold btn-reagendar">
               <i class="bi bi-pencil-square me-1"></i> Reagendar
             </a>
@@ -95,7 +119,7 @@
       {% endif %}
     </div>
 
-    <!-- 3. Historial Reciente y Re-reserva Rápida -->
+    <!-- 3. Historial Reciente y Re-reserva Rápida (SIN IMAGEN) -->
     <div class="col-lg-5">
       <h3 class="h4 mb-3 text-white fw-bold">Últimas Visitas</h3>
 
@@ -116,7 +140,9 @@
               </div>
               
               <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top border-subtle-custom">
-                <span class="fw-bold text-white">${{ cita.idserviciofk.precioservicio }}</span>
+                <span class="fw-bold text-white">
+                  ${{ cita.idserviciofk.precio|default:cita.idserviciofk.precioservicio|floatformat:0 }}
+                </span>
                 <a href="{% url 'crear_reserva' %}?servicio_id={{ cita.idserviciofk.idservicio }}&barbero_id={{ cita.idbarberofk.idbarbero }}" class="btn btn-sm px-3 fw-bold btn-reservar-nuevo">
                   <i class="bi bi-arrow-repeat me-1"></i> Volver a reservar
                 </a>
