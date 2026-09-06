@@ -7662,4 +7662,4 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
    oscuro translúcido; sobre fondo pastel claro se ve mejor en su color
    oscuro original */
 [data-theme="light"] .alert .btn-close {
-  filter: none !important;
+  filter: none !important;}

@@ -1039,11 +1039,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* ============================================================================
-   9. ANÁLISIS DE ROSTRO
-   (analisis_rostro.html)
+   9. ANÁLISIS DE ROSTRO (analisis_rostro.html)
    ============================================================================ */
 document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("privacidadOverlay");
+    const recomendacionOverlay = document.getElementById("recomendacionOverlay");
+    const btnAceptarRecomendacion = document.getElementById("btnAceptarRecomendacion");
+    
     const contenido = document.getElementById("contenidoAnalisis");
     const btnAceptar = document.getElementById("btnAceptarPrivacidad");
 
@@ -1069,24 +1071,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const recomendacionTexto = document.getElementById("recomendacionTexto");
     const metricasChips = document.getElementById("metricasChips");
 
-    // ✅ Este bloque es exclusivo de analisis_rostro.html. Como script.js se
-    // carga en TODAS las páginas (incluida barbero.html), sin esta guarda
-    // "overlay", "contenido", "btnAceptar", etc. son null en cualquier otra
-    // página, y la primera línea de más abajo (btnAceptar.addEventListener)
-    // lanza el "Cannot read properties of null (reading 'addEventListener')".
-    if (!overlay || !contenido || !btnAceptar || !btnUsarCamara || !btnUsarArchivo ||
-        !btnUsarPerfil || !inputArchivo || !zonaCamara || !videoCamara ||
-        !canvasCaptura || !btnCapturar || !zonaPreview || !imgPreview ||
-        !btnAnalizar || !btnReintentar || !spinnerAnalisis || !errorBox || !resultadoBox) {
+    // ✅ Guarda para verificar que los elementos del modal y la sección existan
+    if (!overlay || !recomendacionOverlay || !btnAceptarRecomendacion || !contenido || 
+        !btnAceptar || !btnUsarCamara || !btnUsarArchivo || !btnUsarPerfil || 
+        !inputArchivo || !zonaCamara || !videoCamara || !canvasCaptura || 
+        !btnCapturar || !zonaPreview || !imgPreview || !btnAnalizar || 
+        !btnReintentar || !spinnerAnalisis || !errorBox || !resultadoBox) {
         return;
     }
 
-    // --- Recordar aceptación del aviso de privacidad, por usuario ---
-    // Se guarda en localStorage con una clave que incluye el ID del usuario
-    // (data-user-id inyectado por Django en el div #contenidoAnalisis), así
-    // que cada usuario tiene su propio registro de aceptación en ESE
-    // navegador. Si el usuario le da "No acepto", no se guarda nada, así
-    // que el aviso vuelve a aparecer la próxima vez que entre.
     function obtenerUserId() {
         return contenido.dataset.userId || 'anon';
     }
@@ -1095,40 +1088,48 @@ document.addEventListener("DOMContentLoaded", () => {
         return `analisis_rostro_privacidad_aceptada_${obtenerUserId()}`;
     }
 
-    // Si este usuario ya aceptó antes en este navegador, saltamos el aviso
+    // --- Función para mostrar el modal de recomendación ---
+    function mostrarModalRecomendacion() {
+        recomendacionOverlay.classList.remove("d-none");
+    }
+
+    // --- Flujo inicial al cargar la página ---
     if (localStorage.getItem(claveStoragePrivacidad()) === 'true') {
+        // Si ya aceptó privacidad antes, eliminamos el primer modal y mostramos directamente la recomendación
         overlay.remove();
+        mostrarModalRecomendacion();
+    }
+
+    // --- Evento: Aceptar aviso de privacidad ---
+    btnAceptar.addEventListener("click", () => {
+        localStorage.setItem(claveStoragePrivacidad(), 'true');
+        overlay.remove();
+        mostrarModalRecomendacion(); // Abre el modal de recomendaciones inmediatamente después
+    });
+
+    // --- Evento: Aceptar modal de recomendación ---
+    btnAceptarRecomendacion.addEventListener("click", () => {
+        recomendacionOverlay.remove();
         contenido.style.opacity = "1";
         contenido.style.pointerEvents = "auto";
-    }
+    });
 
     let streamCamara = null;
     let blobCapturado = null;
     let usarPerfilSeleccionado = false;
 
-    // --- Lee la URL real inyectada por Django vía data-attribute (NO {% url %} aquí) ---
     function obtenerUrlAnalizar() {
         return contenido.dataset.urlAnalizar;
     }
 
-    // --- Lee el token CSRF real desde el input que Django ya renderizó en el HTML ---
     function obtenerCSRFToken() {
         const input = document.querySelector('[name=csrfmiddlewaretoken]');
         return input ? input.value : '';
     }
 
-    // --- Lee la URL de la foto de perfil desde data-attribute (evita {% if %} en el JS) ---
     function obtenerUrlFotoPerfil() {
         return contenido.dataset.fotoPerfil || '';
     }
-
-    // --- Aceptar aviso de privacidad ---
-    btnAceptar.addEventListener("click", () => {
-        localStorage.setItem(claveStoragePrivacidad(), 'true');
-        overlay.remove();
-        contenido.style.opacity = "1";
-        contenido.style.pointerEvents = "auto";
-    });
 
     function resetearVistas() {
         zonaCamara.classList.add("d-none");
@@ -1239,10 +1240,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 formaDetectada.textContent = data.forma;
                 recomendacionTexto.textContent = data.recomendacion;
 
-                // 🌟 NUEVA LÓGICA: Renderizar tarjetas de cortes con imagen
                 const contenedorCortes = document.getElementById("contenedorCortes");
                 if (contenedorCortes) {
-                    contenedorCortes.innerHTML = ""; // Limpiar resultados anteriores
+                    contenedorCortes.innerHTML = "";
                     
                     if (data.cortes && data.cortes.length > 0) {
                         data.cortes.forEach(corte => {
@@ -1287,7 +1287,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
 
 /* ============================================================================
    10. CALIFICACIONES Y RESEÑAS
@@ -1845,3 +1844,27 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+/* ============================================================================
+GESTIÓN DE FOTO EN PERFIL (perfil.html)
+============================================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+    const btnContinuar = document.getElementById("btnContinuarModalFoto");
+    const modalRecomendacionEl = document.getElementById("modalRecomendacionPerfil");
+    const modalFotoEl = document.getElementById("modalFoto");
+
+    if (btnContinuar && modalRecomendacionEl && modalFotoEl) {
+        btnContinuar.addEventListener("click", () => {
+            // Obtener o crear la instancia del modal de recomendación para ocultarlo
+            const modalRecomendacion = bootstrap.Modal.getInstance(modalRecomendacionEl) 
+                || new bootstrap.Modal(modalRecomendacionEl);
+            
+            modalRecomendacion.hide();
+
+            // Desplegar la ventana de "Gestionar Foto"
+            const modalFoto = bootstrap.Modal.getInstance(modalFotoEl) 
+                || new bootstrap.Modal(modalFotoEl);
+            
+            modalFoto.show();
+        });
+    }
+});

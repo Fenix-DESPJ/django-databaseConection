@@ -27,6 +27,28 @@
 </div>
 
 <!-- ============================================================= -->
+<!-- MODAL DE RECOMENDACIÓN DE FOTO (Aparece siempre al ingresar)  -->
+<!-- ============================================================= -->
+<div class="privacidad-overlay d-none" id="recomendacionOverlay">
+    <div class="privacidad-modal">
+        <h4><i class="bi bi-person-bounding-box text-warning"></i> Recomendación para la Foto</h4>
+        <p class="text-white-50 small">
+            Para garantizar que el análisis de la forma de tu rostro sea lo más preciso posible, ten en cuenta lo siguiente:
+        </p>
+        <ul>
+            <li>La fotografía debe ser totalmente <strong>de frente</strong>.</li>
+            <li>Asegúrate de tener una <strong>buena iluminación</strong> y evitar sombras marcadas.</li>
+            <li>Mantén una expresión neutra y procura que el rostro esté despejado (sin gorras o lentes).</li>
+        </ul>
+        <div class="d-flex justify-content-end mt-4">
+            <button type="button" class="btn btn-warning text-dark fw-bold btn-sm" id="btnAceptarRecomendacion">
+                Entendido y Continuar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================= -->
 <!-- CONTENIDO PRINCIPAL (deshabilitado hasta aceptar el aviso)     -->
 <!-- ============================================================= -->
 <div class="analisis-container">

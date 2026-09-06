@@ -50,8 +50,8 @@
                         <div>
                             <h6 class="mb-1 fw-bold text-light">Foto de Perfil</h6>
                             <p class="text-white-50 small mb-2">Formatos: JPG, PNG o WEBP. Máx: 2 MB.</p>
-                            <button type="button" class="btn btn-subir-imagen" data-bs-toggle="modal" data-bs-target="#modalFoto">
-                                <i class="bi bi-camera me-1"></i> Cambiar Foto
+                            <button type="button" class="btn btn-subir-imagen" data-bs-toggle="modal" data-bs-target="#modalRecomendacionPerfil">
+                            <i class="bi bi-camera me-1"></i> Cambiar Foto
                             </button>
                         </div>
                     </div>
@@ -199,6 +199,35 @@
     </div>
 </div>
 
+<!-- Modal Recomendación Foto de Perfil (Análisis Facial) -->
+<div class="modal fade" id="modalRecomendacionPerfil" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border-secondary edit-profile-card">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title card-title fs-5 d-flex align-items-center">
+          <i class="bi bi-person-bounding-box text-warning me-2"></i> Recomendación para la Foto
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-start py-3">
+        <p class="text-white-50 small mb-3">
+          Para garantizar que el análisis de la forma de tu rostro sea lo más preciso posible, ten en cuenta lo siguiente:
+        </p>
+        <ul class="text-white-50 small mb-0 ps-3">
+          <li class="mb-2">La fotografía debe ser totalmente <strong>de frente</strong>.</li>
+          <li class="mb-2">Asegúrate de tener una <strong>buena iluminación</strong> y evitar sombras marcadas.</li>
+          <li>Mantén una expresión neutra y procura que el rostro esté despejado (sin gorras o lentes oscuros).</li>
+        </ul>
+      </div>
+      <div class="modal-footer border-secondary justify-content-end">
+        <button type="button" class="btn btn-warning text-dark fw-bold btn-sm" id="btnContinuarModalFoto">
+          Entendido y Continuar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Cambiar Foto -->
 <div class="modal fade" id="modalFoto" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -260,4 +289,7 @@
     </div>
   </div>
 </div>
+
+<script src="{% static 'js/script.js' %}"></script>
+
 {% endblock %}
