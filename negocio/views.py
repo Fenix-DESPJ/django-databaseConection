@@ -41,11 +41,17 @@ def gestionar_agenda_admin(request):
         if accion == 'guardar_horario':
             config.hora_apertura = request.POST.get('hora_apertura')
             config.hora_cierre = request.POST.get('hora_cierre')
-            config.intervalo_minutos = int(request.POST.get('intervalo_minutos', 30))
-            config.limite_citas_mensuales = int(request.POST.get('limite_citas_mensuales', 3))
+            
+            # Sanitizar y validar intervalo_minutos (mínimo 5 min)
+            intervalo_input = int(request.POST.get('intervalo_minutos', 30))
+            config.intervalo_minutos = max(5, intervalo_input)
+            
+            config.limite_citas_mensuales = max(1, int(request.POST.get('limite_citas_mensuales', 3)))
+            
             patron_automatico = request.POST.get('patron_automatico', 'lv')
             if patron_automatico in PATRONES_VALIDOS:
                 config.patron_automatico = patron_automatico
+            
             config.save()
             messages.success(request, "Horario de atención actualizado correctamente.")
             return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
