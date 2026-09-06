@@ -12,6 +12,7 @@ Vista de análisis de forma de rostro, movida 1:1 desde usuarios/views.py
    usuario llega a esa vista con la librería disponible pero luego falla
    en tiempo de ejecución.
 """
+
 import os
 import uuid
 import tempfile
