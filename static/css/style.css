@@ -7663,3 +7663,122 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
    oscuro original */
 [data-theme="light"] .alert .btn-close {
   filter: none !important;}
+
+
+
+/* ==========================================
+   SECCIÓN EQUIPO DESARROLLADOR
+   ========================================== */
+.equipo-desarrollador-section {
+  background-color: transparent;
+}
+
+.dev-card {
+  background: rgba(20, 20, 20, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  padding: 2rem 1.25rem;
+  text-align: center;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.dev-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.dev-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(212, 175, 55, 0.6);
+  box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+}
+
+.dev-card:hover::before {
+  opacity: 1;
+}
+
+.dev-img-wrapper {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.25rem auto;
+  border-radius: 50%;
+  padding: 4px;
+  border: 2px solid #d4af37;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.dev-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.35s ease;
+}
+
+.dev-card:hover .dev-img-wrapper img {
+  transform: scale(1.08);
+}
+
+.dev-name {
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.5px;
+}
+
+.dev-role {
+  color: #d4af37;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+.dev-github-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #ffffff;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.dev-github-link:hover {
+  background-color: #d4af37;
+  color: #000000;
+  border-color: #d4af37;
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+/* Ajuste fino para pantallas grandes cuando se usan 3 o 4 tarjetas */
+@media (min-width: 1200px) {
+  .dev-img-wrapper {
+    width: 130px;
+    height: 130px;
+  }
+  .dev-name {
+    font-size: 1.25rem;
+  }
+}
