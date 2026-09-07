@@ -103,8 +103,9 @@ def home_cliente(request):
         ).select_related(
             'idserviciofk', 'idbarberofk__idusuariofk', 'idagendafk'
         ).order_by('-idagendafk__fecha', '-idagendafk__horainicio')[:5]
-
+        
     context = {
+
         'usuario': usuario_actual,
         'proxima_cita': proxima_cita,
         'historial_citas': historial_citas,

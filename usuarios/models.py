@@ -113,7 +113,8 @@ class Servicio(models.Model):
     idservicio = models.AutoField(db_column='idServicio', primary_key=True)
     nombreservicio = models.CharField(db_column='nombreServicio', max_length=45)
     precioservicio = models.DecimalField(db_column='precio', max_length=10, max_digits=10, decimal_places=2)
-
+    imagen = models.ImageField(upload_to='servicios/', null=True, blank=True, default='default.jpg')
+    
     class Meta:
         managed = False
         db_table = 'servicio'
