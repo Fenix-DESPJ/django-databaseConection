@@ -63,8 +63,9 @@
                     <small class="text-white-50">{{ p.duracion }} min</small>
                 </div>
                 
-                <div class="text-end">
+                                <div class="text-end">
                     <span class="d-block fw-bold mb-1">$ {{ p.precio|floatformat:0 }}</span>
+                    {% if request.session.usuario_rol_id != 1 and request.session.usuario_rol_id != 2 %}
                     <a href="{% url 'crear_reserva' %}?servicio_id={{p.pk}}" 
                         class="btn btn-dark btn-sm btn-servicio-reservar" 
                         data-url-reserva="{% url 'crear_reserva' %}?servicio_id={{p.pk}}"
@@ -72,6 +73,7 @@
                         onclick="manejarReserva(event)">
                         Reservar
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
