@@ -4831,7 +4831,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -5077,7 +5077,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -5330,7 +5330,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -5554,7 +5554,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -5776,7 +5776,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -5996,229 +5996,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
-}
-
-/* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
-
-[data-theme="light"] .barber-card {
-  box-shadow: none;
-}
-
-/* ============================================================================
-   28. MODO CLARO — INDEX: SECCIÓN "NUESTRA MARCA" (encargo puntual)
-   ----------------------------------------------------------------------------
-   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
-   oscuro ni ninguna otra clase/selector que no esté explícitamente pedida.
-   ============================================================================ */
-
-[data-theme="light"] .marca {
-  background-color: #F5F5F2;
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .marca h1,
-[data-theme="light"] .marca h2,
-[data-theme="light"] .marca h3,
-[data-theme="light"] .marca h4,
-[data-theme="light"] .marca h5 {
-  color: var(--dorado);
-}
-
-/* ============================================================================
-   29. MODO CLARO — INDEX: SECCIÓN "OPINIONES" (encargo puntual)
-   ----------------------------------------------------------------------------
-   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
-   oscuro ni ninguna otra clase/selector que no esté explícitamente pedida.
-   ============================================================================ */
-
-[data-theme="light"] .resenas-section {
-  background-color: #FFFFFF;
-}
-
-[data-theme="light"] .resena-card {
-  background-color: #F5F5F2;
-}
-
-[data-theme="light"] .resena-fecha,
-[data-theme="light"] .resena-comentario {
-  color: #1A1A1A;
-}
-[data-theme="light"] .appointments-section .table thead th,
-[data-theme="light"] .appointments-section .table tbody td,
-[data-theme="light"] .appointments-section .table tbody td span,
-[data-theme="light"] .appointments-section .text-gold,
-[data-theme="light"] .appointments-section .text-light,
-[data-theme="light"] .appointments-section .text-white,
-[data-theme="light"] .appointments-section .text-muted,
-[data-theme="light"] .appointments-section .text-success,
-[data-theme="light"] .appointments-section .text-danger,
-[data-theme="light"] .appointments-section .text-warning {
-  color: #1A1A1A !important;
-}
-
-[data-theme="light"] .appointments-section .table-dark {
-  --bs-table-color: #1A1A1A !important;
-}
-
-/* Cuadro "Método seleccionado" */
-[data-theme="light"] .selected-method-card {
-  background: #FFFFFF;
-  border: 1px solid #DDDDDD;
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .method-title {
-  color: #6b6b6b;
-}
-
-/* --- 2.3 Botones "Regresar" y "Agendar Cita / Reservar Cita" --- */
-
-[data-theme="light"] .btn-back {
-  background-color: #FFFFFF;
-  border: 1px solid var(--dorado);
-  color: var(--dorado-oscuro);
-}
-
-[data-theme="light"] .btn-back:hover {
-  background-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .btn-reserve {
-  background-color: #FFFFFF;
-  border: 1px solid var(--dorado);
-  color: var(--dorado-oscuro);
-}
-
-[data-theme="light"] .btn-reserve:hover {
-  background-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-/* --- 2.4 Horarios Disponibles --- */
-
-[data-theme="light"] .hour-card {
-  background: #FFFFFF;
-  border: 1px solid #DDDDDD;
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-card:hover {
-  background: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-selected {
-  background: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-btn {
-  background-color: #FFFFFF;
-  color: #1A1A1A;
-  border: 1px solid #DDDDDD;
-}
-
-[data-theme="light"] .hour-btn:hover:not(.disabled):not(.selected) {
-  background-color: #F5F5F2;
-  border-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-btn.selected {
-  background-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-btn.disabled {
-  background-color: #F0F0EC;
-  color: #B5B5B0;
-}
-
-/* --- 2.5 Resumen de Reserva --- */
-
-[data-theme="light"] .summary-item,
-[data-theme="light"] .summary-item span {
-  color: #1A1A1A;
-}
-
-/* ============================================================================
-   27. MODO CLARO — INDEX: HERO Y CARRUSEL DE BARBEROS (encargo puntual)
-   ----------------------------------------------------------------------------
-   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
-   oscuro, la navbar, ni ninguna otra clase/selector que no esté
-   explícitamente pedida.
-   ============================================================================ */
-
-/* --- 1. Hero / Contenedor principal --- */
-
-[data-theme="light"] .inicio {
-  background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F2 100%);
-}
-
-[data-theme="light"] .inicio h1 {
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .inicio .descripcion {
-  color: #4d4d4d;
-}
-
-/* Botones "Agendar Cita" y "Ver Servicios" (Ver Servicios ya cumplía el
-   estilo pedido con .btn-borde; solo se ajusta .btn-dorado del hero) */
-[data-theme="light"] .inicio .btn-dorado {
-  background-color: transparent;
-  border: 1px solid var(--dorado);
-  color: var(--dorado);
-}
-
-[data-theme="light"] .inicio .btn-dorado:hover {
-  background-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-/* Mensaje flotante / badge sobre la imagen */
-[data-theme="light"] .tarjeta-flotante {
-  background: rgba(255, 255, 255, 0.88);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .tarjeta-flotante i {
-  color: var(--dorado);
-}
-
-/* --- 2. Sección Carrusel de Barberos --- */
-
-[data-theme="light"] #barberos {
-  background-color: #FFFFFF;
-}
-
-[data-theme="light"] #barberos .section-eyebrow,
-[data-theme="light"] #barberos .title-options {
-  color: #1A1A1A;
-}
-
-[data-theme="light"] #barberos .section-eyebrow {
-  color: var(--dorado-oscuro);
-}
-
-[data-theme="light"] .barbers-carousel-wrapper,
-[data-theme="light"] .barbers-track-container {
-  background-color: #FFFFFF;
-}
-
-/* Cuerpo de la tarjeta (se mantiene el hover dorado ya existente) */
-[data-theme="light"] .barber-card {
-  background-color: #F5F5F2;
-}
-
-[data-theme="light"] .barber-name {
-  color: var(--dorado);
-}
-
-[data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -6440,227 +6218,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
-}
-
-/* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
-
-[data-theme="light"] .barber-card {
-  box-shadow: none;
-}
-
-/* ============================================================================
-   28. MODO CLARO — INDEX: SECCIÓN "NUESTRA MARCA" (encargo puntual)
-   ----------------------------------------------------------------------------
-   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
-   oscuro ni ninguna otra clase/selector que no esté explícitamente pedida.
-   ============================================================================ */
-
-[data-theme="light"] .marca {
-  background-color: #F5F5F2;
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .marca h1,
-[data-theme="light"] .marca h2,
-[data-theme="light"] .marca h3,
-[data-theme="light"] .marca h4,
-[data-theme="light"] .marca h5 {
-  color: var(--dorado);
-}
-
-/* ============================================================================
-   29. MODO CLARO — INDEX: SECCIÓN "OPINIONES" (encargo puntual)
-   ----------------------------------------------------------------------------
-   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
-   oscuro ni ninguna otra clase/selector que no esté explícitamente pedida.
-   ============================================================================ */
-
-[data-theme="light"] .resenas-section {
-  background-color: #FFFFFF;
-}
-
-[data-theme="light"] .resena-card {
-  background-color: #F5F5F2;
-}
-
-[data-theme="light"] .resena-fecha,
-[data-theme="light"] .resena-comentario {
-  color: #1A1A1A;
-}
-[data-theme="light"] .appointments-section .table tbody td span,
-[data-theme="light"] .appointments-section .text-gold,
-[data-theme="light"] .appointments-section .text-light,
-[data-theme="light"] .appointments-section .text-white,
-[data-theme="light"] .appointments-section .text-muted,
-[data-theme="light"] .appointments-section .text-success,
-[data-theme="light"] .appointments-section .text-danger,
-[data-theme="light"] .appointments-section .text-warning {
-  color: #1A1A1A !important;
-}
-
-[data-theme="light"] .appointments-section .table-dark {
-  --bs-table-color: #1A1A1A !important;
-}
-
-/* Cuadro "Método seleccionado" */
-[data-theme="light"] .selected-method-card {
-  background: #FFFFFF;
-  border: 1px solid #DDDDDD;
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .method-title {
-  color: #6b6b6b;
-}
-
-/* --- 2.3 Botones "Regresar" y "Agendar Cita / Reservar Cita" --- */
-
-[data-theme="light"] .btn-back {
-  background-color: #FFFFFF;
-  border: 1px solid var(--dorado);
-  color: var(--dorado-oscuro);
-}
-
-[data-theme="light"] .btn-back:hover {
-  background-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .btn-reserve {
-  background-color: #FFFFFF;
-  border: 1px solid var(--dorado);
-  color: var(--dorado-oscuro);
-}
-
-[data-theme="light"] .btn-reserve:hover {
-  background-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-/* --- 2.4 Horarios Disponibles --- */
-
-[data-theme="light"] .hour-card {
-  background: #FFFFFF;
-  border: 1px solid #DDDDDD;
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-card:hover {
-  background: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-selected {
-  background: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-btn {
-  background-color: #FFFFFF;
-  color: #1A1A1A;
-  border: 1px solid #DDDDDD;
-}
-
-[data-theme="light"] .hour-btn:hover:not(.disabled):not(.selected) {
-  background-color: #F5F5F2;
-  border-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-btn.selected {
-  background-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .hour-btn.disabled {
-  background-color: #F0F0EC;
-  color: #B5B5B0;
-}
-
-/* --- 2.5 Resumen de Reserva --- */
-
-[data-theme="light"] .summary-item,
-[data-theme="light"] .summary-item span {
-  color: #1A1A1A;
-}
-
-/* ============================================================================
-   27. MODO CLARO — INDEX: HERO Y CARRUSEL DE BARBEROS (encargo puntual)
-   ----------------------------------------------------------------------------
-   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
-   oscuro, la navbar, ni ninguna otra clase/selector que no esté
-   explícitamente pedida.
-   ============================================================================ */
-
-/* --- 1. Hero / Contenedor principal --- */
-
-[data-theme="light"] .inicio {
-  background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F2 100%);
-}
-
-[data-theme="light"] .inicio h1 {
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .inicio .descripcion {
-  color: #4d4d4d;
-}
-
-/* Botones "Agendar Cita" y "Ver Servicios" (Ver Servicios ya cumplía el
-   estilo pedido con .btn-borde; solo se ajusta .btn-dorado del hero) */
-[data-theme="light"] .inicio .btn-dorado {
-  background-color: transparent;
-  border: 1px solid var(--dorado);
-  color: var(--dorado);
-}
-
-[data-theme="light"] .inicio .btn-dorado:hover {
-  background-color: var(--dorado);
-  color: #1A1A1A;
-}
-
-/* Mensaje flotante / badge sobre la imagen */
-[data-theme="light"] .tarjeta-flotante {
-  background: rgba(255, 255, 255, 0.88);
-  color: #1A1A1A;
-}
-
-[data-theme="light"] .tarjeta-flotante i {
-  color: var(--dorado);
-}
-
-/* --- 2. Sección Carrusel de Barberos --- */
-
-[data-theme="light"] #barberos {
-  background-color: #FFFFFF;
-}
-
-[data-theme="light"] #barberos .section-eyebrow,
-[data-theme="light"] #barberos .title-options {
-  color: #1A1A1A;
-}
-
-[data-theme="light"] #barberos .section-eyebrow {
-  color: var(--dorado-oscuro);
-}
-
-[data-theme="light"] .barbers-carousel-wrapper,
-[data-theme="light"] .barbers-track-container {
-  background-color: #FFFFFF;
-}
-
-/* Cuerpo de la tarjeta (se mantiene el hover dorado ya existente) */
-[data-theme="light"] .barber-card {
-  background-color: #F5F5F2;
-}
-
-[data-theme="light"] .barber-name {
-  color: var(--dorado);
-}
-
-[data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -6882,7 +6440,227 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
+  color: #FFFFFF;
+}
+
+/* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
+
+[data-theme="light"] .barber-card {
+  box-shadow: none;
+}
+
+/* ============================================================================
+   28. MODO CLARO — INDEX: SECCIÓN "NUESTRA MARCA" (encargo puntual)
+   ----------------------------------------------------------------------------
+   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
+   oscuro ni ninguna otra clase/selector que no esté explícitamente pedida.
+   ============================================================================ */
+
+[data-theme="light"] .marca {
+  background-color: #F5F5F2;
   color: #1A1A1A;
+}
+
+[data-theme="light"] .marca h1,
+[data-theme="light"] .marca h2,
+[data-theme="light"] .marca h3,
+[data-theme="light"] .marca h4,
+[data-theme="light"] .marca h5 {
+  color: var(--dorado);
+}
+
+/* ============================================================================
+   29. MODO CLARO — INDEX: SECCIÓN "OPINIONES" (encargo puntual)
+   ----------------------------------------------------------------------------
+   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
+   oscuro ni ninguna otra clase/selector que no esté explícitamente pedida.
+   ============================================================================ */
+
+[data-theme="light"] .resenas-section {
+  background-color: #FFFFFF;
+}
+
+[data-theme="light"] .resena-card {
+  background-color: #F5F5F2;
+}
+
+[data-theme="light"] .resena-fecha,
+[data-theme="light"] .resena-comentario {
+  color: #1A1A1A;
+}
+[data-theme="light"] .appointments-section .table tbody td span,
+[data-theme="light"] .appointments-section .text-gold,
+[data-theme="light"] .appointments-section .text-light,
+[data-theme="light"] .appointments-section .text-white,
+[data-theme="light"] .appointments-section .text-muted,
+[data-theme="light"] .appointments-section .text-success,
+[data-theme="light"] .appointments-section .text-danger,
+[data-theme="light"] .appointments-section .text-warning {
+  color: #1A1A1A !important;
+}
+
+[data-theme="light"] .appointments-section .table-dark {
+  --bs-table-color: #1A1A1A !important;
+}
+
+/* Cuadro "Método seleccionado" */
+[data-theme="light"] .selected-method-card {
+  background: #FFFFFF;
+  border: 1px solid #DDDDDD;
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .method-title {
+  color: #6b6b6b;
+}
+
+/* --- 2.3 Botones "Regresar" y "Agendar Cita / Reservar Cita" --- */
+
+[data-theme="light"] .btn-back {
+  background-color: #FFFFFF;
+  border: 1px solid var(--dorado);
+  color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .btn-back:hover {
+  background-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .btn-reserve {
+  background-color: #FFFFFF;
+  border: 1px solid var(--dorado);
+  color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .btn-reserve:hover {
+  background-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+/* --- 2.4 Horarios Disponibles --- */
+
+[data-theme="light"] .hour-card {
+  background: #FFFFFF;
+  border: 1px solid #DDDDDD;
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-card:hover {
+  background: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-selected {
+  background: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-btn {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+  border: 1px solid #DDDDDD;
+}
+
+[data-theme="light"] .hour-btn:hover:not(.disabled):not(.selected) {
+  background-color: #F5F5F2;
+  border-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-btn.selected {
+  background-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-btn.disabled {
+  background-color: #F0F0EC;
+  color: #B5B5B0;
+}
+
+/* --- 2.5 Resumen de Reserva --- */
+
+[data-theme="light"] .summary-item,
+[data-theme="light"] .summary-item span {
+  color: #1A1A1A;
+}
+
+/* ============================================================================
+   27. MODO CLARO — INDEX: HERO Y CARRUSEL DE BARBEROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
+   oscuro, la navbar, ni ninguna otra clase/selector que no esté
+   explícitamente pedida.
+   ============================================================================ */
+
+/* --- 1. Hero / Contenedor principal --- */
+
+[data-theme="light"] .inicio {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F2 100%);
+}
+
+[data-theme="light"] .inicio h1 {
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .inicio .descripcion {
+  color: #4d4d4d;
+}
+
+/* Botones "Agendar Cita" y "Ver Servicios" (Ver Servicios ya cumplía el
+   estilo pedido con .btn-borde; solo se ajusta .btn-dorado del hero) */
+[data-theme="light"] .inicio .btn-dorado {
+  background-color: transparent;
+  border: 1px solid var(--dorado);
+  color: var(--dorado);
+}
+
+[data-theme="light"] .inicio .btn-dorado:hover {
+  background-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+/* Mensaje flotante / badge sobre la imagen */
+[data-theme="light"] .tarjeta-flotante {
+  background: rgba(255, 255, 255, 0.88);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .tarjeta-flotante i {
+  color: var(--dorado);
+}
+
+/* --- 2. Sección Carrusel de Barberos --- */
+
+[data-theme="light"] #barberos {
+  background-color: #FFFFFF;
+}
+
+[data-theme="light"] #barberos .section-eyebrow,
+[data-theme="light"] #barberos .title-options {
+  color: #1A1A1A;
+}
+
+[data-theme="light"] #barberos .section-eyebrow {
+  color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .barbers-carousel-wrapper,
+[data-theme="light"] .barbers-track-container {
+  background-color: #FFFFFF;
+}
+
+/* Cuerpo de la tarjeta (se mantiene el hover dorado ya existente) */
+[data-theme="light"] .barber-card {
+  background-color: #F5F5F2;
+}
+
+[data-theme="light"] .barber-name {
+  color: var(--dorado);
+}
+
+[data-theme="light"] .barber-specialty {
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -7104,7 +6882,229 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
+  color: #FFFFFF;
+}
+
+/* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
+
+[data-theme="light"] .barber-card {
+  box-shadow: none;
+}
+
+/* ============================================================================
+   28. MODO CLARO — INDEX: SECCIÓN "NUESTRA MARCA" (encargo puntual)
+   ----------------------------------------------------------------------------
+   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
+   oscuro ni ninguna otra clase/selector que no esté explícitamente pedida.
+   ============================================================================ */
+
+[data-theme="light"] .marca {
+  background-color: #F5F5F2;
   color: #1A1A1A;
+}
+
+[data-theme="light"] .marca h1,
+[data-theme="light"] .marca h2,
+[data-theme="light"] .marca h3,
+[data-theme="light"] .marca h4,
+[data-theme="light"] .marca h5 {
+  color: var(--dorado);
+}
+
+/* ============================================================================
+   29. MODO CLARO — INDEX: SECCIÓN "OPINIONES" (encargo puntual)
+   ----------------------------------------------------------------------------
+   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
+   oscuro ni ninguna otra clase/selector que no esté explícitamente pedida.
+   ============================================================================ */
+
+[data-theme="light"] .resenas-section {
+  background-color: #FFFFFF;
+}
+
+[data-theme="light"] .resena-card {
+  background-color: #F5F5F2;
+}
+
+[data-theme="light"] .resena-fecha,
+[data-theme="light"] .resena-comentario {
+  color: #1A1A1A;
+}
+[data-theme="light"] .appointments-section .table thead th,
+[data-theme="light"] .appointments-section .table tbody td,
+[data-theme="light"] .appointments-section .table tbody td span,
+[data-theme="light"] .appointments-section .text-gold,
+[data-theme="light"] .appointments-section .text-light,
+[data-theme="light"] .appointments-section .text-white,
+[data-theme="light"] .appointments-section .text-muted,
+[data-theme="light"] .appointments-section .text-success,
+[data-theme="light"] .appointments-section .text-danger,
+[data-theme="light"] .appointments-section .text-warning {
+  color: #1A1A1A !important;
+}
+
+[data-theme="light"] .appointments-section .table-dark {
+  --bs-table-color: #1A1A1A !important;
+}
+
+/* Cuadro "Método seleccionado" */
+[data-theme="light"] .selected-method-card {
+  background: #FFFFFF;
+  border: 1px solid #DDDDDD;
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .method-title {
+  color: #6b6b6b;
+}
+
+/* --- 2.3 Botones "Regresar" y "Agendar Cita / Reservar Cita" --- */
+
+[data-theme="light"] .btn-back {
+  background-color: #FFFFFF;
+  border: 1px solid var(--dorado);
+  color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .btn-back:hover {
+  background-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .btn-reserve {
+  background-color: #FFFFFF;
+  border: 1px solid var(--dorado);
+  color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .btn-reserve:hover {
+  background-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+/* --- 2.4 Horarios Disponibles --- */
+
+[data-theme="light"] .hour-card {
+  background: #FFFFFF;
+  border: 1px solid #DDDDDD;
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-card:hover {
+  background: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-selected {
+  background: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-btn {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+  border: 1px solid #DDDDDD;
+}
+
+[data-theme="light"] .hour-btn:hover:not(.disabled):not(.selected) {
+  background-color: #F5F5F2;
+  border-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-btn.selected {
+  background-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .hour-btn.disabled {
+  background-color: #F0F0EC;
+  color: #B5B5B0;
+}
+
+/* --- 2.5 Resumen de Reserva --- */
+
+[data-theme="light"] .summary-item,
+[data-theme="light"] .summary-item span {
+  color: #1A1A1A;
+}
+
+/* ============================================================================
+   27. MODO CLARO — INDEX: HERO Y CARRUSEL DE BARBEROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Todo lo de este bloque vive bajo [data-theme="light"]: no toca el tema
+   oscuro, la navbar, ni ninguna otra clase/selector que no esté
+   explícitamente pedida.
+   ============================================================================ */
+
+/* --- 1. Hero / Contenedor principal --- */
+
+[data-theme="light"] .inicio {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F2 100%);
+}
+
+[data-theme="light"] .inicio h1 {
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .inicio .descripcion {
+  color: #4d4d4d;
+}
+
+/* Botones "Agendar Cita" y "Ver Servicios" (Ver Servicios ya cumplía el
+   estilo pedido con .btn-borde; solo se ajusta .btn-dorado del hero) */
+[data-theme="light"] .inicio .btn-dorado {
+  background-color: transparent;
+  border: 1px solid var(--dorado);
+  color: var(--dorado);
+}
+
+[data-theme="light"] .inicio .btn-dorado:hover {
+  background-color: var(--dorado);
+  color: #1A1A1A;
+}
+
+/* Mensaje flotante / badge sobre la imagen */
+[data-theme="light"] .tarjeta-flotante {
+  background: rgba(255, 255, 255, 0.88);
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .tarjeta-flotante i {
+  color: var(--dorado);
+}
+
+/* --- 2. Sección Carrusel de Barberos --- */
+
+[data-theme="light"] #barberos {
+  background-color: #FFFFFF;
+}
+
+[data-theme="light"] #barberos .section-eyebrow,
+[data-theme="light"] #barberos .title-options {
+  color: #1A1A1A;
+}
+
+[data-theme="light"] #barberos .section-eyebrow {
+  color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .barbers-carousel-wrapper,
+[data-theme="light"] .barbers-track-container {
+  background-color: #FFFFFF;
+}
+
+/* Cuerpo de la tarjeta (se mantiene el hover dorado ya existente) */
+[data-theme="light"] .barber-card {
+  background-color: #F5F5F2;
+}
+
+[data-theme="light"] .barber-name {
+  color: var(--dorado);
+}
+
+[data-theme="light"] .barber-specialty {
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
@@ -7324,7 +7324,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .barber-specialty {
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 /* --- 3. Ajuste de sombra en las tarjetas del carrusel de barberos --- */
