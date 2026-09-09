@@ -34,7 +34,7 @@ from .utils import (
     MEDIAPIPE_DISPONIBLE,
 )
 
-
+@login_required
 def analisis_rostro_view(request):
     if not MEDIAPIPE_DISPONIBLE:
         return render(request, 'mantenimiento.html', {

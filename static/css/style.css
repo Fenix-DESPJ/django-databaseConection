@@ -8005,3 +8005,521 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
     font-size: 1.25rem;
   }
 }
+
+/* ==========================================================================
+   25. ANÁLISIS FACIAL — BOTÓN FLOTANTE Y MODAL
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BOTÓN FLOTANTE
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-float {
+    position: fixed;
+    bottom: 94px;
+    right: 24px;
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #353535 0%,
+            #1c1c1c 45%,
+            #0b0b0b 100%
+        );
+
+    color: #FFC600;
+
+    border: 1px solid rgba(255, 198, 0, 0.75);
+
+    text-decoration: none;
+
+    font-size: 1.7rem;
+
+    z-index: 1401;
+
+    box-shadow:
+        0 0 0 0 rgba(255, 198, 0, 0.35),
+        0 8px 22px rgba(0, 0, 0, 0.5);
+
+    animation: facialAnalysisPulse 2.5s ease-out infinite;
+
+    transition:
+        transform 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+
+/* Icono */
+
+.facial-analysis-float i {
+    line-height: 1;
+    position: relative;
+    z-index: 2;
+}
+
+
+/* Hover */
+
+.facial-analysis-float:hover,
+.facial-analysis-float:focus-visible {
+
+    color: #FFD43E;
+
+    border-color: #FFC600;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #454545 0%,
+            #1d1d1d 45%,
+            #090909 100%
+        );
+
+    transform:
+        translateY(-3px)
+        scale(1.08);
+
+    box-shadow:
+        0 0 0 8px rgba(255, 198, 0, 0.08),
+        0 12px 30px rgba(0, 0, 0, 0.55),
+        0 0 18px rgba(255, 198, 0, 0.25);
+
+    outline: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   TOOLTIP
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-tooltip {
+
+    position: absolute;
+
+    right: calc(100% + 12px);
+
+    top: 50%;
+
+    transform:
+        translateY(-50%)
+        translateX(8px);
+
+    white-space: nowrap;
+
+    padding: 7px 11px;
+
+    border-radius: 8px;
+
+    background: #111111;
+
+    color: #ffffff;
+
+    border: 1px solid rgba(255, 198, 0, 0.55);
+
+    font-family: var(--fuente-cuerpo);
+
+    font-size: 0.85rem;
+
+    font-weight: 500;
+
+    letter-spacing: 0.2px;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.4);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+}
+
+
+/* Mostrar tooltip */
+
+.facial-analysis-float:hover .facial-analysis-tooltip,
+.facial-analysis-float:focus-visible .facial-analysis-tooltip {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateY(-50%)
+        translateX(0);
+}
+
+
+/* --------------------------------------------------------------------------
+   ANIMACIÓN DEL BOTÓN
+   -------------------------------------------------------------------------- */
+
+@keyframes facialAnalysisPulse {
+
+    0%,
+    100% {
+
+        box-shadow:
+            0 0 0 0 rgba(255, 198, 0, 0.28),
+            0 8px 22px rgba(0, 0, 0, 0.5);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 0 8px rgba(255, 198, 0, 0),
+            0 10px 28px rgba(0, 0, 0, 0.55);
+
+    }
+
+}
+
+
+/* --------------------------------------------------------------------------
+   MODAL
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-modal {
+
+    background:
+        linear-gradient(
+            145deg,
+            #171717 0%,
+            #0d0d0d 100%
+        );
+
+    color: #ffffff;
+
+    border:
+        1px solid rgba(255, 198, 0, 0.35);
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.65),
+        0 0 30px rgba(255, 198, 0, 0.08);
+}
+
+
+/* Header */
+
+.facial-analysis-modal-header {
+
+    border-bottom:
+        1px solid rgba(255, 198, 0, 0.18);
+
+    padding:
+        20px 24px;
+
+}
+
+
+.facial-analysis-modal-header .modal-title {
+
+    font-family:
+        var(--fuente-titulos);
+
+    color:
+        #FFC600;
+
+    font-size:
+        1.5rem;
+
+    font-weight:
+        bold;
+
+}
+
+
+/* Icono central */
+
+.facial-analysis-modal-icon {
+
+    width: 78px;
+    height: 78px;
+
+    margin:
+        5px auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 198, 0, 0.08);
+
+    border:
+        1px solid rgba(255, 198, 0, 0.45);
+
+    color:
+        #FFC600;
+
+    font-size:
+        2.4rem;
+
+    box-shadow:
+        0 0 25px rgba(255, 198, 0, 0.08);
+
+}
+
+
+/* Título */
+
+.facial-analysis-modal-title {
+
+    font-family:
+        var(--fuente-titulos);
+
+    color:
+        #ffffff;
+
+    font-size:
+        1.55rem;
+
+    margin-bottom:
+        15px;
+
+}
+
+
+/* Texto */
+
+.facial-analysis-modal-text {
+
+    color:
+        #cfcfcf;
+
+    line-height:
+        1.65;
+
+    font-size:
+        0.98rem;
+
+    max-width:
+        480px;
+
+    margin-left:
+        auto;
+
+    margin-right:
+        auto;
+
+}
+
+
+.facial-analysis-modal-text strong {
+
+    color:
+        #FFC600;
+
+    font-weight:
+        600;
+
+}
+
+
+/* Footer */
+
+.facial-analysis-modal-footer {
+
+    border-top:
+        1px solid rgba(255, 198, 0, 0.18);
+
+    padding:
+        18px 24px;
+
+    justify-content:
+        center;
+
+    gap:
+        10px;
+
+}
+
+
+/* Botones */
+
+.facial-analysis-auth-btn {
+
+    min-width:
+        145px;
+
+    border-radius:
+        25px;
+
+    padding:
+        10px 20px;
+
+    font-weight:
+        600;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.facial-analysis-auth-btn:hover {
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 576px) {
+
+    .facial-analysis-float {
+
+        width: 52px;
+        height: 52px;
+
+        right: 18px;
+        bottom: 82px;
+
+        font-size: 1.5rem;
+
+    }
+
+
+    .facial-analysis-tooltip {
+
+        right:
+            calc(100% + 10px);
+
+        font-size:
+            0.8rem;
+
+        padding:
+            6px 9px;
+
+    }
+
+
+    .facial-analysis-modal {
+
+        margin:
+            10px;
+
+        border-radius:
+            16px;
+
+    }
+
+
+    .facial-analysis-modal-header {
+
+        padding:
+            17px 18px;
+
+    }
+
+
+    .facial-analysis-modal-header .modal-title {
+
+        font-size:
+            1.3rem;
+
+    }
+
+
+    .facial-analysis-modal-icon {
+
+        width:
+            68px;
+
+        height:
+            68px;
+
+        font-size:
+            2rem;
+
+    }
+
+
+    .facial-analysis-modal-title {
+
+        font-size:
+            1.3rem;
+
+    }
+
+
+    .facial-analysis-modal-text {
+
+        font-size:
+            0.92rem;
+
+    }
+
+
+    .facial-analysis-modal-footer {
+
+        flex-direction:
+            column;
+
+        padding:
+            16px;
+
+    }
+
+
+    .facial-analysis-auth-btn {
+
+        width:
+            100%;
+
+    }
+
+}
+
+
+/* --------------------------------------------------------------------------
+   ACCESIBILIDAD
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .facial-analysis-float {
+
+        animation:
+            none;
+
+    }
+
+    .facial-analysis-float,
+    .facial-analysis-tooltip,
+    .facial-analysis-auth-btn {
+
+        transition:
+            none;
+
+    }
+
+}

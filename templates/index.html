@@ -258,4 +258,137 @@
     {% endif %}
   </div>
 </section>
+
+<!-- =====================================================================
+     BOTÓN FLOTANTE DE ANÁLISIS FACIAL
+     
+     Solo se muestra en el inicio cuando no hay una sesión iniciada.
+     Está ubicado encima del botón de WhatsApp que ya existe en base.html.
+     ===================================================================== -->
+
+{% if not request.session.sesion_iniciada %}
+
+<a
+  href="#"
+  class="facial-analysis-float"
+  data-bs-toggle="modal"
+  data-bs-target="#facialAnalysisModal"
+  aria-label="Análisis facial"
+  title="Análisis facial">
+
+  <i class="bi bi-person-bounding-box"></i>
+
+  <span class="facial-analysis-tooltip">
+    Análisis facial
+  </span>
+
+</a>
+
+
+<!-- =====================================================================
+     MODAL DE AUTENTICACIÓN PARA ANÁLISIS FACIAL
+     ===================================================================== -->
+
+<div
+  class="modal fade"
+  id="facialAnalysisModal"
+  tabindex="-1"
+  aria-labelledby="facialAnalysisModalLabel"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content facial-analysis-modal">
+
+
+      <div class="modal-header facial-analysis-modal-header">
+
+        <h5
+          class="modal-title"
+          id="facialAnalysisModalLabel">
+
+          <i class="bi bi-person-bounding-box me-2"></i>
+
+          Análisis facial
+
+        </h5>
+
+
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar">
+        </button>
+
+      </div>
+
+
+      <div class="modal-body text-center">
+
+        <div class="facial-analysis-modal-icon">
+
+          <i class="bi bi-person-bounding-box"></i>
+
+        </div>
+
+
+        <h4 class="facial-analysis-modal-title">
+
+          Descubre qué corte puede favorecerte
+
+        </h4>
+
+
+        <p class="facial-analysis-modal-text">
+
+          Nuestro análisis facial identifica la forma de tu rostro
+          y te muestra recomendaciones de cortes de cabello.
+
+        </p>
+
+
+        <p class="facial-analysis-modal-text">
+
+          Para utilizar esta función necesitas
+          <strong>iniciar sesión o crear una cuenta.</strong>
+
+        </p>
+
+      </div>
+
+
+      <div
+        class="modal-footer facial-analysis-modal-footer">
+
+        <a
+          href="{% url 'iniciar_sesion' %}?origen=analisis_facial"
+          class="btn btn-dorado facial-analysis-auth-btn">
+
+          <i class="bi bi-box-arrow-in-right me-1"></i>
+
+          Iniciar sesión
+
+        </a>
+
+
+        <a
+          href="{% url 'registrarse' %}?origen=analisis_facial"
+          class="btn btn-outline-light facial-analysis-auth-btn">
+
+          <i class="bi bi-person-plus me-1"></i>
+
+          Registrarse
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endif %}
 {% endblock %}

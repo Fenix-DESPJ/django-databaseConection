@@ -274,6 +274,9 @@ def _cascada_borrar_barbero(barbero):
 # 1. VISTA: INICIAR SESIÓN
 # =========================================================================
 def iniciar_sesion(request):
+    if request.GET.get('origen') == 'analisis_facial':
+        request.session['origen_analisis_facial'] = True
+        
     if request.method == 'POST':
         usuario_input = (request.POST.get('identificador') or '').strip()
         contrasena_input = request.POST.get('contrasena')
@@ -335,12 +338,54 @@ def iniciar_sesion(request):
                 # Redirección basada en rol
                 rol_final = int(rol_actual_id)
                 if rol_final == 1:
+                    
+                    # El flujo especial solamente tiene sentido
+                    # para clientes. Se elimina la bandera para que
+                    # no quede pendiente en la sesión.
+                    
+                    request.session.pop(
+                        'origen_analisis_facial',
+                        None
+                    )
                     return redirect('dashboard_admin')
+                
                 elif rol_final == 2:
+                    
+                    request.session.pop(
+                        'origen_analisis_facial',
+                        None
+                    )
                     return redirect('panel_barbero')
+                
                 elif rol_final == 3:
+                    
+                    origen_analisis = request.session.get(
+                        'origen_analisis_facial',
+                        False
+                    )
+                    
+                    if origen_analisis:
+                        # -------------------------------------------------
+                        # Consumimos la bandera.
+                        #
+                        # Esto es importante para que este comportamiento
+                        # NO afecte los próximos inicios de sesión.
+                        # -------------------------------------------------
+                        
+                        request.session.pop(
+                            'origen_analisis_facial',
+                            None
+                        )
+                        
+                        return redirect('analisis_rostro')
+                        
                     return redirect('home_cliente')
                 else:
+                    
+                    request.session.pop(
+                        'origen_analisis_facial',
+                        None
+                    )
                     return redirect('home')
 
             except Usuario.DoesNotExist:
@@ -398,10 +443,17 @@ def cerrar_sesion(request):
                 pass
 
     auth_logout(request)
+    
     if 'sesion_iniciada' in request.session:
         del request.session['sesion_iniciada']
+        
     if 'usuario_nombre' in request.session:
         del request.session['usuario_nombre']
+        
+    request.session.pop(
+        'origen_analisis_facial',
+        None
+    )
 
     request.session.flush()
     messages.success(request, "Has cerrado sesión exitosamente. ¡Vuelve pronto!")
@@ -411,6 +463,11 @@ def cerrar_sesion(request):
 # 3. VISTA: REGISTRARSE
 # =========================================================================
 def registrarse(request):
+    
+    if request.GET.get('origen') == 'analisis_facial':
+        
+        request.session['origen_analisis_facial'] = True
+    
     if request.method == 'POST':
         try:
             nombre = request.POST.get('nombre')
