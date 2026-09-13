@@ -1,148 +1,523 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block content %}
+
+<!-- =========================================================
+     CABECERA
+     ========================================================= -->
+
 <section class="reservation-header">
+
     <div class="container text-center">
+
         <h1 class="page-title">
             Reserva tu <span class="text-gold">Cita</span>
         </h1>
+
         <div class="sub-bar"></div>
+
         <p class="header-description">
-            Selecciona tu fecha, horario y método de pago para vivir la experiencia premium de Barbería M&A.
+            Selecciona tu fecha, horario y método de pago para vivir
+            la experiencia premium de Barbería M&A.
         </p>
+
     </div>
+
 </section>
 
-<form method="POST" action="" id="formReservas">
-    {% csrf_token %}
-    <input type="hidden" name="fecha" id="input_fecha_seleccionada">
-    <input type="hidden" name="hora" id="input_hora_seleccionada">
-    <input type="hidden" name="metodo_pago" id="input_metodo_pago">
 
-    <section class="reservation-section" id="reservation-module-wrapper">
+<!-- =========================================================
+     FORMULARIO PRINCIPAL
+     ========================================================= -->
+
+<form method="POST" action="" id="formReservas">
+
+    {% csrf_token %}
+
+    <!-- Campos ocultos utilizados por JavaScript -->
+
+    <input
+        type="hidden"
+        name="fecha"
+        id="input_fecha_seleccionada"
+    >
+
+    <input
+        type="hidden"
+        name="hora"
+        id="input_hora_seleccionada"
+    >
+
+    <input
+        type="hidden"
+        name="metodo_pago"
+        id="input_metodo_pago"
+    >
+
+
+    <section
+        class="reservation-section"
+        id="reservation-module-wrapper"
+    >
+
+        <!-- =====================================================
+             MENSAJES DE DJANGO
+             ===================================================== -->
+
         <div class="container mt-3">
+
             {% if messages %}
+
                 {% for message in messages %}
-                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+
+                    <div
+                        class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
+                        role="alert"
+                    >
+
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"
+                        ></button>
+
                     </div>
+
                 {% endfor %}
+
             {% endif %}
+
         </div>
+
+
+        <!-- =====================================================
+             CONTENEDOR PRINCIPAL
+             ===================================================== -->
 
         <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-5">
-                    <div class="reservation-card">
-                        <h3 class="section-title">Información de la Reserva</h3>
+
+            <!-- =================================================
+                 ÚNICA TARJETA DE RESERVA
+                 ================================================= -->
+
+            <div class="reservation-card reservation-main-card">
+
+                <!-- TÍTULO GENERAL -->
+
+                <h3 class="section-title">
+                    Información de la Reserva
+                </h3>
+
+
+                <!-- =================================================
+                     CONTENIDO INTERNO
+                     ================================================= -->
+
+                <div class="reservation-content-row">
+
+
+                    <!-- =============================================
+                         COLUMNA IZQUIERDA
+                         CALENDARIO + SERVICIO + BARBERO
+                         ============================================= -->
+
+                    <div class="reservation-info-column">
+
+
+                        <!-- CALENDARIO -->
 
                         <div class="calendar-container">
+
                             <div class="calendar-header">
-                                <button type="button" class="month-btn" id="prevMonth"><i class="bi bi-chevron-left"></i></button>
-                                <h5 id="currentMonthYear">Septiembre 2026</h5>
-                                <button type="button" class="month-btn" id="nextMonth"><i class="bi bi-chevron-right"></i></button>
+
+                                <button
+                                    type="button"
+                                    class="month-btn"
+                                    id="prevMonth"
+                                >
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+
+
+                                <h5 id="currentMonthYear">
+                                    Septiembre 2026
+                                </h5>
+
+
+                                <button
+                                    type="button"
+                                    class="month-btn"
+                                    id="nextMonth"
+                                >
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+
                             </div>
+
+
                             <div class="weekdays">
-                                <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+
+                                <span>L</span>
+                                <span>M</span>
+                                <span>X</span>
+                                <span>J</span>
+                                <span>V</span>
+                                <span>S</span>
+                                <span>D</span>
+
                             </div>
-                            <div class="calendar-days" id="calendarDays"></div>
+
+
+                            <div
+                                class="calendar-days"
+                                id="calendarDays"
+                            ></div>
+
                         </div>
 
-                        <div class="mb-4"></div>
 
-                        <div class="mb-4">
-                            <label class="form-label custom-label" for="servicio">Servicio</label>
-                            <select class="form-select custom-select" id="servicio" name="servicio">
-                                <option value="" disabled selected>Selecciona un servicio</option>
+                        <!-- ESPACIADO -->
+
+                        <div class="reservation-field-spacer"></div>
+
+
+                        <!-- SERVICIO -->
+
+                        <div class="reservation-field">
+
+                            <label
+                                class="form-label custom-label"
+                                for="servicio"
+                            >
+                                Servicio
+                            </label>
+
+
+                            <select
+                                class="form-select custom-select"
+                                id="servicio"
+                                name="servicio"
+                            >
+
+                                <option
+                                    value=""
+                                    disabled
+                                    selected
+                                >
+                                    Selecciona un servicio
+                                </option>
+
+
                                 {% for s in servicios %}
-                                    <option value="{{ s.idservicio }}">{{ s.nombreservicio }} - ${{ s.precio }}</option>
+
+                                    <option value="{{ s.idservicio }}">
+                                        {{ s.nombreservicio }} - ${{ s.precio }}
+                                    </option>
+
                                 {% endfor %}
+
                             </select>
+
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label custom-label" for="barbero">Barbero</label>
-                            <select class="form-select custom-select" id="barbero" name="barbero">
-                                <option value="" disabled selected>Selecciona un barbero</option>
+
+                        <!-- BARBERO -->
+
+                        <div class="reservation-field">
+
+                            <label
+                                class="form-label custom-label"
+                                for="barbero"
+                            >
+                                Barbero
+                            </label>
+
+
+                            <select
+                                class="form-select custom-select"
+                                id="barbero"
+                                name="barbero"
+                            >
+
+                                <option
+                                    value=""
+                                    disabled
+                                    selected
+                                >
+                                    Selecciona un barbero
+                                </option>
+
+
                                 {% for b in barberos %}
-                                    <option value="{{ b.idusuario }}">{{ b.nombre }}</option>
+
+                                    <option value="{{ b.idusuario }}">
+                                        {{ b.nombre }}
+                                    </option>
+
                                 {% endfor %}
+
                             </select>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label class="form-label custom-label" for="observaciones">Observaciones Especiales <span class="text-white-50 small" style="font-size: 0.75rem;">(Opcional)</span></label>
-                            <textarea class="form-control custom-select " id="observaciones" rows="5" name="observaciones" placeholder="Ej: Degradado bajo, diseño con línea, etc..."></textarea>
+
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label custom-label">Método de Pago</label>
-                            <!--
-                                Selección directa: no se abre ningún formulario de
-                                pasarela (sin número de tarjeta, CVV ni banco). El
-                                método elegido se guarda tal cual en la reserva.
-                            -->
+                    </div>
+
+
+                    <!-- =============================================
+                         COLUMNA DERECHA
+                         HORARIOS + OBSERVACIONES + PAGO
+                         ============================================= -->
+
+                    <div class="reservation-hours-column">
+
+
+                        <!-- HORARIOS -->
+
+                        <div class="hours-section">
+
+                            <h3 class="section-title">
+                                Horarios Disponibles
+                            </h3>
+
+
+                            <p class="hours-description">
+                                Selecciona una hora disponible para tu cita.
+                            </p>
+
+
+                            <div
+                                class="hours-grid"
+                                id="hoursGrid"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- DIVISOR -->
+
+                        <div class="reservation-column-divider"></div>
+
+
+                        <!-- OBSERVACIONES -->
+
+                        <div class="reservation-field">
+
+                            <label
+                                class="form-label custom-label"
+                                for="observaciones"
+                            >
+
+                                Observaciones Especiales
+
+                                <span
+                                    class="text-white-50 small"
+                                    style="font-size: 0.75rem;"
+                                >
+                                    (Opcional)
+                                </span>
+
+                            </label>
+
+
+                            <textarea
+                                class="form-control custom-select"
+                                id="observaciones"
+                                rows="4"
+                                name="observaciones"
+                                placeholder="Ej: Degradado bajo, diseño con línea, etc..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- MÉTODO DE PAGO -->
+
+                        <div class="reservation-field">
+
+                            <label class="form-label custom-label">
+                                Método de Pago
+                            </label>
+
+
                             <div class="dropdown w-100">
-                                <button class="btn payment-dropdown dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">Seleccionar método</button>
+
+                                <button
+                                    class="btn payment-dropdown dropdown-toggle w-100"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    Seleccionar método
+                                </button>
+
+
                                 <ul class="dropdown-menu payment-menu">
-                                    <li><a class="dropdown-item payment-option" href="#" data-method="Tarjeta">Tarjeta de Crédito/Débito</a></li>
-                                    <li><a class="dropdown-item payment-option" href="#" data-method="PSE">PSE</a></li>
-                                    <li><a class="dropdown-item payment-option" href="#" data-method="Efectivo">Efectivo</a></li>
+
+                                    <li>
+
+                                        <a
+                                            class="dropdown-item payment-option"
+                                            href="#"
+                                            data-method="Tarjeta"
+                                        >
+                                            Tarjeta de Crédito/Débito
+                                        </a>
+
+                                    </li>
+
+
+                                    <li>
+
+                                        <a
+                                            class="dropdown-item payment-option"
+                                            href="#"
+                                            data-method="PSE"
+                                        >
+                                            PSE
+                                        </a>
+
+                                    </li>
+
+
+                                    <li>
+
+                                        <a
+                                            class="dropdown-item payment-option"
+                                            href="#"
+                                            data-method="Efectivo"
+                                        >
+                                            Efectivo
+                                        </a>
+
+                                    </li>
+
                                 </ul>
+
                             </div>
+
                         </div>
 
-                        <div class="selected-method-card mt-4">
-                            <span class="method-title">Método seleccionado</span>
-                            <h5 id="selectedMethodDisplay">Ninguno</h5>
+
+                        <!-- MÉTODO SELECCIONADO -->
+
+                        <div class="selected-method-card">
+
+                            <span class="method-title">
+                                Método seleccionado
+                            </span>
+
+                            <h5 id="selectedMethodDisplay">
+                                Ninguno
+                            </h5>
+
                         </div>
 
-                        <div class="buttons-container">
-                            <a href="javascript:history.back()" class="btn btn-back"><i class="bi bi-arrow-left"></i> Regresar</a>
-                            <button type="button" class="btn btn-reserve" id="btnReservar">Reservar Cita</button>
-                        </div>
                     </div>
+
                 </div>
 
-                <div class="col-lg-7">
-                    <div class="reservation-card">
-                        <h3 class="section-title">Horarios Disponibles</h3>
-                        <div class="hours-grid" id="hoursGrid"></div>
-
-                        <div class="summary-card mt-4">
-                            <h4>Resumen de Reserva</h4>
-                            <div class="summary-item"><span>Servicio:</span><span id="summaryService">Corte Clásico</span></div>
-                            <div class="summary-item"><span>Barbero:</span><span id="summaryBarber">Juan Pablo</span></div>
-                            <div class="summary-item"><span>Fecha:</span><span id="summaryDate">Selecciona una fecha</span></div>
-                            <div class="summary-item"><span>Hora:</span><span id="summaryHour">No seleccionada</span></div>
-                            <div class="summary-item"><span>Pago:</span><span id="summaryPayment">No seleccionado</span></div>
-                        </div>
-                    </div>
-                </div>
             </div>
+
+
+            <!-- =================================================
+                 BOTONES FUERA DE LA TARJETA
+                 ================================================= -->
+
+            <div class="reservation-actions">
+
+                <a
+                    href="javascript:history.back()"
+                    class="btn btn-back"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Regresar
+                </a>
+
+
+                <button
+                    type="button"
+                    class="btn btn-reserve"
+                    id="btnReservar"
+                >
+                    Reservar Cita
+                </button>
+
+            </div>
+
         </div>
+
     </section>
+
 </form>
 
-<div class="modal fade" id="errorReservaModal">
+
+<!-- =========================================================
+     MODAL DE ERROR
+     ========================================================= -->
+
+<div
+    class="modal fade"
+    id="errorReservaModal"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
     <div class="modal-dialog modal-dialog-centered">
+
         <div class="modal-content custom-modal">
+
             <div class="modal-body text-center">
-                <i class="bi bi-x-circle-fill" style="font-size:3rem;color:#dc3545;"></i>
-                <h5 class="mt-3">No se pudo agendar</h5>
-                <p id="errorReservaMensaje" class="text-white-50"></p>
-                <button type="button" class="btn btn-outline-light mt-2" data-bs-dismiss="modal">Entendido</button>
+
+                <i
+                    class="bi bi-x-circle-fill"
+                    style="font-size: 3rem; color: #dc3545;"
+                ></i>
+
+
+                <h5 class="mt-3">
+                    No se pudo agendar
+                </h5>
+
+
+                <p
+                    id="errorReservaMensaje"
+                    class="text-white-50"
+                ></p>
+
+
+                <button
+                    type="button"
+                    class="btn btn-outline-light mt-2"
+                    data-bs-dismiss="modal"
+                >
+                    Entendido
+                </button>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- ============================================================= -->
-<!-- MODAL: EL CLIENTE YA TIENE UNA CITA EN ESA FECHA -->
-<!-- ============================================================= -->
-<div class="modal fade" id="citaMismoDiaModal" tabindex="-1" aria-labelledby="citaMismoDiaModalLabel" aria-hidden="true">
+
+<!-- =========================================================
+     MODAL: CITA MISMO DÍA
+     ========================================================= -->
+
+<div
+    class="modal fade"
+    id="citaMismoDiaModal"
+    tabindex="-1"
+    aria-labelledby="citaMismoDiaModalLabel"
+    aria-hidden="true"
+>
 
     <div class="modal-dialog modal-dialog-centered">
 
@@ -150,22 +525,34 @@
 
             <div class="modal-body text-center">
 
-                <i class="bi bi-calendar-x-fill"
-                   style="font-size: 3rem; color: #FFC600;">
-                </i>
+                <i
+                    class="bi bi-calendar-x-fill"
+                    style="font-size: 3rem; color: #FFC600;"
+                ></i>
 
-                <h5 class="mt-3" id="citaMismoDiaModalLabel">
+
+                <h5
+                    class="mt-3"
+                    id="citaMismoDiaModalLabel"
+                >
                     Ya tienes una cita este día
                 </h5>
 
-                <p id="citaMismoDiaMensaje" class="text-white-50">
+
+                <p
+                    id="citaMismoDiaMensaje"
+                    class="text-white-50"
+                >
                     Ya tienes una cita agendada para esta fecha.
                     Recuerda que solo puedes reservar una cita por día.
                 </p>
 
-                <button type="button"
-                        class="btn btn-outline-light mt-2"
-                        data-bs-dismiss="modal">
+
+                <button
+                    type="button"
+                    class="btn btn-outline-light mt-2"
+                    data-bs-dismiss="modal"
+                >
                     Elegir otra fecha
                 </button>
 
@@ -177,12 +564,25 @@
 
 </div>
 
+
+<!-- =========================================================
+     TOAST
+     ========================================================= -->
+
 <div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="reservationToast" class="toast">
+
+    <div
+        id="reservationToast"
+        class="toast"
+    >
+
         <div class="toast-body">
             Reserva registrada exitosamente.
         </div>
+
     </div>
+
 </div>
+
 
 {% endblock %}
