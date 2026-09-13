@@ -7376,7 +7376,6 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 /* ==========================================================================
    TARJETAS Y CONTENEDORES DEL HOME CLIENTE(Con profundidad y sombras)
    ========================================================================== */
-.welcome-card,
 .card-cita-main,
 .card-historial,
 .mya-contact-card,
@@ -7390,8 +7389,37 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
               border-color 0.3s ease;
 }
 
+.welcome-card {
+
+    background: rgba(38, 38, 38, 0.72);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: var(--radio-borde);
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.35);
+
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+/* Pequeño efecto al pasar el mouse */
+
+.welcome-card:hover {
+
+    background: rgba(43, 43, 43, 0.82);
+
+    border-color: rgba(255, 198, 0, 0.22);
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.45);
+}
 /* Hover en tarjetas */
-.welcome-card:hover,
+
 .card-cita-main:hover,
 .card-historial:hover,
 .mya-contact-card:hover,
@@ -8007,17 +8035,32 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 /* ==========================================================================
-   25. ANÁLISIS FACIAL — BOTÓN FLOTANTE Y MODAL
+   25. ANÁLISIS FACIAL — BOTÓN FLOTANTE Y BURBUJA PROMOCIONAL
    ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   CONTENEDOR GENERAL
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-container {
+    position: fixed;
+    right: 24px;
+    bottom: 94px;
+
+    width: 58px;
+    height: 58px;
+
+    z-index: 1401;
+}
+
 
 /* --------------------------------------------------------------------------
    BOTÓN FLOTANTE
    -------------------------------------------------------------------------- */
 
 .facial-analysis-float {
-    position: fixed;
-    bottom: 94px;
-    right: 24px;
+    position: relative;
 
     width: 58px;
     height: 58px;
@@ -8044,13 +8087,12 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 
     font-size: 1.7rem;
 
-    z-index: 1401;
-
     box-shadow:
         0 0 0 0 rgba(255, 198, 0, 0.35),
         0 8px 22px rgba(0, 0, 0, 0.5);
 
-    animation: facialAnalysisPulse 2.5s ease-out infinite;
+    animation:
+        facialAnalysisPulse 3s ease-out infinite;
 
     transition:
         transform 0.25s ease,
@@ -8061,20 +8103,28 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 
-/* Icono */
+/* --------------------------------------------------------------------------
+   ICONO
+   -------------------------------------------------------------------------- */
 
 .facial-analysis-float i {
     line-height: 1;
+
     position: relative;
     z-index: 2;
+
+    transition:
+        transform 0.25s ease,
+        color 0.25s ease;
 }
 
 
-/* Hover */
+/* --------------------------------------------------------------------------
+   HOVER / FOCUS
+   -------------------------------------------------------------------------- */
 
 .facial-analysis-float:hover,
 .facial-analysis-float:focus-visible {
-
     color: #FFD43E;
 
     border-color: #FFC600;
@@ -8100,70 +8150,173 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 
+.facial-analysis-float:hover i,
+.facial-analysis-float:focus-visible i {
+    transform: scale(1.05);
+}
+
+
 /* --------------------------------------------------------------------------
-   TOOLTIP
+   BURBUJA PROMOCIONAL
    -------------------------------------------------------------------------- */
 
-.facial-analysis-tooltip {
-
+.facial-analysis-promo {
     position: absolute;
 
-    right: calc(100% + 12px);
-
+    /*
+       La burbuja sale hacia la izquierda del botón.
+       Al estar dentro de .facial-analysis-container,
+       no afecta el posicionamiento del resto de la página.
+    */
+    right: 72px;
     top: 50%;
+
+    width: 285px;
 
     transform:
         translateY(-50%)
-        translateX(8px);
+        translateX(14px)
+        scale(0.96);
 
-    white-space: nowrap;
+    transform-origin: right center;
 
-    padding: 7px 11px;
+    padding: 15px 18px;
 
-    border-radius: 8px;
+    border-radius: 14px;
 
-    background: #111111;
+    background:
+        linear-gradient(
+            145deg,
+            #1c1c1c 0%,
+            #101010 100%
+        );
 
-    color: #ffffff;
+    border:
+        1px solid rgba(255, 198, 0, 0.42);
 
-    border: 1px solid rgba(255, 198, 0, 0.55);
-
-    font-family: var(--fuente-cuerpo);
-
-    font-size: 0.85rem;
-
-    font-weight: 500;
-
-    letter-spacing: 0.2px;
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.5),
+        0 0 18px rgba(255, 198, 0, 0.07);
 
     opacity: 0;
-
     visibility: hidden;
 
     pointer-events: none;
 
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.4);
+    /*
+       2.5 segundos de espera + animación de 10 segundos.
+    */
+    animation:
+        facialAnalysisPromo 10s ease forwards;
 
-    transition:
-        opacity 0.2s ease,
-        transform 0.2s ease,
-        visibility 0.2s ease;
+    animation-delay: 2.5s;
 }
 
 
-/* Mostrar tooltip */
+/* --------------------------------------------------------------------------
+   PEQUEÑO ACENTO DORADO DE LA BURBUJA
+   -------------------------------------------------------------------------- */
 
-.facial-analysis-float:hover .facial-analysis-tooltip,
-.facial-analysis-float:focus-visible .facial-analysis-tooltip {
+.facial-analysis-promo::before {
+    content: "";
 
-    opacity: 1;
+    position: absolute;
 
-    visibility: visible;
+    left: 15px;
+    top: 12px;
+
+    width: 3px;
+    height: calc(100% - 24px);
+
+    border-radius: 5px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #FFD43E,
+            #FFC600
+        );
+}
+
+
+/* --------------------------------------------------------------------------
+   TRIÁNGULO / PUNTA DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo::after {
+    content: "";
+
+    position: absolute;
+
+    right: -8px;
+    top: 50%;
+
+    width: 14px;
+    height: 14px;
 
     transform:
         translateY(-50%)
-        translateX(0);
+        rotate(45deg);
+
+    background: #111111;
+
+    border-top:
+        1px solid rgba(255, 198, 0, 0.35);
+
+    border-right:
+        1px solid rgba(255, 198, 0, 0.35);
+}
+
+
+/* --------------------------------------------------------------------------
+   CONTENIDO DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo-content {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding-left: 10px;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --------------------------------------------------------------------------
+   TÍTULO DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo-title {
+    color: #FFC600;
+
+    font-family:
+        var(--fuente-titulos);
+
+    font-size: 1rem;
+    font-weight: bold;
+
+    line-height: 1.25;
+
+    letter-spacing: 0.15px;
+}
+
+
+/* --------------------------------------------------------------------------
+   TEXTO DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo-text {
+    color: #e2e2e2;
+
+    font-family:
+        var(--fuente-cuerpo);
+
+    font-size: 0.84rem;
+
+    line-height: 1.45;
 }
 
 
@@ -8175,328 +8328,157 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 
     0%,
     100% {
-
         box-shadow:
             0 0 0 0 rgba(255, 198, 0, 0.28),
             0 8px 22px rgba(0, 0, 0, 0.5);
-
     }
 
     50% {
-
         box-shadow:
             0 0 0 8px rgba(255, 198, 0, 0),
             0 10px 28px rgba(0, 0, 0, 0.55);
-
     }
-
 }
 
 
 /* --------------------------------------------------------------------------
-   MODAL
+   APARICIÓN Y DESAPARICIÓN DE LA BURBUJA
+   --------------------------------------------------------------------------
+
+   0%   → invisible
+   10%  → aparece suavemente
+   82%  → permanece visible
+   100% → desaparece suavemente
+
+   La animación comienza después de 2.5 segundos.
    -------------------------------------------------------------------------- */
 
-.facial-analysis-modal {
-
-    background:
-        linear-gradient(
-            145deg,
-            #171717 0%,
-            #0d0d0d 100%
-        );
-
-    color: #ffffff;
-
-    border:
-        1px solid rgba(255, 198, 0, 0.35);
-
-    border-radius: 20px;
-
-    overflow: hidden;
-
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.65),
-        0 0 30px rgba(255, 198, 0, 0.08);
-}
-
-
-/* Header */
-
-.facial-analysis-modal-header {
-
-    border-bottom:
-        1px solid rgba(255, 198, 0, 0.18);
-
-    padding:
-        20px 24px;
-
-}
-
-
-.facial-analysis-modal-header .modal-title {
-
-    font-family:
-        var(--fuente-titulos);
-
-    color:
-        #FFC600;
-
-    font-size:
-        1.5rem;
-
-    font-weight:
-        bold;
-
-}
-
-
-/* Icono central */
-
-.facial-analysis-modal-icon {
-
-    width: 78px;
-    height: 78px;
-
-    margin:
-        5px auto 20px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255, 198, 0, 0.08);
-
-    border:
-        1px solid rgba(255, 198, 0, 0.45);
-
-    color:
-        #FFC600;
-
-    font-size:
-        2.4rem;
-
-    box-shadow:
-        0 0 25px rgba(255, 198, 0, 0.08);
-
-}
-
-
-/* Título */
-
-.facial-analysis-modal-title {
-
-    font-family:
-        var(--fuente-titulos);
-
-    color:
-        #ffffff;
-
-    font-size:
-        1.55rem;
-
-    margin-bottom:
-        15px;
-
-}
-
-
-/* Texto */
-
-.facial-analysis-modal-text {
-
-    color:
-        #cfcfcf;
-
-    line-height:
-        1.65;
-
-    font-size:
-        0.98rem;
-
-    max-width:
-        480px;
-
-    margin-left:
-        auto;
-
-    margin-right:
-        auto;
-
-}
-
-
-.facial-analysis-modal-text strong {
-
-    color:
-        #FFC600;
-
-    font-weight:
-        600;
-
-}
-
-
-/* Footer */
-
-.facial-analysis-modal-footer {
-
-    border-top:
-        1px solid rgba(255, 198, 0, 0.18);
-
-    padding:
-        18px 24px;
-
-    justify-content:
-        center;
-
-    gap:
-        10px;
-
-}
-
-
-/* Botones */
-
-.facial-analysis-auth-btn {
-
-    min-width:
-        145px;
-
-    border-radius:
-        25px;
-
-    padding:
-        10px 20px;
-
-    font-weight:
-        600;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.facial-analysis-auth-btn:hover {
-
-    transform:
-        translateY(-2px);
-
+@keyframes facialAnalysisPromo {
+
+    0% {
+        opacity: 0;
+        visibility: hidden;
+
+        transform:
+            translateY(-50%)
+            translateX(14px)
+            scale(0.96);
+    }
+
+    10% {
+        opacity: 1;
+        visibility: visible;
+
+        transform:
+            translateY(-50%)
+            translateX(0)
+            scale(1);
+    }
+
+    82% {
+        opacity: 1;
+        visibility: visible;
+
+        transform:
+            translateY(-50%)
+            translateX(0)
+            scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+
+        transform:
+            translateY(-50%)
+            translateX(10px)
+            scale(0.97);
+    }
 }
 
 
 /* --------------------------------------------------------------------------
-   RESPONSIVE
+   RESPONSIVE — TABLETS
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+
+    .facial-analysis-container {
+        right: 20px;
+        bottom: 88px;
+    }
+
+    .facial-analysis-promo {
+        width: 260px;
+
+        right: 68px;
+
+        padding: 14px 16px;
+    }
+
+    .facial-analysis-promo-title {
+        font-size: 0.95rem;
+    }
+
+    .facial-analysis-promo-text {
+        font-size: 0.81rem;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE — CELULARES
    -------------------------------------------------------------------------- */
 
 @media (max-width: 576px) {
 
-    .facial-analysis-float {
-
+    .facial-analysis-container {
         width: 52px;
         height: 52px;
 
         right: 18px;
         bottom: 82px;
+    }
+
+    .facial-analysis-float {
+        width: 52px;
+        height: 52px;
 
         font-size: 1.5rem;
-
     }
 
+    .facial-analysis-promo {
+        width: 225px;
 
-    .facial-analysis-tooltip {
+        right: 62px;
 
-        right:
-            calc(100% + 10px);
+        padding: 12px 14px;
 
-        font-size:
-            0.8rem;
-
-        padding:
-            6px 9px;
-
+        border-radius: 12px;
     }
 
+    .facial-analysis-promo::before {
+        left: 12px;
+        top: 10px;
 
-    .facial-analysis-modal {
-
-        margin:
-            10px;
-
-        border-radius:
-            16px;
-
+        height: calc(100% - 20px);
     }
 
+    .facial-analysis-promo-content {
+        padding-left: 9px;
 
-    .facial-analysis-modal-header {
-
-        padding:
-            17px 18px;
-
+        gap: 3px;
     }
 
-
-    .facial-analysis-modal-header .modal-title {
-
-        font-size:
-            1.3rem;
-
+    .facial-analysis-promo-title {
+        font-size: 0.88rem;
     }
 
+    .facial-analysis-promo-text {
+        font-size: 0.76rem;
 
-    .facial-analysis-modal-icon {
-
-        width:
-            68px;
-
-        height:
-            68px;
-
-        font-size:
-            2rem;
-
+        line-height: 1.4;
     }
-
-
-    .facial-analysis-modal-title {
-
-        font-size:
-            1.3rem;
-
-    }
-
-
-    .facial-analysis-modal-text {
-
-        font-size:
-            0.92rem;
-
-    }
-
-
-    .facial-analysis-modal-footer {
-
-        flex-direction:
-            column;
-
-        padding:
-            16px;
-
-    }
-
-
-    .facial-analysis-auth-btn {
-
-        width:
-            100%;
-
-    }
-
 }
 
 
@@ -8507,19 +8489,494 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 @media (prefers-reduced-motion: reduce) {
 
     .facial-analysis-float {
+        animation: none;
+    }
 
-        animation:
-            none;
+    .facial-analysis-promo {
+        animation: none;
 
+        opacity: 1;
+        visibility: visible;
+
+        transform:
+            translateY(-50%)
+            translateX(0)
+            scale(1);
     }
 
     .facial-analysis-float,
-    .facial-analysis-tooltip,
-    .facial-analysis-auth-btn {
+    .facial-analysis-float i {
+        transition: none;
+    }
+}
 
-        transition:
-            none;
 
+/* ==========================================================================
+   ANÁLISIS FACIAL - EXPERIENCIA PERSONALIZADA DEL CLIENTE
+   ========================================================================== */
+
+.facial-dashboard-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 198, 0, 0.35);
+    border-radius: var(--radio-borde);
+    background:
+        radial-gradient(
+            circle at 85% 50%,
+            rgba(255, 198, 0, 0.12) 0%,
+            rgba(255, 198, 0, 0.04) 22%,
+            transparent 48%
+        ),
+        linear-gradient(
+            135deg,
+            var(--bg-card) 0%,
+            #171717 55%,
+            #111111 100%
+        );
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(255, 255, 255, 0.025);
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* Línea dorada superior */
+
+.facial-dashboard-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--dorado-oscuro) 20%,
+        var(--dorado) 50%,
+        var(--dorado-oscuro) 80%,
+        transparent 100%
+    );
+    opacity: 0.9;
+}
+
+/* Hover */
+
+.facial-dashboard-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 198, 0, 0.6);
+    box-shadow:
+        0 18px 38px rgba(0, 0, 0, 0.75),
+        0 0 24px rgba(255, 198, 0, 0.12);
+}
+
+
+/* ==========================================================================
+   CONTENIDO
+   ========================================================================== */
+
+.facial-dashboard-content {
+    position: relative;
+    z-index: 2;
+    min-height: 255px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 35px 45px;
+}
+
+
+/* ==========================================================================
+   INFORMACIÓN
+   ========================================================================== */
+
+.facial-dashboard-info {
+    max-width: 720px;
+}
+
+.facial-dashboard-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 14px;
+    padding: 7px 14px;
+    border: 1px solid rgba(255, 198, 0, 0.35);
+    border-radius: 50px;
+    background: rgba(255, 198, 0, 0.08);
+    color: var(--dorado);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+}
+
+.facial-dashboard-badge i {
+    font-size: 0.85rem;
+}
+
+.facial-dashboard-title {
+    margin-bottom: 10px;
+    color: #ffffff;
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.65rem, 3vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.facial-dashboard-text {
+    max-width: 650px;
+    margin-bottom: 23px;
+    color: var(--text-light);
+    font-family: var(--fuente-cuerpo);
+    font-size: 0.98rem;
+    line-height: 1.7;
+}
+
+
+/* ==========================================================================
+   BOTÓN
+   ========================================================================== */
+
+.facial-dashboard-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 11px 22px;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: linear-gradient(
+        135deg,
+        var(--dorado-hover) 0%,
+        var(--dorado) 55%,
+        var(--dorado-oscuro) 100%
+    );
+    color: var(--negro-absoluto);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    box-shadow: 0 5px 18px rgba(255, 198, 0, 0.22);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.facial-dashboard-button i {
+    font-size: 1rem;
+    transition: transform 0.25s ease;
+}
+
+.facial-dashboard-button:hover {
+    color: var(--negro-absoluto);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 198, 0, 0.4);
+    background: linear-gradient(
+        135deg,
+        #ffffff 0%,
+        var(--dorado-hover) 48%,
+        var(--dorado) 100%
+    );
+}
+
+.facial-dashboard-button:hover i {
+    transform: translateX(4px);
+}
+
+
+/* ==========================================================================
+   ELEMENTO VISUAL
+   ========================================================================== */
+
+.facial-dashboard-visual {
+    position: relative;
+    flex: 0 0 250px;
+    width: 250px;
+    height: 210px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Brillo detrás del elemento */
+
+.facial-dashboard-glow {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(255, 198, 0, 0.12);
+    filter: blur(25px);
+}
+
+
+/* Icono principal */
+
+.facial-dashboard-icon-main {
+    position: relative;
+    z-index: 3;
+    width: 112px;
+    height: 112px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 198, 0, 0.65);
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            rgba(255, 255, 255, 0.08),
+            rgba(255, 198, 0, 0.05) 45%,
+            rgba(0, 0, 0, 0.45) 100%
+        );
+    color: var(--dorado);
+    box-shadow:
+        0 0 25px rgba(255, 198, 0, 0.15),
+        inset 0 0 20px rgba(255, 198, 0, 0.05);
+}
+
+.facial-dashboard-icon-main i {
+    font-size: 4rem;
+}
+
+
+/* Tijeras */
+
+.facial-dashboard-icon-scissors {
+    position: absolute;
+    z-index: 4;
+    right: 25px;
+    bottom: 32px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 198, 0, 0.45);
+    border-radius: 50%;
+    background: #151515;
+    color: var(--dorado);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.55);
+    transform: rotate(-12deg);
+}
+
+.facial-dashboard-icon-scissors i {
+    font-size: 1.3rem;
+}
+
+
+/* Estrellas */
+
+.facial-dashboard-icon-stars {
+    position: absolute;
+    z-index: 4;
+    top: 28px;
+    right: 48px;
+    color: var(--dorado-hover);
+    filter: drop-shadow(0 0 7px rgba(255, 198, 0, 0.5));
+    animation: facialStarsFloat 3s ease-in-out infinite;
+}
+
+.facial-dashboard-icon-stars i {
+    font-size: 1.35rem;
+}
+
+
+/* ==========================================================================
+   ANILLOS DECORATIVOS
+   ========================================================================== */
+
+.facial-dashboard-ring {
+    position: absolute;
+    border: 1px solid rgba(255, 198, 0, 0.18);
+    border-radius: 50%;
+}
+
+.ring-one {
+    width: 165px;
+    height: 165px;
+}
+
+.ring-two {
+    width: 215px;
+    height: 215px;
+    border-color: rgba(255, 198, 0, 0.08);
+}
+
+
+/* ==========================================================================
+   ANIMACIÓN SUTIL
+   ========================================================================== */
+
+@keyframes facialStarsFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.75;
     }
 
+    50% {
+        transform: translateY(-5px) rotate(5deg);
+        opacity: 1;
+    }
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - TABLET
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+    .facial-dashboard-content {
+        min-height: auto;
+        padding: 30px;
+        gap: 20px;
+    }
+
+    .facial-dashboard-info {
+        max-width: 100%;
+    }
+
+    .facial-dashboard-visual {
+        flex: 0 0 190px;
+        width: 190px;
+        height: 180px;
+    }
+
+    .facial-dashboard-icon-main {
+        width: 90px;
+        height: 90px;
+    }
+
+    .facial-dashboard-icon-main i {
+        font-size: 3.1rem;
+    }
+
+    .facial-dashboard-icon-scissors {
+        right: 5px;
+        bottom: 25px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .facial-dashboard-icon-stars {
+        top: 20px;
+        right: 30px;
+    }
+
+    .ring-one {
+        width: 140px;
+        height: 140px;
+    }
+
+    .ring-two {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - CELULAR
+   ========================================================================== */
+
+@media (max-width: 576px) {
+
+    .facial-dashboard-content {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        padding: 28px 22px;
+        gap: 5px;
+    }
+
+    .facial-dashboard-badge {
+        font-size: 0.68rem;
+        letter-spacing: 1px;
+    }
+
+    .facial-dashboard-title {
+        font-size: 1.55rem;
+    }
+
+    .facial-dashboard-text {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .facial-dashboard-button {
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto;
+    }
+
+    .facial-dashboard-visual {
+        width: 200px;
+        height: 155px;
+        flex: none;
+        margin: 5px auto 0;
+    }
+
+    .facial-dashboard-icon-main {
+        width: 82px;
+        height: 82px;
+    }
+
+    .facial-dashboard-icon-main i {
+        font-size: 2.8rem;
+    }
+
+    .facial-dashboard-icon-scissors {
+        right: 24px;
+        bottom: 18px;
+        width: 38px;
+        height: 38px;
+    }
+
+    .facial-dashboard-icon-scissors i {
+        font-size: 1.1rem;
+    }
+
+    .facial-dashboard-icon-stars {
+        top: 10px;
+        right: 38px;
+    }
+
+    .facial-dashboard-icon-stars i {
+        font-size: 1.1rem;
+    }
+
+    .ring-one {
+        width: 125px;
+        height: 125px;
+    }
+
+    .ring-two {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+
+/* ==========================================================================
+   REDUCIR ANIMACIONES SI EL USUARIO LO PREFIERE
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .facial-dashboard-card,
+    .facial-dashboard-button,
+    .facial-dashboard-button i {
+        transition: none;
+    }
+
+    .facial-dashboard-icon-stars {
+        animation: none;
+    }
 }

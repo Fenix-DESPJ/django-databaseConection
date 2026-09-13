@@ -29,6 +29,76 @@ def _responder_error(request, mensaje, redirect_name='crear_reserva'):
     return redirect(redirect_name)
 
 
+def verificar_cita_fecha(request):
+    """
+    Verifica si el cliente autenticado ya tiene una cita
+    registrada para la fecha seleccionada.
+    """
+    
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'ok': False,
+            'time_cita': False,
+            'error': 'Debe iniciar sesión para realizar esta consulta.'
+        }, status=401)
+    
+    fecha_str = request.GET.get('fecha')
+    
+    if not fecha_str:
+        return JsonResponse({
+            'ok': False,
+            'tiene_cita': False,
+            'error': 'No se recibió una fecha'
+        }, status=400)
+        
+    try:
+        fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+    except ValueError:
+        return JsonResponse({
+            'ok': False,
+            'tiene_cita': False,
+            'error': 'La fecha seleccionada no es válida.'
+        }, status=400)
+
+    try:
+        usuario_actual = Usuario.objects.get(correo=request.user.email)
+
+        cliente = Cliente.objects.filter(
+            idusuariofk=usuario_actual
+        ).first()
+
+        # Si todavía no existe un registro de Cliente,
+        # entonces no puede tener citas registradas.
+        if not cliente:
+            return JsonResponse({
+                'ok': True,
+                'tiene_cita': False
+            })
+
+        cita_mismo_dia = Cita.objects.filter(
+            idclientefk=cliente,
+            fecha=fecha_obj
+        ).exists()
+
+        return JsonResponse({
+            'ok': True,
+            'tiene_cita': cita_mismo_dia,
+            'fecha': fecha_str
+        })
+
+    except Usuario.DoesNotExist:
+        return JsonResponse({
+            'ok': True,
+            'tiene_cita': False
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'ok': False,
+            'tiene_cita': False,
+            'error': f'No se pudo verificar la fecha: {e}'
+        }, status=500)
+
 def crear_reserva(request):
     if not request.user.is_authenticated:
         return _responder_error(request, "Debes iniciar sesión para realizar una reserva.", 'login')

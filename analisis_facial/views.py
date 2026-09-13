@@ -34,7 +34,6 @@ from .utils import (
     MEDIAPIPE_DISPONIBLE,
 )
 
-@login_required
 def analisis_rostro_view(request):
     if not MEDIAPIPE_DISPONIBLE:
         return render(request, 'mantenimiento.html', {
@@ -52,7 +51,6 @@ def analisis_rostro_view(request):
     })
 
 
-@login_required
 @require_POST
 def analizar_rostro_ajax(request):
     if not MEDIAPIPE_DISPONIBLE:
@@ -70,6 +68,13 @@ def analizar_rostro_ajax(request):
 
     try:
         if usar_perfil:
+            
+            if not request.user.is_authenticated:
+                return JsonResponse({
+                    'ok': False,
+                    'error': 'Debes iniciar sesión para utilizar tu foto de perfil.'
+                }, status=401)
+            
             try:
                 usuario_actual = Usuario.objects.get(correo=request.user.email)
             except Usuario.DoesNotExist:

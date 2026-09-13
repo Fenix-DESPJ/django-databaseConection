@@ -139,6 +139,44 @@
     </div>
 </div>
 
+<!-- ============================================================= -->
+<!-- MODAL: EL CLIENTE YA TIENE UNA CITA EN ESA FECHA -->
+<!-- ============================================================= -->
+<div class="modal fade" id="citaMismoDiaModal" tabindex="-1" aria-labelledby="citaMismoDiaModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content custom-modal">
+
+            <div class="modal-body text-center">
+
+                <i class="bi bi-calendar-x-fill"
+                   style="font-size: 3rem; color: #FFC600;">
+                </i>
+
+                <h5 class="mt-3" id="citaMismoDiaModalLabel">
+                    Ya tienes una cita este día
+                </h5>
+
+                <p id="citaMismoDiaMensaje" class="text-white-50">
+                    Ya tienes una cita agendada para esta fecha.
+                    Recuerda que solo puedes reservar una cita por día.
+                </p>
+
+                <button type="button"
+                        class="btn btn-outline-light mt-2"
+                        data-bs-dismiss="modal">
+                    Elegir otra fecha
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <div id="reservationToast" class="toast">
         <div class="toast-body">

@@ -245,17 +245,121 @@ async function inicializarModuloReservas() {
 
       if (!btonDia.disabled) {
         btonDia.addEventListener("click", async () => {
-          document.querySelectorAll(".day").forEach(b => b.classList.remove("selected"));
-          btonDia.classList.add("selected");
 
-          estadoReserva.fecha = fechaIterada;
-          if (inputFecha) inputFecha.value = fechaIterada;
-          if (summaryDate) summaryDate.textContent = fechaIterada;
+            // =========================================================
+            // VERIFICAR SI EL CLIENTE YA TIENE UNA CITA EN ESTA FECHA
+            // =========================================================
+            try {
 
-          await cargarDisponibilidad(selectBarbero ? selectBarbero.value : null, fechaIterada);
-          renderizarHoras();
+                const respuesta = await fetch(
+                    `/reservas/verificar-fecha/?fecha=${fechaIterada}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    }
+                );
+
+                const data = await respuesta.json();
+
+                // -----------------------------------------------------
+                // Si ocurrió un error en la consulta
+                // -----------------------------------------------------
+                if (!data.ok) {
+
+                    console.error(
+                        "Error al verificar la fecha:",
+                        data.error
+                    );
+
+                    return;
+                }
+
+                // -----------------------------------------------------
+                // EL CLIENTE YA TIENE UNA CITA ESE DÍA
+                // -----------------------------------------------------
+                if (data.tiene_cita) {
+
+                    // Aseguramos que la fecha NO quede seleccionada
+                    btonDia.classList.remove("selected");
+
+                    // No modificamos la fecha que pudiera estar
+                    // seleccionada anteriormente.
+                    const modalMensaje = document.getElementById(
+                        "citaMismoDiaMensaje"
+                    );
+
+                    if (modalMensaje) {
+
+                        const partesFecha = fechaIterada.split("-");
+
+                        const fechaFormateada =
+                            `${partesFecha[2]}/${partesFecha[1]}/${partesFecha[0]}`;
+
+                        modalMensaje.textContent =
+                            `Ya tienes una cita agendada para el ${fechaFormateada}. ` +
+                            `Recuerda que solo puedes reservar una cita por día. ` +
+                            `Por favor, selecciona otra fecha.`;
+                    }
+
+                    const citaMismoDiaModal =
+                        document.getElementById("citaMismoDiaModal");
+
+                    if (citaMismoDiaModal) {
+
+                        const modal = bootstrap.Modal.getOrCreateInstance(
+                            citaMismoDiaModal
+                        );
+
+                        modal.show();
+                    }
+
+                    // IMPORTANTE:
+                    // Detenemos aquí el proceso.
+                    // No seleccionamos la fecha ni cargamos horarios.
+                    return;
+                }
+
+                // =====================================================
+                // SI NO TIENE CITA → CONTINÚA EL FLUJO NORMAL
+                // =====================================================
+
+                document.querySelectorAll(".day")
+                    .forEach(b => b.classList.remove("selected"));
+
+                btonDia.classList.add("selected");
+
+                estadoReserva.fecha = fechaIterada;
+
+                if (inputFecha) {
+                    inputFecha.value = fechaIterada;
+                }
+
+                if (summaryDate) {
+                    summaryDate.textContent = fechaIterada;
+                }
+
+                await cargarDisponibilidad(
+                    selectBarbero ? selectBarbero.value : null,
+                    fechaIterada
+                );
+
+                renderizarHoras();
+
+            } catch (error) {
+
+                console.error(
+                    "Error al verificar la cita del día:",
+                    error
+                );
+
+                // En caso de que falle la consulta,
+                // no bloqueamos completamente la reserva.
+                // El backend sigue teniendo la validación final.
+            }
         });
-      }
+    }
 
       calendarDays.appendChild(btonDia);
     }
@@ -1131,6 +1235,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return contenido.dataset.fotoPerfil || '';
     }
 
+    let temporizadorError = null;
+
+    function mostrarMensajeTemporal(mensaje, tiempo = 10000) {
+        //Cancela un temporizador anterior si existe
+        if (temporizadorError) {
+            clearTimeout(temporizadorError);
+        }
+
+        errorBox.textContent = mensaje;
+        errorBox.classList.add("visible");
+
+        //Oculta el mensaje después de 10 segundos
+        temporizadorError = setTimeout(() => {
+            errorBox.classList.remove("visible");
+        }, tiempo);
+    }
     function resetearVistas() {
         zonaCamara.classList.add("d-none");
         zonaPreview.classList.add("d-none");
@@ -1191,14 +1311,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Opción: usar foto de perfil ---
     btnUsarPerfil.addEventListener("click", () => {
         resetearVistas();
-        const urlFoto = obtenerUrlFotoPerfil();
 
-        if (!urlFoto) {
-            errorBox.textContent = "No tienes una foto de perfil registrada. Usa la cámara o sube una imagen.";
-            errorBox.classList.add("visible");
+        const urlFoto = obtenerUrlFotoPerfil();
+        const userId = obtenerUserId();
+
+        // Visitante sin cuenta
+        if (userId === "anon") {
+            mostrarMensajeTemporal("Debes iniciar sesión para usar esta función.");
             return;
         }
 
+        //Usuario registrado pero sin foto de perfil
+        if (!urlFoto) {
+            mostrarMensajeTemporal("No tienes una foto de perfil registrada. Usa la cámara o sube una imagen.");
+            
+            return;
+        }
+
+        //Usuario registrado con foto de perfil
         usarPerfilSeleccionado = true;
         imgPreview.src = urlFoto;
         zonaPreview.classList.remove("d-none");
