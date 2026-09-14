@@ -99,8 +99,8 @@
 
   /* --- Otros --- */
   --radio-borde: 16px;
-  --fuente-titulos: 'Times New Roman', Times, serif;
-  --fuente-cuerpo: 'Segoe UI', Roboto, sans-serif;
+  --fuente-titulos: 'Cinzel', Georgia, serif;
+  --fuente-cuerpo: 'Sora', 'Segoe UI', sans-serif;
 
   /* ==========================================================================
      ALIAS SEMÁNTICOS NUEVOS (los que pediste). Apuntan a las variables
@@ -205,7 +205,7 @@ section {
 
 .navbar-brand span {
   color: var(--dorado);
-  font-family: "Times New Roman", serif;
+  font-family: var(--fuente-titulos);
   font-size: 1.4rem;
 }
 
@@ -850,7 +850,7 @@ section {
 }
 
 .barber-name {
-    font-family: "Times New Roman", serif;
+    font-family: var(--fuente-titulos);
     font-size: 1.3rem;
     font-weight: bold;
     color: #ffffff;
@@ -947,7 +947,7 @@ section {
 }
 
 .title-options {
-  font-family: "Times New Roman", serif !important;
+  font-family: var(--fuente-titulos) !important;
   font-size: 2rem;
 }
 
@@ -1189,7 +1189,7 @@ section {
 
 /* Tipografía elegante para el título "Datos De Contacto" */
 .font-elegante {
-    font-family: 'Times New Roman', Times, serif;
+    font-family: var(--fuente-titulos);
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -2927,7 +2927,7 @@ textarea::placeholder {
 
 /* --- SECTION & TABLE --- */
 .section-title {
-    font-family: "Times New Roman", serif;
+    font-family: var(--fuente-titulos);
     color: var(--dorado);
     border-left: 4px solid var(--dorado);
     padding-left: 12px;
@@ -3323,7 +3323,7 @@ textarea::placeholder {
 /* Título principal superior */
 .card-title {
     color: var(--dorado, #cca553) !important;
-    font-family: "Times New Roman", serif;
+    font-family: var(--fuente-titulos);
     font-weight: 600;
     font-size: 1.85rem;
     letter-spacing: 0.5px;
@@ -3608,7 +3608,7 @@ select.form-control-custom {
 .editar-card-header h5 {
     margin: 0;
     color: #fff;
-    font-family: "Times New Roman", serif;
+    font-family: var(--fuente-titulos);
     letter-spacing: 0.3px;
 }
 .editar-card-header span {
