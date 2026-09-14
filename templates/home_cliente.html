@@ -126,14 +126,6 @@
                     Próxima Cita
                 </h3>
 
-                {% if proxima_cita %}
-
-                    <span class="badge bg-success text-white px-3 py-2 rounded-pill fw-semibold">
-                        Confirmada
-                    </span>
-
-                {% endif %}
-
             </div>
 
 
@@ -227,21 +219,6 @@
 
                                 </div>
 
-
-                                <span class="badge px-3 py-2 badge-estado-cita">
-
-                                    {% if proxima_cita.esta_completada %}
-
-                                        Completada
-
-                                    {% else %}
-
-                                        Programada
-
-                                    {% endif %}
-
-                                </span>
-
                             </div>
 
 
@@ -257,7 +234,7 @@
                                 <div class="cita-info-item">
 
                                     <div class="cita-info-icon">
-                                        <i class="bi bi-scissors"></i>
+                                        <i class="bi bi-scissors text-light"></i>
                                     </div>
 
                                     <div>
@@ -280,7 +257,7 @@
                                 <div class="cita-info-item">
 
                                     <div class="cita-info-icon">
-                                        <i class="bi bi-person-badge"></i>
+                                        <i class="bi bi-person-badge text-light"></i>
                                     </div>
 
                                     <div>
@@ -303,7 +280,7 @@
                                 <div class="cita-info-item cita-precio">
 
                                     <div class="cita-info-icon">
-                                        <i class="bi bi-cash-stack"></i>
+                                        <i class="bi bi-cash-stack text-light"></i>
                                     </div>
 
                                     <div>
@@ -312,7 +289,7 @@
                                             Precio
                                         </small>
 
-                                        <span class="cita-precio-valor">
+                                        <span class="cita-precio-valor text-light">
                                             ${{ proxima_cita.idserviciofk.precio|default:proxima_cita.idserviciofk.precioservicio|floatformat:0 }}
                                         </span>
 

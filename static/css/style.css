@@ -7730,8 +7730,6 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 
 .welcome-title {
 
-    color: #FFFFFF;
-
     font-family: "Times New Roman", serif;
 
     font-size: clamp(1.8rem, 3vw, 2.5rem);
@@ -8090,6 +8088,35 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
    BOTONES CON DEGRADADOS, SOMBRAS Y HOVER
    ========================================================================== */
 
+.btn-cancelar-cita {
+    background: transparent;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    border-radius: 12px;
+    padding: 10px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* Icono */
+.btn-cancelar-cita i {
+    color: #dc3545;
+}
+
+/* Hover */
+.btn-cancelar-cita:hover {
+    background: #dc3545;
+    color: #FFFFFF;
+    border-color: #dc3545;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.25);
+}
+
+/* Icono al pasar el mouse */
+.btn-cancelar-cita:hover i {
+    color: #FFFFFF;
+}
+
 /* Botones Principales (Lleno Dorado con Degradado) */
 .btn-dorado,
 .btn-agendar-hero {
@@ -8178,6 +8205,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 .text-custom-gold {
   color: var(--dorado);
 }
+
 
 /* ============================================================================
    ANÁLISIS DE ROSTRO — FIX MODO CLARO ([data-theme="light"])
@@ -8447,493 +8475,12 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 /* ==========================================================================
-   25. ANÁLISIS FACIAL — BOTÓN FLOTANTE Y BURBUJA PROMOCIONAL
-   ========================================================================== */
-
-
-/* --------------------------------------------------------------------------
-   CONTENEDOR GENERAL
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-container {
-    position: fixed;
-    right: 24px;
-    bottom: 94px;
-
-    width: 58px;
-    height: 58px;
-
-    z-index: 1401;
-}
-
-
-/* --------------------------------------------------------------------------
-   BOTÓN FLOTANTE
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-float {
-    position: relative;
-
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle at 30% 25%,
-            #353535 0%,
-            #1c1c1c 45%,
-            #0b0b0b 100%
-        );
-
-    color: #FFC600;
-
-    border: 1px solid rgba(255, 198, 0, 0.75);
-
-    text-decoration: none;
-
-    font-size: 1.7rem;
-
-    box-shadow:
-        0 0 0 0 rgba(255, 198, 0, 0.35),
-        0 8px 22px rgba(0, 0, 0, 0.5);
-
-    animation:
-        facialAnalysisPulse 3s ease-out infinite;
-
-    transition:
-        transform 0.25s ease,
-        color 0.25s ease,
-        border-color 0.25s ease,
-        box-shadow 0.25s ease,
-        background 0.25s ease;
-}
-
-
-/* --------------------------------------------------------------------------
-   ICONO
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-float i {
-    line-height: 1;
-
-    position: relative;
-    z-index: 2;
-
-    transition:
-        transform 0.25s ease,
-        color 0.25s ease;
-}
-
-
-/* --------------------------------------------------------------------------
-   HOVER / FOCUS
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-float:hover,
-.facial-analysis-float:focus-visible {
-    color: #FFD43E;
-
-    border-color: #FFC600;
-
-    background:
-        radial-gradient(
-            circle at 30% 25%,
-            #454545 0%,
-            #1d1d1d 45%,
-            #090909 100%
-        );
-
-    transform:
-        translateY(-3px)
-        scale(1.08);
-
-    box-shadow:
-        0 0 0 8px rgba(255, 198, 0, 0.08),
-        0 12px 30px rgba(0, 0, 0, 0.55),
-        0 0 18px rgba(255, 198, 0, 0.25);
-
-    outline: none;
-}
-
-
-.facial-analysis-float:hover i,
-.facial-analysis-float:focus-visible i {
-    transform: scale(1.05);
-}
-
-
-/* --------------------------------------------------------------------------
-   BURBUJA PROMOCIONAL
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-promo {
-    position: absolute;
-
-    /*
-       La burbuja sale hacia la izquierda del botón.
-       Al estar dentro de .facial-analysis-container,
-       no afecta el posicionamiento del resto de la página.
-    */
-    right: 72px;
-    top: 50%;
-
-    width: 285px;
-
-    transform:
-        translateY(-50%)
-        translateX(14px)
-        scale(0.96);
-
-    transform-origin: right center;
-
-    padding: 15px 18px;
-
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #1c1c1c 0%,
-            #101010 100%
-        );
-
-    border:
-        1px solid rgba(255, 198, 0, 0.42);
-
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.5),
-        0 0 18px rgba(255, 198, 0, 0.07);
-
-    opacity: 0;
-    visibility: hidden;
-
-    pointer-events: none;
-
-    /*
-       2.5 segundos de espera + animación de 10 segundos.
-    */
-    animation:
-        facialAnalysisPromo 10s ease forwards;
-
-    animation-delay: 2.5s;
-}
-
-
-/* --------------------------------------------------------------------------
-   PEQUEÑO ACENTO DORADO DE LA BURBUJA
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-promo::before {
-    content: "";
-
-    position: absolute;
-
-    left: 15px;
-    top: 12px;
-
-    width: 3px;
-    height: calc(100% - 24px);
-
-    border-radius: 5px;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #FFD43E,
-            #FFC600
-        );
-}
-
-
-/* --------------------------------------------------------------------------
-   TRIÁNGULO / PUNTA DE LA BURBUJA
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-promo::after {
-    content: "";
-
-    position: absolute;
-
-    right: -8px;
-    top: 50%;
-
-    width: 14px;
-    height: 14px;
-
-    transform:
-        translateY(-50%)
-        rotate(45deg);
-
-    background: #111111;
-
-    border-top:
-        1px solid rgba(255, 198, 0, 0.35);
-
-    border-right:
-        1px solid rgba(255, 198, 0, 0.35);
-}
-
-
-/* --------------------------------------------------------------------------
-   CONTENIDO DE LA BURBUJA
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-promo-content {
-    display: flex;
-    flex-direction: column;
-
-    gap: 4px;
-
-    padding-left: 10px;
-
-    position: relative;
-    z-index: 2;
-}
-
-
-/* --------------------------------------------------------------------------
-   TÍTULO DE LA BURBUJA
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-promo-title {
-    color: #FFC600;
-
-    font-family:
-        var(--fuente-titulos);
-
-    font-size: 1rem;
-    font-weight: bold;
-
-    line-height: 1.25;
-
-    letter-spacing: 0.15px;
-}
-
-
-/* --------------------------------------------------------------------------
-   TEXTO DE LA BURBUJA
-   -------------------------------------------------------------------------- */
-
-.facial-analysis-promo-text {
-    color: #e2e2e2;
-
-    font-family:
-        var(--fuente-cuerpo);
-
-    font-size: 0.84rem;
-
-    line-height: 1.45;
-}
-
-
-/* --------------------------------------------------------------------------
-   ANIMACIÓN DEL BOTÓN
-   -------------------------------------------------------------------------- */
-
-@keyframes facialAnalysisPulse {
-
-    0%,
-    100% {
-        box-shadow:
-            0 0 0 0 rgba(255, 198, 0, 0.28),
-            0 8px 22px rgba(0, 0, 0, 0.5);
-    }
-
-    50% {
-        box-shadow:
-            0 0 0 8px rgba(255, 198, 0, 0),
-            0 10px 28px rgba(0, 0, 0, 0.55);
-    }
-}
-
-
-/* --------------------------------------------------------------------------
-   APARICIÓN Y DESAPARICIÓN DE LA BURBUJA
-   --------------------------------------------------------------------------
-
-   0%   → invisible
-   10%  → aparece suavemente
-   82%  → permanece visible
-   100% → desaparece suavemente
-
-   La animación comienza después de 2.5 segundos.
-   -------------------------------------------------------------------------- */
-
-@keyframes facialAnalysisPromo {
-
-    0% {
-        opacity: 0;
-        visibility: hidden;
-
-        transform:
-            translateY(-50%)
-            translateX(14px)
-            scale(0.96);
-    }
-
-    10% {
-        opacity: 1;
-        visibility: visible;
-
-        transform:
-            translateY(-50%)
-            translateX(0)
-            scale(1);
-    }
-
-    82% {
-        opacity: 1;
-        visibility: visible;
-
-        transform:
-            translateY(-50%)
-            translateX(0)
-            scale(1);
-    }
-
-    100% {
-        opacity: 0;
-        visibility: hidden;
-
-        transform:
-            translateY(-50%)
-            translateX(10px)
-            scale(0.97);
-    }
-}
-
-
-/* --------------------------------------------------------------------------
-   RESPONSIVE — TABLETS
-   -------------------------------------------------------------------------- */
-
-@media (max-width: 768px) {
-
-    .facial-analysis-container {
-        right: 20px;
-        bottom: 88px;
-    }
-
-    .facial-analysis-promo {
-        width: 260px;
-
-        right: 68px;
-
-        padding: 14px 16px;
-    }
-
-    .facial-analysis-promo-title {
-        font-size: 0.95rem;
-    }
-
-    .facial-analysis-promo-text {
-        font-size: 0.81rem;
-    }
-}
-
-
-/* --------------------------------------------------------------------------
-   RESPONSIVE — CELULARES
-   -------------------------------------------------------------------------- */
-
-@media (max-width: 576px) {
-
-    .facial-analysis-container {
-        width: 52px;
-        height: 52px;
-
-        right: 18px;
-        bottom: 82px;
-    }
-
-    .facial-analysis-float {
-        width: 52px;
-        height: 52px;
-
-        font-size: 1.5rem;
-    }
-
-    .facial-analysis-promo {
-        width: 225px;
-
-        right: 62px;
-
-        padding: 12px 14px;
-
-        border-radius: 12px;
-    }
-
-    .facial-analysis-promo::before {
-        left: 12px;
-        top: 10px;
-
-        height: calc(100% - 20px);
-    }
-
-    .facial-analysis-promo-content {
-        padding-left: 9px;
-
-        gap: 3px;
-    }
-
-    .facial-analysis-promo-title {
-        font-size: 0.88rem;
-    }
-
-    .facial-analysis-promo-text {
-        font-size: 0.76rem;
-
-        line-height: 1.4;
-    }
-}
-
-
-/* --------------------------------------------------------------------------
-   ACCESIBILIDAD
-   -------------------------------------------------------------------------- */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .facial-analysis-float {
-        animation: none;
-    }
-
-    .facial-analysis-promo {
-        animation: none;
-
-        opacity: 1;
-        visibility: visible;
-
-        transform:
-            translateY(-50%)
-            translateX(0)
-            scale(1);
-    }
-
-    .facial-analysis-float,
-    .facial-analysis-float i {
-        transition: none;
-    }
-}
-
-
-/* ==========================================================================
    ANÁLISIS FACIAL - EXPERIENCIA PERSONALIZADA DEL CLIENTE
    ========================================================================== */
 
 .facial-dashboard-card {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(255, 198, 0, 0.35);
-    border-radius: var(--radio-borde);
-    background:
-        radial-gradient(
+    /* Variables por defecto (Modo Oscuro Intacto) */
+    --fd-card-bg: radial-gradient(
             circle at 85% 50%,
             rgba(255, 198, 0, 0.12) 0%,
             rgba(255, 198, 0, 0.04) 22%,
@@ -8945,13 +8492,66 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
             #171717 55%,
             #111111 100%
         );
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.65),
-        0 0 0 1px rgba(255, 255, 255, 0.025);
+    --fd-card-border: rgba(255, 198, 0, 0.35);
+    --fd-card-shadow: 0 12px 30px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.025);
+    --fd-card-hover-border: rgba(255, 198, 0, 0.6);
+    --fd-card-hover-shadow: 0 18px 38px rgba(0, 0, 0, 0.75), 0 0 24px rgba(255, 198, 0, 0.12);
+    --fd-title-color: #ffffff;
+    --fd-text-color: var(--text-light);
+    --fd-icon-main-bg: radial-gradient(
+            circle at 35% 30%,
+            rgba(255, 255, 255, 0.08),
+            rgba(255, 198, 0, 0.05) 45%,
+            rgba(0, 0, 0, 0.45) 100%
+        );
+    --fd-icon-scissors-bg: #151515;
+    --fd-icon-scissors-shadow: 0 5px 18px rgba(0, 0, 0, 0.55);
+
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--fd-card-border);
+    border-radius: var(--radio-borde);
+    background: var(--fd-card-bg);
+    box-shadow: var(--fd-card-shadow);
     transition:
         transform 0.3s ease,
         border-color 0.3s ease,
         box-shadow 0.3s ease;
+}
+
+/* ==========================================================================
+   SOBREESCRITURA EXCLUSIVA MODO CLARO
+   ========================================================================== */
+[data-theme="light"] .facial-dashboard-card,
+[data-bs-theme="light"] .facial-dashboard-card,
+body.light-mode .facial-dashboard-card,
+body.light .facial-dashboard-card {
+    --fd-card-bg: radial-gradient(
+            circle at 85% 50%,
+            rgba(255, 198, 0, 0.25) 0%,
+            rgba(255, 198, 0, 0.08) 25%,
+            transparent 50%
+        ),
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #fcfaf4 55%,
+            #f4eee0 100%
+        );
+    --fd-card-border: rgba(212, 160, 23, 0.45);
+    --fd-card-shadow: 0 10px 25px rgba(0, 0, 0, 0.07), 0 2px 10px rgba(212, 160, 23, 0.12);
+    --fd-card-hover-border: rgba(212, 160, 23, 0.7);
+    --fd-card-hover-shadow: 0 14px 32px rgba(0, 0, 0, 0.12), 0 0 20px rgba(212, 160, 23, 0.2);
+    --fd-title-color: #1a1a1a;
+    --fd-text-color: #4a4a4a;
+    --fd-icon-main-bg: radial-gradient(
+            circle at 35% 30%,
+            #ffffff 0%,
+            rgba(255, 198, 0, 0.18) 60%,
+            rgba(255, 198, 0, 0.3) 100%
+        );
+    --fd-icon-scissors-bg: #ffffff;
+    --fd-icon-scissors-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 /* Línea dorada superior */
@@ -8978,10 +8578,8 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 
 .facial-dashboard-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(255, 198, 0, 0.6);
-    box-shadow:
-        0 18px 38px rgba(0, 0, 0, 0.75),
-        0 0 24px rgba(255, 198, 0, 0.12);
+    border-color: var(--fd-card-hover-border);
+    box-shadow: var(--fd-card-hover-shadow);
 }
 
 
@@ -9030,7 +8628,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 
 .facial-dashboard-title {
     margin-bottom: 10px;
-    color: #ffffff;
+    color: var(--fd-title-color);
     font-family: var(--fuente-titulos);
     font-size: clamp(1.65rem, 3vw, 2.25rem);
     font-weight: 700;
@@ -9040,7 +8638,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 .facial-dashboard-text {
     max-width: 650px;
     margin-bottom: 23px;
-    color: var(--text-light);
+    color: var(--fd-text-color);
     font-family: var(--fuente-cuerpo);
     font-size: 0.98rem;
     line-height: 1.7;
@@ -9136,13 +8734,7 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
     justify-content: center;
     border: 1px solid rgba(255, 198, 0, 0.65);
     border-radius: 50%;
-    background:
-        radial-gradient(
-            circle at 35% 30%,
-            rgba(255, 255, 255, 0.08),
-            rgba(255, 198, 0, 0.05) 45%,
-            rgba(0, 0, 0, 0.45) 100%
-        );
+    background: var(--fd-icon-main-bg);
     color: var(--dorado);
     box-shadow:
         0 0 25px rgba(255, 198, 0, 0.15),
@@ -9168,9 +8760,9 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
     justify-content: center;
     border: 1px solid rgba(255, 198, 0, 0.45);
     border-radius: 50%;
-    background: #151515;
+    background: var(--fd-icon-scissors-bg);
     color: var(--dorado);
-    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.55);
+    box-shadow: var(--fd-icon-scissors-shadow);
     transform: rotate(-12deg);
 }
 
