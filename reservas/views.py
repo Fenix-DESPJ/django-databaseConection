@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db import transaction
 import random
 from datetime import datetime, timedelta, date
-from servicios.models import Servicio, Pago
+from servicios.models import Servicio
 from usuarios.models import Usuario, Notificacion, Cliente
 from negocio.models import Barbero, Agenda
 from .models import Cita
@@ -108,7 +108,6 @@ def crear_reserva(request):
         hora_reserva = request.POST.get('hora')
         servicio_id = request.POST.get('servicio')
         usuario_barbero_id = request.POST.get('barbero')  # idUsuario del barbero
-        metodo_pago = request.POST.get('metodo_pago')
         observaciones_raw = request.POST.get('observaciones', '').strip() 
 
         # =========================================================================
@@ -125,7 +124,7 @@ def crear_reserva(request):
         observaciones = observaciones_raw or "Sin observaciones o notas especiales"
         
 
-        if not all([fecha_reserva, hora_reserva, servicio_id, usuario_barbero_id, metodo_pago]):
+        if not all([fecha_reserva, hora_reserva, servicio_id, usuario_barbero_id]):
             return _responder_error(request, "Por favor completa todos los campos.")
 
         try:
@@ -238,14 +237,6 @@ def crear_reserva(request):
                             f'Por favor selecciona otra hora.'
                         )
 
-                nuevo_pago = Pago.objects.create(
-                    metodopago=metodo_pago,
-                    montototal=servicio.precio,
-                    fechapago=timezone.now(),
-                    estadopago="PENDIENTE" if metodo_pago == "Efectivo" else "PAGADO",
-                    codigofactura=f"FAC{random.randint(10000, 99999)}"
-                )
-
                 agenda_creada = Agenda.objects.create(
                     idbarberofk=barbero,
                     fecha=fecha_obj,
@@ -256,7 +247,6 @@ def crear_reserva(request):
                     fecha=fecha_obj,
                     horainicio=hora_objeto,
                     idserviciofk=servicio,
-                    idpagofk=nuevo_pago,
                     idbarberofk=barbero,
                     idclientefk=cliente,
                     idagendafk=agenda_creada,

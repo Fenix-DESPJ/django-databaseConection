@@ -68,15 +68,12 @@ async function inicializarModuloReservas() {
   // Selectores para los Inputs Ocultos (Hidden) destinados al POST de Django
   const inputFecha = document.getElementById("input_fecha_seleccionada");
   const inputHora = document.getElementById("input_hora_seleccionada");
-  const inputMetodoPago = document.getElementById("input_metodo_pago");
 
   // Selectores del Resumen de Reserva lateral derecho
   const summaryService = document.getElementById("summaryService");
   const summaryBarber = document.getElementById("summaryBarber");
   const summaryDate = document.getElementById("summaryDate");
   const summaryHour = document.getElementById("summaryHour");
-  const summaryPayment = document.getElementById("summaryPayment");
-  const selectedMethodDisplay = document.getElementById("selectedMethodDisplay");
 
   // Botón principal del flujo
   const btnReservar = document.getElementById("btnReservar");
@@ -84,8 +81,7 @@ async function inicializarModuloReservas() {
   // --- ESTADO INTERNO DEL CLIENTE ---
   let estadoReserva = {
     fecha: "",
-    hora: "",
-    metodoPago: ""
+    hora: ""
   };
 
   let mesOffset = 0;
@@ -164,21 +160,6 @@ async function inicializarModuloReservas() {
       summaryBarber.textContent = selectBarbero.value ? textoSeleccionado : "Selecciona tu barbero";
     }
   }
-
-  // --- ESCUCHA DEL DROPDOWN PERSONALIZADO DE MÉTODOS DE PAGO ---
-  const paymentOptions = document.querySelectorAll(".payment-option");
-  paymentOptions.forEach(option => {
-    option.addEventListener("click", (e) => {
-      e.preventDefault();
-      const metodo = option.getAttribute("data-method");
-
-      estadoReserva.metodoPago = metodo;
-      if (inputMetodoPago) inputMetodoPago.value = metodo;
-
-      if (selectedMethodDisplay) selectedMethodDisplay.textContent = metodo;
-      if (summaryPayment) summaryPayment.textContent = metodo;
-    });
-  });
 
   // --- RENDERIZACIÓN DINÁMICA DEL CALENDARIO ---
   function renderizarCalendario() {
@@ -462,10 +443,6 @@ async function inicializarModuloReservas() {
       }
       if (!inputHora || !inputHora.value) {
         alert("Por favor, selecciona un horario disponible.");
-        return;
-      }
-      if (!inputMetodoPago || !inputMetodoPago.value) {
-        alert("Por favor, selecciona tu método de pago.");
         return;
       }
 
