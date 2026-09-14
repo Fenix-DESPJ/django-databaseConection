@@ -7691,34 +7691,136 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
               border-color 0.3s ease;
 }
 
-.welcome-card {
+.welcome-section {
 
-    background: rgba(38, 38, 38, 0.72);
+    padding: 20px 0 8px;
 
-    border: 1px solid rgba(255, 255, 255, 0.08);
-
-    border-radius: var(--radio-borde);
-
-    box-shadow:
-        0 8px 22px rgba(0, 0, 0, 0.35);
-
-    transition:
-        background-color 0.3s ease,
-        border-color 0.3s ease,
-        box-shadow 0.3s ease;
 }
 
 
-/* Pequeño efecto al pasar el mouse */
+/* Etiqueta superior */
 
-.welcome-card:hover {
+.welcome-label {
 
-    background: rgba(43, 43, 43, 0.82);
+    color: var(--dorado);
 
-    border-color: rgba(255, 198, 0, 0.22);
+    font-size: 0.78rem;
 
-    box-shadow:
-        0 12px 28px rgba(0, 0, 0, 0.45);
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* Título de bienvenida */
+
+.welcome-title {
+
+    color: #FFFFFF;
+
+    font-family: "Times New Roman", serif;
+
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+
+    font-weight: 700;
+
+    line-height: 1.2;
+
+}
+
+
+/* Texto secundario */
+
+.welcome-text {
+
+    color: var(--text-muted);
+
+    font-size: 1rem;
+
+}
+
+
+/* Botón de agendar */
+
+.welcome-action {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 12px 22px;
+
+    color: var(--dorado);
+
+    background: transparent;
+
+    border: 1px solid rgba(255, 198, 0, 0.65);
+
+    border-radius: 10px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+
+}
+
+
+/* Hover del botón */
+
+.welcome-action:hover {
+
+    color: var(--dorado-hover);
+
+    background: rgba(255, 198, 0, 0.08);
+
+    border-color: var(--dorado);
+
+    transform: translateY(-2px);
+
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - BIENVENIDA
+   ========================================================================== */
+
+@media (max-width: 991px) {
+
+    .welcome-section {
+
+        padding-top: 10px;
+
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .welcome-title {
+
+        font-size: 1.9rem;
+
+    }
+
+    .welcome-action {
+
+        width: 100%;
+
+        margin-top: 8px;
+
+    }
+
 }
 /* Hover en tarjetas */
 
@@ -7730,10 +7832,6 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
   border-color: var(--dorado-oscuro) !important;
   box-shadow: 0 18px 35px -10px rgba(0, 0, 0, 0.9), 
               0 0 15px rgba(255, 198, 0, 0.15);
-}
-
-.welcome-card-z {
-  z-index: 2;
 }
 
 .card-empty {

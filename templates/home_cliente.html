@@ -6,26 +6,27 @@
 
 <div class="container py-4">
 
-    <!-- ============================================================
-         BIENVENIDA
-         ============================================================ -->
+    
+<!-- ============================================================
+     BIENVENIDA
+     ============================================================ -->
 
-    <section class="welcome-card p-4 p-md-5 mb-5 rounded-4 position-relative overflow-hidden">
+    <section class="welcome-section mb-5">
 
-        <div class="row align-items-center position-relative welcome-card-z">
+        <div class="row align-items-center">
 
-            <div class="col-lg-8 mb-4 mb-lg-0">
+            <div class="col-lg-8 mb-3 mb-lg-0">
 
-                <span class="badge mb-2 px-3 py-2 text-uppercase fw-bold badge-cliente">
+                <span class="welcome-label mb-2 d-inline-block">
                     Panel de Cliente
                 </span>
 
-                <h1 class="display-5 fw-bold mb-2 text-white">
+                <h1 class="welcome-title mb-2">
                     ¡Hola, {{ request.user.first_name|default:usuario.nombre|default:"Cliente" }}!
                 </h1>
 
-                <p class="fs-5 mb-0 text-custom-light">
-                    ¿Listo para renovar tu estilo hoy? Agenda tu cita en un solo clic.
+                <p class="welcome-text mb-0">
+                    ¿Listo para renovar tu estilo hoy?
                 </p>
 
             </div>
@@ -33,7 +34,7 @@
             <div class="col-lg-4 text-lg-end">
 
                 <a href="{% url 'crear_reserva' %}"
-                   class="btn btn-lg px-4 py-3 fw-bold shadow-lg btn-agendar-hero">
+                class="welcome-action">
 
                     <i class="bi bi-calendar-plus-fill me-2"></i>
                     Agendar Cita
