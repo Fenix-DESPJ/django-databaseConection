@@ -4511,6 +4511,13 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+/* Nombre del usuario bajo "M&A Barber Shop" (cliente, barbero o admin):
+   en modo oscuro es gris claro (#e2e2e2) a propósito, pero en modo claro
+   ese mismo gris queda casi invisible sobre el navbar blanco. */
+[data-theme="light"] .brand-role {
+  color: #1A1A1A;
+}
+
 [data-theme="light"] .footer-mya {
   background-color: #F5F5F2 !important;
   border-top-color: rgba(0, 0, 0, 0.08) !important;
@@ -4776,6 +4783,9 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 
 .header-reserva-premium .text-gradient,
 [data-theme="light"] .header-reserva-premium .text-gradient {
+  background-image: linear-gradient(90deg, var(--dorado) 0%, var(--dorado-hover) 50%, var(--dorado) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -7681,7 +7691,8 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 .card-cita-main,
 .card-historial,
 .mya-contact-card,
-.barber-card {
+.barber-card,
+.premium-card {
   background-color: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: var(--radio-borde);
@@ -7827,7 +7838,8 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 .card-cita-main:hover,
 .card-historial:hover,
 .mya-contact-card:hover,
-.barber-card:hover {
+.barber-card:hover,
+.premium-card.hover-glow:hover {
   transform: translateY(-4px);
   border-color: var(--dorado-oscuro) !important;
   box-shadow: 0 18px 35px -10px rgba(0, 0, 0, 0.9), 
