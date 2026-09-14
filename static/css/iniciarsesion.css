@@ -1,14 +1,5 @@
 /* ============================================================================
-   iniciarsesion.css
-   ----------------------------------------------------------------------------
-   Ya NO declara su propio :root. Todas las variables (--dorado, --bg-card,
-   --text-light, --border, etc.) vienen de style.css, que ahora se enlaza
-   ANTES que este archivo en iniciarsesion.html. Así, esta pantalla hereda
-   automáticamente el tema activo (data-theme="light" | "dark" en <html>)
-   sin necesitar su propia copia de las variables.
-
-   Si por algún motivo style.css no llegara a cargar, se dejan fallbacks
-   con var(--variable, valor-de-respaldo) para que la pantalla no se rompa.
+    iniciarsesion.css (Actualizado con las fuentes del proyecto)
    ============================================================================ */
 
 *{
@@ -35,12 +26,10 @@ body{
     background-repeat:no-repeat;
     background-attachment:fixed;
 
-    font-family:Arial, sans-serif;
+    /* Usamos la variable de cuerpo definida en style.css */
+    font-family: var(--fuente-cuerpo, 'Sora', 'Segoe UI', sans-serif);
 }
 
-/* En modo claro el overlay negro tan fuerte deja la pantalla oscura aunque
-   el resto del sitio esté en claro; se suaviza SOLO el overlay, la foto
-   de fondo se mantiene igual. */
 [data-theme="light"] body{
     background:
     linear-gradient(
@@ -62,39 +51,27 @@ body{
 .login-card{
     max-width:450px;
     margin:auto;
-
     background:var(--bg-card, #111111);
-
     border:1px solid var(--border-color, rgba(255,198,0,.25));
-
     border-radius:30px;
-
     padding:40px;
-
     text-align:center;
-
-    box-shadow:
-    0 15px 40px rgba(0,0,0,.5);
+    box-shadow: 0 15px 40px rgba(0,0,0,.5);
 }
 
 .logo-login{
     width:95px;
     height:95px;
-
     object-fit:cover;
-
     border-radius:50%;
-
     border:3px solid var(--dorado, #FFC600);
-
     margin-bottom:20px;
 }
 
 .login-card h1{
     color:var(--dorado, #FFC600);
-
-    font-family:"Times New Roman", serif;
-
+    /* Usamos la variable de títulos definida en style.css */
+    font-family: var(--fuente-titulos, 'Cinzel', Georgia, serif);
     margin-bottom:10px;
 }
 
@@ -116,16 +93,14 @@ body{
     color:var(--text-primary, #FFFFFF);
     border-radius:15px;
     padding:12px;
+    font-family: inherit; /* Hereda la fuente de cuerpo */
 }
 
 .form-control:focus{
     background:var(--bg-input, #1d1d1d);
     color:var(--text-primary, #FFFFFF);
-
     border-color:var(--dorado, #FFC600);
-
-    box-shadow:
-    0 0 0 .2rem rgba(255,198,0,.25);
+    box-shadow: 0 0 0 .2rem rgba(255,198,0,.25);
 }
 
 .form-control::placeholder{
@@ -133,11 +108,6 @@ body{
     opacity: 1;
 }
 
-/* --- Autofill de WebKit (Chrome/Edge/Safari) -----------------------------
-   Sin esto, al autocompletar el navegador fuerza un fondo amarillo/blanco
-   y texto negro que ignora el tema. Se "engaña" al navegador con un
-   box-shadow interior del color de fondo actual (var(--bg-input)), que
-   además se actualiza solo al cambiar de tema porque es una variable CSS. */
 .form-control:-webkit-autofill,
 .form-control:-webkit-autofill:hover,
 .form-control:-webkit-autofill:focus,
@@ -151,19 +121,13 @@ body{
 
 .btn-login{
     width:100%;
-
     background:var(--btn-primary-bg, var(--dorado, #FFC600));
-
     color:var(--btn-primary-text, #111111);
-
     border:none;
-
     border-radius:30px;
-
     padding:14px;
-
     font-weight:bold;
-
+    font-family: inherit; /* Hereda la fuente */
     transition:.3s;
 }
 
@@ -174,13 +138,9 @@ body{
 
 .volver{
     display:inline-block;
-
     margin-top:25px;
-
     color:var(--dorado, #FFC600);
-
     text-decoration:none;
-
     font-size:.95rem;
 }
 
@@ -188,33 +148,23 @@ body{
     color:var(--text-primary, #FFFFFF);
 }
 
-/* --- Botón "Continuar con Google" ---
-   En modo claro el fondo blanco del botón se pierde contra el fondo
-   claro de la tarjeta, así que se le agrega un borde negro sutil para
-   que quede bien delimitado. En modo oscuro no hace falta. */
 [data-theme="light"] .btn-google{
     border:1px solid #000000;
 }
 
 @media(max-width:576px){
-
     .login-card{
         padding:30px 25px;
     }
-
     .logo-login{
         width:80px;
         height:80px;
     }
-
     .login-card h1{
         font-size:2rem;
     }
 }
 
-/* ==========================================
-   SELECTOR DE ROLES: BORDES MINIMALISTAS
-   ========================================== */
 .role-selector-container {
     display: flex;
     gap: 10px;
@@ -241,6 +191,7 @@ body{
     transition: all 0.3s ease;
     user-select: none;
     margin-bottom: 0;
+    font-family: inherit;
 }
 
 .role-tab:hover {
@@ -252,9 +203,6 @@ body{
     display: none;
 }
 
-/* ==========================================
-   CAMBIOS DE ESTADO AL SELECCIONAR (ACTIVOS)
-   ========================================== */
 #rol-admin:checked ~ label[for="rol-admin"],
 #rol-barbero:checked ~ label[for="rol-barbero"],
 #rol-cliente:checked ~ label[for="rol-cliente"] {

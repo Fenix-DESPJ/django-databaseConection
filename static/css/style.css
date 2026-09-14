@@ -99,8 +99,8 @@
 
   /* --- Otros --- */
   --radio-borde: 16px;
-  --fuente-titulos: 'Times New Roman', Times, serif;
-  --fuente-cuerpo: 'Segoe UI', Roboto, sans-serif;
+  --fuente-titulos: 'Cinzel', Georgia, serif;
+  --fuente-cuerpo: 'Sora', 'Segoe UI', sans-serif;
 
   /* ==========================================================================
      ALIAS SEMÁNTICOS NUEVOS (los que pediste). Apuntan a las variables
@@ -205,7 +205,7 @@ section {
 
 .navbar-brand span {
   color: var(--dorado);
-  font-family: "Times New Roman", serif;
+  font-family: var(--fuente-titulos);
   font-size: 1.4rem;
 }
 
@@ -850,7 +850,7 @@ section {
 }
 
 .barber-name {
-    font-family: "Times New Roman", serif;
+    font-family: var(--fuente-titulos);
     font-size: 1.3rem;
     font-weight: bold;
     color: #ffffff;
@@ -947,7 +947,7 @@ section {
 }
 
 .title-options {
-  font-family: "Times New Roman", serif !important;
+  font-family: var(--fuente-titulos) !important;
   font-size: 2rem;
 }
 
@@ -1189,7 +1189,7 @@ section {
 
 /* Tipografía elegante para el título "Datos De Contacto" */
 .font-elegante {
-    font-family: 'Times New Roman', Times, serif;
+    font-family: var(--fuente-titulos);
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -2927,7 +2927,7 @@ textarea::placeholder {
 
 /* --- SECTION & TABLE --- */
 .section-title {
-    font-family: "Times New Roman", serif;
+    font-family: var(--fuente-titulos);
     color: var(--dorado);
     border-left: 4px solid var(--dorado);
     padding-left: 12px;
@@ -3323,7 +3323,7 @@ textarea::placeholder {
 /* Título principal superior */
 .card-title {
     color: var(--dorado, #cca553) !important;
-    font-family: "Times New Roman", serif;
+    font-family: var(--fuente-titulos);
     font-weight: 600;
     font-size: 1.85rem;
     letter-spacing: 0.5px;
@@ -3608,7 +3608,7 @@ select.form-control-custom {
 .editar-card-header h5 {
     margin: 0;
     color: #fff;
-    font-family: "Times New Roman", serif;
+    font-family: var(--fuente-titulos);
     letter-spacing: 0.3px;
 }
 .editar-card-header span {
@@ -9281,4 +9281,45 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
     .facial-dashboard-icon-stars {
         animation: none;
     }
+}
+
+/* ==========================================================================
+   FIX MODO CLARO: Equipo Desarrollador, icono GitHub y menú hamburguesa
+   ========================================================================== */
+
+/* ---- Equipo Desarrollador en modo claro ---- */
+[data-theme="light"] .dev-card {
+  background: var(--gris-oscuro);
+  border: 1px solid rgba(191, 147, 13, 0.25);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+[data-theme="light"] .dev-card:hover {
+  border-color: rgba(191, 147, 13, 0.6);
+  box-shadow: 0 15px 30px rgba(191, 147, 13, 0.15);
+}
+[data-theme="light"] .dev-name {
+  color: var(--texto-principal);
+}
+
+/* ---- Icono de GitHub en modo claro ---- */
+[data-theme="light"] .dev-github-link {
+  color: var(--dorado-oscuro);
+  background-color: rgba(191, 147, 13, 0.08);
+  border-color: rgba(191, 147, 13, 0.35);
+}
+[data-theme="light"] .dev-github-link:hover {
+  background-color: var(--dorado-oscuro);
+  color: #ffffff;
+  border-color: var(--dorado-oscuro);
+}
+
+/* ---- Menú hamburguesa (navbar-toggler) en modo claro ---- */
+[data-theme="light"] .navbar-toggler {
+  border-color: rgba(191, 147, 13, 0.4);
+}
+[data-theme="light"] .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23BF930D' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+[data-theme="light"] .navbar-toggler:focus {
+  box-shadow: 0 0 0 0.15rem rgba(191, 147, 13, 0.4);
 }

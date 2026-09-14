@@ -1,9 +1,5 @@
 /* ============================================================================
-   registrarse.css
-   ----------------------------------------------------------------------------
-   Igual que iniciarsesion.css: ya no declara su propio :root, hereda las
-   variables de style.css (enlazado antes que este archivo en registrarse.html)
-   y por eso responde solo al atributo data-theme del <html>.
+   registrarse.css (Actualizado con las fuentes del proyecto)
    ============================================================================ */
 
 *{
@@ -30,7 +26,7 @@ body{
     background-repeat:no-repeat;
     background-attachment:fixed;
 
-    font-family:Arial, sans-serif;
+    font-family: var(--fuente-cuerpo, 'Sora', 'Segoe UI', sans-serif);
 }
 
 [data-theme="light"] body{
@@ -85,7 +81,7 @@ body{
 .registro-card h1{
     color:var(--dorado, #FFC600);
 
-    font-family:"Times New Roman", serif;
+    font-family: var(--fuente-titulos, 'Cinzel', Georgia, serif);
 
     margin-bottom:10px;
 }
@@ -108,6 +104,7 @@ body{
     color:var(--text-primary, #FFFFFF);
     border-radius:15px;
     padding:12px;
+    font-family: inherit;
 }
 
 .form-control::placeholder{
@@ -125,8 +122,7 @@ body{
     0 0 0 .2rem rgba(255,198,0,.25);
 }
 
-/* --- Autofill de WebKit: usa las variables, así queda correcto en los
-   dos temas y no hace falta duplicar este bloque cuando cambie la paleta. */
+/* --- Autofill de WebKit --- */
 .form-control:-webkit-autofill,
 .form-control:-webkit-autofill:hover,
 .form-control:-webkit-autofill:focus,
@@ -140,6 +136,7 @@ body{
 
 input[type="date"]{
     color:var(--text-primary, #FFFFFF);
+    font-family: inherit;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator{
@@ -165,6 +162,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{
     padding:14px;
 
     font-weight:bold;
+    font-family: inherit;
 
     transition:.3s;
 }
@@ -190,10 +188,6 @@ input[type="date"]::-webkit-calendar-picker-indicator{
     color:var(--text-primary, #FFFFFF);
 }
 
-/* --- Botón "Continuar con Google" ---
-   En modo claro el fondo blanco del botón se pierde contra el fondo
-   claro de la tarjeta, así que se le agrega un borde negro sutil para
-   que quede bien delimitado. En modo oscuro no hace falta. */
 [data-theme="light"] .btn-google{
     border:1px solid #000000;
 }
