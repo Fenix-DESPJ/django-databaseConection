@@ -9025,3 +9025,482 @@ body.light .facial-dashboard-card {
 [data-theme="light"] .navbar-toggler:focus {
   box-shadow: 0 0 0 0.15rem rgba(191, 147, 13, 0.4);
 }
+
+
+/* ==========================================================================
+   25. ANÁLISIS FACIAL — BOTÓN FLOTANTE Y BURBUJA PROMOCIONAL
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   CONTENEDOR GENERAL
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-container {
+    position: fixed;
+    right: 24px;
+    bottom: 94px;
+
+    width: 58px;
+    height: 58px;
+
+    z-index: 1401;
+}
+
+
+/* --------------------------------------------------------------------------
+   BOTÓN FLOTANTE
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-float {
+    position: relative;
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #353535 0%,
+            #1c1c1c 45%,
+            #0b0b0b 100%
+        );
+
+    color: #FFC600;
+
+    border: 1px solid rgba(255, 198, 0, 0.75);
+
+    text-decoration: none;
+
+    font-size: 1.7rem;
+
+    box-shadow:
+        0 0 0 0 rgba(255, 198, 0, 0.35),
+        0 8px 22px rgba(0, 0, 0, 0.5);
+
+    animation:
+        facialAnalysisPulse 3s ease-out infinite;
+
+    transition:
+        transform 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   ICONO
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-float i {
+    line-height: 1;
+
+    position: relative;
+    z-index: 2;
+
+    transition:
+        transform 0.25s ease,
+        color 0.25s ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   HOVER / FOCUS
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-float:hover,
+.facial-analysis-float:focus-visible {
+    color: #FFD43E;
+
+    border-color: #FFC600;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #454545 0%,
+            #1d1d1d 45%,
+            #090909 100%
+        );
+
+    transform:
+        translateY(-3px)
+        scale(1.08);
+
+    box-shadow:
+        0 0 0 8px rgba(255, 198, 0, 0.08),
+        0 12px 30px rgba(0, 0, 0, 0.55),
+        0 0 18px rgba(255, 198, 0, 0.25);
+
+    outline: none;
+}
+
+
+.facial-analysis-float:hover i,
+.facial-analysis-float:focus-visible i {
+    transform: scale(1.05);
+}
+
+
+/* --------------------------------------------------------------------------
+   BURBUJA PROMOCIONAL
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo {
+    position: absolute;
+
+    /*
+       La burbuja sale hacia la izquierda del botón.
+       Al estar dentro de .facial-analysis-container,
+       no afecta el posicionamiento del resto de la página.
+    */
+    right: 72px;
+    top: 50%;
+
+    width: 285px;
+
+    transform:
+        translateY(-50%)
+        translateX(14px)
+        scale(0.96);
+
+    transform-origin: right center;
+
+    padding: 15px 18px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1c1c1c 0%,
+            #101010 100%
+        );
+
+    border:
+        1px solid rgba(255, 198, 0, 0.42);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.5),
+        0 0 18px rgba(255, 198, 0, 0.07);
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    /*
+       2.5 segundos de espera + animación de 10 segundos.
+    */
+    animation:
+        facialAnalysisPromo 10s ease forwards;
+
+    animation-delay: 2.5s;
+}
+
+
+/* --------------------------------------------------------------------------
+   PEQUEÑO ACENTO DORADO DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo::before {
+    content: "";
+
+    position: absolute;
+
+    left: 15px;
+    top: 12px;
+
+    width: 3px;
+    height: calc(100% - 24px);
+
+    border-radius: 5px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #FFD43E,
+            #FFC600
+        );
+}
+
+
+/* --------------------------------------------------------------------------
+   TRIÁNGULO / PUNTA DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo::after {
+    content: "";
+
+    position: absolute;
+
+    right: -8px;
+    top: 50%;
+
+    width: 14px;
+    height: 14px;
+
+    transform:
+        translateY(-50%)
+        rotate(45deg);
+
+    background: #111111;
+
+    border-top:
+        1px solid rgba(255, 198, 0, 0.35);
+
+    border-right:
+        1px solid rgba(255, 198, 0, 0.35);
+}
+
+
+/* --------------------------------------------------------------------------
+   CONTENIDO DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo-content {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding-left: 10px;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --------------------------------------------------------------------------
+   TÍTULO DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo-title {
+    color: #FFC600;
+
+    font-family:
+        var(--fuente-titulos);
+
+    font-size: 1rem;
+    font-weight: bold;
+
+    line-height: 1.25;
+
+    letter-spacing: 0.15px;
+}
+
+
+/* --------------------------------------------------------------------------
+   TEXTO DE LA BURBUJA
+   -------------------------------------------------------------------------- */
+
+.facial-analysis-promo-text {
+    color: #e2e2e2;
+
+    font-family:
+        var(--fuente-cuerpo);
+
+    font-size: 0.84rem;
+
+    line-height: 1.45;
+}
+
+
+/* --------------------------------------------------------------------------
+   ANIMACIÓN DEL BOTÓN
+   -------------------------------------------------------------------------- */
+
+@keyframes facialAnalysisPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 0 rgba(255, 198, 0, 0.28),
+            0 8px 22px rgba(0, 0, 0, 0.5);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 8px rgba(255, 198, 0, 0),
+            0 10px 28px rgba(0, 0, 0, 0.55);
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   APARICIÓN Y DESAPARICIÓN DE LA BURBUJA
+   --------------------------------------------------------------------------
+
+   0%   → invisible
+   10%  → aparece suavemente
+   82%  → permanece visible
+   100% → desaparece suavemente
+
+   La animación comienza después de 2.5 segundos.
+   -------------------------------------------------------------------------- */
+
+@keyframes facialAnalysisPromo {
+
+    0% {
+        opacity: 0;
+        visibility: hidden;
+
+        transform:
+            translateY(-50%)
+            translateX(14px)
+            scale(0.96);
+    }
+
+    10% {
+        opacity: 1;
+        visibility: visible;
+
+        transform:
+            translateY(-50%)
+            translateX(0)
+            scale(1);
+    }
+
+    82% {
+        opacity: 1;
+        visibility: visible;
+
+        transform:
+            translateY(-50%)
+            translateX(0)
+            scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+
+        transform:
+            translateY(-50%)
+            translateX(10px)
+            scale(0.97);
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE — TABLETS
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+
+    .facial-analysis-container {
+        right: 20px;
+        bottom: 88px;
+    }
+
+    .facial-analysis-promo {
+        width: 260px;
+
+        right: 68px;
+
+        padding: 14px 16px;
+    }
+
+    .facial-analysis-promo-title {
+        font-size: 0.95rem;
+    }
+
+    .facial-analysis-promo-text {
+        font-size: 0.81rem;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE — CELULARES
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 576px) {
+
+    .facial-analysis-container {
+        width: 52px;
+        height: 52px;
+
+        right: 18px;
+        bottom: 82px;
+    }
+
+    .facial-analysis-float {
+        width: 52px;
+        height: 52px;
+
+        font-size: 1.5rem;
+    }
+
+    .facial-analysis-promo {
+        width: 225px;
+
+        right: 62px;
+
+        padding: 12px 14px;
+
+        border-radius: 12px;
+    }
+
+    .facial-analysis-promo::before {
+        left: 12px;
+        top: 10px;
+
+        height: calc(100% - 20px);
+    }
+
+    .facial-analysis-promo-content {
+        padding-left: 9px;
+
+        gap: 3px;
+    }
+
+    .facial-analysis-promo-title {
+        font-size: 0.88rem;
+    }
+
+    .facial-analysis-promo-text {
+        font-size: 0.76rem;
+
+        line-height: 1.4;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   ACCESIBILIDAD
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .facial-analysis-float {
+        animation: none;
+    }
+
+    .facial-analysis-promo {
+        animation: none;
+
+        opacity: 1;
+        visibility: visible;
+
+        transform:
+            translateY(-50%)
+            translateX(0)
+            scale(1);
+    }
+
+    .facial-analysis-float,
+    .facial-analysis-float i {
+        transition: none;
+    }
+}
+
+
