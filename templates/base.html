@@ -33,11 +33,9 @@
 
     <!-- =====================================================================
          BOTÓN FLOTANTE DE ANÁLISIS FACIAL
-         Visible para visitantes y clientes.
+         Visible para todos los roles (visitante, cliente, barbero y admin).
          Se mantiene el diseño original.
          ===================================================================== -->
-
-    {% if not request.session.sesion_iniciada or request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
 
     <div class="facial-analysis-container">
 
@@ -52,19 +50,16 @@
                 </span>
             </div>
         </div>
-
+        
         <!-- Botón de análisis facial -->
-        <a
-            href="{% url 'analisis_rostro' %}"
-            class="facial-analysis-float"
-            aria-label="Realizar análisis facial"
-            title="Análisis facial">
+        <a href="{% url 'analisis_rostro' %}"
+        class="facial-analysis-float"
+        aria-label="Realizar análisis facial"
+        title="Análisis facial">
             <i class="bi bi-person-bounding-box"></i>
         </a>
 
     </div>
-
-    {% endif %}
 
     {% if whatsapp_link %}
     <a href="{{ whatsapp_link }}"
@@ -152,11 +147,13 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'gestionar_agenda_admin' %}">Agenda</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'editar_contenido_index' %}"><i class="bi bi-pencil-square me-1"></i>Editar Inicio</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'analisis_rostro' %}">Recomendación de Corte</a></li>
                         
                         {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>
                             <!-- Enlace de perfil añadido para el barbero -->
                             <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'analisis_rostro' %}">Recomendación de Corte</a></li>
                         
                         {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'home_cliente' %}">Inicio</a></li>
@@ -245,10 +242,12 @@
                                 <li class="nav-item"><a class="nav-link" href="{% url 'editar_perfiles' %}">Usuarios</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'servicios' %}">Servicios</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'gestionar_agenda_admin' %}">Agenda</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'analisis_rostro' %}">Recomendación de corte</a></li>
                         
                             {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
                                 <li class="nav-item"><a class="nav-link" href="{% url 'panel_barbero' %}">Inicio Barbero</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'analisis_rostro' %}">Recomendación de corte</a></li>
                             
                             {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
                                 <li class="nav-item"><a class="nav-link" href="{% url 'home_cliente' %}">Inicio</a></li>
