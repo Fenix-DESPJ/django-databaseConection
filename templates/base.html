@@ -31,6 +31,41 @@
 
 <body data-url-cerrar-sesion="{% url 'cerrar_sesion' %}">
 
+    <!-- =====================================================================
+         BOTÓN FLOTANTE DE ANÁLISIS FACIAL
+         Visible para visitantes y clientes.
+         Se mantiene el diseño original.
+         ===================================================================== -->
+
+    {% if not request.session.sesion_iniciada or request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
+
+    <div class="facial-analysis-container">
+
+        <!-- Burbuja promocional -->
+        <div class="facial-analysis-promo" aria-hidden="true">
+            <div class="facial-analysis-promo-content">
+                <span class="facial-analysis-promo-title">
+                    ¿Qué corte va mejor contigo?
+                </span>
+                <span class="facial-analysis-promo-text">
+                    Descúbrelo con nuestro análisis facial
+                </span>
+            </div>
+        </div>
+
+        <!-- Botón de análisis facial -->
+        <a
+            href="{% url 'analisis_rostro' %}"
+            class="facial-analysis-float"
+            aria-label="Realizar análisis facial"
+            title="Análisis facial">
+            <i class="bi bi-person-bounding-box"></i>
+        </a>
+
+    </div>
+
+    {% endif %}
+
     {% if whatsapp_link %}
     <a href="{{ whatsapp_link }}"
        target="_blank"

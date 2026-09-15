@@ -259,47 +259,4 @@
   </div>
 </section>
 
-<!-- =====================================================================
-     BOTÓN FLOTANTE DE ANÁLISIS FACIAL
-     Se muestra en el inicio cuando no hay una sesión iniciada.
-     Permite acceder directamente al análisis facial.
-     ===================================================================== -->
-
-{% if not request.session.sesion_iniciada %}
-
-<div class="facial-analysis-container">
-
-  <!--Burbuja promocional-->
-
-  <div class="facial-analysis-promo" aria-hidden="true">
-
-    <div class="facial-analysis-promo-content">
-
-      <span class="facial-analysis-promo-title">
-        ¿Qué corte va mejor contigo?
-      </span>
-
-      <span class="facial-analysis-promo-text">
-        Descúbrelo con nuestro análisis facial
-      </span>
-
-    </div>
-
-  </div>
-
-  <!-- Bóton de análisis facial -->
-  <a
-    href="{% url 'analisis_rostro' %}"
-    class="facial-analysis-float"
-    aria-label="Realizar análisis facial"
-    title="Análisis facial">
-
-    <i class="bi bi-person-bounding-box"></i>
-
-  </a>
-
-</div>
-
-
-{% endif %}
 {% endblock %}

@@ -684,36 +684,84 @@ def panel_barbero(request):
 def completar_cita(request, cita_id):
     cita = get_object_or_404(Cita, idcita=cita_id)
 
-    # Idempotencia: si ya estaba completada, no volvemos a disparar notificaciones.
+    # Si la cita ya estaba completada, no hacemos nada nuevamente.
     if cita.esta_completada:
         return redirect('panel_barbero')
 
+    # ============================================================
+    # EL BARBERO DEBE REGISTRAR EL MÉTODO DE PAGO
+    # ============================================================
+    if request.method != 'POST':
+        messages.error(
+            request,
+            "Debes seleccionar el método de pago para completar la cita."
+        )
+        return redirect('panel_barbero')
+
+    metodo_pago = request.POST.get('metodo_pago')
+
+    # Verificamos que el método sea uno de los permitidos.
+    metodos_validos = [
+        Pago.METODO_EFECTIVO,
+        Pago.METODO_PSE,
+        Pago.METODO_TARJETA
+    ]
+
+    if metodo_pago not in metodos_validos:
+        messages.error(
+            request,
+            "Selecciona un método de pago válido."
+        )
+        return redirect('panel_barbero')
+
+    # ============================================================
+    # CREAR EL REGISTRO DEL PAGO
+    # ============================================================
+    pago = Pago.objects.create(
+        metodopago=metodo_pago,
+        montototal=cita.idserviciofk.precioservicio,
+        fechapago=timezone.now(),
+        estadopago=Pago.ESTADO_PAGADO
+    )
+
+    # Relacionamos el pago con la cita.
+    cita.idpagofk = pago
+
+    # Marcamos la cita como completada.
     cita.observaciones = "Completado - Servicio realizado"
     cita.save()
 
-    # Al completarse la cita, el pago queda cerrado/confirmado (ya no editable).
-    if cita.idpagofk and cita.idpagofk.estadopago != Pago.ESTADO_CANCELADO:
-        cita.idpagofk.estadopago = Pago.ESTADO_PAGADO
-        cita.idpagofk.save()
-
+    # ============================================================
+    # NOTIFICACIÓN A LOS ADMINISTRADORES
+    # ============================================================
     try:
         barbero_usuario = cita.idbarberofk.idusuariofk
         cliente_usuario = cita.idclientefk.idusuariofk
 
         mensaje = (
             f"El barbero {barbero_usuario.nombre} confirmó exitosamente la cita de "
-            f"{cliente_usuario.nombre} ({cita.idserviciofk.nombreservicio if cita.idserviciofk else 'servicio'})."
+            f"{cliente_usuario.nombre} "
+            f"({cita.idserviciofk.nombreservicio if cita.idserviciofk else 'servicio'})."
         )
 
         admins = Usuario.objects.filter(idrolfk_id=1)
+
         for admin in admins:
             Notificacion.objects.create(
                 idusuariofk=admin,
                 tipo='cita_confirmada',
                 mensaje=mensaje
             )
+
     except Exception as e:
-        print(f"DEBUG: No se pudo crear la notificación de confirmación: {e}")
+        print(
+            f"DEBUG: No se pudo crear la notificación de confirmación: {e}"
+        )
+
+    messages.success(
+        request,
+        f"La cita #{cita.idcita} fue completada y el pago quedó registrado."
+    )
 
     return redirect('panel_barbero')
 

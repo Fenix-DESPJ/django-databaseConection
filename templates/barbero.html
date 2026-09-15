@@ -3,103 +3,345 @@
 
 {% block content %}
 {% csrf_token %}
+
 <main class="dashboard-container container my-5">
+
+<div class="welcome-section mb-4">
+    <h2>Bienvenido de nuevo, <span class="text-gold">{{ request.user.first_name }}</span></h2>
+    <p class="text-white">Gestiona tus próximas citas agendadas y revisa tus ganancias en tiempo real.</p>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="stats-card">
+            <p class="stats-label">Próximas Citas (Agenda)</p>
+            <p class="stats-value">{{ total_citas }}</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stats-card highlight-card">
+            <p class="stats-label">Producido Histórico</p>
+            <p class="stats-value">${{ producido_total }}</p>
+            <span class="stats-sub text-light">Valor acumulado de servicios realizados</span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stats-card">
+            <p class="stats-label">Tu Comisión (Est.)</p>
+            <p class="stats-value text-gold">${{ comision_estimada }}</p>
+            <span class="stats-sub text-white">Correspondiente al 50%</span>
+        </div>
+    </div>
+</div>
+
+<div class="appointments-section p-4 style-card"
+     style="background: #1d1d1d; border-radius: 15px; border: 1px solid #444;">
+
+    <h3 class="text-gold mb-4 h5">
+        <i class="bi bi-calendar3"></i> Tu Agenda de Trabajo Próxima
+    </h3>
     
-    <div class="welcome-section mb-4">
-        <h2>Bienvenido de nuevo, <span class="text-gold">{{ request.user.first_name }}</span></h2>
-        <p class="text-white">Gestiona tus próximas citas agendadas y revisa tus ganancias en tiempo real.</p>
-    </div>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0"
+               style="background: transparent;">
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="stats-card">
-                <p class="stats-label">Próximas Citas (Agenda)</p>
-                <p class="stats-value">{{ total_citas }}</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stats-card highlight-card">
-                <p class="stats-label">Producido Histórico</p>
-                <p class="stats-value">${{ producido_total }}</p>
-                <span class="stats-sub text-light">Valor acumulado de servicios realizados</span>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stats-card">
-                <p class="stats-label">Tu Comisión (Est.)</p>
-                <p class="stats-value text-gold">${{ comision_estimada }}</p>
-                <span class="stats-sub text-white">Correspondiente al 50%</span>
-            </div>
-        </div>
-    </div>
+            <thead>
+                <tr class="text-gold"
+                    style="border-bottom: 2px solid var(--dorado, #ffc600);">
 
-    <div class="appointments-section p-4 style-card" style="background: #1d1d1d; border-radius: 15px; border: 1px solid #444;">
-        <h3 class="text-gold mb-4 h5"><i class="bi bi-calendar3"></i> Tu Agenda de Trabajo Próxima</h3>
-        
-        <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0" style="background: transparent;">
-                <thead>
-                    <tr class="text-gold" style="border-bottom: 2px solid var(--dorado, #ffc600);">
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Cliente</th>
-                        <th>Servicio</th>
-                        <th>Precio</th>
-                        <th>Estado / Observaciones</th>
-                        <th class="text-center">Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cita in citas %}
-                        <tr>
-                            <td class="text-light font-monospace">{{ cita.idagendafk.fecha|date:"d / M / Y" }}</td>
-                            
-                            <td class="fw-bold text-white">{{ cita.idagendafk.horainicio|time:"g:i a" }}</td>
-                            
-                            <td>{{ cita.idclientefk.idusuariofk.nombre }}</td>
-                            
-                            <td><span class="badge bg-secondary">{{ cita.idserviciofk.nombreservicio }}</span></td>
-                            
-                            <td class="text-gold">${{ cita.idserviciofk.precioservicio }}</td>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Cliente</th>
+                    <th>Servicio</th>
+                    <th>Precio</th>
+                    <th>Estado / Observaciones</th>
+                    <th class="text-center">Acción</th>
 
-                            <td>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for cita in citas %}
+
+                    <tr>
+
+                        <td class="text-light font-monospace">
+                            {{ cita.idagendafk.fecha|date:"d / M / Y" }}
+                        </td>
+                        
+                        <td class="fw-bold text-white">
+                            {{ cita.idagendafk.horainicio|time:"g:i a" }}
+                        </td>
+                        
+                        <td>
+                            {{ cita.idclientefk.idusuariofk.nombre }}
+                        </td>
+                        
+                        <td>
+                            <span class="badge bg-secondary">
+                                {{ cita.idserviciofk.nombreservicio }}
+                            </span>
+                        </td>
+                        
+                        <td class="text-gold">
+                            ${{ cita.idserviciofk.precioservicio }}
+                        </td>
+
+                        <td>
+
+                            {% if cita.esta_completada %}
+
+                                <span class="text-success small fw-bold">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Servicio Realizado
+                                </span>
+
+                            {% elif cita.esta_incompleta %}
+
+                                <span class="text-danger small fw-bold">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    Incompleta (No asistió)
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-warning small italic">
+                                    <i class="bi bi-clock-history"></i>
+                                    Pendiente
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+                        
+                        <td class="text-center">
+
+                            <div class="d-flex gap-2 justify-content-center">
+
                                 {% if cita.esta_completada %}
-                                    <span class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Servicio Realizado</span>
+
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                                        Completada
+                                    </button>
+
                                 {% elif cita.esta_incompleta %}
-                                    <span class="text-danger small fw-bold"><i class="bi bi-x-circle-fill"></i> Incompleta (No asistió)</span>
+
+                                    <button class="btn btn-sm btn-outline-danger" disabled>
+                                        Incompleta
+                                    </button>
+
                                 {% else %}
-                                    <span class="text-warning small italic"><i class="bi bi-clock-history"></i> Pendiente</span>
+
+                                    <!-- =====================================================
+                                         BOTÓN COMPLETAR
+                                         ===================================================== -->
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-gold fw-bold"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalPago{{ cita.idcita }}"
+                                            style="background: #ffc600;
+                                                   color: #000;
+                                                   border-radius: 8px;
+                                                   border: none;
+                                                   padding: 5px 12px;
+                                                   font-size: 0.85rem;">
+
+                                        <i class="bi bi-check-circle"></i>
+                                        Completar
+
+                                    </button>
+
+                                    <!-- =====================================================
+                                         BOTÓN INCOMPLETA
+                                         ===================================================== -->
+
+                                    <a href="{% url 'marcar_incompleta' cita.idcita %}"
+                                       class="btn btn-sm btn-outline-danger fw-bold"
+                                       style="border-radius: 8px;
+                                              padding: 5px 12px;
+                                              font-size: 0.85rem;">
+
+                                        Incompleta
+
+                                    </a>
+
                                 {% endif %}
-                            </td>
-                            
-                            <td class="text-center">
-                                <div class="d-flex gap-2 justify-content-center">
-                                    {% if cita.esta_completada %}
-                                        <button class="btn btn-sm btn-outline-secondary" disabled>Completada</button>
-                                    {% elif cita.esta_incompleta %}
-                                        <button class="btn btn-sm btn-outline-danger" disabled>Incompleta</button>
-                                    {% else %}
-                                        <a href="{% url 'completar_cita' cita.idcita %}" class="btn btn-sm btn-gold fw-bold" style="background: #ffc600; color: #000; border-radius: 8px; border: none; padding: 5px 12px; font-size: 0.85rem;">
-                                            Completar
-                                        </a>
-                                        <a href="{% url 'marcar_incompleta' cita.idcita %}" class="btn btn-sm btn-outline-danger fw-bold" style="border-radius: 8px; padding: 5px 12px; font-size: 0.85rem;">
-                                            Incompleta
-                                        </a>
-                                    {% endif %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- ============================================================
+                         MODAL PARA REGISTRAR MÉTODO DE PAGO
+                         ============================================================ -->
+
+                    {% if not cita.esta_completada and not cita.esta_incompleta %}
+
+                        <div class="modal fade"
+                             id="modalPago{{ cita.idcita }}"
+                             tabindex="-1"
+                             aria-labelledby="modalPagoLabel{{ cita.idcita }}"
+                             aria-hidden="true">
+
+                            <div class="modal-dialog modal-dialog-centered">
+
+                                <div class="modal-content"
+                                     style="background: #1d1d1d;
+                                            border: 1px solid #444;
+                                            border-radius: 15px;">
+
+                                    <div class="modal-header"
+                                         style="border-bottom: 1px solid #444;">
+
+                                        <h5 class="modal-title text-gold"
+                                            id="modalPagoLabel{{ cita.idcita }}">
+
+                                            <i class="bi bi-credit-card"></i>
+                                            Registrar pago
+
+                                        </h5>
+
+                                        <button type="button"
+                                                class="btn-close btn-close-white"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Cerrar">
+                                        </button>
+
+                                    </div>
+
+
+                                    <form method="POST"
+                                          action="{% url 'completar_cita' cita.idcita %}">
+
+                                        {% csrf_token %}
+
+                                        <div class="modal-body">
+
+                                            <div class="mb-3">
+
+                                                <p class="text-white mb-1">
+                                                    Cliente:
+                                                    <strong>
+                                                        {{ cita.idclientefk.idusuariofk.nombre }}
+                                                    </strong>
+                                                </p>
+
+                                                <p class="text-white mb-3">
+                                                    Servicio:
+                                                    <strong>
+                                                        {{ cita.idserviciofk.nombreservicio }}
+                                                    </strong>
+                                                </p>
+
+                                                <p class="text-gold fw-bold">
+                                                    Total a registrar:
+                                                    ${{ cita.idserviciofk.precioservicio }}
+                                                </p>
+
+                                            </div>
+
+
+                                            <label class="form-label text-white fw-bold">
+                                                ¿Cómo pagó el cliente?
+                                            </label>
+
+                                            <select name="metodo_pago"
+                                                    class="form-select"
+                                                    required
+                                                    style="background: #2a2a2a;
+                                                           color: #fff;
+                                                           border: 1px solid #555;
+                                                           border-radius: 10px;">
+
+                                                <option value="" selected disabled>
+                                                    Selecciona un método de pago
+                                                </option>
+
+                                                <option value="Efectivo">
+                                                    Efectivo
+                                                </option>
+
+                                                <option value="Tarjeta">
+                                                    Tarjeta
+                                                </option>
+
+                                                <option value="PSE">
+                                                    PSE
+                                                </option>
+
+                                            </select>
+
+                                            <small class="text-white-50 d-block mt-2">
+                                                Registra el método con el que el cliente
+                                                realizó efectivamente el pago.
+                                            </small>
+
+                                        </div>
+
+
+                                        <div class="modal-footer"
+                                             style="border-top: 1px solid #444;">
+
+                                            <button type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">
+
+                                                Cancelar
+
+                                            </button>
+
+                                            <button type="submit"
+                                                    class="btn fw-bold"
+                                                    style="background: #ffc600;
+                                                           color: #000;
+                                                           border-radius: 8px;">
+
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                Confirmar servicio
+
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
                                 </div>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                No tienes citas agendadas de hoy en adelante.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="7"
+                            class="text-center text-muted py-4">
+
+                            No tienes citas agendadas de hoy en adelante.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
     </div>
+
+</div>
 
 </main>
 
