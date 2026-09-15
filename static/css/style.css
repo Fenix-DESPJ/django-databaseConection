@@ -1591,6 +1591,23 @@ section {
     transform: translateY(-4px);
 }
 
+/* Botón "Cita Calificada" / "Ya calificaste esta cita" (Mis Citas):
+   clase propia en vez de .btn-secondary, porque .btn-secondary está
+   repintado globalmente como botón dorado (ver sección de botones del
+   tema claro/oscuro) y no se veía "deshabilitado". */
+.btn-cita-calificada {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.45) !important;
+    cursor: not-allowed;
+}
+
+[data-theme="light"] .btn-cita-calificada {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    border: 2px solid rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.4) !important;
+}
+
 /* ==========================================================================
    11. RESERVAS
    ========================================================================== */

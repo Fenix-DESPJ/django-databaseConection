@@ -1518,6 +1518,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    window.abrirCalificacionManual = function(citaId, servicio, barbero) {
+        inputCitaId.value = citaId;
+        spanServicio.textContent = servicio;
+        spanBarbero.textContent = barbero;
+        inputValor.value = "";
+        pintarEstrellas(0);
+        textareaComentario.value = "";
+        divError.style.display = "none";
+        calificacionEnviada = false;
+
+        modalCalificacion.show();
+    };
+
     // Se dispara SIEMPRE que el modal se oculte: X, backdrop, Esc, botón Omitir, o hide() por JS
     modalEl.addEventListener("hide.bs.modal", () => {
         if (calificacionEnviada) return; // si ya calificó, no hay nada que "omitir"
@@ -1556,6 +1569,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (data.ok) {
                 calificacionEnviada = true; // evita que hide.bs.modal la registre como omitida
+
+                // Actualiza en caliente el botón de esa cita en "Mis Citas": pasa de
+                // "Calificar Servicio" a "Cita Calificada" (deshabilitado), sin recargar la página.
+                const idCitaCalificada = inputCitaId.value;
+                const btnCita = document.getElementById(`btnCalificar${idCitaCalificada}`);
+                if (btnCita) {
+                    btnCita.outerHTML = `
+                        <button type="button" class="btn btn-cita-calificada w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1" disabled>
+                            <i class="bi bi-check-all"></i> Cita Calificada
+                        </button>`;
+                }
+
                 modalEl.querySelector(".modal-body").innerHTML = `
                     <div class="text-center py-4">
                         <i class="bi bi-check-circle-fill text-gold" style="font-size:3rem;"></i>
@@ -1577,7 +1602,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
 
 /* ============================================================================
    11. EDICIÓN DE MÉTODO DE PAGO — DASHBOARD DEL BARBERO

@@ -127,15 +127,23 @@
                         </button>
                     {% else %}
                         {% if cita.es_completada %}
-                            <button type="button" class="btn btn-secondary w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 opacity-50" disabled>
-                                <i class="bi bi-check-all"></i> Cita Completada
-                            </button>
+                            {% if cita.ya_calificada %}
+                                <button type="button" class="btn btn-cita-calificada w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1" disabled>
+                                    <i class="bi bi-check-all"></i> Cita Calificada
+                                </button>
+                            {% else %}
+                                <button type="button"
+                                    id="btnCalificar{{ cita.idCita }}"
+                                    class="btn btn-warning text-dark w-100 btn-sm py-2 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-1"
+                                    onclick="abrirCalificacionManual('{{ cita.idCita }}', '{{ cita.servicio_nombre|escapejs }}', '{{ cita.barbero_nombre|escapejs }}')">
+                                    <i class="bi bi-star-fill"></i> Calificar Servicio
+                                </button>
+                            {% endif %}
                         {% elif cita.es_incompleta %}
                             <button type="button" class="btn btn-outline-danger w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 opacity-50" disabled>
                                 <i class="bi bi-exclamation-triangle"></i> Cita Incompleta
                             </button>
                         {% else %}
-
                             <button type="button"
                                 class="btn btn-outline-danger w-100 btn-sm py-2 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-1 transition-all"
                                 data-bs-toggle="modal" data-bs-target="#deleteModalCliente{{ cita.idCita }}">
