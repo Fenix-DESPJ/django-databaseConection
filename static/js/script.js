@@ -554,14 +554,28 @@ function cambiarModo(nuevoModo) {
             c.classList.add('border-borrar');
             c.style.cursor = "pointer";
             c.onclick = function() {
-                const id = this.getAttribute('data-id');
-                if(confirm('¿Seguro que deseas eliminar este servicio?')) {
-                    const url = document.querySelector('[data-url-eliminar]').dataset.urlEliminar;
-                    window.location.href = url.replace('0', id);
-                }
+                abrirModalEliminar(
+                    this.getAttribute('data-id'),
+                    this.getAttribute('data-nombre')
+                );
             };
         });
     }
+}
+
+function abrirModalEliminar(id, nombre) {
+    const modalElement = document.getElementById('modalEliminarServicio');
+    const nombreSpan = document.getElementById('nombreServicioEliminar');
+    const btnConfirmar = document.getElementById('btnConfirmarEliminarServicio');
+
+    nombreSpan.innerText = nombre;
+
+    const urlBase = document.querySelector('[data-url-eliminar]').dataset.urlEliminar;
+    btnConfirmar.setAttribute('href', urlBase.replace('0', id));
+
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    document.body.appendChild(modalElement);
+    bsModal.show();
 }
 
 function desactivarModos() {
