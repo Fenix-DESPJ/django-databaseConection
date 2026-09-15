@@ -1,5 +1,5 @@
 import calendar
-from datetime import date
+from datetime import date, timedelta
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -11,6 +11,8 @@ MESES_ES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
             "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 
 PATRONES_VALIDOS = {'todos', 'lv', 'ls'}
+
+DIAS_VENTANA_PATRON = 32  # hoy -> ~1 mes adelante
 
 
 @login_required
@@ -41,42 +43,54 @@ def gestionar_agenda_admin(request):
         if accion == 'guardar_horario':
             config.hora_apertura = request.POST.get('hora_apertura')
             config.hora_cierre = request.POST.get('hora_cierre')
-            
-            # Sanitizar y validar intervalo_minutos (mínimo 5 min)
+
+            # Sanitizar y validar intervalo_minutos (mínimo 10, máximo 60)
             intervalo_input = int(request.POST.get('intervalo_minutos', 30))
-            config.intervalo_minutos = max(5, intervalo_input)
-            
+            config.intervalo_minutos = max(10, min(60, intervalo_input))
+
             config.limite_citas_mensuales = max(1, int(request.POST.get('limite_citas_mensuales', 3)))
-            
+
             patron_automatico = request.POST.get('patron_automatico', 'lv')
             if patron_automatico in PATRONES_VALIDOS:
                 config.patron_automatico = patron_automatico
-            
+
             config.save()
             messages.success(request, "Horario de atención actualizado correctamente.")
             return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
 
         elif accion == 'aplicar_patron':
             patron = request.POST.get('patron')
-            anio_p = int(request.POST.get('anio', anio))
-            mes_p = int(request.POST.get('mes', mes))
-            _, dias_en_mes = calendar.monthrange(anio_p, mes_p)
-            for d in range(1, dias_en_mes + 1):
-                dia = date(anio_p, mes_p, d)
-                if dia < hoy:
-                    continue
+
+            if patron not in PATRONES_VALIDOS:
+                messages.error(request, "Patrón inválido.")
+                return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
+
+            # Este patrón queda guardado como el "patrón automático" de la
+            # agenda: así, cada día nuevo que vaya entrando a la ventana
+            # móvil (hoy -> +32 días) se habilitará solo, sin que el admin
+            # tenga que volver a tocar nada.
+            config.patron_automatico = patron
+            config.save()
+
+            # Aplica el patrón de inmediato sobre TODA la ventana móvil
+            # (hoy -> +32 días adelante), sin importar qué mes se esté
+            # viendo actualmente en el calendario.
+            for offset in range(DIAS_VENTANA_PATRON + 1):
+                dia = hoy + timedelta(days=offset)
                 dow = dia.weekday()  # 0=lunes
                 if patron == 'todos':
                     habilitado = True
                 elif patron == 'lv':
                     habilitado = dow <= 4
-                elif patron == 'ls':
+                else:  # 'ls'
                     habilitado = dow <= 5
-                else:
-                    continue
                 DiaHabilitado.objects.update_or_create(fecha=dia, defaults={'habilitado': habilitado})
-            messages.success(request, "Patrón aplicado sobre el mes seleccionado.")
-            anio, mes = anio_p, mes_p
+
+            messages.success(
+                request,
+                "Patrón aplicado desde hoy hasta un mes adelante. A partir de ahora, "
+                "los próximos días se habilitarán automáticamente siguiendo este mismo patrón."
+            )
             return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
 
         elif accion == 'regenerar_agenda':
@@ -93,20 +107,41 @@ def gestionar_agenda_admin(request):
         elif accion == 'toggle_dia':
             fecha_str = request.POST.get('fecha')
             dia_obj = DiaHabilitado.objects.filter(fecha=fecha_str).first()
-            if dia_obj:
-                dia_obj.habilitado = not dia_obj.habilitado
+
+            if dia_obj and dia_obj.habilitado:
+                # Va a quedar deshabilitado: no permitirlo si es el último
+                # día habilitado de toda la agenda (desde hoy en adelante).
+                dias_habilitados_totales = DiaHabilitado.objects.filter(
+                    habilitado=True, fecha__gte=hoy
+                ).count()
+                if dias_habilitados_totales <= 1:
+                    messages.error(
+                        request,
+                        "No puedes deshabilitar este día: la agenda debe tener siempre al menos un día habilitado."
+                    )
+                    anio = int(request.POST.get('anio', anio))
+                    mes = int(request.POST.get('mes', mes))
+                    return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
+                dia_obj.habilitado = False
+                dia_obj.save()
+            elif dia_obj:
+                dia_obj.habilitado = True
                 dia_obj.save()
             else:
                 DiaHabilitado.objects.create(fecha=fecha_str, habilitado=True)
+
             anio = int(request.POST.get('anio', anio))
             mes = int(request.POST.get('mes', mes))
             return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
 
         elif accion == 'limpiar_agenda':
             DiaHabilitado.objects.filter(fecha__gte=hoy).delete()
+            # La agenda nunca puede quedar sin ningún día habilitado:
+            # se reactiva automáticamente el día de hoy.
+            DiaHabilitado.objects.update_or_create(fecha=hoy, defaults={'habilitado': True})
             messages.success(
                 request,
-                "Agenda limpiada. Todos los días quedaron deshabilitados hasta que apliques un patrón o los actives manualmente."
+                "Agenda limpiada. El día de hoy se mantuvo habilitado automáticamente, ya que la agenda siempre debe tener al menos un día disponible."
             )
             return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
 
@@ -134,7 +169,6 @@ def gestionar_agenda_admin(request):
         DiaHabilitado.objects.filter(habilitado=True).values_list('fecha', flat=True)
     )
 
-    # NUEVO: fechas del mes visible donde AL MENOS un barbero está deshabilitado
     fechas_con_incapacidad = set(
         BarberoDiaHabilitado.objects.filter(
             habilitado=False, fecha__year=anio, fecha__month=mes
@@ -155,7 +189,7 @@ def gestionar_agenda_admin(request):
                     'habilitado': fecha_actual in dias_habilitados_bd,
                     'pasado': fecha_actual < hoy,
                     'hoy': fecha_actual == hoy,
-                    'con_incapacidad': fecha_actual in fechas_con_incapacidad,  # NUEVO
+                    'con_incapacidad': fecha_actual in fechas_con_incapacidad,
                 })
         calendario_semanas.append(fila)
 
@@ -168,9 +202,6 @@ def gestionar_agenda_admin(request):
         1 for fila in calendario_semanas for d in fila if d and d['habilitado']
     )
 
-    # =========================================================================
-    # Disponibilidad de barberos para el día seleccionado en "fecha_gestion"
-    # =========================================================================
     deshabilitados_ese_dia = set(
         BarberoDiaHabilitado.objects.filter(fecha=fecha_gestion, habilitado=False)
         .values_list('idusuariofk', flat=True)

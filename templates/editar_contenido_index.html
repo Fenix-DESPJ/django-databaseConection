@@ -42,29 +42,29 @@
           <div class="col-md-6">
             <label class="form-label-custom">Etiqueta pequeña</label>
             <input type="text" class="form-control form-control-custom" name="hero_etiqueta"
-                   value="{{ contenido.hero_etiqueta }}" maxlength="60">
+                   value="{{ contenido.hero_etiqueta }}" maxlength="60" required>
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">Título principal</label>
             <input type="text" class="form-control form-control-custom" name="hero_titulo"
-                   value="{{ contenido.hero_titulo }}" maxlength="150">
+                   value="{{ contenido.hero_titulo }}" maxlength="150" required>
           </div>
 
           <div class="col-12">
             <label class="form-label-custom">Descripción</label>
             <textarea class="form-control form-control-custom" name="hero_descripcion"
-                      rows="3">{{ contenido.hero_descripcion }}</textarea>
+                  rows="3" required>{{ contenido.hero_descripcion }}</textarea>
           </div>
 
           <div class="col-md-6">
             <label class="form-label-custom">Título de la tarjeta flotante</label>
             <input type="text" class="form-control form-control-custom" name="hero_tarjeta_titulo"
-                   value="{{ contenido.hero_tarjeta_titulo }}" maxlength="60">
+                   value="{{ contenido.hero_tarjeta_titulo }}" maxlength="60" required>
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">Texto de la tarjeta flotante</label>
             <input type="text" class="form-control form-control-custom" name="hero_tarjeta_texto"
-                   value="{{ contenido.hero_tarjeta_texto }}" maxlength="100">
+                   value="{{ contenido.hero_tarjeta_texto }}" maxlength="100" required>
           </div>
 
           <div class="col-12">
@@ -138,11 +138,11 @@
           <div class="col-md-8">
             <label class="form-label-custom">Título</label>
             <input type="text" class="form-control form-control-custom" name="marca_titulo"
-                   value="{{ contenido.marca_titulo }}" maxlength="150">
+                   value="{{ contenido.marca_titulo }}" maxlength="150" required>
 
             <label class="form-label-custom mt-3">Descripción</label>
             <textarea class="form-control form-control-custom" name="marca_descripcion"
-                      rows="4">{{ contenido.marca_descripcion }}</textarea>
+                      rows="4" required>{{ contenido.marca_descripcion }}</textarea>
           </div>
 
           <div class="col-md-4">
@@ -177,29 +177,29 @@
           <div class="col-md-6">
             <label class="form-label-custom">Horario Lunes a Viernes</label>
             <input type="text" class="form-control form-control-custom" name="horario_semana"
-                   value="{{ contenido.horario_semana }}" maxlength="60">
+                   value="{{ contenido.horario_semana }}" maxlength="60" required>
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">Horario Sábados</label>
             <input type="text" class="form-control form-control-custom" name="horario_sabado"
-                   value="{{ contenido.horario_sabado }}" maxlength="60">
+                   value="{{ contenido.horario_sabado }}" maxlength="60" required>
           </div>
 
           <div class="col-md-6">
             <label class="form-label-custom">Teléfono fijo</label>
             <input type="text" class="form-control form-control-custom" name="telefono_fijo"
-                   value="{{ contenido.telefono_fijo }}" maxlength="30">
+                   value="{{ contenido.telefono_fijo }}" maxlength="30" required>
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">WhatsApp</label>
             <input type="text" class="form-control form-control-custom" name="whatsapp"
-                   value="{{ contenido.whatsapp }}" maxlength="30">
+                   value="{{ contenido.whatsapp }}" maxlength="30" required>
           </div>
 
           <div class="col-12">
             <label class="form-label-custom">Dirección</label>
             <input type="text" class="form-control form-control-custom" name="direccion"
-                   value="{{ contenido.direccion }}" maxlength="200">
+                   value="{{ contenido.direccion }}" maxlength="200" required>
           </div>
 
           <div class="col-12">
@@ -210,7 +210,7 @@
               </small>
             </label>
             <input type="url" class="form-control form-control-custom" name="mapa_embed_url"
-                   value="{{ contenido.mapa_embed_url }}">
+                   value="{{ contenido.mapa_embed_url }}" required>
           </div>
         </div>
       </div>
@@ -229,12 +229,12 @@
           <div class="col-md-6">
             <label class="form-label-custom">Título</label>
             <input type="text" class="form-control form-control-custom" name="cta_titulo"
-                   value="{{ contenido.cta_titulo }}" maxlength="150">
+                   value="{{ contenido.cta_titulo }}" maxlength="150" required>
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">Texto</label>
             <input type="text" class="form-control form-control-custom" name="cta_texto"
-                   value="{{ contenido.cta_texto }}" maxlength="200">
+                   value="{{ contenido.cta_texto }}" maxlength="200" required>
           </div>
         </div>
       </div>

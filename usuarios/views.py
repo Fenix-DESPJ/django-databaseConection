@@ -601,24 +601,41 @@ def editar_contenido_index(request):
     contenido = ContenidoIndex.cargar()  # crea con defaults si no existe aún
 
     if request.method == 'POST':
-        contenido.hero_etiqueta = request.POST.get('hero_etiqueta', '').strip()
-        contenido.hero_titulo = request.POST.get('hero_titulo', '').strip()
-        contenido.hero_descripcion = request.POST.get('hero_descripcion', '').strip()
-        contenido.hero_tarjeta_titulo = request.POST.get('hero_tarjeta_titulo', '').strip()
-        contenido.hero_tarjeta_texto = request.POST.get('hero_tarjeta_texto', '').strip()
+        campos_requeridos = {
+            'hero_etiqueta': 'Etiqueta pequeña',
+            'hero_titulo': 'Título principal',
+            'hero_descripcion': 'Descripción',
+            'hero_tarjeta_titulo': 'Título de la tarjeta flotante',
+            'hero_tarjeta_texto': 'Texto de la tarjeta flotante',
+            'marca_titulo': 'Título de marca',
+            'marca_descripcion': 'Descripción de marca',
+            'horario_semana': 'Horario Lunes a Viernes',
+            'horario_sabado': 'Horario Sábados',
+            'telefono_fijo': 'Teléfono fijo',
+            'whatsapp': 'WhatsApp',
+            'direccion': 'Dirección',
+            'mapa_embed_url': 'URL del mapa embebido',
+            'cta_titulo': 'Título del CTA',
+            'cta_texto': 'Texto del CTA',
+        }
 
-        contenido.marca_titulo = request.POST.get('marca_titulo', '').strip()
-        contenido.marca_descripcion = request.POST.get('marca_descripcion', '').strip()
+        valores = {}
+        campos_vacios = []
+        for campo, etiqueta in campos_requeridos.items():
+            valor = request.POST.get(campo, '').strip()
+            valores[campo] = valor
+            if not valor:
+                campos_vacios.append(etiqueta)
 
-        contenido.horario_semana = request.POST.get('horario_semana', '').strip()
-        contenido.horario_sabado = request.POST.get('horario_sabado', '').strip()
-        contenido.telefono_fijo = request.POST.get('telefono_fijo', '').strip()
-        contenido.whatsapp = request.POST.get('whatsapp', '').strip()
-        contenido.direccion = request.POST.get('direccion', '').strip()
-        contenido.mapa_embed_url = request.POST.get('mapa_embed_url', '').strip()
+        if campos_vacios:
+            messages.error(
+                request,
+                "No se guardó nada: debes completar todos los campos. Falta: " + ", ".join(campos_vacios)
+            )
+            return render(request, 'editar_contenido_index.html', {'contenido': contenido})
 
-        contenido.cta_titulo = request.POST.get('cta_titulo', '').strip()
-        contenido.cta_texto = request.POST.get('cta_texto', '').strip()
+        for campo, valor in valores.items():
+            setattr(contenido, campo, valor)
 
         # Las imágenes solo se reemplazan si el admin sube un archivo nuevo;
         # si no se sube nada, se conserva la imagen que ya estaba guardada.
@@ -631,8 +648,9 @@ def editar_contenido_index(request):
         messages.success(request, "El contenido del inicio se actualizó correctamente.")
         return redirect('home')
 
+    # GET: simplemente muestra el formulario con los valores actuales
     return render(request, 'editar_contenido_index.html', {'contenido': contenido})
-
+    
 # =========================================================================
 # 5. VISTAS: PANEL DE BARBERO Y CITAS
 # =========================================================================

@@ -4439,6 +4439,11 @@ section {
   --btn-secondary-border: var(--dorado-oscuro);
   --border-color: var(--border);
 
+  /* Texto de botones dorados: fijo en negro para que nunca herede el
+     blanco de --negro-absoluto (ese bug hacía que el texto de los
+     botones dorados se viera blanco sobre blanco en modo claro). */
+  --btn-primary-text: #111111;
+
   color-scheme: light;
 }
 
@@ -4702,8 +4707,42 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 }
 
 [data-theme="light"] .editar-card {
-  background: linear-gradient(145deg, #FFFFFF, #FAF9F6) !important;
+  background: linear-gradient(145deg, #DEDED8, #D2D2CB) !important;
   border-color: rgba(191, 147, 13, 0.20) !important;
+}
+
+[data-theme="light"] .editar-card:hover {
+  border-color: rgba(191, 147, 13, 0.35) !important;
+  box-shadow: 0 0 30px rgba(191, 147, 13, 0.10) !important;
+}
+
+[data-theme="light"] .editar-card-header h5 {
+  color: #1A1A1A !important;
+}
+
+[data-theme="light"] .editar-card-header span,
+[data-theme="light"] .texto-ayuda-perfil,
+[data-theme="light"] .imagen-caption {
+  color: rgba(0, 0, 0, 0.55) !important;
+}
+
+[data-theme="light"] .editar-card-header i {
+  color: #BF930D !important;
+  border-color: rgba(191, 147, 13, 0.35) !important;
+}
+
+[data-theme="light"] .imagen-vacia {
+  color: #BF930D !important;
+}
+
+[data-theme="light"] .btn-subir-imagen {
+  border-color: #BF930D !important;
+  color: #BF930D !important;
+}
+
+[data-theme="light"] .btn-subir-imagen:hover {
+  background-color: #BF930D !important;
+  color: #111111 !important;
 }
 
 [data-theme="light"] .danger-zone-card {
@@ -4721,6 +4760,46 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 
 [data-theme="light"] .observation-box .no-observation-text {
   color: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* =========================================================================
+   BOTONES DE "EDITAR CONTENIDO DEL INICIO" (Cambiar / Guardar cambios)
+   ========================================================================= */
+
+.editar-index-section .btn-subir-imagen {
+  color: #111111 !important;
+  border-color: var(--dorado) !important;
+}
+
+.editar-index-section .btn-subir-imagen:hover {
+  background-color: var(--dorado) !important;
+  color: #111111 !important;
+}
+
+[data-theme="light"] .editar-index-section .btn-subir-imagen {
+  border-color: #BF930D !important;
+}
+
+[data-theme="light"] .editar-index-section .btn-subir-imagen:hover {
+  background-color: #BF930D !important;
+}
+
+.editar-index-section .btn-dorado,
+.editar-index-section .btn-dorado:hover {
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .editar-index-section .btn-dorado,
+[data-theme="light"] .editar-index-section .btn-dorado:hover {
+  color: #111111 !important;
+}
+/* Texto del botón "Cambiar" (subir imagen): oscuro en modo claro, claro en modo oscuro */
+.editar-index-section .btn-subir-imagen {
+  color: #F5F5F2 !important;
+}
+
+[data-theme="light"] .editar-index-section .btn-subir-imagen {
+  color: #1A1A1A !important;
 }
 
 /* --- Análisis de rostro --- */

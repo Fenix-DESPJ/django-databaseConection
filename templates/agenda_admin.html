@@ -285,7 +285,7 @@
 
                         <form
                             method="POST"
-                            onsubmit="return confirm('¿Seguro que deseas limpiar la agenda? Esto deshabilitará todos los días desde hoy en adelante.');">
+                            onsubmit="return confirm('¿Seguro que deseas limpiar la agenda? Esto deshabilitará todos los días desde hoy en adelante (se mantendrá habilitado el día de hoy).');">
 
                             {% csrf_token %}
 
@@ -343,7 +343,8 @@
                             type="time"
                             class="form-control custom-input"
                             name="hora_apertura"
-                            value="{{ config.hora_apertura|time:'H:i' }}">
+                            value="{{ config.hora_apertura|time:'H:i' }}"
+                            required>
 
                     </div>
 
@@ -357,7 +358,8 @@
                             type="time"
                             class="form-control custom-input"
                             name="hora_cierre"
-                            value="{{ config.hora_cierre|time:'H:i' }}">
+                            value="{{ config.hora_cierre|time:'H:i' }}"
+                            required>
 
                     </div>
 
@@ -370,10 +372,16 @@
                         <input
                             type="number"
                             step="5"
-                            min="5"
+                            min="10"
+                            max="60"
                             class="form-control custom-input"
                             name="intervalo_minutos"
-                            value="{{ config.intervalo_minutos }}">
+                            value="{{ config.intervalo_minutos }}"
+                            required>
+
+                        <small class="text-white-50 d-block mt-1" style="font-size:.75rem;">
+                            Debe estar entre 10 y 60 minutos.
+                        </small>
 
                     </div>
 
@@ -385,9 +393,11 @@
 
                         <input
                             type="number"
+                            min="1"
                             class="form-control custom-input"
                             name="limite_citas_mensuales"
-                            value="{{ config.limite_citas_mensuales }}">
+                            value="{{ config.limite_citas_mensuales }}"
+                            required>
 
                     </div>
 
