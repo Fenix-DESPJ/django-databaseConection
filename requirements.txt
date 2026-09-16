@@ -31,7 +31,6 @@ jaxlib==0.10.2
 kiwisolver==1.5.0
 lxml==6.1.1
 matplotlib==3.11.1
-mediapipe==0.10.14
 ml_dtypes==0.5.4
 multidict==6.7.1
 mysqlclient==2.2.8

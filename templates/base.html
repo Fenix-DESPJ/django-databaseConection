@@ -102,11 +102,25 @@
                     {% endif %}
                 </div>
                 <div class="brand-text">
-                    <span class="brand-title">M&A Barber Shop</span>
-                    <small class="brand-role" id="brand-role">
-                        {% if request.session.sesion_iniciada %}{{ request.session.usuario_nombre }}{% else %}Cliente{% endif %}
-                    </small>
-                </div>
+    <span class="brand-title">
+        {% if request.session.sesion_iniciada %}
+            {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
+                M&A <span class="text-white">Admin</span>
+            {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
+                M&A <span class="text-white">Barbero</span>
+            {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
+                M&A <span class="text-white">Cliente</span>
+            {% else %}
+                M&A Barber Shop
+            {% endif %}
+        {% else %}
+            M&A Barber Shop
+        {% endif %}
+    </span>
+    <small class="brand-role" id="brand-role">
+        {% if request.session.sesion_iniciada %}{{ request.session.usuario_nombre }}{% else %}Cliente{% endif %}
+    </small>
+</div>
             </a>
 
             <!-- ==================================================================
