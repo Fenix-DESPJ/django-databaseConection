@@ -101,13 +101,13 @@
                                     <i class="bi bi-x-circle me-1"></i> Cancelar Cita
                                 </a>
                             {% else %}
-                                <small class="text-muted"><i class="bi bi-lock-fill me-1"></i> Finalizada</small>
+                                <small class="text-muted cita-finalizada-msg"><i class="bi bi-lock-fill me-1"></i> Finalizada</small>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-5">
+                        <td colspan="8" class="text-center text-muted py-5 sin-citas-msg">
                             <i class="bi bi-calendar-x display-4 d-block mb-2"></i>
                             No hay citas registradas en el sistema para este criterio.
                         </td>

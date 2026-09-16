@@ -9753,3 +9753,34 @@ body.light .facial-dashboard-card {
         transition: none;
     }
 }
+
+/* ============================================================================
+   25. GESTIÓN GLOBAL DE CITAS (ADMIN) — CORRECCIÓN DE CONTRASTE
+   ----------------------------------------------------------------------------
+   Fuerza a blanco el texto + ícono de "Finalizada" (candado) en la columna
+   "Acciones", y el texto + ícono del mensaje de "sin citas registradas",
+   en las vistas Todas / Completadas / Incompletas de ver_citas_admin.html.
+   No se modificó ninguna otra regla existente.
+   ============================================================================ */
+
+.cita-finalizada-msg,
+.cita-finalizada-msg i {
+  color: #FFFFFF !important;
+}
+
+.sin-citas-msg,
+.sin-citas-msg i {
+  color: #FFFFFF !important;
+}
+
+/* Modo claro: el fondo de estas vistas pasa a ser blanco, así que el
+   texto/ícono blanco se vuelve invisible; en modo claro se pintan oscuros. */
+[data-theme="light"] .cita-finalizada-msg,
+[data-theme="light"] .cita-finalizada-msg i {
+  color: #1A1A1A !important;
+}
+
+[data-theme="light"] .sin-citas-msg,
+[data-theme="light"] .sin-citas-msg i {
+  color: #1A1A1A !important;
+}
