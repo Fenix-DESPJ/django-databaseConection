@@ -2,11 +2,11 @@
    ÍNDICE DE SECCIONES (todo el CSS original está aquí, solo reordenado y
    agrupado por sección visual. No se eliminó ni se modificó ninguna regla.
 
-   ⚠️ NOTA IMPORTANTE: el archivo original declara `:root` y `body` varias
-   veces en distintos puntos (probablemente porque se fueron pegando trozos
-   de CSS de páginas distintas). Dejé TODAS esas repeticiones, agrupadas en
-   la sección 1, para que puedas revisar si hay valores que se pisan entre
-   sí antes de limpiarlas manualmente.
+
+   ============================================================================
+   1. VARIABLES GLOBALES (:root) Y BASE (body, tipografías) — todas las/* 
+   ÍNDICE DE SECCIONES (todo el CSS original está aquí, solo reordenado y
+   agrupado por sección visual. No se eliminó ni se modificó ninguna regla.
    ============================================================================
    1. VARIABLES GLOBALES (:root) Y BASE (body, tipografías) — todas las
       repeticiones del original agrupadas aquí
@@ -3045,6 +3045,69 @@ textarea::placeholder {
     color: #888;
 }
 
+/* --------------------------------------------------------------------------
+   SELECT "MÉTODO DE PAGO" (modal de completar cita)
+   --------------------------------------------------------------------------
+   Antes este <select> tenía sus colores puestos directo por inline style
+   en el HTML (background/color/border), lo cual funcionaba en modo oscuro
+   pero rompía el modo claro: un style="" en el HTML le gana a cualquier
+   regla normal del CSS externo (aunque sea más específica), así que la
+   regla general [data-theme="light"] .form-select nunca lograba pintarlo.
+
+   Solución: se sacaron esos colores del HTML a esta clase reutilizable
+   (.payment-method-select), y aquí sí podemos sobreescribirla por tema:
+     - Bloque base = mismo look oscuro que tenía antes (no cambia nada
+       en modo oscuro).
+     - Bloque [data-theme="light"] = fondo gris claro con texto oscuro,
+       con suficiente contraste contra el fondo blanco del modal.
+   -------------------------------------------------------------------------- */
+
+.payment-method-select {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: 1px solid #555555;
+    border-radius: 10px;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment-method-select option {
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+.payment-method-select:hover {
+    border-color: var(--dorado);
+}
+
+.payment-method-select:focus {
+    border-color: var(--dorado);
+    box-shadow: 0 0 0 0.2rem rgba(255, 198, 0, 0.25);
+    outline: none;
+}
+
+/* --- Modo claro: gris claro + texto oscuro, con estados interactivos --- */
+[data-theme="light"] .payment-method-select {
+    background-color: #EAEAEA !important;   /* gris claro, se distingue del blanco del modal */
+    color: #1A1A1A !important;               /* texto oscuro, legible */
+    border: 1px solid #B8B8B8 !important;    /* borde gris medio para reforzar el contraste */
+}
+
+[data-theme="light"] .payment-method-select option {
+    background-color: #FFFFFF !important;
+    color: #1A1A1A !important;
+}
+
+[data-theme="light"] .payment-method-select:hover {
+    background-color: #E0E0E0 !important;
+    border-color: var(--dorado-oscuro) !important;
+}
+
+[data-theme="light"] .payment-method-select:focus {
+    background-color: #FFFFFF !important;
+    border-color: var(--dorado-oscuro) !important;
+    box-shadow: 0 0 0 0.2rem rgba(191, 147, 13, 0.2) !important;
+}
+
 /* Adaptabilidad para móviles */
 @media(max-width: 768px) {
     .stats-value {
@@ -4603,10 +4666,77 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
   background-color: #F0F0EC;
 }
 
+/* --------------------------------------------------------------------------
+   NOTIFICACIONES EN MODO CLARO
+   --------------------------------------------------------------------------
+   En modo oscuro el panel y cada tarjeta usan negro/gris muy oscuro
+   (--negro y #1a1a1a en .notification-item), y esos valores están escritos
+   en hex fijo, no en variables, así que no cambiaban solos al activar
+   [data-theme="light"]. Aquí se redefinen con el MISMO gris claro (#EAEAEA)
+   que ya usa .payment-method-select en el modal de pago, para que ambos
+   componentes queden sincronizados en el mismo tono.
+
+   El dorado normal (var(--dorado) / #FFC600) se deja igual para la
+   scrollbar (pedido explícito: que se mantenga amarillo/dorado). Para
+   texto e iconos sobre el fondo claro se usa --dorado-oscuro (#BF930D),
+   que es la misma variable que ya usan los demás títulos/acentos en modo
+   claro para que el dorado no "explote" sobre fondos claros.
+   -------------------------------------------------------------------------- */
+
 [data-theme="light"] #notificaciones-panel {
-  background: #FFFFFF;
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: #EAEAEA;                 /* mismo gris claro del select de método de pago */
+  border-color: #B8B8B8;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] #notificaciones-panel h6 {
+  color: var(--dorado-oscuro);
+}
+
+/* Scrollbar del panel: pista clara, pulgar dorado (se mantiene) */
+[data-theme="light"] #notificaciones-panel::-webkit-scrollbar-track {
+  background: #DADADA;
+}
+
+[data-theme="light"] #notificaciones-panel::-webkit-scrollbar-thumb {
+  background: #FFC600;
+}
+
+[data-theme="light"] #notificaciones-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--dorado-oscuro);
+}
+
+/* Tarjeta de cada notificación: mismo gris que el panel y que el select */
+[data-theme="light"] .notification-item {
+  background: #EAEAEA;
+  border-left-color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .notification-item:hover {
+  background: #E0E0E0;
+}
+
+/* Texto del mensaje: negro/gris muy oscuro para legibilidad */
+[data-theme="light"] .notification-item strong {
+  color: #1A1A1A;
+}
+
+/* Icono (tijera y demás) dentro del mensaje: dorado, con más
+   especificidad que la regla de arriba para no heredar el color oscuro */
+[data-theme="light"] .notification-item strong i {
+  color: var(--dorado-oscuro);
+}
+
+/* Fecha y hora de la notificación: dorado, igual que el icono */
+[data-theme="light"] .notification-item small {
+  color: var(--dorado-oscuro);
+}
+
+/* Scrollbar interna de la lista (por si el contenido crece dentro de
+   #lista-notificaciones): mismo criterio, dorado en vez del gris oscuro
+   original que se perdía sobre fondo claro */
+[data-theme="light"] #lista-notificaciones::-webkit-scrollbar-thumb {
+  background: #FFC600;
 }
 
 [data-theme="light"] .form-control,
@@ -9623,5 +9753,3 @@ body.light .facial-dashboard-card {
         transition: none;
     }
 }
-
-
