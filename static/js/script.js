@@ -787,99 +787,272 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// --- Carrusel de barberos: navegación "uno por uno" + dots sincronizados
-//     con el scroll manual (arrastrar con el mouse/dedo también mueve los dots) ---
+
+/* ============================================================================
+   5.1 CARRUSEL AUTOMÁTICO DE BARBEROS
+   - Cambio automático cada 6 segundos
+   - Sin flechas
+   - Responsive: 3 tarjetas en escritorio, 1 en móvil/tablet
+   - Dots sincronizados
+   ============================================================================ */
+
 document.addEventListener("DOMContentLoaded", () => {
-    const track = document.querySelector('.barbers-track');
-    const cards = document.querySelectorAll('.barber-card');
-    const nextBtn = document.getElementById('nextBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const dotsContainer = document.getElementById('carouselDots');
 
-    if (!track || !cards.length || !nextBtn || !prevBtn || !dotsContainer) return;
+    const track = document.querySelector(".barbers-track");
+    const container = document.querySelector(".barbers-track-container");
+    const cards = Array.from(document.querySelectorAll(".barber-card"));
+    const dotsContainer = document.getElementById("carouselDots");
 
-    const totalCards = cards.length;
+    if (!track || !container || !cards.length || !dotsContainer) {
+        return;
+    }
+
+    const INTERVALO = 4000;
+
     let currentIndex = 0;
+    let timer = null;
+    let scrollTimeout = null;
 
-    // Un punto por cada barbero (antes agrupaba de a 3, lo que no coincidía
-    // con las tarjetas que realmente se ven en el diseño "uno por uno")
-    dotsContainer.innerHTML = '';
-    for (let i = 0; i < totalCards; i++) {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        if (i === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => {
-            currentIndex = i;
-            scrollToCard(currentIndex);
+    // Saber cuántas tarjetas se muestran según el tamaño de pantalla
+    function getCardsPerView() {
+
+        if (window.innerWidth >= 1200) {
+            return 3;
+        }
+
+        return 1;
+    }
+
+    // Crear los puntos indicadores
+    function crearDots() {
+
+        dotsContainer.innerHTML = "";
+
+        const cardsPerView = getCardsPerView();
+        const totalPages = Math.ceil(cards.length / cardsPerView);
+
+        for (let i = 0; i < totalPages; i++) {
+
+            const dot = document.createElement("button");
+
+            dot.type = "button";
+            dot.classList.add("dot");
+
+            dot.setAttribute(
+                "aria-label",
+                `Ir al grupo ${i + 1}`
+            );
+
+            dot.addEventListener("click", () => {
+
+                currentIndex = i * cardsPerView;
+
+                if (currentIndex >= cards.length) {
+                    currentIndex = 0;
+                }
+
+                scrollToCard(currentIndex);
+                reiniciarAutoplay();
+
+            });
+
+            dotsContainer.appendChild(dot);
+        }
+
+        actualizarDots();
+    }
+
+    // Actualizar el punto activo
+    function actualizarDots() {
+
+        const dots = dotsContainer.querySelectorAll(".dot");
+        const cardsPerView = getCardsPerView();
+
+        const activePage = Math.floor(currentIndex / cardsPerView);
+
+        dots.forEach((dot, index) => {
+
+            dot.classList.toggle(
+                "active",
+                index === activePage
+            );
+
         });
-        dotsContainer.appendChild(dot);
     }
 
-    const dots = document.querySelectorAll('.dot');
-
-    function updateDots(index) {
-        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
-    }
-
-    // Centra la tarjeta "index" dentro del carrusel
+    // Centrar una tarjeta
     function scrollToCard(index) {
+
         const card = cards[index];
-        if (!card) return;
+
+        if (!card) {
+            return;
+        }
 
         const trackRect = track.getBoundingClientRect();
         const cardRect = card.getBoundingClientRect();
-        const offset = (cardRect.left + cardRect.width / 2) - (trackRect.left + trackRect.width / 2);
+
+        const cardsPerView = getCardsPerView();
+
+        let offset;
+
+        if (cardsPerView === 3) {
+
+            // Escritorio: alinear el grupo desde el inicio
+            offset = card.offsetLeft - track.offsetLeft;
+
+        } else {
+
+            // Tablet y móvil: centrar la tarjeta principal
+            offset =
+                track.scrollLeft +
+                (cardRect.left + cardRect.width / 2) -
+                (trackRect.left + trackRect.width / 2);
+
+        }
 
         track.scrollTo({
-            left: track.scrollLeft + offset,
-            behavior: 'smooth'
+            left: Math.max(0, offset),
+            behavior: "smooth"
         });
 
-        updateDots(index);
+        actualizarDots();
     }
 
-    // Detecta qué tarjeta quedó más cerca del centro visible del carrusel
-    function getClosestCardIndex() {
-        const trackRect = track.getBoundingClientRect();
-        const trackCenter = trackRect.left + trackRect.width / 2;
+    // Siguiente tarjeta o grupo
+    function siguiente() {
 
-        let closestIndex = 0;
-        let minDistance = Infinity;
+        const cardsPerView = getCardsPerView();
 
-        cards.forEach((card, index) => {
-            const cardRect = card.getBoundingClientRect();
-            const cardCenter = cardRect.left + cardRect.width / 2;
-            const distance = Math.abs(cardCenter - trackCenter);
+        currentIndex += cardsPerView;
 
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = index;
-            }
-        });
+        if (currentIndex >= cards.length) {
+            currentIndex = 0;
+        }
 
-        return closestIndex;
+        scrollToCard(currentIndex);
     }
 
-    // Sincroniza los dots cuando el usuario arrastra o hace scroll manual
-    // (se espera a que termine el scroll para no recalcular en cada pixel)
-    let scrollTimeout;
-    track.addEventListener('scroll', () => {
+    // Iniciar movimiento automático
+    function iniciarAutoplay() {
+
+        detenerAutoplay();
+
+        if (cards.length <= 1) {
+            return;
+        }
+
+        timer = setInterval(siguiente, INTERVALO);
+    }
+
+    // Detener movimiento automático
+    function detenerAutoplay() {
+
+        if (timer !== null) {
+
+            clearInterval(timer);
+            timer = null;
+
+        }
+    }
+
+    // Reiniciar contador
+    function reiniciarAutoplay() {
+
+        detenerAutoplay();
+        iniciarAutoplay();
+
+    }
+
+    // Pausar cuando el mouse está encima
+    container.addEventListener("mouseenter", detenerAutoplay);
+
+    container.addEventListener("mouseleave", iniciarAutoplay);
+
+    // Pausar mientras el usuario toca el carrusel
+    container.addEventListener("touchstart", detenerAutoplay, {
+        passive: true
+    });
+
+    container.addEventListener("touchend", reiniciarAutoplay, {
+        passive: true
+    });
+
+    // Actualizar los puntos al hacer scroll manual
+    track.addEventListener("scroll", () => {
+
         clearTimeout(scrollTimeout);
+
         scrollTimeout = setTimeout(() => {
-            currentIndex = getClosestCardIndex();
-            updateDots(currentIndex);
+
+            const trackRect = track.getBoundingClientRect();
+            const trackCenter = trackRect.left + trackRect.width / 2;
+
+            let closestIndex = 0;
+            let minDistance = Infinity;
+
+            cards.forEach((card, index) => {
+
+                const cardRect = card.getBoundingClientRect();
+
+                const cardCenter =
+                    cardRect.left + cardRect.width / 2;
+
+                const distance =
+                    Math.abs(cardCenter - trackCenter);
+
+                if (distance < minDistance) {
+
+                    minDistance = distance;
+                    closestIndex = index;
+
+                }
+
+            });
+
+            currentIndex = closestIndex;
+            actualizarDots();
+
         }, 120);
+
     }, { passive: true });
 
-    nextBtn.addEventListener('click', () => {
-        currentIndex = Math.min(currentIndex + 1, totalCards - 1);
-        scrollToCard(currentIndex);
+    // Responsive: recalcular al cambiar tamaño
+    let resizeTimeout;
+
+    window.addEventListener("resize", () => {
+
+        clearTimeout(resizeTimeout);
+
+        resizeTimeout = setTimeout(() => {
+
+            crearDots();
+
+            currentIndex = 0;
+            scrollToCard(currentIndex);
+
+            reiniciarAutoplay();
+
+        }, 250);
+
     });
 
-    prevBtn.addEventListener('click', () => {
-        currentIndex = Math.max(currentIndex - 1, 0);
-        scrollToCard(currentIndex);
+    // Si se cambia de pestaña, detener/reanudar
+    document.addEventListener("visibilitychange", () => {
+
+        if (document.hidden) {
+            detenerAutoplay();
+        } else {
+            iniciarAutoplay();
+        }
+
     });
+
+    // Inicializar
+    crearDots();
+    scrollToCard(0);
+    iniciarAutoplay();
+
 });
 
 
