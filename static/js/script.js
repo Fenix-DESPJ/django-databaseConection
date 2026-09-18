@@ -2186,3 +2186,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Función para dividir un elemento en letras individuales envueltas en spans
+    function splitTextIntoSpans(selector) {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+            const text = el.textContent;
+            el.innerHTML = text.split("").map(char => {
+                return char === " " ? " " : '<span class="wave-letter">' + char + '</span>';
+            }).join("");
+        });
+    }
+
+    // 1. Aplicamos el desglose a los selectores correspondientes
+    splitTextIntoSpans(".wave-text");
+    splitTextIntoSpans(".wave-role");
+
+    // 2. Creamos la animación de ola con GSAP
+    gsap.from(".wave-text .wave-letter, .wave-role .wave-letter", {
+        y: -12,
+        opacity: 0.4,
+        duration: 0.6,
+        ease: "sine.inOut",
+        stagger: {
+            each: 0.05,
+            repeat: -1,
+            yoyo: true
+        }
+    });
+});

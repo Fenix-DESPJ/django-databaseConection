@@ -9800,3 +9800,9 @@ body.light .facial-dashboard-card {
 [data-theme="light"] .sin-citas-msg i {
   color: #1A1A1A !important;
 }
+
+/* Asegura que las letras se puedan mover con GSAP de forma fluida */
+.wave-letter {
+    display: inline-block;
+    position: relative;
+}
