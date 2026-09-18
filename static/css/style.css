@@ -3205,6 +3205,26 @@ textarea::placeholder {
 .custom-progress-bg { background-color: var(--dorado); }
 .background-accent-box { background: var(--negro); border: 1px solid var(--gris-profundo); }
 
+/* --------------------------------------------------------------------------
+   FIX CONTRASTE: mensaje "No hay citas registradas para el día de hoy."
+   (tabla "Próximas Citas" del Dashboard Admin)
+   ----------------------------------------------------------------------------
+   El texto usa la clase de Bootstrap ".text-muted", que no está redefinida
+   por el sistema de temas del sitio, así que en Modo Oscuro queda con muy
+   bajo contraste sobre el fondo oscuro de la fila (casi invisible).
+
+   Solución: se agregó una clase propia (.sin-citas-dashboard-msg) solo a
+   este mensaje en el HTML, para no afectar ningún otro ".text-muted" del
+   resto de la página. El selector ":root:not([data-theme='light'])" es el
+   mismo mecanismo que ya usa el sitio para diferenciar los temas: cubre
+   tanto el estado por defecto (sin atributo) como "data-theme='dark'",
+   pero NUNCA se activa cuando el tema es Claro, por lo que Modo Claro
+   queda exactamente igual que antes.
+   -------------------------------------------------------------------------- */
+:root:not([data-theme="light"]) .sin-citas-dashboard-msg {
+  color: var(--dorado) !important;
+}
+
 
 /* ============================================================================
    15. GESTIÓN DE PERFILES (PANEL ADMIN)
@@ -4517,6 +4537,22 @@ section {
     cursor: not-allowed;
 }
 
+/* --- Correo Electrónico (readonly) en Perfil (Cliente/Barbero): visibilidad
+   en modo claro ---
+   La regla "#formEditarPerfil .form-control[readonly]" (línea ~3604) está
+   pensada solo para modo oscuro: fondo casi transparente sobre negro,
+   borde rgba(255,255,255,0.1) y texto blanco al 55% de opacidad. Sobre el
+   fondo blanco del modo claro esos mismos valores dejan el campo sin borde
+   visible y con texto casi ilegible, por lo que el contenedor del correo
+   "desaparecía". Aquí se iguala al mismo borde gris claro que ya usa el
+   resto del formulario (#DDDDDD, ver ".form-control-custom" en modo claro)
+   y se fuerza el texto a un negro legible. El modo oscuro no se modifica. */
+[data-theme="light"] #formEditarPerfil .form-control[readonly] {
+    background-color: #FFFFFF !important;
+    border-color: #DDDDDD !important;
+    color: #1A1A1A !important;
+}
+
 /* Transición suave entre temas para toda la página */
 body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 #notificaciones-panel, .form-control, .form-select, .btn {
@@ -5214,6 +5250,29 @@ body, .navbar, .custom-navbar, .footer-mya, .card, .modal-content,
 [data-theme="light"] .custom-input:focus {
   background-color: #FFFFFF;
   color: #1A1A1A;
+}
+
+/* --- 2.2.1 Panel de opciones desplegado de los <select> (Servicio / Barbero) ---
+   La regla base ".custom-select option" (línea ~1721) fuerza fondo #111111
+   y texto blanco: correcto en modo oscuro, pero en modo claro dejaba el
+   panel desplegable en negro y por eso el texto se veía invisible.
+   Aquí, y SOLO en modo claro, se repinta ese panel en blanco con texto
+   oscuro. El modo oscuro no se toca. */
+[data-theme="light"] .custom-select option {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+}
+
+/* --- 2.2.2 Campo "Observaciones Especiales": legibilidad en modo claro ---
+   Selectores acotados a este campo puntual (no afectan otras etiquetas
+   ni placeholders del sitio). En modo oscuro no se modifica nada. */
+[data-theme="light"] label[for="observaciones"] {
+  color: #000000;
+}
+
+[data-theme="light"] #observaciones::placeholder {
+  color: #333333;
+  opacity: 1;
 }
 
 /* Dropdown de Método de Pago */
