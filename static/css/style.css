@@ -1364,205 +1364,631 @@ section {
    ============================================================================ */
 
 .servicios-container {
+
     padding: 80px 20px;
+
     background-color: #111111;
+
 }
 
 .servicios-grid {
+
     display: grid;
+
     /* Esto crea el grid responsivo automáticamente */
+
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
     gap: 30px;
+
     max-width: 1200px;
+
     margin: 40px auto;
+
 }
 
+
+/* ============================================================================
+   TARJETAS PRINCIPALES DE SERVICIOS
+   ============================================================================ */
+
+.servicio-card {
+
+    background: linear-gradient(145deg, #171717, #202020);
+
+    border: 1px solid #303030;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+
+    position: relative;
+
+}
+
+
+/* Línea dorada superior */
+
+.servicio-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background: var(--dorado);
+
+    transform: scaleX(0);
+
+    transform-origin: center;
+
+    transition: transform 0.3s ease;
+
+    z-index: 2;
+
+}
+
+
+/* Hover de la tarjeta */
+
+.servicio-card:hover {
+
+    transform: translateY(-8px);
+
+    border-color: rgba(255, 198, 0, 0.45);
+
+    box-shadow:
+        0 18px 35px rgba(0, 0, 0, 0.45);
+
+}
+
+
+/* Activar línea superior */
+
+.servicio-card:hover::before {
+
+    transform: scaleX(1);
+
+}
+
+
+/* ============================================================================
+   IMAGEN
+   ============================================================================ */
 
 .servicio-img {
+
     width: 100%;
-    height: 280px; /* Altura fija para que todas las tarjetas sean iguales */
+
+    height: 280px;
+
     object-fit: cover;
+
     border-radius: 15px;
+
     margin-bottom: 20px;
+
+    transition:
+        transform 0.45s ease,
+        filter 0.45s ease;
+
 }
 
-/* Para que el botón de Bootstrap luzca más elegante */
-.servicio-card .btn-warning {
-    background-color: #FFC600;
-    border-color: #FFC600;
-    color: #000;
-    font-weight: bold;
-    border-radius: 10px;
+
+.servicio-card:hover .servicio-img {
+
+    transform: scale(1.035);
+
+    filter: brightness(1.06);
+
 }
+
+
+/* ============================================================================
+   TÍTULO DE LA TARJETA
+   ============================================================================ */
+
+.titulo-card-servicio {
+
+    color: white;
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+
+}
+
+
+.servicio-card:hover .titulo-card-servicio {
+
+    color: var(--dorado);
+
+    transform: translateX(2px);
+
+}
+
+
+/* ============================================================================
+   DESCRIPCIÓN
+   ============================================================================ */
+
+.descripcion-card-servicio {
+
+    color: rgba(255,255,255,.65);
+
+    font-size: .95rem;
+
+    min-height: 60px;
+
+    margin-bottom: 20px;
+
+    transition: color 0.3s ease;
+
+}
+
+
+.servicio-card:hover .descripcion-card-servicio {
+
+    color: rgba(255, 255, 255, 0.78);
+
+}
+
+
+/* ============================================================================
+   BOTÓN
+   ============================================================================ */
+
+.servicio-card .btn-warning {
+
+    background-color: #FFC600;
+
+    border-color: #FFC600;
+
+    color: #000;
+
+    font-weight: bold;
+
+    border-radius: 10px;
+
+    transition:
+        background-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+}
+
+
+.servicio-card:hover .btn-warning {
+
+    background-color: var(--dorado-hover);
+
+    box-shadow:
+        0 7px 16px rgba(255, 198, 0, 0.18);
+
+}
+
 
 .servicio-card .btn-warning:hover {
+
     background-color: #e6b200;
-}
-.titulo-card-servicio{
-    color: white;
-    font-weight: 700;
-    margin-bottom: 10px;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 20px rgba(255, 198, 0, 0.25);
+
 }
 
-.descripcion-card-servicio{
-    color: rgba(255,255,255,.65);
-    font-size: .95rem;
-    min-height: 60px;
-    margin-bottom: 20px;
-}
 
-/* Mejora el título de la sección */
+/* ============================================================================
+   MEJORA EL TÍTULO DE LA SECCIÓN
+   ============================================================================ */
+
 .servicios-container h2 {
+
     margin-bottom: 2rem;
+
     font-weight: 700;
+
     letter-spacing: 1px;
+
 }
 
-/* Servicios Individuales*/
-.titulo-servicios{
+
+/* ============================================================================
+   SERVICIOS INDIVIDUALES
+   ============================================================================ */
+
+.titulo-servicios {
+
     color: white;
+
     font-size: clamp(2rem, 4vw, 3rem);
+
     font-weight: 700;
+
     margin-bottom: 12px;
+
     text-align: center;
+
 }
 
-.subtitulo-servicios{
+
+.subtitulo-servicios {
+
     color: rgba(255,255,255,.65);
+
     font-size: 1.05rem;
+
     margin-bottom: 50px;
+
     text-align: center;
+
 }
+
+
 .servicios-grid-precios {
+
     display: grid;
+
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
     gap: 15px;
+
 }
+
 
 .card-precio {
+
     background: linear-gradient(145deg, #151515, #1f1f1f);
+
     color: white;
+
     padding: 26px;
+
     border-radius: 20px;
+
     border: 1px solid rgba(255,198,0,0.12);
+
     transition: all .35s ease;
+
     overflow: hidden;
+
     display: flex;
+
     flex-direction: column;
+
     justify-content: space-between;
+
     min-height: 260px;
+
 }
+
 
 .card-precio h6 {
+
     color: #ffffff;
+
     margin-bottom: 2px;
+
 }
+
 
 .card-precio small {
+
     color: #bdbdbd;
+
 }
+
 
 .card-precio span {
+
     color: #FFC600;
+
     font-weight: bold;
+
 }
+
 
 .card-precio:hover {
+
     transform: translateY(-8px);
+
     border-color: rgba(255,198,0,.45);
+
     box-shadow: 0 20px 40px rgba(0,0,0,.55);
+
 }
 
-/* Imagen dentro de las tarjetas de servicios */
+
+/* ============================================================================
+   IMAGEN DENTRO DE LAS TARJETAS DE SERVICIOS
+   ============================================================================ */
+
 .card-precio-img {
+
     width: 100%;
+
     height: 180px;
+
     object-fit: cover;
+
     border-radius: 14px;
+
     margin-bottom: 18px;
-}
-/* Badge más elegante (menos agresivo que amarillo plano) */
-.section-badge {
-    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-    color: var(--dorado);
-    border: 1px solid rgba(255,198,0,0.25);
-    font-weight: 600;
-    padding: 10px 16px;
-    border-radius: 14px;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
+
 }
 
-/* Botón reservar más elegante */
-.btn-servicio-reservar {
-    background: transparent;
-    border: 1px solid var(--dorado);
+
+/* ============================================================================
+   BADGE MÁS ELEGANTE
+   ============================================================================ */
+
+.section-badge {
+
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+
     color: var(--dorado);
-    border-radius: 12px;
-    padding: 6px 16px;
-    font-size: .9rem;
-    transition: all .3s ease;
+
+    border: 1px solid rgba(255,198,0,0.25);
+
+    font-weight: 600;
+
+    padding: 10px 16px;
+
+    border-radius: 14px;
+
+    font-size: 0.85rem;
+
+    letter-spacing: 0.5px;
+
 }
+
+
+/* ============================================================================
+   BOTÓN RESERVAR MÁS ELEGANTE
+   ============================================================================ */
+
+.btn-servicio-reservar {
+
+    background: transparent;
+
+    border: 1px solid var(--dorado);
+
+    color: var(--dorado);
+
+    border-radius: 12px;
+
+    padding: 6px 16px;
+
+    font-size: .9rem;
+
+    transition: all .3s ease;
+
+}
+
 
 .btn-servicio-reservar:hover {
+
     background-color: var(--dorado);
+
     color: #111;
+
     transform: translateY(-2px);
+
 }
 
-/* Botón regresar mejorado */
+
+/* ============================================================================
+   BOTÓN REGRESAR MEJORADO
+   ============================================================================ */
+
 .btn-regresar-elegante {
+
     border: 1px solid rgba(255,198,0,.20);
+
     background: transparent;
+
     color: #d4d4d4;
+
     padding: 10px 18px;
+
     border-radius: 12px;
+
     transition: all .3s ease;
+
 }
+
 
 .btn-regresar-elegante:hover {
+
     color: var(--dorado);
+
     border-color: var(--dorado);
+
     transform: translateX(-4px);
+
 }
 
-/* Ajuste para la imagen */
+
+/* ============================================================================
+   AJUSTE PARA LA IMAGEN
+   ============================================================================ */
+
 .img-fluid {
+
     max-height: 300px;
+
     object-fit: cover;
+
     width: 100%;
+
 }
 
-.border-borrar { border: 2px solid red !important; }
-.border-editar { border: 2px solid orange !important; }
+
+.border-borrar {
+
+    border: 2px solid red !important;
+
+}
+
+
+.border-editar {
+
+    border: 2px solid orange !important;
+
+}
+
 
 .card-precio.border-editar:hover {
+
     border-color: #ffc107 !important;
+
     box-shadow: 0 0 25px rgba(255, 193, 7, 0.45);
+
     transform: translateY(-4px);
+
 }
+
 
 .card-precio.border-borrar:hover {
+
     border-color: #dc3545 !important;
+
     box-shadow: 0 0 25px rgba(220, 53, 69, 0.45);
+
     transform: translateY(-4px);
+
 }
 
-/* Botón "Cita Calificada" / "Ya calificaste esta cita" (Mis Citas):
-   clase propia en vez de .btn-secondary, porque .btn-secondary está
+
+/* ============================================================================
+   BOTÓN "CITA CALIFICADA" / "YA CALIFICASTE ESTA CITA"
+   ============================================================================ */
+
+/* Clase propia en vez de .btn-secondary, porque .btn-secondary está
    repintado globalmente como botón dorado (ver sección de botones del
    tema claro/oscuro) y no se veía "deshabilitado". */
+
 .btn-cita-calificada {
+
     background-color: rgba(255, 255, 255, 0.08) !important;
+
     border: 2px solid rgba(255, 255, 255, 0.15) !important;
+
     color: rgba(255, 255, 255, 0.45) !important;
+
     cursor: not-allowed;
+
 }
 
+
 [data-theme="light"] .btn-cita-calificada {
+
     background-color: rgba(0, 0, 0, 0.05) !important;
+
     border: 2px solid rgba(0, 0, 0, 0.15) !important;
+
     color: rgba(0, 0, 0, 0.4) !important;
+
+}
+
+
+/* ============================================================================
+   MODO CLARO - TARJETAS PRINCIPALES
+   ============================================================================ */
+
+[data-theme="light"] .servicio-card {
+
+    background: #ffffff;
+
+    border-color: #dddddd;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.08);
+
+}
+
+
+[data-theme="light"] .servicio-card:hover {
+
+    border-color: rgba(191, 147, 13, 0.45);
+
+    box-shadow:
+        0 18px 35px rgba(0, 0, 0, 0.13);
+
+}
+
+
+[data-theme="light"] .servicio-card .titulo-card-servicio {
+
+    color: #222222;
+
+}
+
+
+[data-theme="light"] .servicio-card:hover .titulo-card-servicio {
+
+    color: #b18a00;
+
+}
+
+
+[data-theme="light"] .servicio-card .descripcion-card-servicio {
+
+    color: #666666;
+
+}
+
+
+[data-theme="light"] .servicio-card:hover .descripcion-card-servicio {
+
+    color: #4d4d4d;
+
+}
+
+
+/* ============================================================================
+   REDUCIR EFECTOS PARA USUARIOS QUE LO PREFIEREN
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .servicio-card,
+    .servicio-card::before,
+    .servicio-card .servicio-img,
+    .servicio-card .titulo-card-servicio,
+    .servicio-card .descripcion-card-servicio,
+    .servicio-card .btn-warning {
+
+        transition: none;
+
+    }
+
+
+    .servicio-card:hover,
+    .servicio-card:hover .servicio-img,
+    .servicio-card:hover .titulo-card-servicio,
+    .servicio-card .btn-warning:hover {
+
+        transform: none;
+
+    }
+
 }
 
 /* ==========================================================================
@@ -4749,171 +5175,815 @@ textarea::placeholder {
 
 
 /* ============================================================================
-   15. GESTIÓN DE PERFILES (PANEL ADMIN)
+   15. GESTIÓN DE PERFILES — DISEÑO PREMIUM
    ============================================================================ */
 
 .dashboard-container {
-    max-width: 1200px;
-    margin: 30px auto;
+    max-width: 1220px;
+    margin: 35px auto;
     padding: 20px;
 }
 
-.main-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 40px;
+
+/* ============================================================================
+   TÍTULO
+   ============================================================================ */
+
+.dashboard-container .main-title {
+    position: relative;
+
+    margin-bottom: 32px;
+
     color: var(--dorado);
+
+    font-size: 2.35rem;
+    font-weight: 700;
+
+    text-align: center;
+
+    letter-spacing: 0.3px;
 }
 
-.panel-bg {
-    background-color: #121212;
-    border-radius: 15px;
-    padding: 30px;
-    border: 1px solid #1f1f1f;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
+.dashboard-container .main-title::after {
+    content: "";
 
-.table-header {
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    color: #a0a0a0;
-    margin-bottom: 15px;
-}
+    display: block;
 
-.profile-row {
-    background-color: #1c1c1e;
+    width: 55px;
+    height: 3px;
+
+    margin: 12px auto 0;
+
+    background: var(--dorado);
+
     border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 12px;
+}
+
+
+/* ============================================================================
+   PANEL PRINCIPAL
+   ============================================================================ */
+
+.dashboard-container .panel-bg {
+    position: relative;
+
+    padding: 28px !important;
+
+    background: #171717;
+
+    border: 1px solid #303030;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.32);
+}
+
+
+/* Línea superior */
+
+.dashboard-container .panel-bg::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 35px;
+    right: 35px;
+
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--dorado),
+        transparent
+    );
+
+    border-radius: 10px;
+}
+
+
+/* ============================================================================
+   ENCABEZADO "CLIENTES Y BARBEROS"
+   ============================================================================ */
+
+.dashboard-container .panel-bg > .d-flex {
+    margin-bottom: 22px !important;
+
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid #303030;
+}
+
+.dashboard-container .panel-bg > .d-flex h5 {
+    display: flex;
+
     align-items: center;
-    border: 1px solid #2c2c2e;
+
+    gap: 3px;
+
+    margin: 0;
+
+    color: #eeeeee !important;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
 }
 
-.profile-photo-img {
-    width: 45px;
-    height: 45px;
+.dashboard-container .panel-bg > .d-flex h5 i {
+    color: var(--dorado);
+
+    font-size: 1.15rem;
+}
+
+
+/* ============================================================================
+   ENCABEZADOS DE COLUMNAS
+   ============================================================================ */
+
+.dashboard-container .table-header {
+    margin-bottom: 8px;
+
+    padding: 11px 12px !important;
+
+    color: #999999;
+
+    font-size: 0.70rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+
+    text-transform: uppercase;
+}
+
+
+/* ============================================================================
+   CONTENEDOR DE PERFILES
+   ============================================================================ */
+
+.dashboard-container .scrollable-panel {
+    max-height: 500px;
+
+    padding: 4px 7px 4px 2px;
+
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+
+    scrollbar-color: var(--dorado) transparent;
+}
+
+
+/* Scrollbar */
+
+.dashboard-container .scrollable-panel::-webkit-scrollbar {
+    width: 5px;
+}
+
+.dashboard-container .scrollable-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dashboard-container .scrollable-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 198, 0, 0.65);
+
+    border-radius: 10px;
+}
+
+.dashboard-container .scrollable-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--dorado);
+}
+
+
+/* ============================================================================
+   FILAS / TARJETAS DE USUARIO
+   ============================================================================ */
+
+.dashboard-container .profile-row {
+    position: relative;
+
+    min-height: 72px;
+
+    margin: 0 0 9px !important;
+
+    padding: 11px 10px !important;
+
+    background: #202022;
+
+    border: 1px solid #323234;
+
+    border-radius: 11px;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* Hover */
+
+.dashboard-container .profile-row:hover {
+    background: #252527;
+
+    border-color: rgba(255, 198, 0, 0.42);
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+
+/* Pequeña línea lateral */
+
+.dashboard-container .profile-row::before {
+    content: "";
+
+    position: absolute;
+
+    left: -1px;
+    top: 18px;
+    bottom: 18px;
+
+    width: 2px;
+
+    background: var(--dorado);
+
+    border-radius: 0 3px 3px 0;
+
+    opacity: 0;
+
+    transition: opacity 0.2s ease;
+}
+
+.dashboard-container .profile-row:hover::before {
+    opacity: 1;
+}
+
+
+/* ============================================================================
+   FOTO
+   ============================================================================ */
+
+.dashboard-container .profile-row img.rounded-circle {
+    width: 48px !important;
+    height: 48px !important;
+
     object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+
+    border: 2px solid rgba(255, 198, 0, 0.45) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(255, 198, 0, 0.05);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.profile-photo-placeholder {
-    font-size: 45px;
-    color: rgba(255, 255, 255, 0.3);
+.dashboard-container .profile-row:hover img.rounded-circle {
+    border-color: var(--dorado) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(255, 198, 0, 0.10);
 }
 
-/* Campos de entrada personalizados (Modo Oscuro) */
-.form-control-custom {
-    background-color: #2c2c2e !important;
-    border: 1px solid #3a3a3c !important;
-    color: #ffffff !important;
-    border-radius: 8px;
+
+/* Usuario sin foto */
+
+.dashboard-container .profile-row .bi-person-circle {
+    font-size: 45px !important;
+
+    color: #666666 !important;
+
+    transition: color 0.2s ease;
+}
+
+.dashboard-container .profile-row:hover .bi-person-circle {
+    color: #c7a52b !important;
+}
+
+
+/* ============================================================================
+   CAMPOS
+   ============================================================================ */
+
+.dashboard-container .form-control-custom {
+    width: 100%;
+
+    min-height: 40px;
+
     padding: 8px 12px;
+
+    background-color: #171719 !important;
+
+    border: 1px solid #3b3b3d !important;
+
+    border-radius: 7px;
+
+    color: #eeeeee !important;
+
+    font-size: 0.84rem;
+
+    box-shadow: none !important;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
 }
 
-.form-control-custom:focus {
-    border-color: #00e676 !important;
-    box-shadow: 0 0 8px rgba(0, 230, 118, 0.2);
+
+/* Hover */
+
+.dashboard-container .form-control-custom:hover {
+    border-color: #555557 !important;
 }
 
-/* Botón Eliminar Perfil (Círculo Rojo) */
-.btn-delete {
-    background-color: #ff3b30;
-    color: white;
-    border: none;
-    border-radius: 50%;
+
+/* Focus */
+
+.dashboard-container .form-control-custom:focus {
+    background-color: #1b1b1d !important;
+
+    border-color: var(--dorado) !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 0 0 2px rgba(255, 198, 0, 0.09) !important;
+}
+
+
+/* Nombre deshabilitado */
+
+.dashboard-container .form-control-custom:disabled {
+    opacity: 1;
+
+    background-color: #222224 !important;
+
+    border-color: #353537 !important;
+
+    color: #bdbdbd !important;
+}
+
+
+/* ============================================================================
+   SELECT — ASIGNAR ROL
+   ============================================================================ */
+
+/*
+   MUY IMPORTANTE:
+   No se utiliza ::after ni ninguna flecha adicional.
+
+   Se eliminan las imágenes de fondo que puedan estar siendo agregadas
+   por Bootstrap u otras reglas globales.
+*/
+
+.dashboard-container select.form-control-custom {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+
+    background-color: #171719 !important;
+
+    /* Una sola flecha */
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16'%3E%3Cpath fill='%23FFC600' d='M3.2 5.8a.75.75 0 0 1 1.06 0L8 9.54l3.74-3.74a.75.75 0 1 1 1.06 1.06l-4.27 4.27a.75.75 0 0 1-1.06 0L3.2 6.86a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E") !important;
+
+    background-repeat: no-repeat !important;
+
+    background-position: right 12px center !important;
+
+    background-size: 12px !important;
+
+    padding-right: 35px !important;
+
+    color: #eeeeee !important;
+
+    cursor: pointer;
+}
+
+.dashboard-container select.form-control-custom option {
+    background-color: #202022;
+
+    color: #ffffff;
+}
+
+.dashboard-container select.form-control-custom option {
+    background-color: #202022;
+
+    color: #ffffff;
+}
+
+
+/* ============================================================================
+   BOTÓN ELIMINAR
+   ============================================================================ */
+
+.dashboard-container .btn-delete {
     width: 36px;
     height: 36px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
-    text-decoration: none;
-}
 
-.btn-delete:hover {
-    background-color: #d32f2f;
-    transform: scale(1.1);
-    color: white;
-}
+    background: rgba(220, 53, 69, 0.08);
 
-/* Botones de acción */
-.btn-save {
-    background-color: #00e676;
-    color: #000000;
-    font-weight: 600;
-    padding: 10px 30px;
+    border: 1px solid rgba(220, 53, 69, 0.28);
+
     border-radius: 8px;
-    border: none;
-    transition: background-color 0.2s;
-}
 
-.btn-save:hover {
-    background-color: #00c853;
-}
+    color: #ff626b;
 
-.btn-return {
-    background-color: #ff3b30;
-    color: #000000;
-    font-weight: 500;
-    padding: 8px 25px;
-    border-radius: 20px;
     text-decoration: none;
-    display: inline-block;
-    transition: opacity 0.2s;
+
+    font-size: 0.82rem;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.btn-return:hover {
-    opacity: 0.9;
-    color: #000000;
+.dashboard-container .btn-delete:hover {
+    background: #dc3545;
+
+    border-color: #dc3545;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
 }
 
-/* Botón "Ver todas" (dashboard admin - próximas citas) */
-.btn-ver-todas {
-    background-color: transparent;
-    border: 1px solid var(--dorado);
-    color: var(--dorado);
-    font-weight: 500;
+
+/* ============================================================================
+   PARTE INFERIOR
+   ============================================================================ */
+
+.dashboard-container .panel-bg form > .d-flex {
+    margin-top: 20px !important;
+
+    padding-top: 20px !important;
+
+    border-color: #303030 !important;
+}
+
+
+/* ============================================================================
+   BOTÓN REGRESAR
+   ============================================================================ */
+
+.dashboard-container .btn-return {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 39px;
+
     padding: 8px 20px;
-    border-radius: 20px;
+
+    background: #222222;
+
+    border: 1px solid #414141;
+
+    border-radius: 8px;
+
+    color: #bdbdbd;
+
     text-decoration: none;
-    display: inline-block;
-    transition: all 0.25s ease;
+
+    font-size: 0.82rem;
+
+    font-weight: 500;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
 }
 
-.btn-ver-todas:hover {
-    background-color: rgba(255, 198, 0, 0.15);
-    border-color: var(--dorado-hover);
-    color: var(--dorado-hover);
+.dashboard-container .btn-return:hover {
+    background: #292929;
+
+    border-color: #5a5a5a;
+
+    color: #ffffff;
 }
 
-/* Ventanas Modales */
-.modal-content-dark {
-    background-color: #121212;
-    color: white;
-    border: 1px solid #2c2c2e;
+
+/* ============================================================================
+   BOTÓN GUARDAR CAMBIOS
+   ============================================================================ */
+
+.dashboard-container .btn-guardar-cambios {
+    min-height: 39px;
+
+    padding: 8px 23px !important;
+
+    background: var(--dorado) !important;
+
+    border: 1px solid var(--dorado) !important;
+
+    border-radius: 8px !important;
+
+    color: #111111 !important;
+
+    font-size: 0.82rem;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 4px 12px rgba(255, 198, 0, 0.12);
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-/* Contenedor con barra de desplazamiento interna */
-.scrollable-panel {
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 5px;
+.dashboard-container .btn-guardar-cambios:hover {
+    background: var(--dorado-hover) !important;
+
+    border-color: var(--dorado-hover) !important;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 16px rgba(255, 198, 0, 0.20);
 }
 
-/* Personalización del scrollbar en navegadores Webkit (Chrome/Safari) */
-.scrollable-panel::-webkit-scrollbar {
-    width: 6px;
+
+/* ============================================================================
+   SIN REGISTROS
+   ============================================================================ */
+
+.dashboard-container .scrollable-panel > .text-center.text-muted {
+    padding: 55px 20px !important;
+
+    color: #888888 !important;
 }
 
-.scrollable-panel::-webkit-scrollbar-track {
-    background: #d9d9d9;
+.dashboard-container .scrollable-panel > .text-center.text-muted i {
+    color: rgba(255, 198, 0, 0.50);
 }
 
-.scrollable-panel::-webkit-scrollbar-thumb {
-    background: var(--gold, #FFC600);
-    border-radius: 10px;
+
+/* ============================================================================
+   ALERTAS
+   ============================================================================ */
+
+.dashboard-container .alert {
+    border-radius: 9px;
+
+    border: 1px solid transparent;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ============================================================================
+   MODO CLARO
+   ============================================================================ */
+
+[data-theme="light"] .dashboard-container .panel-bg {
+    background: #ffffff;
+
+    border-color: #dddddd;
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .dashboard-container .panel-bg::before {
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #c59a12,
+        transparent
+    );
+}
+
+[data-theme="light"] .dashboard-container .panel-bg > .d-flex {
+    border-color: #e5e5e5;
+}
+
+[data-theme="light"] .dashboard-container .panel-bg > .d-flex h5 {
+    color: #333333 !important;
+}
+
+[data-theme="light"] .dashboard-container .table-header {
+    color: #777777;
+}
+
+
+/* Filas */
+
+[data-theme="light"] .dashboard-container .profile-row {
+    background: #fafafa;
+
+    border-color: #dddddd;
+}
+
+[data-theme="light"] .dashboard-container .profile-row:hover {
+    background: #ffffff;
+
+    border-color: rgba(191, 147, 13, 0.40);
+
+    box-shadow:
+        0 5px 16px rgba(0, 0, 0, 0.07);
+}
+
+
+/* Campos */
+
+[data-theme="light"] .dashboard-container .form-control-custom {
+    background-color: #f3f3f3 !important;
+
+    border-color: #d2d2d2 !important;
+
+    color: #333333 !important;
+}
+
+[data-theme="light"] .dashboard-container .form-control-custom:hover {
+    border-color: #bbbbbb !important;
+}
+
+[data-theme="light"] .dashboard-container .form-control-custom:focus {
+    background-color: #ffffff !important;
+
+    border-color: #b38a00 !important;
+
+    color: #222222 !important;
+}
+
+[data-theme="light"] .dashboard-container .form-control-custom:disabled {
+    background-color: #e9e9e9 !important;
+
+    color: #555555 !important;
+}
+
+
+/* Select */
+
+[data-theme="light"] .dashboard-container select.form-control-custom {
+    background-color: #f3f3f3 !important;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16'%3E%3Cpath fill='%23A27B00' d='M3.2 5.8a.75.75 0 0 1 1.06 0L8 9.54l3.74-3.74a.75.75 0 1 1 1.06 1.06l-4.27 4.27a.75.75 0 0 1-1.06 0L3.2 6.86a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E") !important;
+
+    background-repeat: no-repeat !important;
+
+    background-position: right 12px center !important;
+
+    background-size: 12px !important;
+
+    color: #333333 !important;
+}
+
+[data-theme="light"] .dashboard-container select.form-control-custom option {
+    background-color: #ffffff;
+
+    color: #222222;
+}
+
+
+/* Usuario sin foto */
+
+[data-theme="light"] .dashboard-container .profile-row .bi-person-circle {
+    color: #999999 !important;
+}
+
+[data-theme="light"] .dashboard-container .profile-row:hover .bi-person-circle {
+    color: #a27b00 !important;
+}
+
+
+/* Botón regresar */
+
+[data-theme="light"] .dashboard-container .btn-return {
+    background: #f5f5f5;
+
+    border-color: #d0d0d0;
+
+    color: #666666;
+}
+
+[data-theme="light"] .dashboard-container .btn-return:hover {
+    background: #eeeeee;
+
+    border-color: #bcbcbc;
+
+    color: #222222;
+}
+
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 992px) {
+
+    .dashboard-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .dashboard-container .panel-bg {
+        padding: 22px !important;
+    }
+}
+
+
+@media (max-width: 767px) {
+
+    .dashboard-container {
+        margin: 20px auto;
+
+        padding: 15px;
+    }
+
+    .dashboard-container .main-title {
+        font-size: 2rem;
+
+        margin-bottom: 28px;
+    }
+
+    .dashboard-container .panel-bg {
+        padding: 18px !important;
+
+        border-radius: 13px;
+    }
+
+    .dashboard-container .table-header {
+        display: none !important;
+    }
+
+    .dashboard-container .scrollable-panel {
+        max-height: none;
+
+        overflow-y: visible;
+
+        padding-right: 0;
+    }
+
+    .dashboard-container .profile-row {
+        padding: 15px 12px !important;
+
+        margin-bottom: 11px !important;
+    }
+
+    .dashboard-container .profile-row > div {
+        margin-bottom: 8px;
+    }
+
+    .dashboard-container .profile-row > div:last-child {
+        margin-bottom: 0;
+    }
+
+    .dashboard-container .form-control-custom {
+        min-height: 42px;
+    }
+
+    .dashboard-container .btn-delete {
+        width: 38px;
+        height: 38px;
+    }
+
+    .dashboard-container .panel-bg form > .d-flex {
+        gap: 10px;
+
+        flex-wrap: wrap;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .dashboard-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .dashboard-container .main-title {
+        font-size: 1.7rem;
+    }
+
+    .dashboard-container .panel-bg {
+        padding: 15px !important;
+    }
+
+    .dashboard-container .btn-return,
+    .dashboard-container .btn-guardar-cambios {
+        width: 100%;
+    }
 }
 
 
@@ -11433,4 +12503,564 @@ body.light .facial-dashboard-card {
 .wave-letter {
     display: inline-block;
     position: relative;
+}
+
+/* ============================================================================
+   REPORTES ADMINISTRATIVOS
+   Diseño premium
+   ============================================================================ */
+
+
+/* ============================================================================
+   CONTENEDOR
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] {
+    padding-top: 35px !important;
+    padding-bottom: 55px !important;
+}
+
+
+/* ============================================================================
+   ENCABEZADO
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] .titulo-servicios {
+    margin-bottom: 8px;
+
+    color: var(--dorado);
+
+    font-size: 2.5rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.2px;
+}
+
+section.container-fluid[style*="max-width: 1200px"] .titulo-servicios + p {
+    color: #b0b0b0 !important;
+
+    font-size: 1rem;
+}
+
+
+/* ============================================================================
+   FILTRO DE FECHAS
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] form[method="get"] {
+    padding: 15px 17px;
+
+    background: #181818;
+
+    border: 1px solid #303030;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 7px 20px rgba(0, 0, 0, 0.18);
+}
+
+
+/* Etiquetas */
+
+section.container-fluid[style*="max-width: 1200px"] form[method="get"] label {
+    color: #a5a5a5 !important;
+
+    font-size: 0.82rem !important;
+
+    font-weight: 500;
+}
+
+
+/* Fechas */
+
+section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"] {
+    min-width: 150px;
+
+    min-height: 36px;
+
+    padding: 6px 10px;
+
+    background-color: #252527;
+
+    border: 1px solid #414143;
+
+    border-radius: 7px;
+
+    color: #eeeeee;
+
+    font-size: 0.9rem;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"]:hover {
+    border-color: #555557;
+}
+
+section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"]:focus {
+    background-color: #29292b;
+
+    border-color: var(--dorado);
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 0 2px rgba(255, 198, 0, 0.10);
+}
+
+
+/* Filtrar */
+
+section.container-fluid[style*="max-width: 1200px"] form[method="get"] .btn-warning {
+    min-height: 36px;
+
+    padding: 6px 19px;
+
+    background: var(--dorado);
+
+    border: none;
+
+    border-radius: 7px;
+
+    color: #111111;
+
+    font-size: 0.88rem;
+
+    font-weight: 600;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+section.container-fluid[style*="max-width: 1200px"] form[method="get"] .btn-warning:hover {
+    background: var(--dorado-hover);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 14px rgba(255, 198, 0, 0.16);
+}
+
+
+/* Limpiar */
+
+section.container-fluid[style*="max-width: 1200px"] form[method="get"] .btn-outline-light {
+    min-height: 36px;
+
+    border-color: #505050;
+
+    border-radius: 7px;
+
+    color: #c0c0c0;
+
+    font-size: 0.88rem;
+}
+
+
+/* ============================================================================
+   BOTONES DE DESCARGA
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] .btn-descargar-excel,
+section.container-fluid[style*="max-width: 1200px"] .btn-descargar-pdf {
+    min-height: 42px;
+
+    padding: 8px 19px;
+
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+section.container-fluid[style*="max-width: 1200px"] .btn-descargar-excel:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 17px rgba(25, 135, 84, 0.20);
+}
+
+section.container-fluid[style*="max-width: 1200px"] .btn-descargar-pdf:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 17px rgba(220, 53, 69, 0.20);
+}
+
+section.container-fluid[style*="max-width: 1200px"] .btn-descargar-excel i,
+section.container-fluid[style*="max-width: 1200px"] .btn-descargar-pdf i {
+    margin-right: 6px;
+}
+
+
+/* ============================================================================
+   ESTADÍSTICAS PRINCIPALES
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 {
+    margin-top: 5px;
+}
+
+
+/* Tarjetas */
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card {
+    position: relative;
+
+    min-height: 165px;
+
+    padding: 26px 28px !important;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    background: #191919 !important;
+
+    border: 1px solid #353535;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 9px 24px rgba(0, 0, 0, 0.23);
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* Línea superior */
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+}
+
+
+/* Colores */
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .border-warning::before {
+    background: var(--dorado);
+}
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .border-info::before {
+    background: #0dcaf0;
+}
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .border-success::before {
+    background: #198754;
+}
+
+
+/* Hover */
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card:hover {
+    transform: translateY(-5px);
+
+    border-color: #4a4a4a;
+
+    box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.30);
+}
+
+
+/* ============================================================================
+   TÍTULOS DE ESTADÍSTICAS
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card h5 {
+    margin-bottom: 13px;
+
+    color: #b7b7b7;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+}
+
+
+/* ============================================================================
+   VALORES DE ESTADÍSTICAS
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card h2 {
+    margin: 0;
+
+    font-size: 2rem;
+
+    font-weight: 700;
+
+    line-height: 1.25;
+}
+
+
+/* Ingresos */
+
+section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .border-warning h2 {
+    text-shadow:
+        0 0 15px rgba(255, 198, 0, 0.12);
+}
+
+
+/* ============================================================================
+   TARJETAS DE GRÁFICOS Y SERVICIOS
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] > .row:last-of-type > div > .card {
+    min-height: 370px;
+
+    padding: 26px !important;
+
+    background: #191919 !important;
+
+    border: 1px solid #303030;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.20);
+}
+
+
+/* Títulos */
+
+section.container-fluid[style*="max-width: 1200px"] > .row:last-of-type .card > h5 {
+    margin-bottom: 20px !important;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid #303030;
+
+    color: #eeeeee !important;
+
+    font-size: 1.05rem;
+
+    font-weight: 600;
+}
+
+
+/* ============================================================================
+   GRÁFICO
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] #graficoIngresos {
+    max-width: 100%;
+}
+
+
+/* ============================================================================
+   LISTA DE SERVICIOS
+   ============================================================================ */
+
+section.container-fluid[style*="max-width: 1200px"] .list-group-item {
+    padding: 14px 5px;
+
+    background: transparent !important;
+
+    border-color: #303030 !important;
+
+    color: #dddddd !important;
+
+    font-size: 0.95rem;
+
+    transition:
+        background-color 0.2s ease,
+        padding-left 0.2s ease;
+}
+
+section.container-fluid[style*="max-width: 1200px"] .list-group-item:hover {
+    padding-left: 10px;
+
+    background: rgba(255, 198, 0, 0.035) !important;
+}
+
+
+/* Cantidad */
+
+section.container-fluid[style*="max-width: 1200px"] .list-group-item .badge {
+    min-width: 32px;
+
+    padding: 6px 9px;
+
+    background: rgba(255, 198, 0, 0.14) !important;
+
+    border: 1px solid rgba(255, 198, 0, 0.28);
+
+    border-radius: 6px;
+
+    color: var(--dorado) !important;
+
+    font-size: 0.78rem;
+}
+
+
+/* ============================================================================
+   MODO CLARO
+   ============================================================================ */
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] form[method="get"] {
+    background: #ffffff;
+
+    border-color: #dddddd;
+
+    box-shadow:
+        0 7px 20px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] form[method="get"] label {
+    color: #777777 !important;
+}
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"] {
+    background-color: #f4f4f4;
+
+    border-color: #d2d2d2;
+
+    color: #333333;
+}
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"]:focus {
+    background-color: #ffffff;
+
+    border-color: #b18a00;
+
+    color: #222222;
+}
+
+
+/* Estadísticas */
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card {
+    background: #ffffff !important;
+
+    border-color: #dddddd;
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.07);
+}
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card h5 {
+    color: #666666;
+}
+
+
+/* Tarjetas inferiores */
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] > .row:last-of-type > div > .card {
+    background: #ffffff !important;
+
+    border-color: #dddddd;
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] > .row:last-of-type .card > h5 {
+    border-color: #e3e3e3;
+
+    color: #333333 !important;
+}
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] .list-group-item {
+    border-color: #e4e4e4 !important;
+
+    color: #444444 !important;
+}
+
+[data-theme="light"] section.container-fluid[style*="max-width: 1200px"] .list-group-item:hover {
+    background: rgba(191, 147, 13, 0.035) !important;
+}
+
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 991px) {
+
+    section.container-fluid[style*="max-width: 1200px"] {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] form[method="get"] {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 767px) {
+
+    section.container-fluid[style*="max-width: 1200px"] {
+        padding-top: 25px !important;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] .titulo-servicios {
+        font-size: 2rem;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] form[method="get"] {
+        align-items: stretch !important;
+
+        flex-wrap: wrap;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] form[method="get"] > div {
+        flex: 1 1 140px;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"] {
+        width: 100%;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] form[method="get"] button,
+    section.container-fluid[style*="max-width: 1200px"] form[method="get"] a {
+        flex: 1;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] .d-flex.justify-content-end {
+        justify-content: stretch !important;
+
+        flex-wrap: wrap;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] .btn-descargar-excel,
+    section.container-fluid[style*="max-width: 1200px"] .btn-descargar-pdf {
+        flex: 1;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card {
+        min-height: 145px;
+    }
+
+    section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card h2 {
+        font-size: 1.8rem;
+    }
 }
