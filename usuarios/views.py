@@ -417,39 +417,18 @@ def seleccionar_rol_google(request, rol):
 # 2. VISTA: CERRAR SESIÓN
 # =========================================================================
 def cerrar_sesion(request):
-    # --- Revoca el token de Google ANTES de cerrar la sesión de Django ---
-    # Esto NO cierra Gmail (eso el navegador lo controla en accounts.google.com,
-    # fuera del alcance de cualquier sitio de terceros), pero sí revoca el
-    # permiso que Google le dio a esta app. La próxima vez que el usuario
-    # use "Continuar con Google", tendrá que volver a elegir cuenta y
-    # autorizar en vez de entrar en automático por la cookie de Google.
-    if request.user.is_authenticated:
-        social_token = SocialToken.objects.filter(
-            account__user=request.user,
-            account__provider='google'
-        ).first()
-
-        if social_token:
-            try:
-                http_requests.post(
-                    'https://oauth2.googleapis.com/revoke',
-                    params={'token': social_token.token},
-                    headers={'content-type': 'application/x-www-form-urlencoded'},
-                    timeout=5,
-                )
-            except http_requests.RequestException:
-                # Si Google no responde, no bloqueamos el logout del usuario
-                # por eso — su sesión en tu app se cierra igual.
-                pass
-
+    # --- Cierre de sesión normal: solo cierra la sesión en ESTE sitio ---
+    # No se toca nada de Google/Gmail. Ya no se revoca el token OAuth ni se
+    # dispara ninguna redirección/petición hacia accounts.google.com; la
+    # cuenta de Google del usuario en el navegador queda tal cual estaba.
     auth_logout(request)
-    
+
     if 'sesion_iniciada' in request.session:
         del request.session['sesion_iniciada']
-        
+
     if 'usuario_nombre' in request.session:
         del request.session['usuario_nombre']
-        
+
     request.session.pop(
         'origen_analisis_facial',
         None

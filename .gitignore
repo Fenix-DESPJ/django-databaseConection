@@ -14,7 +14,7 @@ db.sqlite3
 db.sqlite3-journal
 
 # Carpetas de archivos subidos por usuarios (Media)
-media/
+# media/ comentariado para pruebas con imagenes
 
 # Archivos de configuración de entorno (donde guardas contraseñas y SECRET_KEY)
 .env
