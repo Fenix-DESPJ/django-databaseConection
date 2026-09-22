@@ -1325,6 +1325,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const zonaCamara = document.getElementById("zonaCamara");
     const videoCamara = document.getElementById("videoCamara");
     const canvasCaptura = document.getElementById("canvasCaptura");
+    const canvasTracker = document.getElementById("canvasTracker");
     const btnCapturar = document.getElementById("btnCapturar");
 
     const zonaPreview = document.getElementById("zonaPreview");
@@ -1415,6 +1416,103 @@ document.addEventListener("DOMContentLoaded", () => {
             errorBox.classList.remove("visible");
         }, tiempo);
     }
+
+    // --- Tracker de rostro en vivo (solo visual, ayuda a encuadrar) ---
+    // Usa @mediapipe/tasks-vision (versión JS/WASM para navegador, distinta
+    // del paquete Python de utils.py, pero mismo motor de detección de
+    // Google). Se carga de forma perezosa solo cuando se abre la cámara.
+    let faceDetectorPromise = null;
+    let animacionTrackerId = null;
+
+        async function crearFaceDetector(vision, filesetResolver, delegate) {
+        return await vision.FaceDetector.createFromOptions(filesetResolver, {
+            baseOptions: {
+                modelAssetPath:
+                    "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+                delegate: delegate,
+            },
+            runningMode: "VIDEO",
+        });
+    }
+
+    async function obtenerFaceDetector() {
+        if (!faceDetectorPromise) {
+            faceDetectorPromise = (async () => {
+                const vision = await import(
+                    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs"
+                );
+                const filesetResolver = await vision.FilesetResolver.forVisionTasks(
+                    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+                );
+                try {
+                    // Intenta con GPU (más fluido); si el navegador no lo soporta, cae a CPU.
+                    return await crearFaceDetector(vision, filesetResolver, "GPU");
+                } catch (err) {
+                    return await crearFaceDetector(vision, filesetResolver, "CPU");
+                }
+            })();
+        }
+        return faceDetectorPromise;
+    }
+
+    function detenerTracker() {
+        if (animacionTrackerId) {
+            cancelAnimationFrame(animacionTrackerId);
+            animacionTrackerId = null;
+        }
+        if (canvasTracker) {
+            const ctx = canvasTracker.getContext("2d");
+            ctx.clearRect(0, 0, canvasTracker.width, canvasTracker.height);
+        }
+    }
+
+    async function iniciarTracker() {
+        if (!canvasTracker) return;
+        try {
+            const detector = await obtenerFaceDetector();
+            const ctx = canvasTracker.getContext("2d");
+
+            const loop = () => {
+                // Si la cámara ya se cerró, detenemos el bucle sin dibujar nada.
+                if (!streamCamara) return;
+
+                if (videoCamara.readyState >= 2) {
+                    canvasTracker.width = videoCamara.videoWidth;
+                    canvasTracker.height = videoCamara.videoHeight;
+
+                    const resultado = detector.detectForVideo(videoCamara, performance.now());
+                    ctx.clearRect(0, 0, canvasTracker.width, canvasTracker.height);
+
+                                        if (resultado.detections && resultado.detections.length > 0) {
+                        const caja = resultado.detections[0].boundingBox;
+                        const centroX = caja.originX + caja.width / 2;
+                        const centroY = caja.originY + caja.height / 2;
+                        // El óvalo se dibuja un poco más grande que el bounding box
+                        // (que es más "cuadrado" que una cara real), para que el
+                        // borde quede justo alrededor del rostro y no lo corte.
+                        const radioX = (caja.width / 2) * 1.15;
+                        const radioY = (caja.height / 2) * 1.35;
+
+                        ctx.strokeStyle = "#ffc600";
+                        ctx.lineWidth = 4;
+                        ctx.beginPath();
+                        ctx.ellipse(centroX, centroY, radioX, radioY, 0, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+
+                animacionTrackerId = requestAnimationFrame(loop);
+            };
+
+            loop();
+        } catch (err) {
+            // Si el tracker falla (CDN bloqueado, navegador sin soporte, etc.)
+            // la cámara y la captura de foto siguen funcionando igual;
+            // el tracker es solo una ayuda visual, no algo crítico.
+            console.warn("No se pudo iniciar el tracker de rostro:", err);
+        }
+    }
+
     function resetearVistas() {
         zonaCamara.classList.add("d-none");
         zonaPreview.classList.add("d-none");
@@ -1422,6 +1520,7 @@ document.addEventListener("DOMContentLoaded", () => {
         resultadoBox.classList.remove("visible");
         usarPerfilSeleccionado = false;
         blobCapturado = null;
+        detenerTracker();
         if (streamCamara) {
             streamCamara.getTracks().forEach(t => t.stop());
             streamCamara = null;
@@ -1435,6 +1534,7 @@ document.addEventListener("DOMContentLoaded", () => {
             streamCamara = await navigator.mediaDevices.getUserMedia({ video: true });
             videoCamara.srcObject = streamCamara;
             zonaCamara.classList.remove("d-none");
+            iniciarTracker();
         } catch (err) {
             errorBox.textContent = "No se pudo acceder a la cámara. Verifica los permisos del navegador.";
             errorBox.classList.add("visible");
@@ -1451,6 +1551,7 @@ document.addEventListener("DOMContentLoaded", () => {
             imgPreview.src = URL.createObjectURL(blob);
             zonaCamara.classList.add("d-none");
             zonaPreview.classList.remove("d-none");
+            detenerTracker();
             if (streamCamara) {
                 streamCamara.getTracks().forEach(t => t.stop());
                 streamCamara = null;

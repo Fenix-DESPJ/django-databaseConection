@@ -68,12 +68,11 @@
             <input type="file" id="inputArchivo" accept="image/png, image/jpeg, image/webp" class="d-none">
 
             <div id="zonaCamara" class="text-center d-none">
-                <video id="videoCamara" class="video-preview" autoplay playsinline></video>
-                <canvas id="canvasCaptura" class="d-none"></canvas>
-                <div class="mt-3">
-                    <button type="button" class="btn btn-warning text-dark fw-bold" id="btnCapturar">
-                        <i class="bi bi-camera-fill"></i> Capturar foto
-                    </button>
+                <div class="camara-wrapper">
+                    <video id="videoCamara" class="video-preview" autoplay playsinline></video>
+                    <canvas id="canvasCaptura" class="d-none"></canvas>
+                    <canvas id="canvasTracker" class="camara-tracker-canvas"></canvas>
+                    <button type="button" class="btn-shutter" id="btnCapturar" aria-label="Tomar foto"></button>
                 </div>
             </div>
 

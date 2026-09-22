@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-09-2026 a las 00:43:21
+-- Tiempo de generación: 22-09-2026 a las 21:12:25
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -349,10 +349,10 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (2, 'pbkdf2_sha256$600000$cOmiRYMYpYxwbGXzoqxcHg$BxVF3vH9nwY4PJxNTWbMhNODYw/kxa2C+UgD1uAMsWw=', '2026-06-18 14:09:14.566411', 0, 'ivan@gmail.com', 'Ivancito', 'Cepeda', 'ivan@gmail.com', 0, 1, '2026-06-18 13:04:14.605021'),
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-09-15 21:39:28.286933', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
-(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-09-15 21:38:49.112840', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-09-15 22:37:39.759711', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
-(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-09-15 22:42:36.670107', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
-(8, 'pbkdf2_sha256$600000$E53eALCUkkcRHOiN6JnwdP$U2ajNUDQIShVRQsqG62Alt7gbSa/CXd3QkNBoBqQ/hI=', '2026-08-13 22:43:18.591631', 0, 'juanesspa76@gmail.com', 'Mapache', 'uwu', 'juanesspa76@gmail.com', 0, 1, '2026-07-28 20:33:53.831652'),
+(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-09-15 23:00:10.864836', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-09-15 23:00:00.861484', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-09-22 18:25:33.968538', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
+(8, 'pbkdf2_sha256$600000$E53eALCUkkcRHOiN6JnwdP$U2ajNUDQIShVRQsqG62Alt7gbSa/CXd3QkNBoBqQ/hI=', '2026-09-22 18:22:42.122536', 0, 'juanesspa76@gmail.com', 'Mapache', 'uwu', 'juanesspa76@gmail.com', 0, 1, '2026-07-28 20:33:53.831652'),
 (9, 'pbkdf2_sha256$600000$fsmNBV20n2xa02hrKtKkoG$Z+KO0IUH/D88sKc3/18HOvRcEhwUtlOykmAFBcTDUQI=', '2026-08-04 23:05:11.582915', 0, 'fenixdespj@gmail.com', 'Fenix', '', 'fenixdespj@gmail.com', 0, 1, '2026-08-04 22:54:59.864405');
 
 -- --------------------------------------------------------
@@ -682,7 +682,14 @@ INSERT INTO `dia_habilitado` (`id`, `fecha`, `habilitado`) VALUES
 (189, '2026-10-14', 1),
 (190, '2026-10-15', 1),
 (191, '2026-10-16', 1),
-(192, '2026-10-17', 0);
+(192, '2026-10-17', 0),
+(193, '2026-10-18', 0),
+(194, '2026-10-19', 1),
+(195, '2026-10-20', 1),
+(196, '2026-10-21', 1),
+(197, '2026-10-22', 1),
+(198, '2026-10-23', 1),
+(199, '2026-10-24', 0);
 
 -- --------------------------------------------------------
 
@@ -846,7 +853,6 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('a4x41o6ftt53mthk98xw7jbki2vfi1rc', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1x10lf:rTtmRFv2qQn2gWTx3Vv93CNU_kxB0qVRRpQ2Ue_GPIs', '2026-09-14 12:05:39.545393'),
 ('a9eerkejkf6mv4hsbiaw8v72wxnh7ogb', '.eJxVj00OwiAQha9iWJumBaYVly5NPAMZhtGiFRIoK-PdraaJun3f-8l7CIt1Hm0tnG3wYi9AbH81h3Tj-Ab-ivGSGkpxzsE1b0uz0tKckufpsHr_CkYs45I2sJM7JgDDg-r7VhGBdFrL86BbxUCkoO-0dhKMab3yzjN1zrQGOsPaLaWFS0jRhhgooEexn3PlrailYg7JxnR3mZepY8W4OWGsPIkvzmn6HJTPF0OTUVE:1wbgEu:EpN6BCPorYPAY8h2dmHtdwG6K60GQkvSLVQgssB5BLg', '2026-07-06 15:07:08.076477'),
 ('avgczg5y3i4uccct4edfx4nl1tkahju3', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1wkjcF:Al9k-Y9_En4MSelWtg-nU6I69OtmZKAmhrEZ6ceu208', '2026-07-31 14:32:39.014945'),
-('ay9uy9cm7ubt221b61o9o38iish0qow8', '.eJxVj8tuwyAQRX8lYp3YBAM2WWbfb0ADDDWpAxaPdlH132tXidpu7z3njuaTaGh11q1g1sGRCxnJ8W9mwL5h3At3g_iaOptizcF0O9I92tK9JIfL9cH-G5ihzJtNBUolheHeSD4wkDB4joJKK8aJgZ-4o6gmCcCZH5F5qpSRZ6BC2ZF52EYLlpCiDjHYAA7IpeaGR9JKgxySjuluMm6n7BIwVjw4PKwbYXb3CeW0_Lw5_EY-1bRZ_R1dgH7F7MOCpX_WjGp25oJxPp5urVUj5vn0zrsPNCv5-gbonWwJ:1x6brI:qqYPmRpOQ_DdyGov_CxvKXico6PCcqx8Lmm27OL0CQ0', '2026-09-29 22:42:36.674080'),
 ('brem6o3n50d7sgk480em3qqmz4dds7hh', '.eJxVkMFugzAMht_F0m6IkpAS4LZddtq0-zQhk5gSLRBEwqSp6rsvUKqJSxz5929_9hVmZ5uLcxdLjSdLShk3onZQ5wl4pwxaVMotY2h8wEAe6ustgcUvOBvXrG6j78Xko7Uxo4kmjVCHeaH_ytEN7UxQwxtOqHqCf6lzIc6D00Da4GmiuTOW_Okhc97sniee6fXByf26GGlwG65NP95fY8MHKS6hpzEYhWFFGij0Tkfyzyvc_3HaYbfVG6BmsiyKIquqMj1LKflZJDDN7sdomqPlfqYVfF0ZGBNlyQrJc86rvJAsz5mE21cCG0CzeJq340AJh1yL6pvGVUBr13S6Y6RbzS779PmwxsvuOrTq0fexD3FRsZYxVXAlmFRCMIGU6Vy0nESrNcqOsozlLeeI5y5ya-IlLztdMSwU3P4A37uvzg:1wue8s:AOHNzsAhp-QC8NMpFRVWOwaysHKkM5u0kbWjUjpqYos', '2026-08-27 22:43:18.603621'),
 ('dzsp3fialylt9tyorwfvqp4qnoe6xe6t', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1woNtT:OsSo6qdmkIEHGywJbMr9EGdWd9kaI9Q3HFiZ5SN59aI', '2026-08-10 16:09:31.761168'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
@@ -934,9 +940,9 @@ INSERT INTO `notificacion` (`idnotificacion`, `tipo`, `mensaje`, `leida`, `fecha
 (38, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de MAPACHE UWU (Facial).', 1, '2026-08-03 22:50:51.982109', 19),
 (39, 'reserva_creada', 'Tu cita de Cejas quedó reservada para el 31/08/2026 a las 17:30 con JUAN MANUEL RESTREPO.', 1, '2026-08-31 21:06:14.218436', 20),
 (40, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Cejas para el 31/08/2026 a las 17:30.', 1, '2026-08-31 21:06:14.220422', 17),
-(41, 'reserva_creada', 'Tu cita de Corte Tradicional quedó reservada para el 16/09/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 0, '2026-09-15 20:20:54.734457', 20),
+(41, 'reserva_creada', 'Tu cita de Corte Tradicional quedó reservada para el 16/09/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 1, '2026-09-15 20:20:54.734457', 20),
 (42, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Corte Tradicional para el 16/09/2026 a las 08:00.', 1, '2026-09-15 20:20:54.735451', 17),
-(43, 'reserva_creada', 'Tu cita de Corte Tradicional quedó reservada para el 16/09/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 0, '2026-09-15 21:05:05.586967', 20),
+(43, 'reserva_creada', 'Tu cita de Corte Tradicional quedó reservada para el 16/09/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 1, '2026-09-15 21:05:05.586967', 20),
 (44, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Corte Tradicional para el 16/09/2026 a las 08:00.', 0, '2026-09-15 21:05:05.587956', 17),
 (45, 'reserva_creada', 'Tu cita de Perfilado Barba quedó reservada para el 16/09/2026 a las 09:00 con JUAN MANUEL RESTREPO.', 0, '2026-09-15 21:16:50.556390', 16),
 (46, 'nueva_cita', 'JAMES ABELARDO DIAZ URIBE agendó el servicio de Perfilado Barba para el 16/09/2026 a las 09:00.', 0, '2026-09-15 21:16:50.567319', 17),
@@ -1089,7 +1095,7 @@ CREATE TABLE `socialaccount_socialaccount` (
 --
 
 INSERT INTO `socialaccount_socialaccount` (`id`, `provider`, `uid`, `last_login`, `date_joined`, `extra_data`, `user_id`) VALUES
-(1, 'google', '114881672322936713317', '2026-08-13 22:43:18.572738', '2026-08-04 22:52:37.979594', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"114881672322936713317\", \"email\": \"juanesspa76@gmail.com\", \"email_verified\": true, \"at_hash\": \"EaAvcp0UZ5lkctztptBlSA\", \"name\": \"juan esteban parra rodriguez\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocIN99GvxyxzGsXhSU_ZLxgK7D0Dx2OioefYgPTO0lbfLwbP27zAgQ=s96-c\", \"given_name\": \"juan esteban\", \"family_name\": \"parra rodriguez\", \"iat\": 1786661000, \"exp\": 1786664600}', 8),
+(1, 'google', '114881672322936713317', '2026-09-22 18:22:42.080538', '2026-08-04 22:52:37.979594', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"114881672322936713317\", \"email\": \"juanesspa76@gmail.com\", \"email_verified\": true, \"at_hash\": \"eVej2KxtIQ8CAioZqXLKAQ\", \"name\": \"juan esteban parra rodriguez\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocIN99GvxyxzGsXhSU_ZLxgK7D0Dx2OioefYgPTO0lbfLwbP27zAgQ=s96-c\", \"given_name\": \"juan esteban\", \"family_name\": \"parra rodriguez\", \"iat\": 1790101361, \"exp\": 1790104961}', 8),
 (2, 'google', '110805645877386512366', '2026-08-04 23:04:56.462991', '2026-08-04 22:55:00.823524', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"110805645877386512366\", \"email\": \"fenixdespj@gmail.com\", \"email_verified\": true, \"at_hash\": \"627rdxppAAsAnUw1KV_G6g\", \"name\": \"Fenix\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocKxlj-8DE0plNN02dtBNvVBpGsNMhSU42UV5nwN-g-4AJhY1l0=s96-c\", \"given_name\": \"Fenix\", \"iat\": 1785884697, \"exp\": 1785888297}', 9);
 
 -- --------------------------------------------------------
@@ -1676,7 +1682,7 @@ ALTER TABLE `configuracion_horario`
 -- AUTO_INCREMENT de la tabla `dia_habilitado`
 --
 ALTER TABLE `dia_habilitado`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- AUTO_INCREMENT de la tabla `django_admin_log`

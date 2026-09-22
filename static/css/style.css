@@ -3854,6 +3854,69 @@ textarea.form-control-custom { resize: vertical; }
     margin: 0 auto;
 }
 
+/* Contenedor relativo para poder superponer el tracker y el
+   obturador sobre el video de la cámara. */
+.camara-wrapper {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Canvas transparente superpuesto exactamente al video, donde se
+   dibuja el recuadro que sigue al rostro en vivo (MediaPipe JS). */
+.camara-tracker-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+/* Botón de captura estilo cámara de celular: círculo flotando
+   sobre el borde inferior del video, centrado horizontalmente.
+   El círculo interior (::after) se pone amarillo con hover. */
+.btn-shutter {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 4px solid #fff;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    transition: transform .15s ease, background .15s ease;
+    z-index: 2;
+}
+
+.btn-shutter::after {
+    content: "";
+    display: block;
+    width: 52px;
+    height: 52px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: #fff;
+    transition: background .15s ease;
+}
+
+.btn-shutter:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.btn-shutter:hover::after {
+    background: #ffc600;
+}
+
+.btn-shutter:active {
+    transform: translateX(-50%) scale(0.92);
+}
+
 .btn-opcion {
     border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
     background: transparent; color: #fff; padding: 10px 18px; margin: 4px;
