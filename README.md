@@ -1,3 +1,7 @@
+# M&A Barber Shop — Documentación 
+
+https://docs.google.com/document/d/1gGMJGqa8e5gjog0hjpKhgGrWovChEsyA/edit?usp=sharing&ouid=112447727793128479416&rtpof=true&sd=true
+
 # M&A Barber Shop — Guía de instalación
 
 Instrucciones para dejar el proyecto funcionando desde cero en cualquier equipo nuevo (Windows).
