@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-09-2026 a las 21:12:25
+-- Tiempo de generación: 23-09-2026 a las 15:57:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -349,8 +349,8 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (2, 'pbkdf2_sha256$600000$cOmiRYMYpYxwbGXzoqxcHg$BxVF3vH9nwY4PJxNTWbMhNODYw/kxa2C+UgD1uAMsWw=', '2026-06-18 14:09:14.566411', 0, 'ivan@gmail.com', 'Ivancito', 'Cepeda', 'ivan@gmail.com', 0, 1, '2026-06-18 13:04:14.605021'),
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-09-15 21:39:28.286933', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
-(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-09-15 23:00:10.864836', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-09-15 23:00:00.861484', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-09-23 13:56:09.524055', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-09-23 13:49:02.292893', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
 (7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-09-22 18:25:33.968538', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
 (8, 'pbkdf2_sha256$600000$E53eALCUkkcRHOiN6JnwdP$U2ajNUDQIShVRQsqG62Alt7gbSa/CXd3QkNBoBqQ/hI=', '2026-09-22 18:22:42.122536', 0, 'juanesspa76@gmail.com', 'Mapache', 'uwu', 'juanesspa76@gmail.com', 0, 1, '2026-07-28 20:33:53.831652'),
 (9, 'pbkdf2_sha256$600000$fsmNBV20n2xa02hrKtKkoG$Z+KO0IUH/D88sKc3/18HOvRcEhwUtlOykmAFBcTDUQI=', '2026-08-04 23:05:11.582915', 0, 'fenixdespj@gmail.com', 'Fenix', '', 'fenixdespj@gmail.com', 0, 1, '2026-08-04 22:54:59.864405');
@@ -689,7 +689,8 @@ INSERT INTO `dia_habilitado` (`id`, `fecha`, `habilitado`) VALUES
 (196, '2026-10-21', 1),
 (197, '2026-10-22', 1),
 (198, '2026-10-23', 1),
-(199, '2026-10-24', 0);
+(199, '2026-10-24', 0),
+(200, '2026-10-25', 0);
 
 -- --------------------------------------------------------
 
@@ -943,9 +944,9 @@ INSERT INTO `notificacion` (`idnotificacion`, `tipo`, `mensaje`, `leida`, `fecha
 (41, 'reserva_creada', 'Tu cita de Corte Tradicional quedó reservada para el 16/09/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 1, '2026-09-15 20:20:54.734457', 20),
 (42, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Corte Tradicional para el 16/09/2026 a las 08:00.', 1, '2026-09-15 20:20:54.735451', 17),
 (43, 'reserva_creada', 'Tu cita de Corte Tradicional quedó reservada para el 16/09/2026 a las 08:00 con JUAN MANUEL RESTREPO.', 1, '2026-09-15 21:05:05.586967', 20),
-(44, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Corte Tradicional para el 16/09/2026 a las 08:00.', 0, '2026-09-15 21:05:05.587956', 17),
+(44, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Corte Tradicional para el 16/09/2026 a las 08:00.', 1, '2026-09-15 21:05:05.587956', 17),
 (45, 'reserva_creada', 'Tu cita de Perfilado Barba quedó reservada para el 16/09/2026 a las 09:00 con JUAN MANUEL RESTREPO.', 0, '2026-09-15 21:16:50.556390', 16),
-(46, 'nueva_cita', 'JAMES ABELARDO DIAZ URIBE agendó el servicio de Perfilado Barba para el 16/09/2026 a las 09:00.', 0, '2026-09-15 21:16:50.567319', 17),
+(46, 'nueva_cita', 'JAMES ABELARDO DIAZ URIBE agendó el servicio de Perfilado Barba para el 16/09/2026 a las 09:00.', 1, '2026-09-15 21:16:50.567319', 17),
 (47, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Perfilado Barba).', 0, '2026-09-15 21:19:53.433441', 1),
 (48, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Perfilado Barba).', 1, '2026-09-15 21:19:53.434433', 19),
 (49, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Corte Tradicional).', 0, '2026-09-15 21:38:54.343830', 1),
@@ -1055,24 +1056,24 @@ CREATE TABLE `servicio` (
 --
 
 INSERT INTO `servicio` (`idServicio`, `nombreServicio`, `duracion`, `precio`, `tipoServicio`, `imagen`) VALUES
-(1, 'Corte Tradicional', 35, 13.00, 'Individual', 'servicios/corte-tradicional.webp'),
-(2, 'Perfilado Barba', 25, 8.00, 'Individual', 'servicios/perfilado-barba.jpeg'),
-(3, 'Combo', 60, 18.00, 'Paquete', 'servicios/paquete2_Ze45uN7.jpg'),
-(4, 'Facial', 30, 15.00, 'Paquete', 'servicios/servicios-limpieza1_kA5HtA0.jpg'),
-(5, 'Fade', 45, 14.00, 'Individual', 'servicios/fade.jpg'),
-(6, 'Tinte', 60, 25.00, 'Paquete', 'servicios/tinte-cabello.jpg'),
-(7, 'Líneas', 15, 5.00, 'Paquete', 'servicios/diseño-lineas.jpeg'),
-(8, 'Lavado cabello', 10, 5.00, 'Individual', 'servicios/servicios-lavado.avif'),
-(9, 'Cejas', 15, 4.00, 'Individual', 'servicios/cejas.jpg'),
-(10, 'Mascarilla', 20, 10.00, 'Individual', 'servicios/servicios-mascarilla.jpg'),
-(11, 'Corte Clásico + Cejas', 45, 20.00, 'Paquete', 'servicios/cejas_hWSiah3.jpg'),
-(12, 'Perfil Perfecto', 50, 22.00, 'Paquete', 'servicios/paquete2.jpg'),
-(14, 'Corte personalizado', 60, 26.00, 'Paquete', 'servicios/paquete5.jpg'),
-(15, 'Look Completo', 70, 28.00, 'Paquete', 'servicios/paquete5.jpg'),
-(16, 'Combo de limpieza facial', 80, 30.00, 'Paquete', 'servicios/paquete6.jpg'),
-(17, 'Imagen Ejecutiva', 90, 32.00, 'Paquete', 'servicios/paquete4.jpeg'),
-(18, 'Cambio de Imagen', 90, 35.00, 'Paquete', 'servicios/paquete3.jpg'),
-(19, 'Experiencia Premium', 140, 60.00, 'Paquete', 'servicios/masaje-capilar.jpeg');
+(1, 'Corte Tradicional', 35, 22000.00, 'Individual', 'servicios/corte-tradicional.webp'),
+(2, 'Perfilado Barba', 25, 5000.00, 'Individual', 'servicios/perfilado-barba.jpeg'),
+(3, 'Combo', 60, 45000.00, 'Paquete', 'servicios/paquete2_Ze45uN7.jpg'),
+(4, 'Facial', 30, 35000.00, 'Paquete', 'servicios/servicios-limpieza1_kA5HtA0.jpg'),
+(5, 'Fade', 45, 24000.00, 'Individual', 'servicios/fade.jpg'),
+(6, 'Tinte', 60, 100000.00, 'Paquete', 'servicios/tinte-cabello.jpg'),
+(7, 'Líneas', 15, 32000.00, 'Paquete', 'servicios/diseño-lineas.jpeg'),
+(8, 'Lavado cabello', 10, 8000.00, 'Individual', 'servicios/servicios-lavado.avif'),
+(9, 'Cejas', 15, 4000.00, 'Individual', 'servicios/cejas.jpg'),
+(10, 'Mascarilla', 20, 8000.00, 'Individual', 'servicios/servicios-mascarilla.jpg'),
+(11, 'Corte Clásico + Cejas', 45, 27000.00, 'Paquete', 'servicios/cejas_hWSiah3.jpg'),
+(12, 'Perfil Perfecto', 50, 35000.00, 'Paquete', 'servicios/paquete2.jpg'),
+(14, 'Corte personalizado', 60, 30000.00, 'Paquete', 'servicios/paquete5.jpg'),
+(15, 'Look Completo', 70, 65000.00, 'Paquete', 'servicios/paquete5.jpg'),
+(16, 'Combo de limpieza facial', 80, 20000.00, 'Paquete', 'servicios/paquete6.jpg'),
+(17, 'Imagen Ejecutiva', 90, 23000.00, 'Paquete', 'servicios/paquete4.jpeg'),
+(18, 'Cambio de Imagen', 90, 45000.00, 'Paquete', 'servicios/paquete3.jpg'),
+(19, 'Experiencia Premium', 140, 70000.00, 'Paquete', 'servicios/masaje-capilar.jpeg');
 
 -- --------------------------------------------------------
 
@@ -1682,7 +1683,7 @@ ALTER TABLE `configuracion_horario`
 -- AUTO_INCREMENT de la tabla `dia_habilitado`
 --
 ALTER TABLE `dia_habilitado`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=201;
 
 --
 -- AUTO_INCREMENT de la tabla `django_admin_log`
