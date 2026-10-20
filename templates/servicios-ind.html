@@ -51,7 +51,7 @@
             id="card-{{ s.pk }}"
             data-id="{{ s.pk }}" 
             data-nombre="{{ s.nombreservicio|escapejs }}" 
-            data-precio="{{ s.precio }}" 
+            data-precio="{{ s.precio|floatformat:0 }}" 
             data-duracion="{{ s.duracion }}" 
             data-tipo="{{ s.tiposervicio }}">
             

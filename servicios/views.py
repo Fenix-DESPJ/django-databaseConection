@@ -29,6 +29,7 @@ import os
 import uuid
 import tempfile
 from django.conf import settings  # <-- NUEVO: necesario para localizar MEDIA_ROOT
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP  # <-- NUEVO: validación de precios
 
 
 def admin_required(view_func):
@@ -65,6 +66,99 @@ def _eliminar_imagen_servicio(campo_imagen):
             os.remove(ruta_fisica)
         except OSError as e:
             print(f"DEBUG: No se pudo eliminar la imagen anterior del servicio: {e}")
+
+
+# =========================================================================
+# NUEVO: REGLAS DE VALIDACIÓN PARA CREAR / EDITAR SERVICIOS
+# =========================================================================
+# Si cambias estos límites, cámbialos también en el script
+# 'servicios_admin_js.html' (validación del lado del navegador).
+# -------------------------------------------------------------------------
+PRECIO_MIN = Decimal('1000')        # COP
+PRECIO_MAX = Decimal('20000000')    # COP
+DURACION_MIN = 15                   # minutos
+DURACION_MAX = 180                  # minutos
+NOMBRE_MAX = 60                     # longitud de la columna nombreServicio (varchar(60))
+TIPOS_SERVICIO_VALIDOS = ('Individual', 'Paquete')
+
+
+def _formato_cop(valor):
+    """20000000 -> '20.000.000' (formato colombiano con puntos de miles)."""
+    return f"{int(valor):,}".replace(',', '.')
+
+
+def _validar_datos_servicio(nombre, precio, duracion, tipo):
+    """
+    Valida y normaliza los datos de un servicio (usado al crear y al editar).
+
+    Devuelve una tupla (errores, datos):
+      - errores: lista de mensajes claros para mostrar al administrador
+      - datos:   diccionario con los valores ya limpios y tipados
+                 (solo es confiable cuando 'errores' viene vacía)
+
+    Nunca lanza excepciones por datos malformados: así se evita el error 500.
+    """
+    errores = []
+    datos = {}
+
+    # ---- Nombre -------------------------------------------------------
+    nombre = (nombre or '').strip()
+    if not nombre:
+        errores.append("El nombre del servicio es obligatorio.")
+    elif len(nombre) > NOMBRE_MAX:
+        errores.append(f"El nombre no puede superar los {NOMBRE_MAX} caracteres.")
+    datos['nombreservicio'] = nombre
+
+    # ---- Precio (SRV-02, SRV-03 y límite máximo) ----------------------
+    precio_txt = (precio or '').strip().replace(',', '.')
+    precio_dec = None
+    try:
+        precio_dec = Decimal(precio_txt)
+        if not precio_dec.is_finite():      # rechaza 'NaN', 'Infinity', etc.
+            raise InvalidOperation
+    except (InvalidOperation, ValueError):
+        errores.append("El precio es obligatorio y debe ser un número válido.")
+        precio_dec = None
+
+    if precio_dec is not None:
+        if precio_dec < PRECIO_MIN or precio_dec > PRECIO_MAX:
+            errores.append(
+                f"El precio debe estar entre ${_formato_cop(PRECIO_MIN)} y "
+                f"${_formato_cop(PRECIO_MAX)} COP."
+            )
+        else:
+            # La columna es decimal(10,2): dejamos máximo 2 decimales
+            datos['precio'] = precio_dec.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+    # ---- Duración (SRV-05 y SRV-07) -----------------------------------
+    duracion_txt = (duracion or '').strip()
+    duracion_int = None
+    try:
+        duracion_int = int(duracion_txt)
+    except ValueError:
+        errores.append("La duración es obligatoria y debe ser un número entero de minutos.")
+
+    if duracion_int is not None:
+        if duracion_int < DURACION_MIN or duracion_int > DURACION_MAX:
+            errores.append(
+                f"La duración debe estar entre {DURACION_MIN} y {DURACION_MAX} minutos."
+            )
+        else:
+            datos['duracion'] = duracion_int
+
+    # ---- Tipo ---------------------------------------------------------
+    if tipo not in TIPOS_SERVICIO_VALIDOS:
+        errores.append("Selecciona un tipo de servicio válido (Individual o Paquete).")
+    datos['tiposervicio'] = tipo
+
+    return errores, datos
+
+
+def _redirigir_lista_servicios(tipo):
+    """Devuelve el redirect a la lista que corresponde según el tipo de servicio."""
+    if tipo == 'Paquete':
+        return redirect('servicios_paq_1')
+    return redirect('servicios_ind')
 
 
 def index(request):
@@ -175,20 +269,26 @@ def crear_servicio(request):
         # 2. Capturamos el archivo (IMPORTANTE: request.FILES)
         imagen = request.FILES.get('imagen')
         
+        # --- NUEVO: validamos ANTES de tocar la base de datos ---
+        errores, datos = _validar_datos_servicio(nombre, precio, duracion, tipo)
+        if errores:
+            for error in errores:
+                messages.error(request, error)
+            # Volvemos a la lista desde la que se intentó crear (por defecto, individuales)
+            return _redirigir_lista_servicios(tipo)
+        
         # 3. Guardado (Django gestiona la ruta si el campo es un ImageField)
         Servicio.objects.create(
-            nombreservicio=nombre,
-            precio=precio,
-            duracion=duracion,
-            tiposervicio=tipo,
+            nombreservicio=datos['nombreservicio'],
+            precio=datos['precio'],
+            duracion=datos['duracion'],
+            tiposervicio=datos['tiposervicio'],
             # Si 'imagen' es None, Django usará el valor 'default.jpg' definido en tu modelo
             imagen=imagen if imagen else 'default.jpg' 
         )
         
         # --- NUEVO: redirección según el tipo de servicio recién creado ---
-        if tipo == 'Paquete':
-            return redirect('servicios_paq_1')
-        return redirect('servicios_ind')
+        return _redirigir_lista_servicios(datos['tiposervicio'])
         
     return render(request, 'crear_servicio.html')
 
@@ -203,11 +303,24 @@ def editar_servicio(request, pk):
     servicio = get_object_or_404(Servicio, pk=pk)
 
     if request.method == 'POST':
-        servicio.nombreservicio = request.POST.get('nombreservicio')
-        servicio.precio = request.POST.get('precio')
-        servicio.duracion = request.POST.get('duracion')
+        nombre = request.POST.get('nombreservicio')
+        precio = request.POST.get('precio')
+        duracion = request.POST.get('duracion')
         nuevo_tipo = request.POST.get('tiposervicio')
-        servicio.tiposervicio = nuevo_tipo
+
+        # --- NUEVO: validamos ANTES de modificar el objeto, así un dato
+        # inválido nunca deja el servicio a medio cambiar ---
+        errores, datos = _validar_datos_servicio(nombre, precio, duracion, nuevo_tipo)
+        if errores:
+            for error in errores:
+                messages.error(request, error)
+            # No se guardó nada: volvemos a la lista donde está el servicio hoy
+            return _redirigir_lista_servicios(servicio.tiposervicio)
+
+        servicio.nombreservicio = datos['nombreservicio']
+        servicio.precio = datos['precio']
+        servicio.duracion = datos['duracion']
+        servicio.tiposervicio = datos['tiposervicio']
 
         if request.FILES.get('imagen'):
             # --- NUEVO: borramos la foto física anterior antes de asignar la nueva ---
@@ -217,9 +330,7 @@ def editar_servicio(request, pk):
         servicio.save()
 
         # --- NUEVO: redirección según el tipo de servicio YA actualizado ---
-        if nuevo_tipo == 'Paquete':
-            return redirect('servicios_paq_1')
-        return redirect('servicios_ind')
+        return _redirigir_lista_servicios(datos['tiposervicio'])
 
     # Si alguien entra por GET a la URL de editar, redirígelo a la lista
     return redirect('servicios_ind')

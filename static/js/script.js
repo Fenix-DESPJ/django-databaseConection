@@ -596,30 +596,193 @@ function desactivarModos() {
 
 let bsModalInstance = null;
 
+/* ---------- Límites de negocio (deben coincidir con views.py) ---------- */
+const SERVICIO_LIMITES = {
+    precioMin: 1000,        // COP
+    precioMax: 20000000,    // COP
+    precioPaso: 1000,       // COP: las flechas del input suben/bajan de 1.000 en 1.000
+    duracionMin: 15,        // minutos
+    duracionMax: 180,       // minutos
+    nombreMax: 60
+};
+
+function formatoCOP(n) {
+    return Number(n).toLocaleString('es-CO');
+}
+
+/* Convierte "45000", "45000.00", "45000,00" o "45.000,00" en el número 45000 */
+function normalizarPrecio(valor) {
+    let s = String(valor ?? '').trim();
+    if (!s) return '';
+    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? String(Math.round(n)) : '';
+}
+
+/* Caja de errores dentro del modal (se crea sola la primera vez) */
+function obtenerCajaErroresServicio(form) {
+    let caja = document.getElementById('erroresServicio');
+    if (!caja) {
+        caja = document.createElement('div');
+        caja.id = 'erroresServicio';
+        caja.className = 'alert alert-danger py-2 px-3 small d-none';
+        caja.setAttribute('role', 'alert');
+        form.querySelector('.modal-body').prepend(caja);
+    }
+    return caja;
+}
+
+function limpiarErroresServicio(form) {
+    const caja = obtenerCajaErroresServicio(form);
+    caja.classList.add('d-none');
+    caja.innerHTML = '';
+    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+}
+
+function mostrarErroresServicio(form, errores) {
+    const caja = obtenerCajaErroresServicio(form);
+    caja.innerHTML = errores.map(e => `<div>${e.mensaje}</div>`).join('');
+    caja.classList.remove('d-none');
+    errores.forEach(e => e.input && e.input.classList.add('is-invalid'));
+    if (errores[0].input) errores[0].input.focus();
+}
+
+/* Devuelve la lista de errores (vacía = formulario válido) */
+function validarFormServicio(form) {
+    const L = SERVICIO_LIMITES;
+    const errores = [];
+
+    const iNombre = form.querySelector('[name="nombreservicio"]');
+    const iPrecio = form.querySelector('[name="precio"]');
+    const iDuracion = form.querySelector('[name="duracion"]');
+    const iTipo = form.querySelector('[name="tiposervicio"]');
+
+    // Nombre
+    const nombre = iNombre.value.trim();
+    if (!nombre) {
+        errores.push({ input: iNombre, mensaje: 'El nombre es obligatorio.' });
+    } else if (nombre.length > L.nombreMax) {
+        errores.push({ input: iNombre, mensaje: `El nombre no puede superar los ${L.nombreMax} caracteres.` });
+    }
+
+    // Precio (SRV-02 y SRV-03 + máximo)
+    if (iPrecio.value === '' || iPrecio.validity.badInput) {
+        errores.push({ input: iPrecio, mensaje: 'El precio es obligatorio y debe ser un número válido.' });
+    } else {
+        const precio = Number(iPrecio.value);
+        if (!Number.isInteger(precio)) {
+            errores.push({ input: iPrecio, mensaje: 'El precio debe ser un valor entero en pesos (sin decimales).' });
+        } else if (precio < L.precioMin || precio > L.precioMax) {
+            errores.push({
+                input: iPrecio,
+                mensaje: `El precio debe estar entre $${formatoCOP(L.precioMin)} y $${formatoCOP(L.precioMax)} COP.`
+            });
+        }
+    }
+
+    // Duración (SRV-05 y SRV-07)
+    if (iDuracion.value === '' || iDuracion.validity.badInput) {
+        errores.push({ input: iDuracion, mensaje: 'La duración es obligatoria y debe ser un número entero de minutos.' });
+    } else {
+        const dur = Number(iDuracion.value);
+        if (!Number.isInteger(dur)) {
+            errores.push({ input: iDuracion, mensaje: 'La duración debe ser un número entero de minutos.' });
+        } else if (dur < L.duracionMin || dur > L.duracionMax) {
+            errores.push({
+                input: iDuracion,
+                mensaje: `La duración debe estar entre ${L.duracionMin} y ${L.duracionMax} minutos.`
+            });
+        }
+    }
+
+    // Tipo
+    if (!['Individual', 'Paquete'].includes(iTipo.value)) {
+        errores.push({ input: iTipo, mensaje: 'Selecciona un tipo de servicio válido.' });
+    }
+
+    return errores;
+}
+
+/* Atributos HTML + bloqueo de teclas inválidas + validación al enviar */
+function configurarFormularioServicio() {
+    const form = document.getElementById('formServicio');
+    if (!form || form.dataset.configurado === '1') return;
+    form.dataset.configurado = '1';
+
+    const L = SERVICIO_LIMITES;
+    const iNombre = form.querySelector('[name="nombreservicio"]');
+    const iPrecio = form.querySelector('[name="precio"]');
+    const iDuracion = form.querySelector('[name="duracion"]');
+
+    iNombre.maxLength = L.nombreMax;
+    Object.assign(iPrecio, { min: L.precioMin, max: L.precioMax, step: L.precioPaso });
+    Object.assign(iDuracion, { min: L.duracionMin, max: L.duracionMax, step: 1 });
+
+    // Desactivamos los globos nativos: mostramos nuestros mensajes en español
+    form.noValidate = true;
+
+    // No permitir escribir signos, notación científica ni decimales
+    [iPrecio, iDuracion].forEach(inp => {
+        inp.addEventListener('keydown', e => {
+            if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) e.preventDefault();
+        });
+        inp.addEventListener('input', () => {
+            inp.classList.remove('is-invalid');
+        });
+    });
+
+    form.addEventListener('submit', function (e) {
+        limpiarErroresServicio(form);
+        const errores = validarFormServicio(form);
+        if (errores.length) {
+            e.preventDefault();
+            mostrarErroresServicio(form, errores);
+        }
+    });
+
+    // Al cerrar el modal se limpian los errores
+    document.getElementById('modalServicio').addEventListener('hidden.bs.modal', () => limpiarErroresServicio(form));
+}
+
 function abrirModalEditar(id, nombre, precio, duracion, tipo) {
     const modalElement = document.getElementById('modalServicio');
     const form = document.getElementById('formServicio');
     const titulo = document.getElementById('modalServicioLabel');
 
+    configurarFormularioServicio();
+    form.reset();                     // parte de un formulario limpio y lo llena enseguida
+    limpiarErroresServicio(form);
+
     titulo.innerText = "Editar Servicio: " + nombre;
     const urlBase = document.getElementById('url-data').getAttribute('data-editar-base');
     form.action = urlBase.replace('0', id);
 
-    const campos = {
-        'nombreservicio': nombre,
-        'precio': precio,
-        'duracion': duracion,
-        'tiposervicio': tipo
-    };
+    // Los inputs se muestran LLENOS con los datos actuales del servicio
+    form.querySelector('[name="nombreservicio"]').value = nombre;
+    form.querySelector('[name="precio"]').value = normalizarPrecio(precio);
+    form.querySelector('[name="duracion"]').value = parseInt(duracion, 10) || '';
+    const selTipo = form.querySelector('[name="tiposervicio"]');
+    if (selTipo) selTipo.value = tipo;
 
-    Object.keys(campos).forEach(key => {
-        const input = form.querySelector(`[name="${key}"]`);
-        if (input) input.value = campos[key];
-    });
+    // La imagen no se puede precargar en un <input type="file">: avisamos que se conserva
+    marcarAyudaImagen(form, true);
 
     const bsModal = bootstrap.Modal.getOrCreateInstance(modalElement);
     document.body.appendChild(modalElement);
     bsModal.show();
+}
+
+function marcarAyudaImagen(form, editando) {
+    const inputImg = form.querySelector('[name="imagen"]');
+    if (!inputImg) return;
+    let ayuda = document.getElementById('ayudaImagenServicio');
+    if (!ayuda) {
+        ayuda = document.createElement('div');
+        ayuda.id = 'ayudaImagenServicio';
+        ayuda.className = 'form-text';
+        inputImg.insertAdjacentElement('afterend', ayuda);
+    }
+    ayuda.textContent = editando ? 'Déjalo vacío para conservar la imagen actual.' : '';
 }
 
 function prepararModalCrear() {
@@ -627,9 +790,13 @@ function prepararModalCrear() {
     const form = document.getElementById('formServicio');
     const titulo = document.getElementById('modalServicioLabel');
 
-    titulo.innerText = "Nuevo Servicio";
+    configurarFormularioServicio();
+    titulo.innerText = form.querySelector('[type="submit"]').innerText.includes('Paquete')
+        ? "Nuevo Paquete" : "Nuevo Servicio";
     form.action = document.getElementById('url-data').getAttribute('data-crear');
     form.reset();
+    limpiarErroresServicio(form);
+    marcarAyudaImagen(form, false);
 
     document.body.appendChild(modalElement);
 
@@ -637,21 +804,7 @@ function prepararModalCrear() {
     bsModal.show();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.card-precio').forEach(card => {
-        card.addEventListener('click', function() {
-            if (modoActual === 'editar') {
-                const id = this.getAttribute('data-id');
-                const nombre = this.getAttribute('data-nombre');
-                const precio = this.getAttribute('data-precio');
-                const duracion = this.getAttribute('data-duracion');
-                const tipo = this.getAttribute('data-tipo');
-
-                abrirModalEditar(id, nombre, precio, duracion, tipo);
-            }
-        });
-    });
-});
+document.addEventListener('DOMContentLoaded', configurarFormularioServicio);
 
 
 /* ============================================================================
