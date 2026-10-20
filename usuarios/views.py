@@ -444,7 +444,6 @@ def cerrar_sesion(request):
 def registrarse(request):
     
     if request.GET.get('origen') == 'analisis_facial':
-        
         request.session['origen_analisis_facial'] = True
     
     if request.method == 'POST':
@@ -454,9 +453,19 @@ def registrarse(request):
             cedula = request.POST.get('cedula')
             correo = request.POST.get('correo')
             password = request.POST.get('password')
+            confirmar_password = request.POST.get('confirmar_password', '')
             telefono = request.POST.get('telefono')
             fecha = request.POST.get('fecha')
             
+            # --- Validación: longitud de la contraseña (8 a 32) ---
+            if not password or len(password) < 8 or len(password) > 32:
+                messages.error(request, "La contraseña debe tener entre 8 y 32 caracteres.")
+                return render(request, 'registrarse.html')
+
+            if password != confirmar_password:
+                messages.error(request, "Las contraseñas no coinciden.")
+                return render(request, 'registrarse.html')
+
             # --- Validación: el correo no debe estar ya registrado ---
             if Usuario.objects.filter(correo__iexact=correo).exists() or \
                 User.objects.filter(email__iexact=correo).exists():

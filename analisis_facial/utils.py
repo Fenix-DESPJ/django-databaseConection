@@ -50,6 +50,11 @@ class RostroNoDetectadoError(Exception):
     pass
 
 
+class MultiplesRostrosError(RostroNoDetectadoError):
+    """Se lanza cuando se detecta más de un rostro en la imagen."""
+    pass
+
+
 class FuncionNoDisponibleError(Exception):
     """
     Se lanza si, por algún motivo, se intenta ejecutar analizar_forma_rostro
@@ -80,7 +85,7 @@ def analizar_forma_rostro(ruta_imagen: str) -> dict:
 
     with mp_face_mesh.FaceMesh(
         static_image_mode=True,
-        max_num_faces=1,
+        max_num_faces=5,
         refine_landmarks=True,
         min_detection_confidence=0.5
     ) as face_mesh:
@@ -89,6 +94,12 @@ def analizar_forma_rostro(ruta_imagen: str) -> dict:
     if not resultados.multi_face_landmarks:
         raise RostroNoDetectadoError(
             "No se detectó ningún rostro en la imagen. Intenta con mejor iluminación y de frente."
+        )
+
+    if len(resultados.multi_face_landmarks) > 1:
+        raise MultiplesRostrosError(
+            "Se detectaron varios rostros en la imagen. "
+            "Por favor sube una foto donde aparezca una sola persona."
         )
 
     landmarks = resultados.multi_face_landmarks[0].landmark
