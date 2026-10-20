@@ -105,16 +105,16 @@
                         <span class="brand-title">
                             {% if request.session.sesion_iniciada %}
                                 {% if request.session.usuario_rol_id == 1 or request.session.usuario_rol_id == '1' %}
-                                    <span class="wave-text">M&A</span> <span class="text-white wave-text">Admin</span>
+                                    <span class="wave-text">{{ contenido.nombre_barberia|default:"M&A" }}</span> <span class="text-white wave-text">Admin</span>
                                 {% elif request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}
-                                    <span class="wave-text">M&A</span> <span class="text-white wave-text">Barbero</span>
+                                    <span class="wave-text">{{ contenido.nombre_barberia|default:"M&A" }}</span> <span class="text-white wave-text">Barbero</span>
                                 {% elif request.session.usuario_rol_id == 3 or request.session.usuario_rol_id == '3' %}
-                                    <span class="wave-text">M&A</span> <span class="text-white wave-text">Cliente</span>
+                                    <span class="wave-text">{{ contenido.nombre_barberia|default:"M&A" }}</span> <span class="text-white wave-text">Cliente</span>
                                 {% else %}
-                                    <span>M&A</span> Barber Shop
+                                    <span>{{ contenido.nombre_barberia|default:"M&A Barber Shop" }}</span>
                                 {% endif %}
                             {% else %}
-                                <span>M&A</span> Barber Shop
+                                <span>{{ contenido.nombre_barberia|default:"M&A Barber Shop" }}</span>
                             {% endif %}
                         </span>
                     <small class="brand-role white-role" id="brand-role">
@@ -242,7 +242,7 @@
                 <div class="col-md-4 text-center text-md-start">
                     <a href="{% if request.session.usuario_rol_id == 2 or request.session.usuario_rol_id == '2' %}{% url 'panel_barbero' %}{% else %}{% url 'home' %}{% endif %}" 
                     class="footer-brand text-gold fs-3 text-decoration-none">
-                        M&A
+                        {{ contenido.nombre_barberia|default:"M&A" }}
                     </a>
                 </div>
 
@@ -285,7 +285,7 @@
                 </div>
 
                 <div class="col-md-4 text-center text-md-end text-white small">
-                    &copy; 2026 M&A Barber Shop.
+                    &copy; 2026 {{ contenido.nombre_barberia|default:"M&A Barber Shop" }}.
                 </div>
             </div>
         </div>
@@ -310,11 +310,7 @@
         </div>
     </div>
 
-    <!-- Modal de aviso de contraseña provisional (se genera al registrarse/entrar
-         con Google por primera vez). Se dispara solo por JS al final de este
-         archivo, únicamente si Django dejó un message con la etiqueta
-         'password-provisional'. data-bs-backdrop="static" + data-bs-keyboard="false"
-         evitan que se cierre solo: el usuario debe usar la X o "Aceptar". -->
+    <!-- Modal de aviso de contraseña provisional -->
     {% for message in messages %}
         {% if 'password-provisional' in message.tags %}
         <div class="modal fade" id="passwordProvisionalModal" tabindex="-1" aria-labelledby="passwordProvisionalModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -338,11 +334,7 @@
         {% endif %}
     {% endfor %}
 
-    <!-- Modal de logout: cuando el usuario inició sesión con Google, este es
-         el único modal de cierre de sesión (id="logoutModal"). Ya NO cierra
-         la cuenta de Google en el navegador: solo avisa que la verifique
-         manualmente y ofrece un único botón de cierre de sesión normal. El
-         botón (id="btnCerrarSesionModal") lo maneja script.js. -->
+    <!-- Modal de logout -->
     {% if tiene_cuenta_google %}
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -352,11 +344,9 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-2">Tu sesión en M&amp;A Barber Shop está a punto de cerrarse.</p>
+                    <p class="mb-2">Tu sesión está a punto de cerrarse.</p>
                     <p class="text-white-50 small mb-0">
-                        Por favor verifica que tu cuenta de Gmail esté cerrada en este navegador,
-                        ya que iniciaste sesión con Google y esta acción no cierra esa cuenta
-                        automáticamente (solo cierra tu sesión en este sitio).
+                        Por favor verifica que tu cuenta de Gmail esté cerrada en este navegador.
                     </p>
                 </div>
                 <div class="modal-footer border-secondary">
