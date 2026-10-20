@@ -228,6 +228,9 @@ class ContenidoIndex(models.Model):
     Modelo tipo 'singleton': solo debe existir UNA fila. Guarda todo el
     contenido editable de la portada (hero, marca, contacto, CTA).
     """
+    # --- IDENTIDAD DE MARCA ---
+    nombre_barberia = models.CharField(max_length=100, default="M&A Barber Shop")
+    
     # --- HERO ---
     hero_etiqueta = models.CharField(max_length=60, default="Barbería moderna")
     hero_titulo = models.CharField(max_length=150, default="Estilo, precisión y confianza en cada corte")

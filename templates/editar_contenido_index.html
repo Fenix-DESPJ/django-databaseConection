@@ -28,7 +28,27 @@
     <form method="post" enctype="multipart/form-data" novalidate>
       {% csrf_token %}
 
+      <!-- ============================= IDENTIDAD DEL NEGOCIO ============================= -->
+      <div class="editar-card mb-4">
+        <div class="editar-card-header">
+          <i class="bi bi-shop"></i>
+          <div>
+            <h5>Identidad del Negocio</h5>
+            <span>Nombre principal de la barbería</span>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-12">
+            <label class="form-label-custom">Nombre de la barbería</label>
+            <input type="text" class="form-control form-control-custom" name="nombre_barberia"
+                   value="{{ contenido.nombre_barberia }}" maxlength="100" required>
+          </div>
+        </div>
+      </div>
+
       <!-- ============================= HERO ============================= -->
+
       <div class="editar-card mb-4">
         <div class="editar-card-header">
           <i class="bi bi-flag-fill"></i>
@@ -187,19 +207,19 @@
 
           <div class="col-md-6">
             <label class="form-label-custom">Teléfono fijo</label>
-            <input type="text" class="form-control form-control-custom" name="telefono_fijo"
-                   value="{{ contenido.telefono_fijo }}" maxlength="30" required>
+            <input type="tel" class="form-control form-control-custom" name="telefono_fijo"
+                   value="{{ contenido.telefono_fijo }}" maxlength="15" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">WhatsApp</label>
-            <input type="text" class="form-control form-control-custom" name="whatsapp"
-                   value="{{ contenido.whatsapp }}" maxlength="30" required>
+            <input type="tel" class="form-control form-control-custom" name="whatsapp"
+                   value="{{ contenido.whatsapp }}" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
           </div>
 
           <div class="col-12">
             <label class="form-label-custom">Dirección</label>
             <input type="text" class="form-control form-control-custom" name="direccion"
-                   value="{{ contenido.direccion }}" maxlength="200" required>
+                   value="{{ contenido.direccion }}" maxlength="40" required>
           </div>
 
           <div class="col-12">

@@ -2295,3 +2295,45 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+//Horarios de atención de agenda
+document.addEventListener("DOMContentLoaded", function () {
+    const inputApertura = document.querySelector("input[name='hora_apertura']");
+    const inputCierre = document.querySelector("input[name='hora_cierre']");
+
+    if (inputApertura && inputCierre) {
+        function validarHorarios() {
+            const apertura = inputApertura.value;
+            const cierre = inputCierre.value;
+
+            if (apertura) {
+                // Bloquea en el selector nativo las horas anteriores a la apertura
+                inputCierre.min = apertura;
+            }
+
+            if (apertura && cierre) {
+                if (cierre <= apertura) {
+                    inputCierre.setCustomValidity("La hora de cierre debe ser posterior a la hora de apertura.");
+                } else {
+                    inputCierre.setCustomValidity(""); // Limpia el error si ya es correcto
+                }
+            }
+        }
+
+        // Ejecutar validación al cambiar las horas
+        inputApertura.addEventListener("change", validarHorarios);
+        inputCierre.addEventListener("change", validarHorarios);
+
+        // Validar también al enviar el formulario por si acaso
+        const form = inputApertura.closest("form");
+        if (form) {
+            form.addEventListener("submit", function (e) {
+                validarHorarios();
+                if (inputCierre.value <= inputApertura.value) {
+                    e.preventDefault(); // Detiene el envío si es inválido
+                    inputCierre.reportValidity(); // Muestra el mensaje nativo
+                }
+            });
+        }
+    }
+});

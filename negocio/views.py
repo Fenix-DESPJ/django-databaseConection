@@ -41,8 +41,19 @@ def gestionar_agenda_admin(request):
         accion = request.POST.get('accion')
 
         if accion == 'guardar_horario':
-            config.hora_apertura = request.POST.get('hora_apertura')
-            config.hora_cierre = request.POST.get('hora_cierre')
+            hora_apertura = request.POST.get('hora_apertura')
+            hora_cierre = request.POST.get('hora_cierre')
+
+            # Validar que la hora de cierre sea estrictamente mayor a la hora de apertura
+            if hora_apertura and hora_cierre and hora_cierre <= hora_apertura:
+                messages.error(
+                    request,
+                    "La hora de cierre debe ser estrictamente posterior a la hora de apertura."
+                )
+                return redirect(f"{request.path}?anio={anio}&mes={mes}&fecha_gestion={fecha_gestion_str}")
+
+            config.hora_apertura = hora_apertura
+            config.hora_cierre = hora_cierre
 
             # Sanitizar y validar intervalo_minutos (mínimo 10, máximo 60)
             intervalo_input = int(request.POST.get('intervalo_minutos', 30))

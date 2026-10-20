@@ -567,20 +567,16 @@ def home(request):
 
 @login_required
 def editar_contenido_index(request):
-    """
-    Permite al administrador editar el contenido del index (hero, marca,
-    horarios, contacto y CTA) desde un formulario. Al guardar, redirige
-    de vuelta al home para ver los cambios reflejados.
-    """
     usuario_rol = request.session.get('usuario_rol_id')
     if usuario_rol != 1:
         messages.error(request, "Acceso denegado. No tienes permisos de administrador.")
         return redirect('home')
 
-    contenido = ContenidoIndex.cargar()  # crea con defaults si no existe aún
+    contenido = ContenidoIndex.cargar()
 
     if request.method == 'POST':
         campos_requeridos = {
+            'nombre_barberia': 'Nombre de la barbería',
             'hero_etiqueta': 'Etiqueta pequeña',
             'hero_titulo': 'Título principal',
             'hero_descripcion': 'Descripción',
@@ -616,8 +612,6 @@ def editar_contenido_index(request):
         for campo, valor in valores.items():
             setattr(contenido, campo, valor)
 
-        # Las imágenes solo se reemplazan si el admin sube un archivo nuevo;
-        # si no se sube nada, se conserva la imagen que ya estaba guardada.
         for campo in ('hero_imagen_1', 'hero_imagen_2', 'hero_imagen_3', 'marca_imagen'):
             archivo_nuevo = request.FILES.get(campo)
             if archivo_nuevo:
@@ -627,7 +621,6 @@ def editar_contenido_index(request):
         messages.success(request, "El contenido del inicio se actualizó correctamente.")
         return redirect('home')
 
-    # GET: simplemente muestra el formulario con los valores actuales
     return render(request, 'editar_contenido_index.html', {'contenido': contenido})
     
 # =========================================================================

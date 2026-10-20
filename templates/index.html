@@ -24,9 +24,10 @@
       <div class="col-lg-6">
         <div class="contenedor-principal-visual">
           <div class="carrusel-container">
-            <img src="{% if contenido.hero_imagen_1 %}{{ contenido.hero_imagen_1.url }}{% else %}{% static 'img/imagenA.jpg' %}{% endif %}" class="active" alt="Barbería M&A 1">
-            <img src="{% if contenido.hero_imagen_2 %}{{ contenido.hero_imagen_2.url }}{% else %}{% static 'img/imagenB.jpg' %}{% endif %}" alt="Barbería M&A 2">
-            <img src="{% if contenido.hero_imagen_3 %}{{ contenido.hero_imagen_3.url }}{% else %}{% static 'img/barbero1.jpg' %}{% endif %}" alt="Barbería M&A 3">
+            <!-- AQUÍ SE CAMBIÓ EL TEXTO DURO POR LA VARIABLE -->
+            <img src="{% if contenido.hero_imagen_1 %}{{ contenido.hero_imagen_1.url }}{% else %}{% static 'img/imagenA.jpg' %}{% endif %}" class="active" alt="{{ contenido.nombre_barberia }} 1">
+            <img src="{% if contenido.hero_imagen_2 %}{{ contenido.hero_imagen_2.url }}{% else %}{% static 'img/imagenB.jpg' %}{% endif %}" alt="{{ contenido.nombre_barberia }} 2">
+            <img src="{% if contenido.hero_imagen_3 %}{{ contenido.hero_imagen_3.url }}{% else %}{% static 'img/barbero1.jpg' %}{% endif %}" alt="{{ contenido.nombre_barberia }} 3">
           </div>
           <div class="tarjeta-flotante">
             <i class="bi bi-scissors"></i>
