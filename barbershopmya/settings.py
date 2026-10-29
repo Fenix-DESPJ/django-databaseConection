@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'servicios',
     'reservas',
     'analisis_facial',   # NUEVO — feature de IA aislada (ver README_PASOS.md)
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
