@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 22-10-2026 a las 14:53:41
+-- Servidor: localhost
+-- Tiempo de generación: 29-10-2026 a las 21:47:37
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.1.25
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -133,7 +133,11 @@ INSERT INTO `agenda` (`idAgenda`, `idBarberoFk`, `fecha`, `horaInicio`) VALUES
 (36, 11, '2026-08-20', '08:00:00'),
 (39, 11, '2026-09-16', '08:00:00'),
 (40, 11, '2026-09-16', '09:00:00'),
-(41, 20, '2026-10-26', '14:00:00');
+(41, 11, '2026-10-22', '14:00:00'),
+(42, 1, '2026-10-30', '14:00:00'),
+(43, 14, '2026-10-27', '16:00:00'),
+(47, 1, '2026-10-29', '16:00:00'),
+(48, 11, '2026-10-29', '16:10:00');
 
 -- --------------------------------------------------------
 
@@ -319,7 +323,15 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (141, 'Can add social application token', 36, 'add_socialtoken'),
 (142, 'Can change social application token', 36, 'change_socialtoken'),
 (143, 'Can delete social application token', 36, 'delete_socialtoken'),
-(144, 'Can view social application token', 36, 'view_socialtoken');
+(144, 'Can view social application token', 36, 'view_socialtoken'),
+(145, 'Can add django job', 37, 'add_djangojob'),
+(146, 'Can change django job', 37, 'change_djangojob'),
+(147, 'Can delete django job', 37, 'delete_djangojob'),
+(148, 'Can view django job', 37, 'view_djangojob'),
+(149, 'Can add django job execution', 38, 'add_djangojobexecution'),
+(150, 'Can change django job execution', 38, 'change_djangojobexecution'),
+(151, 'Can delete django job execution', 38, 'delete_djangojobexecution'),
+(152, 'Can view django job execution', 38, 'view_djangojobexecution');
 
 -- --------------------------------------------------------
 
@@ -350,12 +362,15 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (2, 'pbkdf2_sha256$600000$cOmiRYMYpYxwbGXzoqxcHg$BxVF3vH9nwY4PJxNTWbMhNODYw/kxa2C+UgD1uAMsWw=', '2026-06-18 14:09:14.566411', 0, 'ivan@gmail.com', 'Ivancito', 'Cepeda', 'ivan@gmail.com', 0, 1, '2026-06-18 13:04:14.605021'),
 (3, 'pbkdf2_sha256$600000$gJsykzVg87JeL6L7tAxT4p$/yO+vPpJNkbo0ViziEwRZGkHWqbAW5j+8nKGh+SqMmU=', '2026-06-18 13:12:29.381278', 1, 'jimena', '', '', 'jimena@gmail.com', 1, 1, '2026-06-18 13:12:07.378956'),
 (4, 'pbkdf2_sha256$600000$HQyAPOsaeV4ROmnxySJedH$ZIhfWy/uWH5wQuBlx0fMsj8PE3yqJ+NTwF+IFlyhNLI=', '2026-09-15 21:39:28.286933', 0, 'derecha@gmail.com', 'James Abelardo', 'Diaz Uribe', 'derecha@gmail.com', 0, 1, '2026-06-18 15:05:47.242567'),
-(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-10-22 12:20:28.680965', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
-(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-10-22 12:32:07.373560', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
-(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-10-22 12:37:42.553327', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
+(5, 'pbkdf2_sha256$600000$m6HPb4HxtCJuGyFL53Zkio$ZKD43nyF1vSI5De/JhT+prnMur1yLWocqvDYXQ3lDDU=', '2026-10-20 15:57:42.221541', 0, 'restrepo123@gmail.com', 'Juan Manuel', 'Restrepo', 'restrepo123@gmail.com', 0, 1, '2026-06-22 14:05:23.921634'),
+(6, 'pbkdf2_sha256$600000$82sfzCGHimPQKppeCsm30C$eWVhhE4604zJXJhoX0I55EplXFtsEdR8EEh9ZsMVUYI=', '2026-10-29 19:18:19.338733', 0, 'dani@gmail.com', 'dani', 'jordiwilde', 'dani@gmail.com', 0, 1, '2026-06-23 21:06:43.304259'),
+(7, 'pbkdf2_sha256$600000$bHYobMHyjKR6Z942ya8elC$xF5a5TWtJQbJzNjXJJU6ahMARJC9sSavvzeU4vs6Ess=', '2026-10-22 03:29:53.347270', 0, 'cliente@gmail.com', 'cliente de prueba', 'uwu', 'cliente@gmail.com', 0, 1, '2026-06-24 20:17:49.165423'),
 (8, 'pbkdf2_sha256$600000$E53eALCUkkcRHOiN6JnwdP$U2ajNUDQIShVRQsqG62Alt7gbSa/CXd3QkNBoBqQ/hI=', '2026-09-22 18:22:42.122536', 0, 'juanesspa76@gmail.com', 'Mapache', 'uwu', 'juanesspa76@gmail.com', 0, 1, '2026-07-28 20:33:53.831652'),
 (9, 'pbkdf2_sha256$600000$fsmNBV20n2xa02hrKtKkoG$Z+KO0IUH/D88sKc3/18HOvRcEhwUtlOykmAFBcTDUQI=', '2026-08-04 23:05:11.582915', 0, 'fenixdespj@gmail.com', 'Fenix', '', 'fenixdespj@gmail.com', 0, 1, '2026-08-04 22:54:59.864405'),
-(10, 'pbkdf2_sha256$600000$TIl44s6wPSBxRsEDor5IwX$hhZSJo5njSplH2ZC3nr2jhXccb+UwrjzRS6qg4VU598=', '2026-10-22 12:37:00.931843', 0, 'petrosky@gmail.com', 'Petrosky', 'Urrego', 'petrosky@gmail.com', 0, 1, '2026-10-22 12:30:32.212923');
+(10, 'pbkdf2_sha256$600000$SHpwlISezRff3KykVLlQRY$cFRivKkjktnh8iyc5iS+QW47gCzbHzPJOHJH5oPOq48=', '2026-10-22 03:26:08.971688', 0, 'danijorigua@gmail.com', 'Dani jorigua', '', 'danijorigua@gmail.com', 0, 1, '2026-10-22 03:26:08.769679'),
+(11, 'pbkdf2_sha256$600000$UYMLbpI2qWpoIpHtEXxc0t$g4EXFc5zFaUVAbsGBp7dg+qHWefCAXkbHZxxiEldzjg=', '2026-10-22 03:30:08.962759', 0, 'danidiaz2402@gmail.com', 'Daniel Díaz', '', 'danidiaz2402@gmail.com', 0, 1, '2026-10-22 03:30:08.763975'),
+(12, 'pbkdf2_sha256$600000$rRzUr4COVFnNf4ophDWoD8$j5w690CcNrx7t8BInFoXEHfYtHNH8n+028A+Yg0qMUU=', '2026-10-29 19:20:20.872729', 0, 'danidiaz24@outlook.com', 'Daniel ', 'Jorigua', 'danidiaz24@outlook.com', 0, 1, '2026-10-29 19:20:05.094819'),
+(13, 'pbkdf2_sha256$600000$78l7uWdIQN1vPxC1zlqTuF$W2zItvpEamrd2roXxzPGQU4EqH3A4izH9JGymR0vKK8=', '2026-10-29 20:07:14.482322', 0, 'tatika-gato@hotmail.com', 'Ana maria ', 'Jorigua Salazar ', 'tatika-gato@hotmail.com', 0, 1, '2026-10-29 20:07:00.193933');
 
 -- --------------------------------------------------------
 
@@ -412,8 +427,7 @@ INSERT INTO `barbero` (`idBarbero`, `idUsuarioFk`, `especialidad`) VALUES
 (12, 21, 'Por asignar'),
 (13, 21, 'Cortes Clásicos'),
 (14, 3, 'General'),
-(15, 3, 'General'),
-(20, 25, 'Por asignar');
+(15, 3, 'General');
 
 -- --------------------------------------------------------
 
@@ -448,7 +462,15 @@ INSERT INTO `barbero_dia_habilitado` (`id`, `idusuariofk`, `fecha`, `habilitado`
 (13, 2, '2026-08-31', 1),
 (14, 3, '2026-08-31', 1),
 (15, 17, '2026-08-31', 1),
-(16, 21, '2026-08-31', 1);
+(16, 21, '2026-08-31', 1),
+(17, 2, '2026-10-30', 1),
+(18, 3, '2026-10-30', 1),
+(19, 17, '2026-10-30', 1),
+(20, 21, '2026-10-30', 1),
+(21, 2, '2026-10-29', 1),
+(22, 3, '2026-10-29', 1),
+(23, 17, '2026-10-29', 1),
+(24, 21, '2026-10-29', 1);
 
 -- --------------------------------------------------------
 
@@ -475,8 +497,7 @@ INSERT INTO `calificacion` (`idcalificacion`, `calificacion`, `comentario`, `fec
 (4, 4, NULL, '2026-07-27 15:36:43.322191', 45, 11),
 (7, 5, 'good', '2026-08-03 22:51:41.654999', 51, 18),
 (11, 5, NULL, '2026-09-15 21:21:51.377202', 55, 11),
-(12, 5, NULL, '2026-09-15 21:39:11.742095', 54, 21),
-(13, 5, 'El mejor servicio del mundo Petrosky, \"somos borrachos pero nunca fachos\".', '2026-10-22 12:52:29.199544', 56, 21);
+(12, 5, NULL, '2026-09-15 21:39:11.742095', 54, 21);
 
 -- --------------------------------------------------------
 
@@ -512,7 +533,11 @@ INSERT INTO `cita` (`idCita`, `idBarberoFk`, `idClienteFk`, `idServicioFk`, `idA
 (51, 11, 18, 4, 36, '2026-08-20', '08:00:00', 'Completado - Servicio realizado', 41, 0, 0, 0),
 (54, 11, 21, 1, 39, '2026-09-16', '08:00:00', 'Completado - Servicio realizado', 44, 0, 0, 0),
 (55, 11, 11, 2, 40, '2026-09-16', '09:00:00', 'Completado - Servicio realizado', 43, 0, 0, 0),
-(56, 20, 21, 6, 41, '2026-10-26', '14:00:00', 'Completado - Servicio realizado', 45, 0, 0, 0);
+(56, 11, 21, 14, 41, '2026-10-22', '14:00:00', 'Sin observaciones o notas especiales', NULL, 0, 0, 0),
+(57, 1, 21, 15, 42, '2026-10-30', '14:00:00', 'Sin observaciones o notas especiales', NULL, 0, 0, 0),
+(58, 14, 21, 15, 43, '2026-10-27', '16:00:00', 'Sin observaciones o notas especiales', NULL, 0, 0, 0),
+(62, 1, 24, 5, 47, '2026-10-29', '16:00:00', 'Sin observaciones o notas especiales', NULL, 0, 0, 1),
+(63, 11, 25, 6, 48, '2026-10-29', '16:10:00', 'Sin observaciones o notas especiales', NULL, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -538,7 +563,9 @@ INSERT INTO `cliente` (`idCliente`, `idUsuarioFk`, `direccion`, `fechaRegistro`,
 (11, 16, 'Registrado desde la Web', '2026-06-18', 'No asignado'),
 (18, 22, 'Registrado desde la Web', '2026-07-28', 'No asignado'),
 (20, 24, 'Registrado desde la Web', '2026-08-04', 'No asignado'),
-(21, 20, 'Cambio de Rol desde Panel', '2026-09-15', 'No asignado');
+(21, 20, 'Cambio de Rol desde Panel', '2026-09-15', 'No asignado'),
+(24, 27, 'Registrado desde la Web', '2026-10-29', 'No asignado'),
+(25, 28, 'Registrado desde la Web', '2026-10-29', 'No asignado');
 
 -- --------------------------------------------------------
 
@@ -560,7 +587,7 @@ CREATE TABLE `configuracion_horario` (
 --
 
 INSERT INTO `configuracion_horario` (`id`, `hora_apertura`, `hora_cierre`, `intervalo_minutos`, `limite_citas_mensuales`, `patron_automatico`) VALUES
-(1, '08:00:00.000000', '08:00:00.000000', 30, 3, 'lv');
+(1, '08:00:00.000000', '20:00:00.000000', 10, 3, 'todos');
 
 -- --------------------------------------------------------
 
@@ -691,40 +718,47 @@ INSERT INTO `dia_habilitado` (`id`, `fecha`, `habilitado`) VALUES
 (193, '2026-10-18', 0),
 (194, '2026-10-19', 1),
 (195, '2026-10-20', 1),
-(196, '2026-10-21', 1),
-(197, '2026-10-22', 1),
+(196, '2026-10-21', 0),
+(197, '2026-10-22', 0),
 (198, '2026-10-23', 0),
 (199, '2026-10-24', 0),
 (200, '2026-10-25', 0),
-(201, '2026-10-26', 1),
-(202, '2026-10-27', 1),
-(203, '2026-10-28', 1),
+(201, '2026-10-26', 0),
+(202, '2026-10-27', 0),
+(203, '2026-10-28', 0),
 (204, '2026-10-29', 1),
 (205, '2026-10-30', 1),
-(206, '2026-10-31', 0),
-(207, '2026-11-01', 0),
+(206, '2026-10-31', 1),
+(207, '2026-11-01', 1),
 (208, '2026-11-02', 1),
 (209, '2026-11-03', 1),
 (210, '2026-11-04', 1),
 (211, '2026-11-05', 1),
 (212, '2026-11-06', 1),
-(213, '2026-11-07', 0),
-(214, '2026-11-08', 0),
+(213, '2026-11-07', 1),
+(214, '2026-11-08', 1),
 (215, '2026-11-09', 1),
 (216, '2026-11-10', 1),
 (217, '2026-11-11', 1),
 (218, '2026-11-12', 1),
 (219, '2026-11-13', 1),
-(220, '2026-11-14', 0),
-(221, '2026-11-15', 0),
+(220, '2026-11-14', 1),
+(221, '2026-11-15', 1),
 (222, '2026-11-16', 1),
 (223, '2026-11-17', 1),
 (224, '2026-11-18', 1),
 (225, '2026-11-19', 1),
 (226, '2026-11-20', 1),
-(227, '2026-11-21', 0),
-(228, '2026-11-22', 0),
-(229, '2026-11-23', 1);
+(227, '2026-11-21', 1),
+(228, '2026-11-22', 1),
+(229, '2026-11-23', 1),
+(230, '2026-11-24', 1),
+(231, '2026-11-25', 1),
+(232, '2026-11-26', 1),
+(233, '2026-11-27', 1),
+(234, '2026-11-28', 1),
+(235, '2026-11-29', 1),
+(236, '2026-11-30', 1);
 
 -- --------------------------------------------------------
 
@@ -742,6 +776,69 @@ CREATE TABLE `django_admin_log` (
   `content_type_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `django_apscheduler_djangojob`
+--
+
+CREATE TABLE `django_apscheduler_djangojob` (
+  `id` varchar(255) NOT NULL,
+  `next_run_time` datetime(6) DEFAULT NULL,
+  `job_state` longblob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `django_apscheduler_djangojob`
+--
+
+INSERT INTO `django_apscheduler_djangojob` (`id`, `next_run_time`, `job_state`) VALUES
+('2a30a76d467e473589a85715476db704', '2026-10-29 20:46:16.752239', 0x8005953a020000000000007d94288c0776657273696f6e944b018c026964948c203261333061373664343637653437333538396138353731353437366462373034948c0466756e63948c2b72657365727661732e7363686564756c65723a656e766961725f7265636f726461746f72696f735f6a6f62948c0774726967676572948c1d61707363686564756c65722e74726967676572732e696e74657276616c948c0f496e74657276616c547269676765729493942981947d942868014b028c0874696d657a6f6e65948c086275696c74696e73948c07676574617474729493948c087a6f6e65696e666f948c085a6f6e65496e666f9493948c095f756e7069636b6c6594869452948c0e416d65726963612f426f676f7461944b01869452948c0a73746172745f64617465948c086461746574696d65948c086461746574696d65949394430a07ea0a1d0e38100b7a6f946818869452948c08656e645f64617465944e8c08696e74657276616c94681a8c0974696d6564656c74619493944b004d2c014b00879452948c066a6974746572944e75628c086578656375746f72948c0764656661756c74948c046172677394298c066b7761726773947d948c046e616d65948c21656e766961725f7265636f726461746f72696f735f77686174736170705f6a6f62948c126d6973666972655f67726163655f74696d65944b018c08636f616c6573636594888c0d6d61785f696e7374616e636573944b018c0d6e6578745f72756e5f74696d6594681c430a07ea0a1d0f2e100b7a6f94681886945294752e),
+('8d1d320fab1c400586220db2cbc47fa9', '2026-10-29 20:46:16.252085', 0x8005953a020000000000007d94288c0776657273696f6e944b018c026964948c203864316433323066616231633430303538363232306462326362633437666139948c0466756e63948c2b72657365727661732e7363686564756c65723a656e766961725f7265636f726461746f72696f735f6a6f62948c0774726967676572948c1d61707363686564756c65722e74726967676572732e696e74657276616c948c0f496e74657276616c547269676765729493942981947d942868014b028c0874696d657a6f6e65948c086275696c74696e73948c07676574617474729493948c087a6f6e65696e666f948c085a6f6e65496e666f9493948c095f756e7069636b6c6594869452948c0e416d65726963612f426f676f7461944b01869452948c0a73746172745f64617465948c086461746574696d65948c086461746574696d65949394430a07ea0a1d0e381003d8b5946818869452948c08656e645f64617465944e8c08696e74657276616c94681a8c0974696d6564656c74619493944b004d2c014b00879452948c066a6974746572944e75628c086578656375746f72948c0764656661756c74948c046172677394298c066b7761726773947d948c046e616d65948c21656e766961725f7265636f726461746f72696f735f77686174736170705f6a6f62948c126d6973666972655f67726163655f74696d65944b018c08636f616c6573636594888c0d6d61785f696e7374616e636573944b018c0d6e6578745f72756e5f74696d6594681c430a07ea0a1d0f2e1003d8b594681886945294752e);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `django_apscheduler_djangojobexecution`
+--
+
+CREATE TABLE `django_apscheduler_djangojobexecution` (
+  `id` bigint(20) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `run_time` datetime(6) NOT NULL,
+  `duration` decimal(15,2) DEFAULT NULL,
+  `finished` decimal(15,2) DEFAULT NULL,
+  `exception` varchar(1000) DEFAULT NULL,
+  `traceback` longtext DEFAULT NULL,
+  `job_id` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `django_apscheduler_djangojobexecution`
+--
+
+INSERT INTO `django_apscheduler_djangojobexecution` (`id`, `status`, `run_time`, `duration`, `finished`, `exception`, `traceback`, `job_id`) VALUES
+(1, 'Executed', '2026-10-29 19:56:16.252085', 0.04, 1793303776.30, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(3, 'Executed', '2026-10-29 19:56:16.752239', 0.02, 1793303776.77, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(5, 'Executed', '2026-10-29 20:01:16.252085', 1.63, 1793304077.88, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(7, 'Executed', '2026-10-29 20:01:16.752239', 1.34, 1793304078.09, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(9, 'Executed', '2026-10-29 20:06:16.252085', 0.02, 1793304376.27, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(11, 'Executed', '2026-10-29 20:06:16.752239', 0.03, 1793304376.78, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(13, 'Executed', '2026-10-29 20:11:16.252085', 0.62, 1793304676.87, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(15, 'Executed', '2026-10-29 20:11:16.752239', 0.62, 1793304677.37, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(17, 'Executed', '2026-10-29 20:16:16.252085', 0.92, 1793304977.18, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(19, 'Executed', '2026-10-29 20:16:16.752239', 0.47, 1793304977.23, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(21, 'Executed', '2026-10-29 20:21:16.252085', 0.03, 1793305276.28, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(23, 'Executed', '2026-10-29 20:21:16.752239', 0.05, 1793305276.80, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(25, 'Executed', '2026-10-29 20:26:16.252085', 0.01, 1793305576.26, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(26, 'Executed', '2026-10-29 20:26:16.752239', 0.02, 1793305576.77, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(28, 'Executed', '2026-10-29 20:31:16.252085', 0.03, 1793305876.28, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(30, 'Executed', '2026-10-29 20:31:16.752239', 0.03, 1793305876.78, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(32, 'Executed', '2026-10-29 20:36:16.252085', 0.02, 1793306176.28, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(33, 'Executed', '2026-10-29 20:36:16.752239', 0.03, 1793306176.79, NULL, NULL, '2a30a76d467e473589a85715476db704'),
+(35, 'Executed', '2026-10-29 20:41:16.252085', 0.04, 1793306476.29, NULL, NULL, '8d1d320fab1c400586220db2cbc47fa9'),
+(37, 'Executed', '2026-10-29 20:41:16.752239', 0.02, 1793306476.77, NULL, NULL, '2a30a76d467e473589a85715476db704');
 
 -- --------------------------------------------------------
 
@@ -767,6 +864,8 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (2, 'auth', 'permission'),
 (4, 'auth', 'user'),
 (5, 'contenttypes', 'contenttype'),
+(37, 'django_apscheduler', 'djangojob'),
+(38, 'django_apscheduler', 'djangojobexecution'),
 (9, 'negocio', 'agenda'),
 (10, 'negocio', 'barbero'),
 (17, 'negocio', 'barberodiahabilitado'),
@@ -862,7 +961,17 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (45, 'socialaccount', '0005_socialtoken_nullable_app', '2026-08-04 22:15:51.991215'),
 (46, 'socialaccount', '0006_alter_socialaccount_extra_data', '2026-08-04 22:15:52.097212'),
 (47, 'usuarios', '0005_pago_barberodestacado_contenidoindex_and_more', '2026-08-04 22:35:17.806518'),
-(48, 'negocio', '0004_configuracionhorario_patron_automatico', '2026-08-13 22:18:48.809108');
+(48, 'negocio', '0004_configuracionhorario_patron_automatico', '2026-08-13 22:18:48.809108'),
+(49, 'usuarios', '0006_contenidoindex_nombre_barberia', '2026-10-29 19:15:55.651395'),
+(50, 'django_apscheduler', '0001_initial', '2026-10-29 19:51:00.570129'),
+(51, 'django_apscheduler', '0002_auto_20180412_0758', '2026-10-29 19:51:00.614075'),
+(52, 'django_apscheduler', '0003_auto_20200716_1632', '2026-10-29 19:51:00.627631'),
+(53, 'django_apscheduler', '0004_auto_20200717_1043', '2026-10-29 19:51:00.888105'),
+(54, 'django_apscheduler', '0005_migrate_name_to_id', '2026-10-29 19:51:00.901760'),
+(55, 'django_apscheduler', '0006_remove_djangojob_name', '2026-10-29 19:51:00.920313'),
+(56, 'django_apscheduler', '0007_auto_20200717_1404', '2026-10-29 19:51:00.990878'),
+(57, 'django_apscheduler', '0008_remove_djangojobexecution_started', '2026-10-29 19:51:01.005356'),
+(58, 'django_apscheduler', '0009_djangojobexecution_unique_job_executions', '2026-10-29 19:51:01.029790');
 
 -- --------------------------------------------------------
 
@@ -892,9 +1001,11 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('dzsp3fialylt9tyorwfvqp4qnoe6xe6t', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1woNtT:OsSo6qdmkIEHGywJbMr9EGdWd9kaI9Q3HFiZ5SN59aI', '2026-08-10 16:09:31.761168'),
 ('flnpiu40xr61wg4e83vj44di6knlm30b', '.eJxVjDEOwjAMRe-SGUVuUhqZkZ0zRI5jkwJKpaadKu4OlTrA-t97fzOR1qXEtckcx2wupjen3y0RP6XuID-o3ifLU13mMdldsQdt9jZleV0P9--gUCvfGkR7cuARgmNN4EPomFQdkiIGGCCx60RIBYgZs0MdGJn9GbMXNO8P9aE4xg:1waEJe:Ie39UtdKbDr0kz-AIjW1WKqTfo3skRVamJBIjMriw3s', '2026-07-02 15:06:02.592102'),
 ('fs60l91w68xadajzglyqlv4pe04469xt', '.eJxVj0tuhDAQRO_Sa4TAQ2PMcvZzBqtx28EJcUv-rKLcfcQIaZLte6VS1Q9YanW3rfhsI8MKM3R_2Ubuy6dT8CelD-mdpJrj1p-R_rKlfwj7435l_xXsVHZYQQ_LYMIt6M0YDqwDjXpQPLs5EPtFL0obdIpRTzjhoIJBRDJqnEZGZxA6KL5ESTam6CIxwVpz8x200ihHsUm-t-zPoZQivHmW4_VsfKMgVWBN7Th-n7NLVn0:1wewGw:CvaDz1aJKTprf-JR-t2Mri9MgzR-tQk2MeTDj6l93Vo', '2026-07-15 14:50:42.956166'),
+('j7px1qjzq0wlx8cu3ktem4phjqdeuyc0', '.eJxVj0EOwiAQRa_SsG4akEptd7r3DGSGoRZtmQTKynh3qzFRt-_9_ydzFxbKOtmSfbKBxCCUFvUvRHA3H1-GrhAv3DiOawrYvCLNx-bmzOTn0yf7NzBBnra2xp320iilgKiXLZpR9Yj7kQy1II0h3YLTJNHgvledaTvynetQSucOZLbR7HPgaEMMLgCBGNZUfC1KLpAC28gLJr-dOkaolg1BJb428fx-UH_RyCuLIZZ5fjwBOVZZTg:1xMWP4:-YoVcDbsIpx54ej4Szd0tEtvSP2WN7wSciweS22Uyrw', '2026-11-12 20:07:14.485352'),
 ('m37qj12g713d43akpcxqc7w88eyn2nfc', '.eJxVj8EOwiAQRP9lz01DsVtKj979BrJlwaIVEign47-bmibqdd7LZOYJhuq2mFpcNoFhggGa32wme3dxB3yjeE2tTXHLYW53pT1oaS-J3Xo-3L-ChcoCEygxCu1PXs1as2flqVNC8mAHT-xGNUql0UpG1WOPQnqNiKRl13eMViM0UFwJKZoQgw3EBNOWq2uglko5JBPTY85uH0oxwDfPaf08615vPTxO-Q:1wcP6q:8ftjTcLXAH0O328CfgWTbOaEmnp2-JGPNN2SPfBuSNs', '2026-07-08 15:01:48.007467'),
 ('nwdypz3bo5cldbh48xevs2wc2ybwpo8d', '.eJxVj8tuwyAQRX8lYp3YBAM2WWbfb0ADDDWpAxaPdlH132tXidpu7z3njuaTaGh11q1g1sGRCxnJ8W9mwL5h3At3g_iaOptizcF0O9I92tK9JIfL9cH-G5ihzJtNBUolheHeSD4wkDB4joJKK8aJgZ-4o6gmCcCZH5F5qpSRZ6BC2ZF52EYLlpCiDjHYAA7IpeaGR9JKgxySjuluMm6n7BIwVjw4PKwbYXb3CeW0_Lw5_EY-1bRZ_R1dgH7F7MOCpX_WjGp25oJxPp5urVUj5vn0zrsPNCv5-gbonWwJ:1weNXh:Ii3-hNesC2KJd1f4BbeVzMxNKB9djlTXuYBoiKTH1pE', '2026-07-14 01:45:41.287793'),
-('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562');
+('tsztfxh77vy4yrhcwp30yhkeqmspwnjy', 'e30:1waCQ9:Tfze7UBPY1GidM51VXgFUEILPx8dq5tYKR_8sy7VGsc', '2026-07-02 13:04:37.781562'),
+('x9zy46o20opbgik24qh7xh1q2e9qc1aa', '.eJxVj00OgjAQhe_StSFQGUpZuvcMzdBppYqdpKUr490FQ4Juv_eT917CYFkmU7JLJpAYRCdOv2xE-3BxE-iO8caV5bikMFabpdrVXF2Z3HzZvX8FE-ZpTau6r7U_ezVqTZ6Ux0bVkjrbeSTXq14qDVYSqBZaqKXXAIBaNm1DYDWspdnlwNGEGGxAQjEsqbiTKLlgCmwiP8fktqEYgzh44vn7rDmQ54XFEMs8vz-zS1Z9:1xJjO3:nmUIRUr8sO6fyVipVLfXJbpq5eyjXkAjvQ6AsrERWFc', '2026-11-05 03:22:39.955648');
 
 -- --------------------------------------------------------
 
@@ -985,10 +1096,22 @@ INSERT INTO `notificacion` (`idnotificacion`, `tipo`, `mensaje`, `leida`, `fecha
 (48, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de JAMES ABELARDO DIAZ URIBE (Perfilado Barba).', 1, '2026-09-15 21:19:53.434433', 19),
 (49, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Corte Tradicional).', 0, '2026-09-15 21:38:54.343830', 1),
 (50, 'cita_confirmada', 'El barbero JUAN MANUEL RESTREPO confirmó exitosamente la cita de CLIENTE UWU (Corte Tradicional).', 1, '2026-09-15 21:38:54.346777', 19),
-(51, 'reserva_creada', 'Tu cita de Tinte quedó reservada para el 26/10/2026 a las 14:00 con PETROSKY URREGO.', 0, '2026-10-22 12:35:44.508639', 20),
-(52, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Tinte para el 26/10/2026 a las 14:00.', 0, '2026-10-22 12:35:44.508639', 25),
-(53, 'cita_confirmada', 'El barbero PETROSKY URREGO confirmó exitosamente la cita de CLIENTE UWU (Tinte).', 0, '2026-10-22 12:37:18.500472', 1),
-(54, 'cita_confirmada', 'El barbero PETROSKY URREGO confirmó exitosamente la cita de CLIENTE UWU (Tinte).', 0, '2026-10-22 12:37:18.510399', 19);
+(51, 'reserva_creada', 'Tu cita de Corte personalizado quedó reservada para el 22/10/2026 a las 14:00 con JUAN MANUEL RESTREPO.', 0, '2026-10-22 03:24:30.827925', 20),
+(52, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Corte personalizado para el 22/10/2026 a las 14:00.', 0, '2026-10-22 03:24:30.827925', 17),
+(53, 'reserva_creada', 'Tu cita de Look Completo quedó reservada para el 30/10/2026 a las 14:00 con MATEO ALVEAR.', 0, '2026-10-22 03:25:07.402675', 20),
+(54, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Look Completo para el 30/10/2026 a las 14:00.', 0, '2026-10-22 03:25:07.402675', 2),
+(55, 'reserva_creada', 'Tu cita de Look Completo quedó reservada para el 27/10/2026 a las 16:00 con LUIS SIMBAÑA.', 0, '2026-10-22 03:25:15.768179', 20),
+(56, 'nueva_cita', 'CLIENTE UWU agendó el servicio de Look Completo para el 27/10/2026 a las 16:00.', 0, '2026-10-22 03:25:15.773180', 3),
+(57, 'reserva_creada', 'Tu cita de Facial quedó reservada para el 29/10/2026 a las 15:30 con LUIS SIMBAÑA.', 0, '2026-10-29 19:22:06.821737', 27),
+(58, 'nueva_cita', 'DANIEL  JORIGUA agendó el servicio de Facial para el 29/10/2026 a las 15:30.', 0, '2026-10-29 19:22:06.821737', 3),
+(59, 'reserva_creada', 'Tu cita de Perfil Perfecto quedó reservada para el 30/10/2026 a las 15:30 con LUIS SIMBAÑA.', 0, '2026-10-29 19:22:46.423209', 27),
+(60, 'nueva_cita', 'DANIEL  JORIGUA agendó el servicio de Perfil Perfecto para el 30/10/2026 a las 15:30.', 0, '2026-10-29 19:22:46.424212', 3),
+(61, 'reserva_creada', 'Tu cita de Combo quedó reservada para el 29/10/2026 a las 15:40 con JUAN MANUEL RESTREPO.', 0, '2026-10-29 19:39:41.634189', 27),
+(62, 'nueva_cita', 'DANIEL  JORIGUA agendó el servicio de Combo para el 29/10/2026 a las 15:40.', 0, '2026-10-29 19:39:41.634189', 17),
+(63, 'reserva_creada', 'Tu cita de Fade quedó reservada para el 29/10/2026 a las 16:00 con MATEO ALVEAR.', 0, '2026-10-29 19:52:14.580200', 27),
+(64, 'nueva_cita', 'DANIEL  JORIGUA agendó el servicio de Fade para el 29/10/2026 a las 16:00.', 0, '2026-10-29 19:52:14.581200', 2),
+(65, 'reserva_creada', 'Tu cita de Tinte quedó reservada para el 29/10/2026 a las 16:10 con JUAN MANUEL RESTREPO.', 0, '2026-10-29 20:07:31.843548', 28),
+(66, 'nueva_cita', 'ANA MARIA  JORIGUA SALAZAR agendó el servicio de Tinte para el 29/10/2026 a las 16:10.', 0, '2026-10-29 20:07:31.849105', 17);
 
 -- --------------------------------------------------------
 
@@ -1052,8 +1175,7 @@ INSERT INTO `pago` (`idPago`, `metodoPago`, `montoTotal`, `fechaPago`, `estadoPa
 (41, 'PSE', 15.00, '2026-08-03 22:50:34', 'PAGADO', 'FAC63081'),
 (42, 'Efectivo', 4.00, '2026-08-31 21:06:14', 'PENDIENTE', 'FAC22467'),
 (43, 'Efectivo', 8.00, '2026-09-15 21:19:53', 'PAGADO', NULL),
-(44, 'Tarjeta', 13.00, '2026-09-15 21:38:54', 'PAGADO', NULL),
-(45, 'Tarjeta', 100000.00, '2026-10-22 12:37:18', 'PAGADO', NULL);
+(44, 'Tarjeta', 13.00, '2026-09-15 21:38:54', 'PAGADO', NULL);
 
 -- --------------------------------------------------------
 
@@ -1136,7 +1258,9 @@ CREATE TABLE `socialaccount_socialaccount` (
 
 INSERT INTO `socialaccount_socialaccount` (`id`, `provider`, `uid`, `last_login`, `date_joined`, `extra_data`, `user_id`) VALUES
 (1, 'google', '114881672322936713317', '2026-09-22 18:22:42.080538', '2026-08-04 22:52:37.979594', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"114881672322936713317\", \"email\": \"juanesspa76@gmail.com\", \"email_verified\": true, \"at_hash\": \"eVej2KxtIQ8CAioZqXLKAQ\", \"name\": \"juan esteban parra rodriguez\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocIN99GvxyxzGsXhSU_ZLxgK7D0Dx2OioefYgPTO0lbfLwbP27zAgQ=s96-c\", \"given_name\": \"juan esteban\", \"family_name\": \"parra rodriguez\", \"iat\": 1790101361, \"exp\": 1790104961}', 8),
-(2, 'google', '110805645877386512366', '2026-08-04 23:04:56.462991', '2026-08-04 22:55:00.823524', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"110805645877386512366\", \"email\": \"fenixdespj@gmail.com\", \"email_verified\": true, \"at_hash\": \"627rdxppAAsAnUw1KV_G6g\", \"name\": \"Fenix\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocKxlj-8DE0plNN02dtBNvVBpGsNMhSU42UV5nwN-g-4AJhY1l0=s96-c\", \"given_name\": \"Fenix\", \"iat\": 1785884697, \"exp\": 1785888297}', 9);
+(2, 'google', '110805645877386512366', '2026-08-04 23:04:56.462991', '2026-08-04 22:55:00.823524', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"110805645877386512366\", \"email\": \"fenixdespj@gmail.com\", \"email_verified\": true, \"at_hash\": \"627rdxppAAsAnUw1KV_G6g\", \"name\": \"Fenix\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocKxlj-8DE0plNN02dtBNvVBpGsNMhSU42UV5nwN-g-4AJhY1l0=s96-c\", \"given_name\": \"Fenix\", \"iat\": 1785884697, \"exp\": 1785888297}', 9),
+(3, 'google', '112447727793128479416', '2026-10-22 03:30:03.059631', '2026-10-22 03:26:08.956996', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"112447727793128479416\", \"email\": \"danijorigua@gmail.com\", \"email_verified\": true, \"at_hash\": \"0xkzD3XDYKE-kcFk6hK_fQ\", \"name\": \"Dani jorigua\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocKttTxsUgzH5TkAtB_T4C86DG2M5lDbakyj7QUCWm4OpI1UgQ=s96-c\", \"given_name\": \"Dani\", \"family_name\": \"jorigua\", \"iat\": 1792639974, \"exp\": 1792643574}', 10),
+(4, 'google', '113709121736147125421', '2026-10-22 03:30:08.945394', '2026-10-22 03:30:08.945394', '{\"iss\": \"https://accounts.google.com\", \"azp\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"aud\": \"888155533899-i2silsl76gcdp84jahkv8rldvo3rqnqa.apps.googleusercontent.com\", \"sub\": \"113709121736147125421\", \"email\": \"danidiaz2402@gmail.com\", \"email_verified\": true, \"at_hash\": \"TmE33SNz76SikEANd30zDg\", \"name\": \"Daniel D\\u00edaz\", \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocKjTFsAsBCgdMgYBljc6r8p-08UglNqcBbrFlBHDx1n3Uz3wvJgGg=s96-c\", \"given_name\": \"Daniel\", \"family_name\": \"D\\u00edaz\", \"iat\": 1792639979, \"exp\": 1792643579}', 11);
 
 -- --------------------------------------------------------
 
@@ -1215,13 +1339,14 @@ INSERT INTO `usuario` (`idUsuario`, `cedula`, `nombre`, `correoUsuario`, `numCel
 (13, '1111111111', 'SAMUEL LINARES', 'samueluwu@gmail.com', '3333333333', 'samuel', '2026-06-24', 3, '', NULL),
 (14, '2222222', 'JIMENA  HERNÁNDEZ', 'jimena@gmail.com', '3239343409', 'jimena123', '2008-03-24', 3, '', NULL),
 (16, '1122334455', 'JAMES ABELARDO DIAZ URIBE', 'derecha@gmail.com', '3216579435', 'pbkdf2_sha256$600000$mm9X4dXuc8FX83wY4CvHAu$S3tiZPZarh+2ysTwOTmcLIW8ibjLCUfdKjQ9LMU0Owg=', '1988-04-20', 3, '', NULL),
-(17, '35919743', 'JUAN MANUEL RESTREPO', 'restrepo123@gmail.com', '3427685463', 'pbkdf2_sha256$600000$Ui57A5R99oF2FSYuJdWQWu$S3PjXGv17+nJfSOMUXEDj8z/TdGK8/4B6gqwgKLTQA0=', '1989-08-12', 2, '', 'Peina petristas / Daniel es malo en brawl'),
+(17, '35919743', 'JUAN MANUEL RESTREPO', 'restrepo123@gmail.com', '3427685463', 'pbkdf2_sha256$600000$Ui57A5R99oF2FSYuJdWQWu$S3PjXGv17+nJfSOMUXEDj8z/TdGK8/4B6gqwgKLTQA0=', '1989-08-12', 2, 'perfiles/usuario_17_shhhh.webp', 'Peina petristas / Daniel es malo en brawl'),
 (19, '4444444444', 'DANI JORDIWILDE', 'dani@gmail.com', '22222222222', 'pbkdf2_sha256$600000$ud3U9yK19LvNUYSFpWdxuA$wSPZm1V3A8E2of2uJ9oX39DgBkfzwf3u/vM/rHVvTh0=', '2026-06-16', 1, NULL, NULL),
 (20, '1111222333', 'CLIENTE UWU', 'cliente@gmail.com', '3334445555', 'pbkdf2_sha256$600000$A8DpsiokPP0k1bHK7pPT96$v8G4lzCykQndKOJ2OJKPRj2YtCb3dCyOKAZmLlVPaHI=', '2026-06-25', 3, 'perfiles/usuario_20_21452447-juutb5hh-v4.webp', NULL),
 (21, '1111111112', 'NUEVO BARBERO', 'barbero.nuevo@mya.com', '0999999999', NULL, NULL, 2, '', NULL),
 (22, '1211321231', 'MAPACHE UWU', 'juanesspa76@gmail.com', '3227569201', 'pbkdf2_sha256$600000$JgAhs3lXZFWFeyvKl4Qo7l$JZrc1/3tM4zGV75iFAIV8IN8KMnpmx7IVLkOS8wS1lA=', '2006-09-20', 3, 'perfiles/usuario_22_Mapache de apoyo emocional.PNG', NULL),
 (24, 'G-F0F2164AD6', 'FENIX', 'fenixdespj@gmail.com', '', 'pbkdf2_sha256$600000$DGRUCUkGy7KONgCjKhZq5p$xglhcXKg9vo5IgOM3em4gD6ju/21Mo/zl/RgZxadgNc=', '2000-01-01', 3, '', NULL),
-(25, '3213363589', 'PETROSKY URREGO', 'petrosky@gmail.com', '3213363589', 'pbkdf2_sha256$600000$I1qpl58m1dz51o6PxYUB2t$bb7qGUIRRlZay7cJUbG5oGHX3OZHxLIlVDIX3STHCwU=', '1960-04-19', 2, 'perfiles/usuario_25_petroo.webp', NULL);
+(27, '1091353258', 'DANIEL  JORIGUA', 'danidiaz24@outlook.com', '3143052384', 'pbkdf2_sha256$600000$w1ukBVCWI7MpbE5A0XaMHj$FRlL9rUQ6X9UZvCjYYnfWe1++dkkX2PK/prNeSm0Hfc=', '2004-02-24', 3, '', NULL),
+(28, '46648110', 'ANA MARIA  JORIGUA SALAZAR', 'tatika-gato@hotmail.com', '3183977489', 'pbkdf2_sha256$600000$VrfryZ1LLjLRihAwcZTkfS$er0vcKLhJhSgq+/CbnAWRZfOcmNKU5pr1TTzUnwiY7I=', '1981-05-19', 3, '', NULL);
 
 --
 -- Disparadores `usuario`
@@ -1294,7 +1419,7 @@ CREATE TABLE `usuarios_contenidoindex` (
 --
 
 INSERT INTO `usuarios_contenidoindex` (`id`, `hero_etiqueta`, `hero_titulo`, `hero_descripcion`, `hero_tarjeta_titulo`, `hero_tarjeta_texto`, `hero_imagen_1`, `hero_imagen_2`, `hero_imagen_3`, `marca_titulo`, `marca_descripcion`, `marca_imagen`, `horario_semana`, `horario_sabado`, `telefono_fijo`, `whatsapp`, `direccion`, `mapa_embed_url`, `cta_titulo`, `cta_texto`, `nombre_barberia`) VALUES
-(1, 'BARBERIA MODERNA', 'Estilo, precisión y confianza en cada corte', 'En M&A Barber Shop combinamos tradición, elegancia e innovación para ofrecer una experiencia de barbería organizada, cómoda y profesional.', 'Servicio premium', 'Atención personalizada', '', '', '', 'Una barbería pensada para una experiencia más cómoda', 'M&A Barber Shop nace para modernizar el servicio de barbería mediante una atención profesional y un sistema de agendamiento que evita largas esperas.', '', '9:00 a.m. – 8:00 p.m.', '9:00 a.m. – 6:00 p.m.', '(601) 123 4567', '+57 300 123 4567', 'Carrera 27 #5a 09, Bogotá, Colombia', 'https://maps.google.com/maps?q=Carrera%2027%20%235a%2009,%20Bogota&t=&z=15&ie=UTF-8&iwloc=&output=embed', '¿Listo para renovar tu estilo?', 'Agenda tu cita y vive la experiencia M&A Barber Shop.', 'M&A Barber Shop');
+(1, 'Barberrrrr', 'Estilo, precisión y confianza en cada corte', 'En M&A Barber Shop combinamos tradición, elegancia e innovación para ofrecer una experiencia de barbería organizada, cómoda y profesional.', 'Servicio premium', 'Atención personalizada', '', '', '', 'Una barbería pensada para una experiencia más cómoda', 'M&A Barber Shop nace para modernizar el servicio de barbería mediante una atención profesional y un sistema de agendamiento que evita largas esperas.', '', '9:00 a.m. – 8:00 p.m.', '9:00 a.m. – 6:00 p.m.', '(601) 123 4567', '+57 300 123 4567', 'Carrera 27 #5a 09, Bogotá, Colombia', 'https://maps.google.com/maps?q=Carrera%2027%20%235a%2009,%20Bogota&t=&z=15&ie=UTF-8&iwloc=&output=embed', '¿Listo para renovar tu estilo?', 'Agenda tu cita y vive la experiencia M&A Barber Shop.', 'Barberia de Jimena');
 
 -- --------------------------------------------------------
 
@@ -1317,7 +1442,9 @@ CREATE TABLE `usuarios_perfilusuario` (
 
 INSERT INTO `usuarios_perfilusuario` (`id`, `rol`, `telefono`, `user_id`, `google_id`, `password_provisional`) VALUES
 (1, 'cliente', NULL, 8, '114881672322936713317', 0),
-(2, 'cliente', NULL, 9, '110805645877386512366', 1);
+(2, 'cliente', NULL, 9, '110805645877386512366', 1),
+(3, 'cliente', NULL, 10, '112447727793128479416', 1),
+(4, 'cliente', NULL, 11, '113709121736147125421', 1);
 
 -- --------------------------------------------------------
 
@@ -1516,6 +1643,21 @@ ALTER TABLE `django_admin_log`
   ADD KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`);
 
 --
+-- Indices de la tabla `django_apscheduler_djangojob`
+--
+ALTER TABLE `django_apscheduler_djangojob`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `django_apscheduler_djangojob_next_run_time_2f022619` (`next_run_time`);
+
+--
+-- Indices de la tabla `django_apscheduler_djangojobexecution`
+--
+ALTER TABLE `django_apscheduler_djangojobexecution`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_job_executions` (`job_id`,`run_time`),
+  ADD KEY `django_apscheduler_djangojobexecution_run_time_16edd96b` (`run_time`);
+
+--
 -- Indices de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
@@ -1646,7 +1788,7 @@ ALTER TABLE `account_emailconfirmation`
 -- AUTO_INCREMENT de la tabla `agenda`
 --
 ALTER TABLE `agenda`
-  MODIFY `idAgenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `idAgenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_group`
@@ -1664,13 +1806,13 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT de la tabla `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user_groups`
@@ -1688,31 +1830,31 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT de la tabla `barbero`
 --
 ALTER TABLE `barbero`
-  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `idBarbero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `barbero_dia_habilitado`
 --
 ALTER TABLE `barbero_dia_habilitado`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `calificacion`
 --
 ALTER TABLE `calificacion`
-  MODIFY `idcalificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idcalificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `idCita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion_horario`
@@ -1724,7 +1866,7 @@ ALTER TABLE `configuracion_horario`
 -- AUTO_INCREMENT de la tabla `dia_habilitado`
 --
 ALTER TABLE `dia_habilitado`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=230;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=237;
 
 --
 -- AUTO_INCREMENT de la tabla `django_admin_log`
@@ -1733,16 +1875,22 @@ ALTER TABLE `django_admin_log`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `django_apscheduler_djangojobexecution`
+--
+ALTER TABLE `django_apscheduler_djangojobexecution`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+
+--
 -- AUTO_INCREMENT de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT de la tabla `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT de la tabla `django_site`
@@ -1754,13 +1902,13 @@ ALTER TABLE `django_site`
 -- AUTO_INCREMENT de la tabla `notificacion`
 --
 ALTER TABLE `notificacion`
-  MODIFY `idnotificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `idnotificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -1778,7 +1926,7 @@ ALTER TABLE `servicio`
 -- AUTO_INCREMENT de la tabla `socialaccount_socialaccount`
 --
 ALTER TABLE `socialaccount_socialaccount`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `socialaccount_socialapp`
@@ -1802,7 +1950,7 @@ ALTER TABLE `socialaccount_socialtoken`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_barberodestacado`
@@ -1820,7 +1968,7 @@ ALTER TABLE `usuarios_contenidoindex`
 -- AUTO_INCREMENT de la tabla `usuarios_perfilusuario`
 --
 ALTER TABLE `usuarios_perfilusuario`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
@@ -1906,6 +2054,12 @@ ALTER TABLE `cliente`
 ALTER TABLE `django_admin_log`
   ADD CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   ADD CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Filtros para la tabla `django_apscheduler_djangojobexecution`
+--
+ALTER TABLE `django_apscheduler_djangojobexecution`
+  ADD CONSTRAINT `django_apscheduler_djangojobexecution_job_id_daf5090a_fk` FOREIGN KEY (`job_id`) REFERENCES `django_apscheduler_djangojob` (`id`);
 
 --
 -- Filtros para la tabla `notificacion`
