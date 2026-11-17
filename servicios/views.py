@@ -482,22 +482,190 @@ def descargar_reporte_excel(request):
     return response
 
 
+# ====================================================================
+#  REPORTE PDF PERSONALIZADO - M&A Barber Shop
+#  (basado en el Manual de Identidad Visual)
+# ====================================================================
+# Logo: <tu_proyecto>/static/img/logo.jpeg
+LOGO_REPORTE_PATH = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.jpeg')
+
+# Paleta del manual
+_NEGRO = (0, 0, 0)
+_CARBON = (48, 48, 46)        # #30302E
+_DORADO = (191, 147, 13)      # #BF930D
+_AMARILLO = (255, 198, 0)     # #FFC600
+_GRIS = (128, 128, 127)       # #80807F
+_GRIS_CLARO = (244, 244, 242)
+_BLANCO = (255, 255, 255)
+
+_CONTACTO_1 = "Carrera 27 #5a 09, Bogotá  |  +57 300 123 4567"
+_CONTACTO_2 = "barberiamya@gmail.com  |  www.barberiamya.com"
+
+
+def _t(texto):
+    """Las fuentes base de FPDF solo admiten latin-1; evita errores con caracteres raros."""
+    return str(texto).encode('latin-1', 'replace').decode('latin-1')
+
+
+def _ancho_logo(alto):
+    """Ancho en mm del logo para un alto dado, respetando su proporcion."""
+    try:
+        from PIL import Image
+        with Image.open(LOGO_REPORTE_PATH) as im:
+            return alto * im.width / im.height
+    except Exception:
+        return alto
+
+
+def _moneda(valor):
+    """35000 -> $35.000"""
+    try:
+        entero = int(Decimal(valor or 0).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+    except (InvalidOperation, TypeError, ValueError):
+        entero = 0
+    return "$" + f"{entero:,}".replace(",", ".")
+
+
+class ReporteBarberiaPDF(FPDF):
+    def __init__(self, subtitulo):
+        super().__init__(orientation='P', unit='mm', format='A4')
+        self.subtitulo = subtitulo
+        self.set_margins(15, 15, 15)
+        self.set_auto_page_break(True, margin=24)
+        self.alias_nb_pages()
+
+    def header(self):
+        logo_ok = os.path.isfile(LOGO_REPORTE_PATH)
+        if self.page_no() == 1:
+            self.set_fill_color(*_NEGRO)
+            self.rect(0, 0, 210, 42, 'F')
+            self.set_fill_color(*_AMARILLO)
+            self.rect(0, 42, 210, 1.2, 'F')
+            x_txt = 15
+            if logo_ok:
+                self.image(LOGO_REPORTE_PATH, x=15, y=4, h=34)
+                x_txt = 15 + _ancho_logo(34) + 6
+            self.set_xy(x_txt, 11)
+            self.set_font('Times', 'B', 24)
+            self.set_text_color(*_AMARILLO)
+            self.cell(0, 11, "REPORTE DE CITAS", ln=1)
+            self.set_x(x_txt)
+            self.set_font('Helvetica', '', 11)
+            self.set_text_color(*_BLANCO)
+            self.cell(0, 6, _t(self.subtitulo), ln=1)
+            self.set_x(x_txt)
+            self.set_font('Helvetica', '', 9)
+            self.set_text_color(*_GRIS)
+            self.cell(0, 6, "Generado el " + datetime.now().strftime('%d/%m/%Y %H:%M'), ln=1)
+            self.set_y(52)
+        else:
+            self.set_fill_color(*_NEGRO)
+            self.rect(0, 0, 210, 16, 'F')
+            self.set_fill_color(*_AMARILLO)
+            self.rect(0, 16, 210, 0.8, 'F')
+            x_txt = 15
+            if logo_ok:
+                self.image(LOGO_REPORTE_PATH, x=15, y=1.5, h=13)
+                x_txt = 15 + _ancho_logo(13) + 4
+            self.set_xy(x_txt, 4)
+            self.set_font('Times', 'B', 13)
+            self.set_text_color(*_AMARILLO)
+            self.cell(0, 8, "REPORTE DE CITAS", ln=1)
+            self.set_y(24)
+
+    def footer(self):
+        self.set_fill_color(*_CARBON)
+        self.rect(0, 279, 210, 18, 'F')
+        self.set_fill_color(*_AMARILLO)
+        self.rect(0, 279, 210, 0.6, 'F')
+        self.set_font('Helvetica', '', 8)
+        self.set_text_color(*_BLANCO)
+        self.set_xy(15, 282)
+        self.cell(130, 4.5, _CONTACTO_1, ln=1)
+        self.set_x(15)
+        self.cell(130, 4.5, _CONTACTO_2, ln=0)
+        self.set_xy(145, 284)
+        self.set_font('Helvetica', 'B', 9)
+        self.set_text_color(*_AMARILLO)
+        self.cell(50, 5, f"Pagina {self.page_no()} de {{nb}}", align='R')
+
+    # ---------- componentes ----------
+    def titulo_seccion(self, texto):
+        self.set_font('Times', 'B', 14)
+        self.set_text_color(*_DORADO)
+        self.cell(0, 8, _t(texto), ln=1)
+        self.set_draw_color(*_DORADO)
+        self.set_line_width(0.4)
+        self.line(15, self.get_y(), 195, self.get_y())
+        self.ln(3)
+
+    def tarjetas(self, items):
+        ancho, alto, sep = 57, 22, 4.5
+        x0, y0 = 15, self.get_y()
+        for i, (etiqueta, valor) in enumerate(items):
+            x = x0 + i * (ancho + sep)
+            self.set_fill_color(*_GRIS_CLARO)
+            self.rect(x, y0, ancho, alto, 'F')
+            self.set_fill_color(*_DORADO)
+            self.rect(x, y0, ancho, 1.2, 'F')
+            self.set_xy(x + 3, y0 + 4)
+            self.set_font('Helvetica', '', 8)
+            self.set_text_color(*_GRIS)
+            self.cell(ancho - 6, 4, _t(etiqueta.upper()))
+            self.set_xy(x + 3, y0 + 10)
+            self.set_font('Helvetica', 'B', 12 if len(str(valor)) <= 16 else 9)
+            self.set_text_color(*_CARBON)
+            self.cell(ancho - 6, 8, _t(valor))
+        self.set_y(y0 + alto + 8)
+
+    def tabla(self, columnas, filas, fila_total=None):
+        """columnas: [(titulo, ancho, alineacion)]; filas: lista de listas de texto."""
+        h = 8
+
+        def encabezado():
+            self.set_fill_color(*_CARBON)
+            self.set_text_color(*_BLANCO)
+            self.set_font('Helvetica', 'B', 9.5)
+            for titulo, ancho, al in columnas:
+                self.cell(ancho, h, _t(titulo), 0, 0, al, True)
+            self.ln(h)
+
+        encabezado()
+        self.set_font('Helvetica', '', 9.5)
+        for i, fila in enumerate(filas):
+            if self.get_y() + h > self.page_break_trigger:
+                self.add_page()
+                encabezado()
+                self.set_font('Helvetica', '', 9.5)
+            self.set_fill_color(*(_GRIS_CLARO if i % 2 else _BLANCO))
+            self.set_text_color(*_CARBON)
+            for (titulo, ancho, al), celda in zip(columnas, fila):
+                self.cell(ancho, h, _t(celda), 0, 0, al, True)
+            self.ln(h)
+        if fila_total:
+            if self.get_y() + h + 2 > self.page_break_trigger:
+                self.add_page()
+            self.set_fill_color(*_AMARILLO)
+            self.set_text_color(*_NEGRO)
+            self.set_font('Helvetica', 'B', 10)
+            for (titulo, ancho, al), celda in zip(columnas, fila_total):
+                self.cell(ancho, h + 1, _t(celda), 0, 0, al, True)
+            self.ln(h + 1)
+        self.ln(6)
+
+
 @login_required
 def descargar_reporte_pdf(request):
     citas_filtradas, fecha_inicio, fecha_fin = _citas_filtradas_por_fecha(request)
 
-    # 1. Obtener datos
-    datos = citas_filtradas.values(
-        'idcita', 'fecha', 'idserviciofk__nombreservicio', 'idserviciofk__precio'
+    # 1. Datos (ordenados cronologicamente)
+    datos = list(
+        citas_filtradas.order_by('fecha', 'horainicio', 'idcita').values(
+            'idcita', 'fecha', 'idserviciofk__nombreservicio', 'idserviciofk__precio'
+        )
     )
 
-    # 2. Crear PDF
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "Reporte de Citas - BarberShop", ln=True, align='C')
-
-    pdf.set_font("Arial", '', 11)
+    # 2. Rango de fechas para el subtitulo
     if fecha_inicio and fecha_fin:
         subtitulo = f"Del {fecha_inicio.strftime('%d/%m/%Y')} al {fecha_fin.strftime('%d/%m/%Y')}"
     elif fecha_inicio:
@@ -506,35 +674,58 @@ def descargar_reporte_pdf(request):
         subtitulo = f"Hasta el {fecha_fin.strftime('%d/%m/%Y')}"
     else:
         subtitulo = "Historico completo"
-    pdf.cell(0, 8, subtitulo, ln=True, align='C')
-    pdf.ln(5)
 
-    # Encabezados
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(20, 10, "ID", 1)
-    pdf.cell(40, 10, "Fecha", 1)
-    pdf.cell(80, 10, "Servicio", 1)
-    pdf.cell(30, 10, "Precio", 1)
-    pdf.ln()
+    # 3. Calculos de resumen
+    total_ingresos = sum((Decimal(c['idserviciofk__precio'] or 0) for c in datos), Decimal(0))
+    por_servicio = {}
+    for c in datos:
+        nombre = c['idserviciofk__nombreservicio'] or 'Sin servicio'
+        acum = por_servicio.setdefault(nombre, {'cant': 0, 'monto': Decimal(0)})
+        acum['cant'] += 1
+        acum['monto'] += Decimal(c['idserviciofk__precio'] or 0)
+    ranking = sorted(por_servicio.items(), key=lambda kv: (-kv[1]['cant'], -kv[1]['monto']))
+    servicio_top = ranking[0][0] if ranking else 'N/A'
 
-    # Datos
-    pdf.set_font("Arial", '', 12)
-    for cita in datos:
-        pdf.cell(20, 10, str(cita.get('idcita', '')), 1)
-        pdf.cell(40, 10, str(cita.get('fecha', '')), 1)
-        pdf.cell(80, 10, str(cita.get('idserviciofk__nombreservicio', '')), 1)
-        pdf.cell(30, 10, str(cita.get('idserviciofk__precio', '')), 1)
-        pdf.ln()
+    # 4. Construir PDF
+    pdf = ReporteBarberiaPDF(subtitulo)
+    pdf.add_page()
 
-    # 3. Guardar en archivo temporal ÚNICO (evita que dos descargas simultáneas se pisen)
+    pdf.tarjetas([
+        ("Total de citas", str(len(datos))),
+        ("Ingresos totales", _moneda(total_ingresos)),
+        ("Servicio top", servicio_top),
+    ])
+
+    if datos:
+        pdf.titulo_seccion("RESUMEN POR SERVICIO")
+        pdf.tabla(
+            [("Servicio", 90, 'L'), ("Cantidad", 30, 'C'), ("Ingresos", 60, 'R')],
+            [[n, str(v['cant']), _moneda(v['monto'])] for n, v in ranking],
+        )
+
+        pdf.titulo_seccion("DETALLE DE CITAS")
+        pdf.tabla(
+            [("ID", 20, 'C'), ("Fecha", 35, 'C'), ("Servicio", 80, 'L'), ("Precio", 45, 'R')],
+            [[str(c['idcita']),
+              c['fecha'].strftime('%d/%m/%Y') if c['fecha'] else '',
+              c['idserviciofk__nombreservicio'] or '',
+              _moneda(c['idserviciofk__precio'])] for c in datos],
+            fila_total=["", "", "TOTAL", _moneda(total_ingresos)],
+        )
+    else:
+        pdf.set_font('Helvetica', 'I', 11)
+        pdf.set_text_color(*_GRIS)
+        pdf.cell(0, 10, "No hay citas registradas en el rango seleccionado.", ln=1, align='C')
+
+    # 5. Guardar en archivo temporal UNICO y enviar
     nombre_archivo = _nombre_archivo_reporte(fecha_inicio, fecha_fin, 'pdf')
     ruta_temp = os.path.join(tempfile.gettempdir(), f"reporte_{uuid.uuid4().hex}.pdf")
     pdf.output(ruta_temp)
 
-    # 4. Enviar archivo al usuario
     response = FileResponse(open(ruta_temp, 'rb'), content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
+
 
 def disponibilidad_ajax(request):
     barbero_id = request.GET.get('barbero')   # idUsuario del barbero
