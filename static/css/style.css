@@ -13064,3 +13064,842 @@ section.container-fluid[style*="max-width: 1200px"] .list-group-item .badge {
         font-size: 1.8rem;
     }
 }
+
+
+/* ============================================================================
+   32. MODO OSCURO — INDEX: CONTRASTE ENTRE COLORES OSCUROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Todo lo de este bloque vive bajo :root:not([data-theme="light"]), es decir,
+   SOLO aplica en modo oscuro (el modo claro no se toca). No modifica ningún
+   dorado ni ningún color claro: solo separa los grises/negros que se
+   confundían entre sí (secciones vs tarjetas vs bordes).
+
+   Escala usada (contraste mínimo entre capas vecinas ~1.3:1, bordes ~2.2:1+):
+     Hero ........ sin cambios (#565654 -> #111111)
+     Barberos .... fondo #2C2C2A | tarjeta #171716 | borde #6A6A65
+     CTA ......... degradado #262624 -> #444441
+     Contacto .... fondo #050505 | tarjeta #262624 | borde #5A5A56
+     Datos/Footer  área de datos #2A2A28 | franja final #0E0E0E
+   ============================================================================ */
+
+/* --- Carrusel de barberos: sección y contenedores --- */
+:root:not([data-theme="light"]) #barberos,
+:root:not([data-theme="light"]) .barbers-carousel-wrapper,
+:root:not([data-theme="light"]) .barbers-track-container {
+  background-color: #2C2C2A;
+}
+
+/* --- Tarjeta de barbero: más oscura que la sección + borde gris visible --- */
+:root:not([data-theme="light"]) .barber-card {
+  background-color: #171716 !important;
+  border: 1px solid #6A6A65 !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+/* El hover dorado existente se conserva */
+:root:not([data-theme="light"]) .barber-card:hover {
+  border-color: var(--dorado-oscuro) !important;
+}
+
+/* --- CTA: el extremo oscuro del degradado ya no se funde con el contacto --- */
+:root:not([data-theme="light"]) .cta {
+  background: linear-gradient(135deg, #262624, #444441);
+}
+
+/* --- Contacto: tarjetas más claras que el fondo, con borde visible --- */
+:root:not([data-theme="light"]) .mya-contact-card {
+  background: #262624 !important;
+  border: 1px solid #5A5A56 !important;
+}
+
+:root:not([data-theme="light"]) .mya-contact-card:hover {
+  border-color: var(--mya-gold) !important;
+}
+
+/* --- Área de datos inferior y franja final del footer --- */
+:root:not([data-theme="light"]) .background-datos-inferior {
+  background-color: #2A2A28;
+}
+
+:root:not([data-theme="light"]) .footer-mya {
+  background-color: #0E0E0E;
+}
+
+
+/* ============================================================================
+   33. MODO OSCURO — SERVICIOS: CONTRASTE ENTRE COLORES OSCUROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: servicios.html, servicios-ind.html y servicios-paq-1.html.
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (bordes, textos, botones, hover) se conservan tal cual.
+   Los selectores están acotados (.servicios-container, .servicios-grid-precios,
+   #modalServicio, #modalEliminarServicio) para no afectar a otras páginas que
+   reutilizan clases como .card-precio o .modal-barberia.
+
+   Escala usada (página = #161513):
+     Tarjetas ........ degradado #2A2A28 -> #333331 (contraste ~1.3-1.4 vs página)
+     Borde tarjeta ... #5A5A56 (servicios.html; ~2.6 vs página)
+     Modales ......... fondo #262624 | campos #141413 | bordes #565654 (sin cambio)
+   ============================================================================ */
+
+/* --- servicios.html: la franja de fondo se funde con la página (antes #111
+       se veía casi igual a #161513 y parecía un error de color) --- */
+:root:not([data-theme="light"]) .servicios-container {
+  background-color: #161513;
+}
+
+/* --- servicios.html: tarjetas "Individuales" / "Paquetes" --- */
+:root:not([data-theme="light"]) .servicios-container .servicio-card {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+  border-color: #5A5A56;
+}
+
+/* El hover dorado existente se conserva */
+:root:not([data-theme="light"]) .servicios-container .servicio-card:hover {
+  border-color: rgba(255, 198, 0, 0.45);
+}
+
+/* --- servicios-ind / servicios-paq-1: tarjetas de precio ---
+       (antes #151515 sobre página #161513: eran prácticamente iguales) --- */
+:root:not([data-theme="light"]) .servicios-grid-precios .card-precio {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+}
+
+/* --- Botón "Siguiente" deshabilitado (estilo en línea: texto #111 sobre
+       #565654, casi ilegible). Se mantiene gris, pero con texto legible --- */
+:root:not([data-theme="light"]) .btn[disabled][style*="var(--gris)"] {
+  background-color: #2C2C2A !important;
+  color: #A5A5A0 !important;
+  border: 1px solid #4A4A47 !important;
+}
+
+/* --- Modales Crear/Editar y Eliminar servicio/paquete --- */
+:root:not([data-theme="light"]) #modalServicio .modal-barberia,
+:root:not([data-theme="light"]) #modalEliminarServicio .modal-barberia {
+  background-color: #262624 !important;
+}
+
+:root:not([data-theme="light"]) #modalServicio .modal-barberia .form-control,
+:root:not([data-theme="light"]) #modalServicio .modal-barberia .form-select,
+:root:not([data-theme="light"]) #modalServicio .modal-barberia .form-control:focus,
+:root:not([data-theme="light"]) #modalServicio .modal-barberia .form-select:focus {
+  background-color: #141413 !important;
+}
+
+/* --- Footer (compartido): sobre la página #161513 la franja #0E0E0E apenas se
+       veía, y su línea superior era dorado al 10% (casi invisible). Se pasa la
+       línea a gris neutro para que el límite se note. Afecta a todas las páginas --- */
+:root:not([data-theme="light"]) .footer-mya {
+  border-top-color: #4A4A47;
+}
+
+
+/* ============================================================================
+   34. MODO OSCURO — SERVICIOS: AJUSTES COMPLEMENTARIOS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca.
+   - Bordes de las tarjetas de precio (individuales y paquetes) en gris neutro,
+     igual que las tarjetas de servicios.html (antes dorado al 12%, casi
+     invisible). El hover dorado se conserva.
+   - Flecha del select "Tipo de Servicio" del modal en dorado (la de Bootstrap
+     es casi negra y no se veía sobre el campo oscuro).
+   Los modos Editar/Borrar siguen ganando porque usan !important.
+   ============================================================================ */
+
+:root:not([data-theme="light"]) .servicios-grid-precios .card-precio {
+  border-color: #5A5A56;
+}
+
+:root:not([data-theme="light"]) .servicios-grid-precios .card-precio:hover {
+  border-color: rgba(255, 198, 0, 0.45);
+}
+
+:root:not([data-theme="light"]) #modalServicio .modal-barberia .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23FFC600' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+
+/* ============================================================================
+   35. MODO OSCURO — HOME CLIENTE: CONTRASTE ENTRE COLORES OSCUROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: home_cliente.html (tarjeta de análisis facial, próxima cita,
+   estado vacío, historial y modal "Cancelar cita").
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (bordes, textos, botones, hover) se conservan tal cual.
+   Misma escala que servicios (sección 33) para que el sitio se vea coherente.
+
+   Antes: tarjetas #1D1D1D sobre página #161513 (1.08:1) y análisis facial con
+   degradado que terminaba en #111 (1.03:1): se fundían con el fondo.
+
+   Escala usada (página = #161513):
+     Tarjetas ........ degradado #2A2A28 -> #333331 | borde #5A5A56
+     Análisis facial . degradado #343432 -> #2C2C2A -> #242422 (+ brillo dorado)
+     Divisores ....... #4A4A47 / blanco 16%
+     Modal cancelar .. fondo #262624 | borde #565654
+   Nota: .card-historial y .card-cita-main son clases de esta vista; si otra
+   plantilla las reutiliza, también tomará estos colores.
+   ============================================================================ */
+
+/* --- Próxima cita e historial: tarjetas más claras que la página + borde visible --- */
+:root:not([data-theme="light"]) .card-cita-main,
+:root:not([data-theme="light"]) .card-historial {
+  background: linear-gradient(145deg, #2A2A28, #333331) !important;
+  border-color: #5A5A56 !important;
+}
+
+/* El hover dorado existente se conserva */
+:root:not([data-theme="light"]) .card-cita-main:hover,
+:root:not([data-theme="light"]) .card-historial:hover {
+  border-color: var(--dorado-oscuro) !important;
+}
+
+/* --- Estado vacío ("No tienes citas programadas"): se mantiene el borde punteado dorado --- */
+:root:not([data-theme="light"]) .card-empty {
+  background-color: #2A2A28;
+}
+
+/* --- Divisores internos (precio, acciones y filas del historial) --- */
+:root:not([data-theme="light"]) .cita-precio,
+:root:not([data-theme="light"]) .cita-acciones {
+  border-top-color: #4A4A47;
+}
+
+:root:not([data-theme="light"]) .border-subtle-custom {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* --- Análisis facial: el degradado ya no se funde con la página.
+       Se redefine solo la variable de fondo; el brillo dorado se conserva --- */
+:root:not([data-theme="light"]) .facial-dashboard-card {
+  --fd-card-bg: radial-gradient(
+          circle at 85% 50%,
+          rgba(255, 198, 0, 0.12) 0%,
+          rgba(255, 198, 0, 0.04) 22%,
+          transparent 48%
+      ),
+      linear-gradient(
+          135deg,
+          #343432 0%,
+          #2C2C2A 55%,
+          #242422 100%
+      );
+}
+
+/* --- Modal "Confirmar cancelación" (usa .card-historial): mismo fondo que los
+       modales de servicios. Va después del hover para que el borde no cambie --- */
+:root:not([data-theme="light"]) .modal-content.card-historial {
+  background: #262624 !important;
+  border-color: #565654 !important;
+}
+
+
+/* ============================================================================
+   36. MODO OSCURO — PERFIL (cliente / barbero / admin): CONTRASTE ENTRE
+       COLORES OSCUROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: perfil.html (Información Personal, Perfil Profesional, Seguridad,
+   Estado de Cuenta, Zona de Peligro y los modales de foto / recomendación /
+   eliminar cuenta).
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (bordes, títulos, botones, hover) se conservan tal cual.
+   Misma escala que Index, Servicios y Home Cliente (secciones 32-35).
+
+   Antes: tarjetas con degradado #1C1C1C -> #121212 (más OSCURAS que la página
+   #161513, casi sin contraste) y campos #141414 con borde dorado al 12%
+   (prácticamente invisible).
+
+   Escala usada (página = #161513):
+     Tarjetas ........ degradado #2A2A28 -> #333331 | borde #5A5A56
+     Campos .......... fondo #141413 (más oscuro que la tarjeta) | borde #565654
+     Correo (readonly) fondo #222220 | borde #4A4A47 | texto #B5B5B0
+     Zona de peligro . degradado #2E2727 -> #382D2D | borde rojo conservado
+     Modales ......... fondo #262624 | borde #565654
+   ============================================================================ */
+
+/* --- Tarjetas principales del perfil --- */
+:root:not([data-theme="light"]) .edit-profile-card {
+  background: linear-gradient(145deg, #2A2A28, #333331) !important;
+  border-color: #5A5A56 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
+
+/* El hover dorado existente se conserva */
+:root:not([data-theme="light"]) .edit-profile-card:hover {
+  border-color: rgba(255, 198, 0, 0.45) !important;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.65), 0 0 15px rgba(255, 198, 0, 0.06);
+}
+
+/* --- Campos del formulario: más oscuros que la tarjeta + borde visible --- */
+:root:not([data-theme="light"]) .edit-profile-card .form-control-custom,
+:root:not([data-theme="light"]) #formEditarPerfil .form-control-custom {
+  background-color: #141413 !important;
+  border: 1px solid #565654 !important;
+  color: #FFFFFF !important;
+}
+
+:root:not([data-theme="light"]) #formEditarPerfil .form-control:not([readonly]):hover {
+  border-color: #7A7A75 !important;
+}
+
+/* Focus: se conserva el dorado */
+:root:not([data-theme="light"]) #formEditarPerfil .form-control:focus,
+:root:not([data-theme="light"]) .edit-profile-card .form-control-custom:focus {
+  background-color: #1B1B19 !important;
+  border-color: var(--dorado, #FFC600) !important;
+  box-shadow: 0 0 0 3px rgba(255, 198, 0, 0.15) !important;
+}
+
+/* Correo electrónico (solo lectura): se nota que está bloqueado, pero legible */
+:root:not([data-theme="light"]) #formEditarPerfil .form-control[readonly] {
+  background-color: #222220 !important;
+  border-color: #4A4A47 !important;
+  color: #B5B5B0 !important;
+  cursor: not-allowed;
+}
+
+/* Placeholders con un poco más de presencia */
+:root:not([data-theme="light"]) #formEditarPerfil .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* --- Foto de perfil: el círculo (fondo inline #1a1a1a) se separa de la tarjeta --- */
+:root:not([data-theme="light"]) .edit-profile-card .rounded-circle.border-warning {
+  background: #141413 !important;
+}
+
+/* --- Estado de Cuenta: divisor interno visible --- */
+:root:not([data-theme="light"]) .edit-profile-card .border-top.border-secondary {
+  border-top-color: #4A4A47 !important;
+}
+
+/* --- Zona de Peligro: se distingue de las demás tarjetas, borde rojo conservado --- */
+:root:not([data-theme="light"]) .danger-zone-card {
+  background: linear-gradient(145deg, #2E2727, #382D2D) !important;
+  border-color: rgba(220, 53, 69, 0.55) !important;
+}
+
+:root:not([data-theme="light"]) .danger-zone-card:hover {
+  border-color: rgba(220, 53, 69, 0.85) !important;
+}
+
+/* --- Modales del perfil (recomendación foto, gestionar foto, eliminar cuenta)
+       Usan .modal-content.edit-profile-card: mismo fondo que otros modales del sitio --- */
+:root:not([data-theme="light"]) .modal-content.edit-profile-card {
+  background: #262624 !important;
+  border-color: #565654 !important;
+}
+
+:root:not([data-theme="light"]) .modal-content.edit-profile-card.border-danger {
+  border-color: rgba(220, 53, 69, 0.6) !important;
+}
+
+/* Divisores de cabecera / pie de los modales */
+:root:not([data-theme="light"]) .modal-content.edit-profile-card .modal-header,
+:root:not([data-theme="light"]) .modal-content.edit-profile-card .modal-footer {
+  border-color: #4A4A47 !important;
+}
+
+/* Campo de archivo del modal "Gestionar Foto" */
+:root:not([data-theme="light"]) #modalFoto .form-control-custom {
+  background-color: #141413 !important;
+  border-color: #565654 !important;
+}
+
+/* El modal no debe "saltar" al pasar el mouse */
+:root:not([data-theme="light"]) .modal-content.edit-profile-card:hover {
+  transform: none;
+}
+
+
+/* ============================================================================
+   37. MODO OSCURO — MIS RESERVAS / HISTORIAL DE CITAS: CONTRASTE ENTRE
+       COLORES OSCUROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: mis_citas.html (tarjetas de reserva, caja de observaciones,
+   alertas, estado vacío y modales de cancelación cliente / admin).
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (bordes, títulos, badges, botones, hover) se conservan tal cual.
+   Misma escala que Index, Servicios, Home Cliente y Perfil (secciones 32-36).
+
+   Antes: tarjetas .premium-card en #1D1D1D sobre página #161513 (1.08:1), con
+   bordes secundarios al 25% casi invisibles; alertas, estado vacío y modales
+   usaban .bg-dark de Bootstrap (#212529), igualmente fundido con el fondo.
+
+   Escala usada (página = #161513):
+     Tarjetas ........ degradado #2A2A28 -> #333331 | borde #5A5A56
+     Divisores ....... #4A4A47
+     Caja observac. .. fondo #141413 | borde #4A4A47
+     Icono circular .. fondo #141413 | borde #565654
+     Alertas / vacío . fondo #2A2A28
+     Modales ......... fondo #262624 | borde #565654 (rojo / dorado más visible)
+   Nota: el degradado de la cabecera "MIS RESERVAS" (.header-reserva-premium)
+   no está definido en este CSS (probablemente vive en base.html), por eso no
+   se toca aquí.
+   ============================================================================ */
+
+/* --- Tarjetas de reserva --- */
+:root:not([data-theme="light"]) .premium-card {
+  background: linear-gradient(145deg, #2A2A28, #333331) !important;
+  border-color: #5A5A56 !important;
+}
+
+/* El hover dorado existente se conserva (va después para no ser pisado) */
+:root:not([data-theme="light"]) .premium-card.hover-glow:hover {
+  border-color: var(--dorado-oscuro) !important;
+}
+
+/* --- Divisores internos de la tarjeta (header, asignaciones) --- */
+:root:not([data-theme="light"]) .premium-card .card-header {
+  border-bottom-color: #4A4A47 !important;
+}
+
+:root:not([data-theme="light"]) .premium-card .border-top.border-secondary {
+  border-top-color: #4A4A47 !important;
+}
+
+/* --- Divisor de la fila "Historial de Reservas" --- */
+:root:not([data-theme="light"]) .container > .d-flex.border-bottom.border-secondary {
+  border-bottom-color: #4A4A47 !important;
+}
+
+/* --- Icono circular del calendario: se separa del fondo de la tarjeta --- */
+:root:not([data-theme="light"]) .premium-card .circle-icon-container {
+  background-color: #141413 !important;
+  border: 1px solid #565654;
+}
+
+/* --- Caja de observaciones: más oscura que la tarjeta + borde visible --- */
+:root:not([data-theme="light"]) .premium-card .observation-box {
+  background-color: #141413 !important;
+  border: 1px solid #4A4A47;
+}
+
+:root:not([data-theme="light"]) .premium-card .no-observation-text {
+  color: #A5A5A0 !important;
+}
+
+/* --- Alertas del sistema (usan .bg-dark): el borde de color a la izquierda se conserva --- */
+:root:not([data-theme="light"]) .container > .alert.bg-dark {
+  background-color: #2A2A28 !important;
+}
+
+/* --- Estado vacío ("No tienes citas agendadas") --- */
+:root:not([data-theme="light"]) .container > .text-center.rounded-4.bg-dark {
+  background-color: #2A2A28 !important;
+  border-color: #5A5A56 !important;
+}
+
+:root:not([data-theme="light"]) .container > .text-center.rounded-4.bg-dark .rounded-circle {
+  background-color: #141413 !important;
+}
+
+/* --- Modales de cancelación (cliente: borde rojo / admin: borde dorado) --- */
+:root:not([data-theme="light"]) .modal-content.custom-modal-content {
+  background-color: #262624 !important;
+  border-color: #565654 !important;
+}
+
+:root:not([data-theme="light"]) [id^="deleteModalCliente"] .modal-content.custom-modal-content {
+  border-color: rgba(220, 53, 69, 0.6) !important;
+}
+
+:root:not([data-theme="light"]) [id^="deleteModalAdmin"] .modal-content.custom-modal-content {
+  border-color: rgba(255, 198, 0, 0.5) !important;
+}
+
+
+/* ============================================================================
+   38. MODO OSCURO — DASHBOARD BARBERO: CONTRASTE ENTRE COLORES OSCUROS
+       (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: barbero.html (tarjetas de estadísticas, "Mi Agenda de Trabajo",
+   tabla de citas y modal "Método de pago").
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (títulos, precios, bordes de la tarjeta destacada, botones,
+   hover) se conservan tal cual.
+   Misma escala que Index, Servicios, Home Cliente, Perfil y Mis Reservas
+   (secciones 32-37).
+
+   Antes: tarjetas en degradado #1D1D1D -> #171717 con borde blanco al 7%, y
+   la agenda con fondo en línea #1D1D1D y borde #444: todo muy cerca de la
+   página #161513. El modal también usaba #1D1D1D / #444 en línea.
+
+   Escala usada (página = #161513):
+     Tarjetas stats .. degradado #2A2A28 -> #333331 | borde #5A5A56
+     Destacada ....... degradado #34322B -> #2C2B26 | borde dorado conservado
+     Agenda .......... degradado #2A2A28 -> #333331 | borde #5A5A56
+     Filas tabla ..... divisores #4A4A47
+     Modal pago ...... fondo #262624 | borde #565654 | campo #141413
+   ============================================================================ */
+
+/* --- Tarjetas de estadísticas --- */
+:root:not([data-theme="light"]) .stats-card {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+  border-color: #5A5A56;
+}
+
+/* Tarjeta destacada ("Producido Histórico"): se distingue con un tinte cálido */
+:root:not([data-theme="light"]) .stats-card.highlight-card {
+  background: linear-gradient(145deg, #34322B, #2C2B26);
+  border-color: rgba(255, 198, 0, 0.35);
+}
+
+/* El hover dorado existente se conserva (va después para no ser pisado) */
+:root:not([data-theme="light"]) .stats-card:hover {
+  border-color: rgba(255, 198, 0, 0.35);
+}
+
+:root:not([data-theme="light"]) .stats-card.highlight-card:hover {
+  border-color: rgba(255, 198, 0, 0.55);
+}
+
+/* --- Contenedor "Mi Agenda de Trabajo" (fondo y borde vienen en línea) --- */
+:root:not([data-theme="light"]) .appointments-section {
+  background: linear-gradient(145deg, #2A2A28, #333331) !important;
+  border-color: #5A5A56 !important;
+}
+
+/* --- Tabla: divisores de filas visibles (el encabezado dorado se conserva) --- */
+:root:not([data-theme="light"]) .appointments-section tbody td {
+  border-bottom-color: #4A4A47;
+}
+
+:root:not([data-theme="light"]) .appointments-section tbody tr:last-child td {
+  border-bottom-color: transparent;
+}
+
+/* --- Modal "Método de pago" (fondo y bordes vienen en línea) --- */
+:root:not([data-theme="light"]) [id^="modalPago"] .modal-content {
+  background: #262624 !important;
+  border-color: #565654 !important;
+}
+
+:root:not([data-theme="light"]) [id^="modalPago"] .modal-header,
+:root:not([data-theme="light"]) [id^="modalPago"] .modal-footer {
+  border-color: #4A4A47 !important;
+}
+
+/* Select del método de pago: más oscuro que el modal + flecha dorada */
+:root:not([data-theme="light"]) [id^="modalPago"] .payment-method-select {
+  background-color: #141413;
+  border-color: #565654;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23FFC600' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+:root:not([data-theme="light"]) [id^="modalPago"] .payment-method-select option {
+  background-color: #141413;
+}
+
+/* Hover / focus dorados conservados */
+:root:not([data-theme="light"]) [id^="modalPago"] .payment-method-select:hover,
+:root:not([data-theme="light"]) [id^="modalPago"] .payment-method-select:focus {
+  border-color: var(--dorado);
+}
+
+
+/* ============================================================================
+   39. MODO OSCURO — DASHBOARD ADMIN ("PANEL DE CONTROL"): CONTRASTE ENTRE
+       COLORES OSCUROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: dashboard_admin.html (tarjetas KPI, panel "Próximas Citas" con su
+   tabla y panel "Acciones Rápidas").
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (títulos, iconos, encabezados de tabla, badges, hover) se
+   conservan tal cual.
+   Misma escala que las secciones 32-38.
+
+   Antes: KPI y paneles en #1D1D1D -> #171717 con bordes blancos al 7% sobre la
+   página #161513; filas de tabla #151515 y botones rápidos #151515 sobre esos
+   mismos paneles: todo se fundía.
+
+   Escala usada (página = #161513):
+     KPI y paneles ... degradado #2A2A28 -> #333331 | borde #5A5A56
+     Divisor cabecera  #4A4A47
+     Filas de tabla .. fondo #1E1E1C (más oscuro que el panel)
+     Acciones rápidas  fondo #1E1E1C | borde #4A4A47
+   Nota: los paneles se apuntan como .panel-bg.h-100 (los dos del dashboard)
+   para no alterar el panel de "Gestión de Perfiles", que también usa
+   .panel-bg y tiene su propio diseño (sección 15).
+   ============================================================================ */
+
+/* --- Tarjetas KPI --- */
+:root:not([data-theme="light"]) .kpi-card {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+  border-color: #5A5A56;
+}
+
+/* El hover dorado existente se conserva (va después para no ser pisado) */
+:root:not([data-theme="light"]) .kpi-card:hover {
+  border-color: rgba(255, 198, 0, 0.35);
+}
+
+/* --- Paneles "Próximas Citas" y "Acciones Rápidas" --- */
+:root:not([data-theme="light"]) .dashboard-container .panel-bg.h-100 {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+  border-color: #5A5A56;
+}
+
+/* Divisor bajo el título "Próximas Citas" */
+:root:not([data-theme="light"]) .dashboard-container .panel-bg.h-100 > .d-flex {
+  border-bottom-color: #4A4A47;
+}
+
+/* --- Tabla: filas más oscuras que el panel para que se distingan --- */
+:root:not([data-theme="light"]) .custom-dashboard-table tbody tr {
+  background: #1E1E1C;
+}
+
+/* Hover dorado conservado, con un tinte cálido sobre el nuevo fondo */
+:root:not([data-theme="light"]) .custom-dashboard-table tbody tr:hover {
+  background: #2A2923;
+}
+
+/* --- Acciones rápidas --- */
+:root:not([data-theme="light"]) .quick-link-btn {
+  background: #1E1E1C;
+  border-color: #4A4A47;
+}
+
+/* Hover dorado conservado */
+:root:not([data-theme="light"]) .quick-link-btn:hover {
+  background: rgba(255, 198, 0, 0.10);
+  border-color: rgba(255, 198, 0, 0.35);
+}
+
+
+/* ============================================================================
+   40. MODO OSCURO — GESTIÓN GLOBAL DE CITAS (ADMIN): CONTRASTE ENTRE COLORES
+       OSCUROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: ver_citas_admin.html (panel que contiene la tabla de citas).
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (# de cita, encabezados de tabla, hover) se conservan tal cual.
+   Misma escala que las secciones 32-39.
+
+   Antes: el panel usaba el degradado base de .panel-bg (#1D1D1D -> #181818)
+   con borde blanco al 7%, casi igual a la página #161513.
+
+   Qué ya queda cubierto por la sección 39 (reglas globales de
+   .custom-dashboard-table): filas #1E1E1C con hover cálido. Aquí solo se
+   ajusta el panel. Se apunta como ".container:not(.dashboard-container) >
+   .panel-bg" para no tocar los paneles del dashboard (sección 39) ni el de
+   Gestión de Perfiles (sección 15).
+
+   Escala usada (página = #161513):
+     Panel ........... degradado #2A2A28 -> #333331 | borde #5A5A56
+   Los botones de filtro (Todas / Completadas / Incompletas / Pendientes) y
+   "Volver al Dashboard" ya usan los estilos globales de botones; no se tocan.
+   ============================================================================ */
+
+:root:not([data-theme="light"]) .container:not(.dashboard-container) > .panel-bg {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+  border-color: #5A5A56;
+}
+
+
+/* ============================================================================
+   41. MODO OSCURO — REPORTES ADMINISTRATIVOS: CONTRASTE ENTRE COLORES OSCUROS
+       (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: reportes.html (filtro de fechas, tarjetas de totales, gráfico
+   "Evolución de Ingresos" y lista "Servicios más vendidos").
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (título, "Ingresos Totales", badges, foco de los campos) y los
+   bordes de color de las tarjetas de totales (amarillo / celeste / verde) se
+   conservan tal cual.
+   Misma escala que las secciones 32-40. Se reutiliza el mismo selector base
+   del bloque "REPORTES ADMINISTRATIVOS" (section.container-fluid con
+   max-width: 1200px) para ganar en especificidad sin tocar otras páginas.
+
+   Antes: filtro #181818, tarjetas #191919 con bordes #303030 / #353535 y
+   campos #252527, todos muy cerca de la página #161513.
+
+   Escala usada (página = #161513):
+     Tarjetas / filtro  degradado #2A2A28 -> #333331 | borde #5A5A56
+     Campos de fecha .. fondo #141413 | borde #565654
+     Divisores ........ #4A4A47
+   ============================================================================ */
+
+/* --- Filtro de fechas --- */
+:root:not([data-theme="light"]) section.container-fluid[style*="max-width: 1200px"] form[method="get"] {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+  border-color: #5A5A56;
+}
+
+/* Campos de fecha: más oscuros que el filtro + borde visible */
+:root:not([data-theme="light"]) section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"] {
+  background-color: #141413;
+  border-color: #565654;
+}
+
+:root:not([data-theme="light"]) section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"]:hover {
+  border-color: #7A7A75;
+}
+
+/* Foco dorado conservado */
+:root:not([data-theme="light"]) section.container-fluid[style*="max-width: 1200px"] form[method="get"] input[type="date"]:focus {
+  background-color: #1B1B19;
+  border-color: var(--dorado);
+}
+
+/* --- Tarjetas de totales (el borde de color amarillo / celeste / verde se mantiene) --- */
+:root:not([data-theme="light"]) section.container-fluid[style*="max-width: 1200px"] .row.g-4.mb-5 .card {
+  background: linear-gradient(145deg, #2A2A28, #333331) !important;
+}
+
+/* --- Tarjetas inferiores: gráfico y servicios más vendidos --- */
+:root:not([data-theme="light"]) section.container-fluid[style*="max-width: 1200px"] > .row:last-of-type > div > .card {
+  background: linear-gradient(145deg, #2A2A28, #333331) !important;
+  border-color: #5A5A56;
+}
+
+/* Divisor bajo los títulos de esas tarjetas */
+:root:not([data-theme="light"]) section.container-fluid[style*="max-width: 1200px"] > .row:last-of-type .card > h5 {
+  border-bottom-color: #4A4A47;
+}
+
+/* Líneas entre servicios de la lista */
+:root:not([data-theme="light"]) section.container-fluid[style*="max-width: 1200px"] .list-group-item {
+  border-color: #4A4A47 !important;
+}
+
+
+/* ============================================================================
+   42. MODO OSCURO — EDITAR CONTENIDO DEL INICIO (ADMIN): CONTRASTE ENTRE
+       COLORES OSCUROS (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: editar_contenido_index.html (tarjetas Identidad, Hero, Marca,
+   Horarios y contacto, CTA; campos de texto, previsualización de imágenes).
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca, y
+   los dorados (iconos de cabecera, botones "Cambiar", botones finales, foco)
+   se conservan tal cual.
+   Misma escala que las secciones 32-41.
+
+   Antes: tarjetas con degradado #171717 -> #0B0B0B (MÁS oscuras que la página
+   #161513), campos #141414 con borde dorado al 12% y cuadros de imagen vacíos
+   en #E7E6E6 (un bloque casi blanco en pleno modo oscuro).
+
+   Escala usada (página = #161513):
+     Tarjetas ........ degradado #2A2A28 -> #333331 | borde #5A5A56
+     Divisor cabecera  #4A4A47
+     Campos .......... fondo #141413 | borde #565654
+     Imágenes ........ fondo #141413 | borde #565654
+   ============================================================================ */
+
+/* --- Tarjetas de cada bloque --- */
+:root:not([data-theme="light"]) .editar-card {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+  border-color: #5A5A56;
+}
+
+/* El hover dorado existente se conserva (va después para no ser pisado) */
+:root:not([data-theme="light"]) .editar-card:hover {
+  border-color: rgba(255, 198, 0, 0.45);
+}
+
+/* --- Cabecera de cada tarjeta --- */
+:root:not([data-theme="light"]) .editar-card-header {
+  border-bottom-color: #4A4A47;
+}
+
+:root:not([data-theme="light"]) .editar-card-header i {
+  background-color: #141413;
+}
+
+:root:not([data-theme="light"]) .editar-card-header span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* --- Campos de texto y áreas de texto --- */
+:root:not([data-theme="light"]) .editar-card .form-control-custom {
+  background-color: #141413 !important;
+  border: 1px solid #565654 !important;
+  color: #FFFFFF !important;
+}
+
+:root:not([data-theme="light"]) .editar-card .form-control-custom:hover {
+  border-color: #7A7A75 !important;
+}
+
+/* Foco dorado conservado */
+:root:not([data-theme="light"]) .editar-card .form-control-custom:focus {
+  background-color: #1B1B19 !important;
+  border-color: var(--dorado, #FFC600) !important;
+  box-shadow: 0 0 12px rgba(255, 198, 0, 0.2) !important;
+}
+
+/* --- Previsualización de imágenes (incluye el cuadro vacío, antes #E7E6E6) --- */
+:root:not([data-theme="light"]) .editar-card .imagen-preview {
+  background: #141413;
+  border-color: #565654;
+}
+
+:root:not([data-theme="light"]) .editar-card .imagen-caption {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* ============================================================================
+   43. MODO OSCURO — ANÁLISIS DE ROSTRO: CONTRASTE ENTRE COLORES OSCUROS
+       (encargo puntual)
+   ----------------------------------------------------------------------------
+   Aplica a: analisis_rostro.html (tarjeta principal, modales de privacidad y
+   recomendación, botones de opción, visor de cámara / vista previa y caja de
+   resultado).
+   Todo vive bajo :root:not([data-theme="light"]): el modo claro no se toca (ya
+   tiene su propio bloque "ANÁLISIS DE ROSTRO — FIX MODO CLARO"), y los
+   dorados (título, forma detectada, métricas, hover de botones, spinner) se
+   conservan tal cual.
+   Misma escala que las secciones 32-42.
+
+   Antes: tarjeta #1D1D1D con borde #3A3A3A sobre la página #161513, y botones
+   de opción con borde blanco al 20%.
+
+   Escala usada (página = #161513):
+     Tarjeta ......... degradado #2A2A28 -> #333331 | borde #5A5A56
+     Modales ......... fondo #262624 | borde dorado conservado
+     Botones opción .. fondo #1E1E1C | borde #6A6A65
+     Visor / preview . borde #565654
+     Resultado ....... fondo #1B1810 (tinte cálido, más oscuro que la tarjeta)
+   Nota: las tarjetas de "cortes recomendados" (#contenedorCortes) las genera
+   el JavaScript con clases que no aparecen en este template, por lo que no se
+   ajustan aquí. Si al probarlas se funden con la caja de resultado, pásame el
+   fragmento de JS (o su HTML renderizado) y las agrego.
+   ============================================================================ */
+
+/* --- Tarjeta principal --- */
+:root:not([data-theme="light"]) .analisis-card {
+  background: linear-gradient(145deg, #2A2A28, #333331);
+  border-color: #5A5A56;
+}
+
+/* --- Modales de privacidad y recomendación (el borde dorado se conserva) --- */
+:root:not([data-theme="light"]) .privacidad-modal {
+  background: #262624;
+}
+
+/* --- Botones "Usar cámara / Subir imagen / Usar foto de perfil" --- */
+:root:not([data-theme="light"]) .btn-opcion {
+  background: #1E1E1C;
+  border-color: #6A6A65;
+}
+
+/* Hover dorado conservado (va después para no ser pisado) */
+:root:not([data-theme="light"]) .btn-opcion:hover {
+  border-color: #ffc600;
+}
+
+/* --- Visor de cámara y vista previa --- */
+:root:not([data-theme="light"]) .video-preview,
+:root:not([data-theme="light"]) #canvasCaptura {
+  border-color: #565654;
+}
+
+/* --- Caja de resultado y divisor del aviso final --- */
+:root:not([data-theme="light"]) #resultadoBox.resultado-box {
+  background-color: #1B1810 !important;
+}
+
+:root:not([data-theme="light"]) .aviso-eliminada {
+  border-top-color: rgba(255, 255, 255, 0.16);
+}
