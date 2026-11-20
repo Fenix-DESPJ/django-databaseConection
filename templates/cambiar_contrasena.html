@@ -2,24 +2,60 @@
 {% load static %}
 
 {% block content %}
-<div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
-    <div class="login-container" style="width: 100%; max-width: 400px;">
-        <div class="login-card p-4">
-            <h1 class="h3 mb-3 text-center">Nueva contraseña</h1>
-            
-            <form method="POST" id="form-cambio">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="contrasena" class="form-label">Nueva contraseña</label>
-                    <input type="password" class="form-control" id="contrasena" name="contrasena" required>
-                </div>
-                <div class="mb-4">
-                    <label for="confirmar" class="form-label">Confirmar contraseña</label>
-                    <input type="password" class="form-control" id="confirmar" name="confirmar" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Guardar</button>
-            </form>
+<section class="cambiar-pass-section">
+    <div class="cambiar-pass-card">
+
+        <div class="cambiar-pass-icon">
+            <i class="bi bi-key-fill"></i>
         </div>
+
+        <p class="section-eyebrow text-center mb-1">Seguridad</p>
+        <h1 class="cambiar-pass-title">Nueva contraseña</h1>
+        <p class="cambiar-pass-text">
+            Crea una contraseña segura para volver a ingresar a tu cuenta.
+        </p>
+
+        <form method="POST" id="form-cambio">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="contrasena" class="cambiar-pass-label">Nueva contraseña</label>
+                <div class="input-group cambiar-pass-group">
+                    <input type="password" class="form-control cambiar-pass-input"
+                           id="contrasena" name="contrasena"
+                           minlength="8" maxlength="32"
+                           placeholder="Entre 8 y 32 caracteres"
+                           autocomplete="new-password" required>
+                    <button type="button" class="toggle-password cambiar-pass-eye" aria-label="Mostrar u ocultar contraseña">
+                        <i class="bi bi-eye-slash"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label for="confirmar" class="cambiar-pass-label">Confirmar contraseña</label>
+                <div class="input-group cambiar-pass-group">
+                    <input type="password" class="form-control cambiar-pass-input"
+                           id="confirmar" name="confirmar"
+                           minlength="8" maxlength="32"
+                           placeholder="Repite tu contraseña"
+                           autocomplete="new-password" required>
+                    <button type="button" class="toggle-password cambiar-pass-eye" aria-label="Mostrar u ocultar contraseña">
+                        <i class="bi bi-eye-slash"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-dorado w-100 mt-3">
+                <i class="bi bi-shield-lock-fill me-2"></i>Guardar contraseña
+            </button>
+
+            <div class="text-center mt-3">
+                <a href="{% url 'iniciar_sesion' %}" class="cambiar-pass-link">
+                    <i class="bi bi-arrow-left me-1"></i>Volver a iniciar sesión
+                </a>
+            </div>
+        </form>
     </div>
-</div>
+</section>
 {% endblock %}

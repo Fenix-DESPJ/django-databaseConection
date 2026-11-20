@@ -1170,6 +1170,28 @@ def marcar_notificaciones_leidas(request):
             pass
     return JsonResponse({'ok': True})
 
+@login_required
+@require_POST
+def limpiar_notificaciones(request):
+    
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+        Notificacion.objects.filter(
+            idusuariofk=usuario
+        ).delete()
+        
+        return JsonResponse({
+            'ok': True,
+            'mensaje': 'Historial de notificaciones eliminado correctamente.'
+        })
+    
+    except Usuario.DoesNotExist:
+        return JsonResponse({
+            'ok': False,
+            'mensaje': 'No se encontró el usuario.'
+        }, status=404)
+        
+
 # =========================================================================
 # 8. VISTA: ANALIZAR FORMA DE ROSTRO
 # =========================================================================

@@ -18,6 +18,7 @@ urlpatterns = [
     path('perfil/foto/', views.gestionar_foto_perfil, name='gestionar_foto_perfil'),
     path('notificaciones/lista/', views.listar_notificaciones, name='listar_notificaciones'),
     path('notificaciones/marcar-leidas/', views.marcar_notificaciones_leidas, name='marcar_notificaciones_leidas'),
+    path('notificaciones/limpiar/', views.limpiar_notificaciones, name='limpiar_notificaciones'),
     path('calificacion/pendiente/', views.verificar_calificacion_pendiente, name='verificar_calificacion_pendiente'),
     path('calificacion/guardar/', views.guardar_calificacion, name='guardar_calificacion'),
     path('calificacion/omitir/', views.omitir_calificacion, name='omitir_calificacion'),

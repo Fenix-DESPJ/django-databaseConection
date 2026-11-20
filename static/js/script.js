@@ -1338,6 +1338,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const URL_LISTAR = panel.dataset.urlListar;
     const URL_MARCAR = panel.dataset.urlMarcar;
+    const URL_LIMPIAR = panel.dataset.urlLimpiar;
+    
+    const btnLimpiar = document.getElementById("btnLimpiarNotificaciones");
 
     function getCookie(name) {
         let cookieValue = null;
@@ -1382,10 +1385,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             lista.innerHTML = "";
 
+            if (btnLimpiar) {
+                btnLimpiar.disabled = !data.notificaciones ||
+                                        data.notificaciones.length === 0;
+            }
+
             if (!data.notificaciones || data.notificaciones.length === 0) {
-                lista.innerHTML = `<div class="text-center text-muted py-3" style="font-size:0.85rem;">
-                    No tienes notificaciones por ahora.
-                </div>`;
+                lista.innerHTML = `
+                    <div class="notificaciones-vacias">
+                        <p>No tienes notificaciones por ahora.</p>
+                    </div>
+                `;
             } else {
                 data.notificaciones.forEach(n => {
                     const item = document.createElement("div");
@@ -1422,6 +1432,40 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    async function limpiarHistorialNotificaciones() {
+
+        const confirmar = confirm(
+            "¿Estás seguro de que deseas eliminar todo tu historial de notificaciones? Esta acción no se puede deshacer."
+        );
+
+        if (!confirmar) return;
+
+        try {
+            const resp = await fetch(URL_LIMPIAR, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                credentials: "same-origin"
+            });
+
+            const data = await resp.json();
+
+            if (!resp.ok || !data.ok) {
+                throw new Error(data.mensaje || "No se pudo eliminar el historial.");
+            }
+
+            //Actualizar la lista y los contadores.
+            actualizarBadges(0);
+            await cargarNotificaciones();
+
+        } catch (e) {
+            console.error("Error al limpiar notitificaciones:", e);
+            alert("No fue posible eliminar las notificaciones. Inténtalo nuevamente.");
+        }
+    }
+
     function togglePanel() {
         const abierto = panel.classList.contains("active");
         if (abierto) {
@@ -1442,12 +1486,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    panel.addEventListener("click", (e) => {
+        const boton = e.target.closest("#btnLimpiarNotificaciones");
+        if (!boton) return;
+        e.stopPropagation();
+        if (boton.disabled) return;
+        limpiarHistorialNotificaciones();
+    });
+
     // Cierra el panel si el usuario hace clic fuera de él
     document.addEventListener("click", (e) => {
         if (
             panel.classList.contains("active") &&
             !panel.contains(e.target) &&
-            !botones.includes(e.target)
+            !botones.some(b => b.contains(e.target))
         ) {
             panel.classList.remove("active");
         }

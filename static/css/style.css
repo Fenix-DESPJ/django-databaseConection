@@ -1210,6 +1210,64 @@ section {
    9. NOTIFICACIONES (CAMPANITA)
    ============================================================================ */
 
+/* Papelera de notificaciones*/
+
+.notificaciones-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.notificaciones-header h6 {
+    margin: 0 !important;
+}
+
+.btn-limpiar-notificaciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #383838;
+    border-radius: 9px;
+    background: transparent;
+    color: #999;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-limpiar-notificaciones:hover:not(:disabled) {
+    color: #ff5b5b;
+    border-color: #ff5b5b;
+    background: rgba(255, 91, 91, 0.08);
+}
+
+.btn-limpiar-notificaciones:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/*Estado vacio de notitificaciones*/
+.notitificaciones-vacias {
+    padding: 25px 10px;
+    text-align: center;
+    color: #999;
+}
+
+.notificaciones-vacias i {
+    display: block;
+    font-size: 2rem;
+    color: var(--dorado-branding);
+    margin-bottom: 10px;
+}
+
+.notificaciones-vacias p {
+    font-size: 0.85rem;
+    margin: 0;
+}
 /* Asegurar que la campanita tenga el estilo correcto */
 .bi-bell-fill {
     font-size: 1.2rem;
@@ -6453,6 +6511,287 @@ textarea.form-control-custom { resize: vertical; }
     text-decoration: none;
     font-weight: bold;
 }
+
+
+/* ==========================================================================
+   CAMBIAR CONTRASEÑA - DISEÑO PREMIUM
+   ========================================================================== */
+
+.cambiar-pass-section {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 55px 16px;
+    position: relative;
+    background:
+        radial-gradient(ellipse at 50% 45%, rgba(255, 198, 0, 0.055), transparent 55%);
+}
+
+.cambiar-pass-card {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    padding: 42px 36px 34px;
+    background: linear-gradient(145deg, #30312e 0%, #252623 55%, #20211f 100%);
+    border: 1px solid rgba(255, 198, 0, 0.28);
+    border-radius: 22px;
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.38),
+        0 0 35px rgba(255, 198, 0, 0.045),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cambiar-pass-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.45),
+        0 0 38px rgba(255, 198, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Línea dorada superior */
+.cambiar-pass-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 3px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #FFE27A,
+        var(--dorado),
+        #FFE27A,
+        transparent
+    );
+    box-shadow: 0 0 15px rgba(255, 198, 0, 0.45);
+}
+
+/* Icono */
+.cambiar-pass-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 198, 0, 0.55);
+    border-radius: 20px;
+    background: linear-gradient(
+        145deg,
+        rgba(255, 198, 0, 0.17),
+        rgba(255, 198, 0, 0.055)
+    );
+    color: #FFD43E;
+    font-size: 1.85rem;
+    box-shadow:
+        0 8px 25px rgba(255, 198, 0, 0.09),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Títulos */
+.cambiar-pass-title {
+    margin-bottom: 10px;
+    text-align: center;
+    color: #FFD43E;
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.cambiar-pass-text {
+    margin-bottom: 29px;
+    text-align: center;
+    color: #D4D4D0;
+    font-size: 0.94rem;
+    line-height: 1.7;
+}
+
+.cambiar-pass-label {
+    display: block;
+    margin-bottom: 9px;
+    color: #E8C75A;
+    font-size: 0.87rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+/* Campos de contraseña */
+.cambiar-pass-input {
+    min-height: 49px;
+    background: #1D1E1B;
+    border: 1px solid #55564F;
+    border-right: none;
+    color: #FFFFFF;
+    padding: 11px 15px;
+    border-radius: 11px 0 0 11px;
+    font-size: 0.93rem;
+    transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.cambiar-pass-input::placeholder {
+    color: #92928C;
+}
+
+.cambiar-pass-input:focus {
+    background: #242520;
+    color: #FFFFFF;
+    border-color: var(--dorado);
+    box-shadow: none;
+    outline: none;
+}
+
+/* Botón mostrar contraseña */
+.cambiar-pass-eye {
+    min-width: 50px;
+    background: #1D1E1B;
+    border: 1px solid #55564F;
+    border-left: none;
+    border-radius: 0 11px 11px 0;
+    color: #E8C75A;
+    padding: 0 15px;
+    transition: all 0.25s ease;
+}
+
+.cambiar-pass-eye:hover {
+    background: rgba(255, 198, 0, 0.13);
+    color: #FFD43E;
+}
+
+/* Efecto de enfoque en todo el grupo */
+.cambiar-pass-group:focus-within .cambiar-pass-input,
+.cambiar-pass-group:focus-within .cambiar-pass-eye {
+    border-color: var(--dorado);
+}
+
+.cambiar-pass-group:focus-within {
+    border-radius: 11px;
+    box-shadow: 0 0 0 3px rgba(255, 198, 0, 0.13);
+}
+
+/* Enlace para regresar */
+.cambiar-pass-link {
+    color: #C7C7C0;
+    font-size: 0.89rem;
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+.cambiar-pass-link:hover {
+    color: #FFD43E;
+}
+
+/* ==========================================================================
+   MODO CLARO
+   ========================================================================== */
+
+[data-theme="light"] .cambiar-pass-section {
+    background:
+        radial-gradient(ellipse at 50% 45%, rgba(191, 147, 13, 0.09), transparent 60%);
+}
+
+[data-theme="light"] .cambiar-pass-card {
+    background: linear-gradient(145deg, #FFFFFF 0%, #FAFAF6 100%);
+    border-color: rgba(191, 147, 13, 0.30);
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.09),
+        0 0 30px rgba(191, 147, 13, 0.06),
+        inset 0 1px 0 #FFFFFF;
+}
+
+[data-theme="light"] .cambiar-pass-icon {
+    background: linear-gradient(145deg, #FFF8DC, #FFF1B8);
+    border-color: rgba(191, 147, 13, 0.42);
+    color: var(--dorado-oscuro);
+    box-shadow: 0 8px 22px rgba(191, 147, 13, 0.10);
+}
+
+[data-theme="light"] .cambiar-pass-title,
+[data-theme="light"] .cambiar-pass-label {
+    color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .cambiar-pass-text,
+[data-theme="light"] .cambiar-pass-link {
+    color: #62625C;
+}
+
+[data-theme="light"] .cambiar-pass-link:hover {
+    color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .cambiar-pass-input,
+[data-theme="light"] .cambiar-pass-eye {
+    background: #F7F7F2;
+    border-color: #D8D8CE;
+    color: #22231F;
+}
+
+[data-theme="light"] .cambiar-pass-input::placeholder {
+    color: #92928A;
+}
+
+[data-theme="light"] .cambiar-pass-input:focus {
+    background: #FFFFFF;
+    color: #22231F;
+}
+
+[data-theme="light"] .cambiar-pass-eye {
+    color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .cambiar-pass-eye:hover {
+    background: #FFF3C4;
+    color: #9C7600;
+}
+
+[data-theme="light"] .cambiar-pass-group:focus-within .cambiar-pass-input,
+[data-theme="light"] .cambiar-pass-group:focus-within .cambiar-pass-eye {
+    border-color: var(--dorado-oscuro);
+}
+
+[data-theme="light"] .cambiar-pass-group:focus-within {
+    box-shadow: 0 0 0 3px rgba(191, 147, 13, 0.12);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 480px) {
+    .cambiar-pass-section {
+        padding: 35px 15px;
+    }
+
+    .cambiar-pass-card {
+        padding: 34px 21px 28px;
+        border-radius: 18px;
+    }
+
+    .cambiar-pass-title {
+        font-size: 1.55rem;
+    }
+
+    .cambiar-pass-icon {
+        width: 62px;
+        height: 62px;
+        font-size: 1.65rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cambiar-pass-card,
+    .cambiar-pass-link,
+    .cambiar-pass-eye,
+    .cambiar-pass-input {
+        transition: none;
+    }
+}
+
 
 
 /* ============================================================================
