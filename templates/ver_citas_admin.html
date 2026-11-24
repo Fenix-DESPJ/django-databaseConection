@@ -2,6 +2,17 @@
 
 {% block content %}
 <div class="container my-5">
+
+    {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+                <div class="alert {% if 'error' in message.tags %}alert-danger bg-danger{% elif 'warning' in message.tags %}alert-warning bg-warning text-dark{% else %}alert-success bg-success{% endif %} alert-dismissible fade show text-white border-0" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     
     <!-- Encabezado y botón de retorno al Dashboard -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -95,11 +106,22 @@
                         <!-- Columna de Acciones -->
                         <td class="text-center">
                             {% if not cita.esta_completada and not cita.esta_incompleta %}
-                                <a href="{% url 'cancelar_cita_admin' cita.idCita %}" 
-                                   class="btn btn-sm btn-outline-danger"
-                                   onclick="return confirm('¿Estás seguro de cancelar la Cita #{{ cita.idcita }}? Se enviará una notificación automática al cliente notificándole la indisponibilidad del barbero.');">
-                                    <i class="bi bi-x-circle me-1"></i> Cancelar Cita
-                                </a>
+                                <div class="d-inline-flex flex-wrap justify-content-center gap-1">
+                                    <button type="button"
+                                            class="btn btn-sm btn-success"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalConfirmarCitaAdmin"
+                                            data-url="{% url 'completar_cita_admin' cita.pk %}"
+                                            data-cita-id="{{ cita.pk }}"
+                                            onclick="prepararModalConfirmarAdmin(this)">
+                                        <i class="bi bi-check-circle me-1"></i> Confirmar Cita
+                                    </button>
+                                   <a href="{% url 'cancelar_cita_admin' cita.pk %}" 
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('¿Estás seguro de cancelar la Cita #{{ cita.pk }}? Se enviará una notificación automática al cliente notificándole la indisponibilidad del barbero.');">
+                                        <i class="bi bi-x-circle me-1"></i> Cancelar Cita
+                                    </a>
+                                </div>
                             {% else %}
                                 <small class="text-muted cita-finalizada-msg"><i class="bi bi-lock-fill me-1"></i> Finalizada</small>
                             {% endif %}
@@ -119,4 +141,56 @@
     </div>
 
 </div>
+
+<!-- Modal para Confirmar / Finalizar Cita desde Administración -->
+<div class="modal fade" id="modalConfirmarCitaAdmin" tabindex="-1" aria-labelledby="modalConfirmarCitaAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form method="POST" action="" id="formConfirmarCitaAdmin" class="modal-content modal-barberia">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalConfirmarCitaAdminLabel">
+                    Confirmar y Finalizar Cita <span id="spanCitaAdminId"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label for="metodoPagoAdmin" class="form-label">Método de pago</label>
+                    <select name="metodo_pago" id="metodoPagoAdmin" class="form-select" required>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="PSE">PSE</option>
+                        <option value="Tarjeta">Tarjeta</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="observacionesAdmin" class="form-label">Observaciones / Motivo de finalización</label>
+                    <textarea name="observaciones" id="observacionesAdmin" rows="3" class="form-control"
+                              placeholder="Indica por qué estás finalizando la cita..." required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success">Finalizar Cita</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function prepararModalConfirmarAdmin(boton) {
+    const form = document.getElementById('formConfirmarCitaAdmin');
+    const spanId = document.getElementById('spanCitaAdminId');
+    const textarea = document.getElementById('observacionesAdmin');
+
+    if (form && boton.dataset.url) {
+        form.setAttribute('action', boton.dataset.url);
+    }
+    if (spanId && boton.dataset.citaId) {
+        spanId.textContent = '#' + boton.dataset.citaId;
+    }
+    if (textarea) {
+        textarea.value = '';
+    }
+}
+</script>
 {% endblock %}

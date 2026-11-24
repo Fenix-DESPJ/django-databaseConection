@@ -7,5 +7,6 @@ urlpatterns = [
     path('mis-citas/', views.mis_citas_view, name='mis_citas'),
     path('cancelar/<int:id_cita>/', views.cancelar_cita_cliente, name='cancelar_cita_cliente'),
     path('admin-cancelar/<int:id_cita>/', views.cancelar_cita_admin, name='cancelar_cita_admin'),
+    path('admin-completar/<int:id_cita>/', views.completar_cita_admin, name='completar_cita_admin'),
     path('gestionar-citas/', views.ver_todas_citas_admin, name='ver_todas_citas_admin'),
 ]

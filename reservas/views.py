@@ -5,7 +5,7 @@ from django.db import transaction
 import random
 from datetime import datetime, timedelta, date
 from servicios.models import Servicio
-from usuarios.models import Usuario, Notificacion, Cliente
+from usuarios.models import Usuario, Notificacion, Cliente, Pago
 from negocio.models import Barbero, Agenda
 from .models import Cita
 from django.http import JsonResponse
@@ -469,3 +469,92 @@ def ver_todas_citas_admin(request):
         'citas': citas,
         'estado_filtro': estado_filtro
     })
+    
+
+def completar_cita_admin(request, id_cita):
+    usuario_actual = Usuario.objects.filter(correo=request.user.email).first()
+    es_admin_user = (
+        request.session.get('usuario_rol_id') == 1
+        or (usuario_actual and usuario_actual.idrolfk_id == 1)
+        or request.user.is_staff
+    )
+
+    if not es_admin_user:
+        messages.error(request, "Acceso denegado. No tienes permisos de administrador.")
+        return redirect('home')
+
+    if request.method != 'POST':
+        return redirect('ver_todas_citas_admin')
+
+    observacion_motivo = (request.POST.get('observaciones') or '').strip()
+    if not observacion_motivo:
+        messages.error(
+            request,
+            "Debes escribir una observación indicando el motivo por el cual finalizas la cita."
+        )
+        return redirect('ver_todas_citas_admin')
+
+    PagoModelo = Cita._meta.get_field('idpagofk').related_model
+    metodo_efectivo = getattr(PagoModelo, 'METODO_EFECTIVO', getattr(Pago, 'METODO_EFECTIVO', 'Efectivo'))
+    metodo_pse = getattr(PagoModelo, 'METODO_PSE', getattr(Pago, 'METODO_PSE', 'PSE'))
+    metodo_tarjeta = getattr(PagoModelo, 'METODO_TARJETA', getattr(Pago, 'METODO_TARJETA', 'Tarjeta'))
+    estado_pagado = getattr(PagoModelo, 'ESTADO_PAGADO', getattr(Pago, 'ESTADO_PAGADO', 'PAGADO'))
+
+    metodo_pago = request.POST.get('metodo_pago') or metodo_efectivo
+    if metodo_pago not in [metodo_efectivo, metodo_pse, metodo_tarjeta]:
+        messages.error(request, "Selecciona un método de pago válido.")
+        return redirect('ver_todas_citas_admin')
+
+    try:
+        with transaction.atomic():
+            cita = Cita.objects.select_related(
+                'idserviciofk', 'idclientefk__idusuariofk', 'idpagofk'
+            ).get(pk=id_cita)
+
+            if cita.esta_completada:
+                messages.warning(request, f"La cita #{cita.pk} ya se encontraba completada.")
+                return redirect('ver_todas_citas_admin')
+
+            monto = 0
+            if cita.idserviciofk:
+                monto = getattr(cita.idserviciofk, 'precioservicio', None)
+                if monto is None:
+                    monto = getattr(cita.idserviciofk, 'precio', 0)
+
+            if not cita.idpagofk:
+                pago = PagoModelo.objects.create(
+                    metodopago=metodo_pago,
+                    montototal=monto,
+                    fechapago=timezone.now(),
+                    estadopago=estado_pagado,
+                )
+                cita.idpagofk = pago
+
+            cita.observaciones = f"Completado - {observacion_motivo}"
+            cita.save()
+
+            cliente_usuario = (
+                cita.idclientefk.idusuariofk
+                if (cita.idclientefk and cita.idclientefk.idusuariofk)
+                else None
+            )
+            if cliente_usuario:
+                Notificacion.objects.create(
+                    idusuariofk=cliente_usuario,
+                    tipo='cita_confirmada',
+                    mensaje=(
+                        f"Tu cita #{cita.pk} ({cita.idserviciofk.nombreservicio if cita.idserviciofk else 'servicio'}) "
+                        f"fue confirmada y finalizada por administración. Motivo: {observacion_motivo}."
+                    )
+                )
+
+        messages.success(
+            request,
+            f"La cita #{cita.pk} fue confirmada y finalizada correctamente."
+        )
+    except Cita.DoesNotExist:
+        messages.error(request, "La cita especificada no existe.")
+    except Exception as e:
+        messages.error(request, f"Error al finalizar la cita: {e}")
+
+    return redirect('ver_todas_citas_admin')
