@@ -237,6 +237,15 @@ def sincronizar_cambio_rol(usuario, rol_anterior_id, rol_nuevo_id):
         for barbero in Barbero.objects.filter(idusuariofk=usuario):
             _cascada_borrar_barbero(barbero)
 
+def _tiene_citas_programadas(usuario):
+    """
+    Revisa si el usuario (como cliente o como barbero) tiene citas registradas.
+    """
+    citas_cliente = Cita.objects.filter(idclientefk__idusuariofk=usuario).exists()
+    citas_barbero = Cita.objects.filter(idbarberofk__idusuariofk=usuario).exists()
+    return citas_cliente or citas_barbero
+
+
 def validar_eliminacion_usuario(usuario):
     """
     Antes: trigger AntesEliminarUsuario (BEFORE DELETE).
@@ -244,6 +253,14 @@ def validar_eliminacion_usuario(usuario):
     """
     if usuario.idrolfk_id == ID_ROL_ADMIN:
         return "No se puede eliminar al Administrador principal."
+
+    if _tiene_citas_programadas(usuario):
+        rol_texto = "el barbero" if usuario.idrolfk_id == ID_ROL_BARBERO else "el usuario"
+        return (
+            f"No se puede eliminar a {rol_texto} '{usuario.nombre}' "
+            f"porque tiene citas programadas."
+        )
+
     return None
 
 def _cascada_borrar_cliente(cliente):
