@@ -278,7 +278,7 @@ def crear_servicio(request):
             return _redirigir_lista_servicios(tipo)
         
         # 3. Guardado (Django gestiona la ruta si el campo es un ImageField)
-        Servicio.objects.create(
+        servicio = Servicio.objects.create(
             nombreservicio=datos['nombreservicio'],
             precio=datos['precio'],
             duracion=datos['duracion'],
@@ -287,6 +287,7 @@ def crear_servicio(request):
             imagen=imagen if imagen else 'default.jpg' 
         )
         
+        messages.success(request, f"El servicio ({servicio.nombreservicio}) fue creado.")
         # --- NUEVO: redirección según el tipo de servicio recién creado ---
         return _redirigir_lista_servicios(datos['tiposervicio'])
         
@@ -307,6 +308,7 @@ def editar_servicio(request, pk):
         precio = request.POST.get('precio')
         duracion = request.POST.get('duracion')
         nuevo_tipo = request.POST.get('tiposervicio')
+        eliminar_imagen = request.POST.get('eliminar_imagen') == 'on'
 
         # --- NUEVO: validamos ANTES de modificar el objeto, así un dato
         # inválido nunca deja el servicio a medio cambiar ---
@@ -326,9 +328,14 @@ def editar_servicio(request, pk):
             # --- NUEVO: borramos la foto física anterior antes de asignar la nueva ---
             _eliminar_imagen_servicio(servicio.imagen)
             servicio.imagen = request.FILES['imagen']
+        elif eliminar_imagen:
+            # --- NUEVO: borramos la foto física y volvemos a la imagen por defecto ---
+            _eliminar_imagen_servicio(servicio.imagen)
+            servicio.imagen = 'default.jpg'
 
         servicio.save()
 
+        messages.success(request, f"El servicio ({servicio.nombreservicio}) fue editado correctamente.")
         # --- NUEVO: redirección según el tipo de servicio YA actualizado ---
         return _redirigir_lista_servicios(datos['tiposervicio'])
 
@@ -345,6 +352,7 @@ def eliminar_servicio(request, pk): # Asegúrate de que aquí diga 'pk'
         
     servicio = get_object_or_404(Servicio, pk=pk)
     tipo_original = servicio.tiposervicio  # --- NUEVO: lo guardamos antes de borrar el registro
+    nombre_servicio = servicio.nombreservicio
     
     # Validar dependencias antes de borrar
     if servicio.cita_set.exists():
@@ -353,7 +361,7 @@ def eliminar_servicio(request, pk): # Asegúrate de que aquí diga 'pk'
         # --- NUEVO: borramos la foto física antes de borrar el registro de la BD ---
         _eliminar_imagen_servicio(servicio.imagen)
         servicio.delete()
-        messages.success(request, "Servicio eliminado correctamente.")
+        messages.warning(request, f"El servicio ({nombre_servicio}) se ha eliminado.")
         
     # --- NUEVO: redirección según el tipo del servicio eliminado ---
     if tipo_original == 'Paquete':
